@@ -1,0 +1,70 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter_locales/flutter_locales.dart';
+import 'package:fullpro/controller/loader.dart';
+import 'package:fullpro/pages/profile/orderspage.dart';
+
+class DeclinedDialog extends StatefulWidget {
+  String? orderStatus;
+
+  DeclinedDialog({required this.orderStatus});
+
+  @override
+  State<DeclinedDialog> createState() => _DeclinedDialogState();
+}
+
+class _DeclinedDialogState extends State<DeclinedDialog> {
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Dialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+        backgroundColor: Colors.transparent,
+        child: Container(
+          margin: const EdgeInsets.all(16.0),
+          width: double.infinity,
+          decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(4)),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Text(
+                  Locales.string(context, 'lbl_partner_declined'),
+                  style: const TextStyle(fontSize: 18),
+                  textAlign: TextAlign.center,
+                ),
+                Text(
+                  Locales.string(context, 'lbl_new_partner_will_be_assigned'),
+                  style: const TextStyle(fontSize: 14),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 10),
+                Center(
+                    child: TextButton(
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all(
+                      Colors.black,
+                    ),
+                    foregroundColor: MaterialStateProperty.all(
+                      Colors.white,
+                    ),
+                  ),
+                  onPressed: () {
+                    Loader.PagewithHome(context, const OrdersPage());
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                    ),
+                    child: Text(Locales.string(context, 'lbl_check_orders')),
+                  ),
+                ))
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
