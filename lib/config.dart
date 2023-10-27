@@ -37,6 +37,6 @@ List<dynamic> singleService = [
 
 // HomePage Slider
 List<dynamic> mainSlider = [
-  'images/slide_01.png',
-  'images/slide_02.png',
+  'images/banner1.png',
+  'images/banner1.png',
 ];

@@ -11,6 +11,7 @@ import 'package:fullpro/controller/loader.dart';
 import 'package:fullpro/pages/INTEGRATION/Chat/home_screen.dart';
 import 'package:fullpro/pages/INTEGRATION/maps/maps.dart';
 import 'package:fullpro/pages/INTEGRATION/notification.dart';
+import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
 
 import 'package:fullpro/pages/profile/account.dart';
 import 'package:fullpro/pages/profile/orderspage.dart';
@@ -349,7 +350,8 @@ class _BottomNavState extends State<BottomNav> {
     return BottomAppBar(
       shape: const CircularNotchedRectangle(),
       //  notchMargin: 15,
-      color: Colors.white,
+      color: secondryColor,
+
       child: SizedBox(
         height: 60,
         child: Column(
@@ -370,7 +372,9 @@ class _BottomNavState extends State<BottomNav> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       SvgPicture.asset(
-                        "images/svg_icons/navigation/home.svg",
+                        "images/icons/bottom1.svg",
+                        width: 30,
+                        color: Colors.white,
                       ),
                     ],
                   ),
@@ -384,14 +388,10 @@ class _BottomNavState extends State<BottomNav> {
                     //
                     Loader.page(context, OrdersPage());
                   },
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        FeatherIcons.clipboard,
-                        color: Colors.black,
-                      ),
-                    ],
+                  child: SvgPicture.asset(
+                    "images/icons/bottom2.svg",
+                    width: 30,
+                    color: Colors.white,
                   ),
                 ),
                 //
@@ -408,15 +408,10 @@ class _BottomNavState extends State<BottomNav> {
                     );
                     // Loader.page(context, Account());
                   },
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      // Icon(FeatherIcons.user, color: Colors.black),
-                      Icon(
-                        Icons.map_outlined,
-                        size: 29,
-                      ),
-                    ],
+                  child: SvgPicture.asset(
+                    "images/icons/bottom3.svg",
+                    width: 30,
+                    color: Colors.white,
                   ),
                 ),
 
@@ -434,14 +429,10 @@ class _BottomNavState extends State<BottomNav> {
                     //
                     // Loader.page(context, SupportPage());
                   },
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Image.asset(
-                        "images/svg_icons/navigation/support.png",
-                        width: 26,
-                      ),
-                    ],
+                  child: SvgPicture.asset(
+                    "images/icons/bottom4.svg",
+                    width: 30,
+                    color: Colors.white,
                   ),
                 ),
                 /* MaterialButton(

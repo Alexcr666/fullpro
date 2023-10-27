@@ -7,7 +7,10 @@ import 'package:flutter_geofire/flutter_geofire.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
+import 'package:fullpro/widgets/widget.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:fullpro/animation/fadeBottom.dart';
 import 'package:fullpro/animation/fadeRight.dart';
@@ -49,11 +52,19 @@ class _kHomePageState extends State<kHomePage> {
   Timer? timerExtra;
   PageController? slideController;
 
+  static const CameraPosition _kGooglePlex = CameraPosition(
+    target: LatLng(37.42796133580664, -122.085749655962),
+    zoom: 14.4746,
+  );
+
+  TextEditingController country = TextEditingController();
+
   ///   Nearby Partners Variables
   late StreamSubscription<DatabaseEvent> rideSubscription;
   List<NearbyPartner> availablePartners = [];
   bool nearbyPartnersKeysLoaded = false;
   bool isRequestingLocationDetails = false;
+  final Completer<GoogleMapController> _controller = Completer<GoogleMapController>();
 
   String? dayTime = '';
 
@@ -263,28 +274,18 @@ class _kHomePageState extends State<kHomePage> {
                 children: [
                   Text(
                     '$dayTime',
-                    style: const TextStyle(
-                      fontFamily: 'Brand-Regular',
-                      color: Static.colorTextLight,
-                      fontSize: 12,
-                    ),
+                    style: TextStyle(color: secondryColor, fontSize: 12, fontWeight: FontWeight.bold),
                   ),
-                  const SizedBox(width: 5),
-                  Icon(
-                    Icons.sunny,
-                    size: 20,
-                    color: Colors.yellow.shade600,
-                  )
                 ],
               ),
               Row(
                 children: [
                   Text(
-                    '${UserPreferences.getUsername() ?? currentUserInfo?.fullName}',
+                    "Hola " + '${UserPreferences.getUsername() ?? currentUserInfo?.fullName}',
                     style: const TextStyle(
                       fontFamily: 'Roboto-Bold',
                       color: Colors.black,
-                      fontSize: 18,
+                      fontSize: 15,
                     ),
                   ),
                 ],
@@ -292,24 +293,33 @@ class _kHomePageState extends State<kHomePage> {
             ],
           ),
           actions: [
+            Image.asset(
+              "images/logo.png",
+              width: 70,
+            ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: MaterialButton(
-                elevation: 0.0,
-                hoverElevation: 0.0,
-                focusElevation: 0.0,
-                highlightElevation: 0.0,
-                minWidth: 50,
-                height: 60,
-                color: Colors.transparent,
-                onPressed: () {
-                  Loader.page(context, const CartPage());
-                },
-                shape: const CircleBorder(),
-                child: UserPreferences.getcartStatus() == 'full' || cartStatus == 'full'
-                    ? Image.asset(cartIcon, width: 40)
-                    : Image.asset(cartIcon, width: 40),
-              ),
+                  elevation: 0.0,
+                  hoverElevation: 0.0,
+                  focusElevation: 0.0,
+                  highlightElevation: 0.0,
+                  minWidth: 50,
+                  height: 60,
+                  color: Colors.transparent,
+                  onPressed: () {
+                    Loader.page(context, const CartPage());
+                  },
+                  shape: const CircleBorder(),
+                  child: UserPreferences.getcartStatus() == 'full' || cartStatus == 'full'
+                      ? SvgPicture.asset(
+                          "images/icons/cart.svg",
+                          width: 40,
+                        )
+                      : SvgPicture.asset(
+                          "images/icons/cart.svg",
+                          width: 40,
+                        )),
             ),
           ],
           backgroundColor: Static.dashboardBG,
@@ -363,8 +373,73 @@ class _kHomePageState extends State<kHomePage> {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        buildSearch(),
         fadeRight(.1, buildSlider()),
+        SizedBox(
+          height: 30,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            SizedBox(
+              width: 20,
+            ),
+            Container(width: 150, child: AppWidget().buttonShandow("Servicios")),
+            // Flexible(child: AppWidget().buttonForm(context, "Servicios")),
+            SizedBox(
+              width: 10,
+            ),
+
+            Container(width: 150, child: AppWidget().buttonShandow("Servicios")),
+            SizedBox(
+              width: 20,
+            ),
+            //   Flexible(child: AppWidget().buttonForm(context, "Inspecciones")),
+          ],
+        ),
+        SizedBox(
+          height: 20,
+        ),
+
+        Row(
+          children: [
+            Flexible(child: AppWidget().textFieldForm(context, country, "Searching....")),
+
+            Container(width: 150, child: AppWidget().buttonShandow("Servicios")),
+            //   AppWidget().buttonForm(context, "Search"),
+          ],
+        ),
+        // buildSearch(),
+        SizedBox(
+          height: 20,
+        ),
+        ClipRRect(
+            borderRadius: BorderRadius.circular(15),
+            child: Container(
+                width: double.infinity,
+                height: 200,
+                child: GoogleMap(
+                  mapType: MapType.hybrid,
+                  initialCameraPosition: _kGooglePlex,
+                  onMapCreated: (GoogleMapController controller) {
+                    _controller.complete(controller);
+                  },
+                ))),
+        SizedBox(
+          height: 20,
+        ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "Perfiles de",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: secondryColor),
+            ),
+            Text(
+              "profesionales destacados",
+              style: TextStyle(fontSize: 18, color: secondryColor),
+            ),
+          ],
+        ),
         fadeBottom(.3, buildServicesList()),
         trendingSlider(),
         const SizedBox(height: 20)
@@ -385,7 +460,10 @@ class _kHomePageState extends State<kHomePage> {
                 Container(
                   decoration: BoxDecoration(
                     image: DecorationImage(
-                      image: AssetImage(mainSlider[0]),
+                      image: AssetImage([
+                        'images/banner1.png',
+                        'images/banner1.png',
+                      ][0]),
                       fit: BoxFit.cover,
                     ),
                     color: Static.dashboardCard,
@@ -474,7 +552,7 @@ class _kHomePageState extends State<kHomePage> {
     return Container(
       child: Column(
         children: [
-          Padding(
+          /*Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -503,6 +581,33 @@ class _kHomePageState extends State<kHomePage> {
                 ),
               ],
             ),
+          ),*/
+          SizedBox(
+            height: 10,
+          ),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "Trabajos",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: secondryColor),
+              ),
+              SizedBox(
+                width: 10,
+              ),
+              Text(
+                "destacados",
+                style: TextStyle(fontSize: 18, color: secondryColor),
+              ),
+              Expanded(child: SizedBox()),
+              Text(
+                "See all",
+                style: TextStyle(fontSize: 16, color: primaryColor, fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
+          SizedBox(
+            height: 10,
           ),
           SizedBox(
             height: 130,
@@ -537,7 +642,7 @@ class _kHomePageState extends State<kHomePage> {
           highlightElevation: 0.0,
           minWidth: 70,
           height: 75,
-          color: Static.themeColor[500],
+          color: secondryColor,
           onPressed: () {
             //
           },
@@ -548,7 +653,7 @@ class _kHomePageState extends State<kHomePage> {
           child: Row(
             children: [
               ClipRRect(
-                borderRadius: BorderRadius.circular(25),
+                borderRadius: BorderRadius.circular(15),
                 child: Image.network(
                   kServices.image!,
                   width: 100,
@@ -572,10 +677,7 @@ class _kHomePageState extends State<kHomePage> {
                     child: Text(
                       kServices.name!,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        fontFamily: 'Roboto-Bold',
-                        color: Colors.white,
-                      ),
+                      style: const TextStyle(color: Colors.white, fontSize: 16),
                     ),
                   ),
                   Text(
@@ -585,7 +687,7 @@ class _kHomePageState extends State<kHomePage> {
                       fontSize: 13,
                     ),
                   ),
-                  Row(
+                  /*   Row(
                     children: [
                       kServices.discount! != '0'
                           ? Text(
@@ -610,8 +712,8 @@ class _kHomePageState extends State<kHomePage> {
                         ),
                       ),
                     ],
-                  ),
-                  Container(
+                  ),*/
+                  /*   Container(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 5,
                       vertical: 2,
@@ -635,6 +737,36 @@ class _kHomePageState extends State<kHomePage> {
                         ),
                       ],
                     ),
+                  ),*/
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 5,
+                      vertical: 2,
+                    ),
+                    margin: const EdgeInsets.symmetric(
+                      vertical: 3,
+                    ),
+                    decoration: BoxDecoration(
+                      color: primaryColor,
+                      borderRadius: BorderRadius.all(Radius.circular(50)),
+                    ),
+                    child: Row(
+                      children: [
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Text(
+                          "Book now",
+                          style: TextStyle(color: Colors.white, fontSize: 11),
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
@@ -650,7 +782,7 @@ class _kHomePageState extends State<kHomePage> {
     return Container(
       child: Column(
         children: [
-          Padding(
+          /* Padding(
             padding: const EdgeInsets.symmetric(
               horizontal: 10,
               vertical: 10,
@@ -669,8 +801,118 @@ class _kHomePageState extends State<kHomePage> {
                 ),
               ],
             ),
-          ),
-          StaggeredGrid.count(
+          ),*/
+
+          ListView.builder(
+            padding: EdgeInsets.only(left: 10.0),
+            itemCount: 2,
+            physics: NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            itemBuilder: (BuildContext context, int index) {
+              return Container(
+                  margin: EdgeInsets.only(top: 10),
+                  child: Row(
+                    children: [
+                      CircleAvatar(
+                        backgroundColor: Colors.grey.withOpacity(0.3),
+                        radius: 30,
+                      ),
+                      SizedBox(
+                        width: 30,
+                      ),
+                      Container(
+                          width: 250,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Flexible(
+                                      child: Column(
+                                    children: [
+                                      Text(
+                                        "Alex",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: secondryColor),
+                                      ),
+                                      Text(
+                                        "titulo",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(fontSize: 11, color: secondryColor),
+                                      ),
+                                    ],
+                                  )),
+                                  // Expanded(child: SizedBox()),
+                                  Flexible(
+                                      child: Icon(
+                                    Icons.heart_broken,
+                                    color: secondryColor,
+                                    size: 20,
+                                  )),
+                                ],
+                              ),
+                              SizedBox(
+                                height: 5,
+                              ),
+                              Text(
+                                "Calle 45 # 35",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(fontSize: 11, color: secondryColor),
+                              ),
+                              Row(
+                                children: [
+                                  Icon(
+                                    Icons.star_border_rounded,
+                                    color: secondryColor,
+                                    size: 20,
+                                  ),
+                                  SizedBox(
+                                    width: 5,
+                                  ),
+                                  Icon(
+                                    Icons.star_border_rounded,
+                                    color: secondryColor,
+                                    size: 20,
+                                  ),
+                                  SizedBox(
+                                    width: 5,
+                                  ),
+                                  Icon(
+                                    Icons.star_border_rounded,
+                                    color: secondryColor,
+                                    size: 20,
+                                  ),
+                                  SizedBox(
+                                    width: 5,
+                                  ),
+                                  Icon(
+                                    Icons.star_border_rounded,
+                                    color: secondryColor,
+                                    size: 25,
+                                  ),
+                                  SizedBox(
+                                    width: 5,
+                                  ),
+                                  Icon(
+                                    Icons.star_border_rounded,
+                                    color: secondryColor,
+                                    size: 20,
+                                  ),
+                                  SizedBox(
+                                    width: 5,
+                                  ),
+                                ],
+                              )
+                            ],
+                          ))
+                    ],
+                  ));
+            },
+          )
+        ],
+
+        /* StaggeredGrid.count(
             crossAxisCount: 3,
             children: [
               //  Row One
@@ -741,8 +983,7 @@ class _kHomePageState extends State<kHomePage> {
                 Colors.green.shade50,
               ),
             ],
-          ),
-        ],
+          ),*/
       ),
     );
   }

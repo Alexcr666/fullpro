@@ -24,6 +24,56 @@ import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
 
 class AppWidget {
 
+  buttonShandow(String title) {
+
+    return Container(
+
+      height: 40,
+
+      child: Center(
+
+          child: Text(
+
+        title,
+
+        style: TextStyle(color: secondryColor, fontSize: 13),
+
+      )),
+
+      decoration: BoxDecoration(
+
+        color: Colors.white,
+
+        borderRadius: BorderRadius.only(
+
+            topLeft: Radius.circular(30), topRight: Radius.circular(30), bottomLeft: Radius.circular(30), bottomRight: Radius.circular(30)),
+
+        boxShadow: [
+
+          BoxShadow(
+
+            color: secondryColor.withOpacity(0.1),
+
+
+            spreadRadius: 3,
+
+
+            blurRadius: 3,
+
+
+            offset: Offset(0, 3), // changes position of shadow
+
+          ),
+
+        ],
+
+      ),
+
+    );
+
+  }
+
+
   Widget back(BuildContext context) {
 
     return Row(
