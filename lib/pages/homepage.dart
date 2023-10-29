@@ -600,10 +600,14 @@ class _kHomePageState extends State<kHomePage> {
                 style: TextStyle(fontSize: 18, color: secondryColor),
               ),
               Expanded(child: SizedBox()),
-              Text(
-                "See all",
-                style: TextStyle(fontSize: 16, color: primaryColor, fontWeight: FontWeight.bold),
-              ),
+              GestureDetector(
+                  onTap: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => const kTrending()));
+                  },
+                  child: Text(
+                    "See all",
+                    style: TextStyle(fontSize: 16, color: primaryColor, fontWeight: FontWeight.bold),
+                  )),
             ],
           ),
           SizedBox(

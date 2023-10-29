@@ -12,19 +12,25 @@ import 'package:flutter/cupertino.dart';
 
 import 'package:flutter/material.dart';
 
+
 import 'package:fullpro/pages/INTEGRATION/information.dart';
 
+
 import 'package:fullpro/pages/INTEGRATION/models/user_model.dart';
+
 
 import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
 
 
+import 'package:fullpro/styles/styles.dart';
+
+
 class Notifications extends StatefulWidget {
 
-  final User currentUser;
+  // final User currentUser;
 
 
-  Notifications(this.currentUser);
+  Notifications(/*this.currentUser*/);
 
 
   @override
@@ -46,7 +52,7 @@ class _NotificationsState extends State<Notifications> {
 
   void initState() {
 
-    matchReference = db.collection("Users").doc(widget.currentUser.id).collection('Matches');
+    matchReference = db.collection("Users").doc("Mkoc6GZaIWMf6yO2mDAHlZucj9V2").collection('Matches');
 
 
     super.initState();
@@ -137,17 +143,7 @@ class _NotificationsState extends State<Notifications> {
 
         body: Container(
 
-          decoration: BoxDecoration(
-
-              borderRadius: BorderRadius.only(
-
-                topLeft: Radius.circular(50),
-
-                topRight: Radius.circular(50),
-
-              ),
-
-              color: Colors.white),
+          decoration: gradientColor(),
 
           child: ClipRRect(
 
@@ -161,9 +157,43 @@ class _NotificationsState extends State<Notifications> {
 
             child: Column(
 
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
 
               children: <Widget>[
+
+                SizedBox(
+
+                  height: 100,
+
+                ),
+
+
+                Column(
+
+                  crossAxisAlignment: CrossAxisAlignment.start,
+
+                  children: [
+
+                    Text(
+
+                      "Notificaciones push",
+
+                      style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white),
+
+                    ),
+
+                    Text(
+
+                      "Cambios de estados del servicio",
+
+                      style: TextStyle(fontSize: 19, color: Colors.white),
+
+                    ),
+
+                  ],
+
+                ),
+
 
                 // Padding(
 
@@ -250,7 +280,7 @@ class _NotificationsState extends State<Notifications> {
 
                                             borderRadius: BorderRadius.circular(20),
 
-                                            color: !doc.get('isRead') ? primaryColor.withOpacity(.15) : secondryColor.withOpacity(.15)),
+                                            color: !doc.get('isRead') ? Colors.white : Colors.white),
 
                                         child: ListTile(
 
@@ -323,10 +353,22 @@ class _NotificationsState extends State<Notifications> {
                                           //    "you are matched with ${doc.data['userName'] ?? "__"}".tr().toString()),
 
 
-                                          title: Text(doc.get('userName').toString()),
+                                          title: Text(
+
+                                            doc.get('userName').toString(),
+
+                                            style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold),
+
+                                          ),
 
 
-                                          subtitle: Text("${(doc.get('timestamp').toDate())}"),
+                                          subtitle: Text(
+
+                                            "${(doc.get('timestamp').toDate())}",
+
+                                            style: TextStyle(color: Colors.grey),
+
+                                          ),
 
 
                                           //  Text(
@@ -395,7 +437,7 @@ class _NotificationsState extends State<Notifications> {
 
                                           onTap: () async {
 
-                                            print(doc.get("Matches"));
+                                            /*  print(doc.get("Matches"));
 
 
                                             showDialog(
@@ -453,7 +495,7 @@ class _NotificationsState extends State<Notifications> {
 
                                                       FirebaseFirestore.instance
 
-                                                          .collection("/Users/${widget.currentUser.id}/Matches")
+                                                          .collection("/Users/Mkoc6GZaIWMf6yO2mDAHlZucj9V2/Matches")
 
                                                           .doc('${doc.get("Matches")}')
 
@@ -462,11 +504,9 @@ class _NotificationsState extends State<Notifications> {
                                                     }
 
 
-                                                    return Info(tempuser, widget.currentUser, null);
+                                                    return Info(tempuser, "", null);
 
-                                                  });
-
-                                            }
+                                                  });*/
 
                                           },
 
@@ -486,7 +526,37 @@ class _NotificationsState extends State<Notifications> {
 
                       );
 
-                    })
+                    }),
+
+
+                Expanded(child: SizedBox()),
+
+
+                SizedBox(
+
+                  height: 20,
+
+                ),
+
+
+                Container(
+
+                    width: 130,
+
+                    child: Image.asset(
+
+                      "images/logo_white.png",
+
+                      color: Colors.white,
+
+                    )),
+
+
+                SizedBox(
+
+                  height: 30,
+
+                ),
 
               ],
 

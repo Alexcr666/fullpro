@@ -19,14 +19,22 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 
+import 'package:flutter_svg/flutter_svg.dart';
+
+
 import 'package:fullpro/pages/INTEGRATION/Calling/dial.dart';
+
 
 import 'package:fullpro/pages/INTEGRATION/information.dart';
 
 
 import 'package:fullpro/pages/INTEGRATION/models/user_model.dart';
 
+
 import 'package:fullpro/pages/INTEGRATION/reportUser.dart';
+
+
+import 'package:fullpro/styles/styles.dart';
 
 
 import 'package:image_picker/image_picker.dart';
@@ -322,7 +330,7 @@ class _ChatPageState extends State<ChatPage> {
 
                             width: 150.0,
 
-                            color: secondryColor.withOpacity(.5),
+                            color: secondryColor,
 
                             padding: EdgeInsets.all(5),
 
@@ -384,7 +392,7 @@ class _ChatPageState extends State<ChatPage> {
 
                       margin: EdgeInsets.only(top: 8.0, bottom: 8.0, left: 80.0, right: 10),
 
-                      decoration: BoxDecoration(color: primaryColor.withOpacity(.1), borderRadius: BorderRadius.circular(20)),
+                      decoration: BoxDecoration(color: secondryColor, borderRadius: BorderRadius.circular(8)),
 
                       child: Column(
 
@@ -408,9 +416,9 @@ class _ChatPageState extends State<ChatPage> {
 
                                     style: TextStyle(
 
-                                      color: Colors.black87,
+                                      color: Colors.white,
 
-                                      fontSize: 16.0,
+                                      fontSize: 13.0,
 
                                       fontWeight: FontWeight.w600,
 
@@ -438,9 +446,9 @@ class _ChatPageState extends State<ChatPage> {
 
                                     style: TextStyle(
 
-                                      color: secondryColor,
+                                      color: Colors.white.withOpacity(0.6),
 
-                                      fontSize: 13.0,
+                                      fontSize: 12.0,
 
                                       fontWeight: FontWeight.w600,
 
@@ -558,6 +566,12 @@ class _ChatPageState extends State<ChatPage> {
           ),
 
         ],
+
+      ),
+
+      SizedBox(
+
+        width: 10,
 
       ),
 
@@ -690,7 +704,7 @@ class _ChatPageState extends State<ChatPage> {
 
                       margin: EdgeInsets.only(top: 8.0, bottom: 8.0, right: 10),
 
-                      decoration: BoxDecoration(color: secondryColor.withOpacity(.3), borderRadius: BorderRadius.circular(20)),
+                      decoration: BoxDecoration(color: Colors.grey.withOpacity(.1), borderRadius: BorderRadius.circular(8)),
 
                       child: Column(
 
@@ -716,7 +730,7 @@ class _ChatPageState extends State<ChatPage> {
 
                                       color: Colors.black87,
 
-                                      fontSize: 16.0,
+                                      fontSize: 13.0,
 
                                       fontWeight: FontWeight.w600,
 
@@ -734,7 +748,13 @@ class _ChatPageState extends State<ChatPage> {
 
                                 children: <Widget>[
 
-                                  Text(
+                                  Container(
+
+
+                                      //     margin: EdgeInsets.only(top: 10),
+
+
+                                      child: Text(
 
                                     documentSnapshot.data()!["time"] != null
 
@@ -744,15 +764,15 @@ class _ChatPageState extends State<ChatPage> {
 
                                     style: TextStyle(
 
-                                      color: secondryColor,
+                                      color: Colors.grey,
 
-                                      fontSize: 13.0,
+                                      fontSize: 12.0,
 
                                       fontWeight: FontWeight.w600,
 
                                     ),
 
-                                  ),
+                                  )),
 
                                 ],
 
@@ -849,282 +869,335 @@ class _ChatPageState extends State<ChatPage> {
 
   Widget build(BuildContext context) {
 
-    return Scaffold(
+    return Stack(
 
-      key: _scaffoldKey,
+      children: [
 
-      backgroundColor: Colors.white,
+        Container(
 
-      appBar: AppBar(
+          width: double.infinity,
 
-          backgroundColor: primaryColor,
+          height: 400,
 
-          centerTitle: true,
+          decoration: gradientColor(),
 
-          elevation: 0,
+        ),
 
-          title: Text(widget.second.name!),
+        Scaffold(
 
-          leading: IconButton(
+            backgroundColor: Colors.transparent,
 
-            icon: Icon(Icons.arrow_back_ios),
+            key: _scaffoldKey,
 
-            color: Colors.white,
 
-            onPressed: () => Navigator.pop(context),
+            /*appBar: AppBar(
 
-          ),
 
-          actions: <Widget>[
+              // backgroundColor: Colors.transparent,
 
-            IconButton(icon: Icon(Icons.call), onPressed: () => onJoin("AudioCall")),
 
-            IconButton(icon: Icon(Icons.video_call), onPressed: () => onJoin("VideoCall")),
+//              backgroundColor: secondryColor,
 
-            PopupMenuButton(itemBuilder: (ct) {
 
-              return [
+              centerTitle: true,
 
-                PopupMenuItem(
+              elevation: 0,
 
-                  value: 'value1',
+              title: Text(widget.second.name!),
 
-                  child: InkWell(
+              leading: IconButton(
 
-                    onTap: () => showDialog(
+                icon: Icon(Icons.arrow_back_ios),
 
-                        barrierDismissible: true,
+                color: Colors.white,
 
-                        context: context,
+                onPressed: () => Navigator.pop(context),
 
-                        builder: (context) => ReportUser(
+              ),
 
-                              currentUser: widget.sender,
+              actions: <Widget>[
 
-                              seconduser: widget.second,
+                IconButton(icon: Icon(Icons.call), onPressed: () => onJoin("AudioCall")),
 
-                            )).then((value) => Navigator.pop(ct)),
+                IconButton(icon: Icon(Icons.video_call), onPressed: () => onJoin("VideoCall")),
 
-                    child: Container(
+                PopupMenuButton(itemBuilder: (ct) {
 
-                        width: 100,
+                  return [
 
-                        height: 30,
+                    PopupMenuItem(
 
-                        child: Text(
+                      value: 'value1',
 
-                          "Report".toString(),
+                      child: InkWell(
 
-                        )),
+                        onTap: () => showDialog(
 
-                  ),
+                            barrierDismissible: true,
 
-                ),
+                            context: context,
 
-                PopupMenuItem(
+                            builder: (context) => ReportUser(
 
-                  height: 30,
+                                  currentUser: widget.sender,
 
-                  value: 'value2',
+                                  seconduser: widget.second,
 
-                  child: InkWell(
+                                )).then((value) => Navigator.pop(ct)),
 
-                    child: Text(isBlocked ? "Unblock user" : "Block user"),
+                        child: Container(
 
-                    onTap: () {
+                            width: 100,
 
-                      Navigator.pop(ct);
+                            height: 30,
 
+                            child: Text(
 
-                      showDialog(
+                              "Report".toString(),
 
-                        context: context,
+                            )),
 
-                        builder: (BuildContext ctx) {
+                      ),
 
-                          return AlertDialog(
+                    ),
 
-                            title: Text(isBlocked ? 'Unblock' : 'Block'),
+                    PopupMenuItem(
 
-                            content: Text('Do you want to '),
+                      height: 30,
 
-                            actions: <Widget>[
+                      value: 'value2',
 
-                              TextButton(
+                      child: InkWell(
 
-                                onPressed: () => Navigator.of(context).pop(false),
+                        child: Text(isBlocked ? "Unblock user" : "Block user"),
 
-                                child: Text('No'.toString()),
+                        onTap: () {
 
-                              ),
+                          Navigator.pop(ct);
 
-                              TextButton(
 
-                                onPressed: () async {
+                          showDialog(
 
-                                  Navigator.pop(ctx);
+                            context: context,
 
+                            builder: (BuildContext ctx) {
 
-                                  if (isBlocked && blockedBy == widget.sender.id) {
+                              return AlertDialog(
 
-                                    chatReference.doc('blocked').set({
+                                title: Text(isBlocked ? 'Unblock' : 'Block'),
 
-                                      'isBlocked': !isBlocked,
+                                content: Text('Do you want to '),
 
-                                      'blockedBy': widget.sender.id,
+                                actions: <Widget>[
 
-                                    }, SetOptions(merge: true));
+                                  TextButton(
 
-                                  } else if (!isBlocked) {
+                                    onPressed: () => Navigator.of(context).pop(false),
 
-                                    chatReference.doc('blocked').set({
+                                    child: Text('No'.toString()),
 
-                                      'isBlocked': !isBlocked,
+                                  ),
 
-                                      'blockedBy': widget.sender.id,
+                                  TextButton(
 
-                                    }, SetOptions(merge: true));
+                                    onPressed: () async {
 
-                                  } else {
+                                      Navigator.pop(ctx);
 
-                                    //changed  CustomSnackbar.snackbar("You can't unblock".toString(), context);
 
-                                  }
+                                      if (isBlocked && blockedBy == widget.sender.id) {
 
-                                },
+                                        chatReference.doc('blocked').set({
 
-                                child: Text('Yes'.toString()),
+                                          'isBlocked': !isBlocked,
 
-                              ),
+                                          'blockedBy': widget.sender.id,
 
-                            ],
+                                        }, SetOptions(merge: true));
+
+                                      } else if (!isBlocked) {
+
+                                        chatReference.doc('blocked').set({
+
+                                          'isBlocked': !isBlocked,
+
+                                          'blockedBy': widget.sender.id,
+
+                                        }, SetOptions(merge: true));
+
+                                      } else {
+
+                                        //changed  CustomSnackbar.snackbar("You can't unblock".toString(), context);
+
+                                      }
+
+                                    },
+
+                                    child: Text('Yes'.toString()),
+
+                                  ),
+
+                                ],
+
+                              );
+
+                            },
 
                           );
 
                         },
 
-                      );
+                      ),
 
-                    },
+                    )
 
-                  ),
+                  ];
 
-                )
+                })
 
-              ];
-
-            })
-
-          ]),
-
-      body: GestureDetector(
-
-        onTap: () => FocusScope.of(context).unfocus(),
-
-        child: Scaffold(
-
-          backgroundColor: primaryColor,
-
-          body: ClipRRect(
-
-            borderRadius: BorderRadius.only(
-
-              topLeft: Radius.circular(50.0),
-
-              topRight: Radius.circular(50.0),
-
-            ),
-
-            child: Container(
-
-              decoration: BoxDecoration(
+              ]),*/
 
 
-                  // image: DecorationImage(
+            body: Container(
+
+              margin: EdgeInsets.only(top: 140),
+
+              child: GestureDetector(
+
+                onTap: () => FocusScope.of(context).unfocus(),
+
+                child: Scaffold(
+
+                  backgroundColor: Colors.transparent,
 
 
-                  //     fit: BoxFit.fitWidth,
+                  // backgroundColor: secondryColor,
 
 
-                  //     image: AssetImage("asset/chat.jpg")),
+                  body: ClipRRect(
+
+                    borderRadius: BorderRadius.only(
+
+                      topLeft: Radius.circular(50.0),
+
+                      topRight: Radius.circular(50.0),
+
+                    ),
+
+                    child: Container(
+
+                      decoration: BoxDecoration(
 
 
-                  borderRadius: BorderRadius.only(topLeft: Radius.circular(50), topRight: Radius.circular(50)),
+                          // image: DecorationImage(
 
-                  color: Colors.white),
 
-              padding: EdgeInsets.all(5),
+                          //     fit: BoxFit.fitWidth,
 
-              child: Column(
 
-                mainAxisAlignment: MainAxisAlignment.end,
+                          //     image: AssetImage("asset/chat.jpg")),
 
-                children: <Widget>[
 
-                  StreamBuilder<QuerySnapshot>(
+                          borderRadius: BorderRadius.only(topLeft: Radius.circular(50), topRight: Radius.circular(50)),
 
-                    stream: chatReference.orderBy('time', descending: true).snapshots(),
+                          color: Colors.white),
 
-                    builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                      padding: EdgeInsets.all(5),
 
-                      if (!snapshot.hasData)
+                      child: Column(
 
-                        return Container(
+                        mainAxisAlignment: MainAxisAlignment.end,
 
-                          height: 15,
+                        children: <Widget>[
 
-                          width: 15,
+                          StreamBuilder<QuerySnapshot>(
 
-                          child: CircularProgressIndicator(
+                            stream: chatReference.orderBy('time', descending: true).snapshots(),
 
-                            valueColor: AlwaysStoppedAnimation(primaryColor),
+                            builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
 
-                            strokeWidth: 2,
+                              if (!snapshot.hasData)
+
+                                return Container(
+
+                                  height: 15,
+
+                                  width: 15,
+
+                                  child: CircularProgressIndicator(
+
+                                    valueColor: AlwaysStoppedAnimation(primaryColor),
+
+                                    strokeWidth: 2,
+
+                                  ),
+
+                                );
+
+
+                              return Expanded(
+
+                                child: ListView(
+
+                                  reverse: true,
+
+                                  children: generateMessages(snapshot),
+
+                                ),
+
+                              );
+
+                            },
 
                           ),
 
-                        );
+                          Divider(height: 1.0),
 
+                          Container(
 
-                      return Expanded(
+                            alignment: Alignment.bottomCenter,
 
-                        child: ListView(
+                            decoration: BoxDecoration(color: Theme.of(context).cardColor),
 
-                          reverse: true,
+                            child: isBlocked ? Text("Sorry You can't send message!".toString()) : _buildTextComposer(),
 
-                          children: generateMessages(snapshot),
+                          ),
 
-                        ),
+                        ],
 
-                      );
+                      ),
 
-                    },
-
-                  ),
-
-                  Divider(height: 1.0),
-
-                  Container(
-
-                    alignment: Alignment.bottomCenter,
-
-                    decoration: BoxDecoration(color: Theme.of(context).cardColor),
-
-                    child: isBlocked ? Text("Sorry You can't send message!".toString()) : _buildTextComposer(),
+                    ),
 
                   ),
 
-                ],
+                ),
 
               ),
 
-            ),
+            )),
 
-          ),
+        Positioned.fill(
 
-        ),
+            child: Align(
 
-      ),
+                alignment: Alignment.topCenter,
+
+                child: Container(
+
+                    margin: EdgeInsets.only(top: 40),
+
+                    child: CircleAvatar(
+
+                      child: Image.asset("images/user.png"),
+
+                      radius: 60,
+
+                      backgroundColor: Colors.grey,
+
+                    )))),
+
+      ],
 
     );
 
@@ -1133,27 +1206,65 @@ class _ChatPageState extends State<ChatPage> {
 
   Widget getDefaultSendButton() {
 
-    return IconButton(
+    return _isWritting == false
 
-      icon: Transform.rotate(
+        ? Row(
 
-        angle: -pi / 9,
+            children: [
 
-        child: Icon(
+              SizedBox(
 
-          Icons.send,
+                width: 20,
 
-          size: 25,
+              ),
 
-        ),
+              SvgPicture.asset(
 
-      ),
+                "images/icons/camera.svg",
 
-      color: primaryColor,
+                width: 30,
 
-      onPressed: _isWritting ? () => _sendText(_textController.text.trimRight()) : null,
+              ),
 
-    );
+              SizedBox(
+
+                width: 20,
+
+              ),
+
+              SvgPicture.asset(
+
+                "images/icons/microphone.svg",
+
+                width: 30,
+
+              ),
+
+            ],
+
+          )
+
+        : IconButton(
+
+            icon: Transform.rotate(
+
+              angle: -pi / 9,
+
+              child: Icon(
+
+                Icons.send,
+
+                size: 25,
+
+              ),
+
+            ),
+
+            color: primaryColor,
+
+            onPressed: _isWritting ? () => _sendText(_textController.text.trimRight()) : null,
+
+          );
 
   }
 
@@ -1178,11 +1289,20 @@ class _ChatPageState extends State<ChatPage> {
 
                 child: IconButton(
 
-                    icon: Icon(
+                    icon: /* Icon(
 
                       Icons.photo_camera,
 
                       color: primaryColor,
+
+                    ),*/
+
+
+                        SvgPicture.asset(
+
+                      "images/icons/clip.svg",
+
+                      width: 30,
 
                     ),
 
@@ -1220,40 +1340,46 @@ class _ChatPageState extends State<ChatPage> {
 
               new Flexible(
 
-                child: new TextField(
+                child: Container(
 
-                  controller: _textController,
+                    color: Colors.grey.withOpacity(0.1),
 
-                  maxLines: 15,
+                    height: 45,
 
-                  minLines: 1,
+                    child: TextField(
 
-                  autofocus: false,
+                      controller: _textController,
 
-                  onChanged: (String messageText) {
+                      maxLines: 15,
 
-                    setState(() {
+                      minLines: 1,
 
-                      _isWritting = messageText.trim().length > 0;
+                      autofocus: false,
 
-                    });
+                      onChanged: (String messageText) {
 
-                  },
+                        setState(() {
 
-                  decoration: new InputDecoration.collapsed(
+                          _isWritting = messageText.trim().length > 0;
 
-                      floatingLabelBehavior: FloatingLabelBehavior.auto,
+                        });
+
+                      },
+
+                      decoration: new InputDecoration.collapsed(
+
+                          floatingLabelBehavior: FloatingLabelBehavior.auto,
 
 
-                      // border: OutlineInputBorder(
+                          // border: OutlineInputBorder(
 
 
-                      //     borderRadius: BorderRadius.circular(18)),
+                          //     borderRadius: BorderRadius.circular(18)),
 
 
-                      hintText: "Send a message...".toString()),
+                          hintText: "Escribe tu mensaje".toString()),
 
-                ),
+                    )),
 
               ),
 

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
+import 'package:fullpro/widgets/widget.dart';
 import 'package:provider/provider.dart';
 import 'package:fullpro/config.dart';
 import 'package:fullpro/utils/globalConstants.dart';
@@ -78,13 +80,58 @@ class _OrdersPageState extends State<OrdersPage> with TickerProviderStateMixin {
     timer?.cancel();
   }
 
+  Widget itemAdd(String url, String title, {Function? tap}) {
+    return GestureDetector(
+        onTap: () {},
+        child: Column(
+          children: [
+            Container(
+              width: 100,
+              height: 100,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                gradient: LinearGradient(
+                    colors: [
+                      secondryColor,
+                      primaryColor,
+                    ],
+                    begin: const FractionalOffset(1.0, 0.0),
+                    end: const FractionalOffset(1.0, 1.0),
+                    stops: [0.0, 1.0],
+                    tileMode: TileMode.clamp),
+              ),
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Container(alignment: Alignment.centerRight, height: 20, child: SvgPicture.asset("images/icons/add.svg")),
+                  SvgPicture.asset(
+                    url,
+                    width: 60,
+                    height: 60,
+                  )
+                ],
+              ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Text(
+              title.toString(),
+              style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold),
+            ),
+          ],
+        ));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: scaffoldKey,
       resizeToAvoidBottomInset: false,
       backgroundColor: Static.dashboardCard,
-      appBar: AppBar(
+      /* appBar: AppBar(
         iconTheme: const IconThemeData(
           color: Colors.black,
         ),
@@ -105,13 +152,105 @@ class _OrdersPageState extends State<OrdersPage> with TickerProviderStateMixin {
             color: Colors.black,
           ),
         ),
-      ),
+      ),*/
       body: SafeArea(
         child: Container(
-          color: Static.dashboardCard,
+          color: Colors.white,
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              SizedBox(
+                height: 40,
+              ),
+
+              Container(
+                  margin: EdgeInsets.only(left: 30),
+                  child: Text(
+                    "Buscar: ",
+                    style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 20),
+                  )),
+              SizedBox(
+                height: 20,
+              ),
+              Row(
+                children: [
+                  Expanded(child: SizedBox()),
+                  itemAdd("images/icons/work.svg", "Usuario", tap: () {}),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  itemAdd("images/icons/profesional.svg", "Profesional", tap: () {}),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  itemAdd(
+                    "images/icons/userCircle.svg",
+                    "Servicios",
+                    tap: () {},
+                  ),
+                  Expanded(child: SizedBox()),
+                ],
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              Row(
+                children: [
+                  SizedBox(
+                    width: 20,
+                  ),
+                  Container(
+                      margin: EdgeInsets.only(left: 30),
+                      child: Text(
+                        "Historial: ",
+                        style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 20),
+                      )),
+                  Expanded(child: SizedBox()),
+                  Container(
+                      margin: EdgeInsets.only(left: 30),
+                      child: Row(
+                        children: [
+                          Text(
+                            "Filtro",
+                            style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 20),
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          SvgPicture.asset(
+                            "images/icons/add.svg",
+                            width: 23,
+                            color: secondryColor,
+                          ),
+                        ],
+                      )),
+                  SizedBox(
+                    width: 50,
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: 20,
+              ),
+
+              Container(
+                  margin: EdgeInsets.only(left: 20, right: 20),
+                  child: Row(
+                    children: [
+                      Container(width: 110, child: AppWidget().buttonShandow("Pendiente")),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Container(width: 110, child: AppWidget().buttonShandow("En curso")),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Container(width: 110, child: AppWidget().buttonShandow("Terminado")),
+                    ],
+                  )),
+              SizedBox(
+                height: 20,
+              ),
               Container(
                 color: Colors.white,
                 child: TabBar(
@@ -140,7 +279,7 @@ class _OrdersPageState extends State<OrdersPage> with TickerProviderStateMixin {
                     //
                     // Pending Orders TabView
                     Scaffold(
-                      backgroundColor: Static.dashboardCard,
+                      backgroundColor: Colors.white,
                       body: Padding(
                         padding: const EdgeInsets.all(8),
                         child: OrderItemsPending(),

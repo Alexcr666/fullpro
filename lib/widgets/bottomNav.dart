@@ -401,11 +401,14 @@ class _BottomNavState extends State<BottomNav> {
                   shape: CircleBorder(),
                   onPressed: () {
                     //
-
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => MapSample()),
+                      MaterialPageRoute(builder: (context) => Notifications()),
                     );
+                    /*   Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => MapSample()),
+                    );*/
                     // Loader.page(context, Account());
                   },
                   child: SvgPicture.asset(

@@ -1,13 +1,17 @@
 import 'package:cached_network_image/cached_network_image.dart';
 
+
 import 'package:flutter/cupertino.dart';
+
 
 import 'package:flutter/material.dart';
 
 
 import 'package:fullpro/pages/INTEGRATION/Chat/chatPage.dart';
 
+
 import 'package:fullpro/pages/INTEGRATION/models/user_model.dart';
+
 
 import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
 
@@ -15,6 +19,7 @@ import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
 class Matches extends StatelessWidget {
 
   final User currentUser;
+
 
   final List<User> matches;
 
@@ -50,13 +55,11 @@ class Matches extends StatelessWidget {
 
                   style: TextStyle(
 
-                    color: primaryColor,
+                    color: secondryColor,
 
-                    fontSize: 18.0,
+                    fontSize: 15.0,
 
                     fontWeight: FontWeight.bold,
-
-                    letterSpacing: 1.0,
 
                   ),
 
@@ -212,6 +215,7 @@ class Matches extends StatelessWidget {
 
 
 var groupChatId;
+
 
 chatId(currentUser, sender) {
 

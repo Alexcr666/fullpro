@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
 import 'package:provider/provider.dart';
 import 'package:fullpro/config.dart';
 import 'package:fullpro/utils/globalConstants.dart';
@@ -106,25 +107,39 @@ class _kTrendingState extends State<kTrending> {
             onPressed: () {
               Navigator.pop(context);
             },
-            icon: const Icon(Icons.arrow_back_ios_new),
+            icon: SvgPicture.asset(
+              "images/icons/back.svg",
+              color: Colors.black,
+              width: 20,
+            ),
           ),
           elevation: .7,
           toolbarHeight: 70,
           backgroundColor: Colors.white,
           centerTitle: true,
-          title: Text(
-            Locales.string(context, 'title_trending'),
-            style: const TextStyle(
-              color: Colors.black,
+          title: Row(children: [
+            Text("Todos los trabajos",
+                style: TextStyle(
+                  color: secondryColor,
+                  fontSize: 17,
+                  fontWeight: FontWeight.bold,
+                )),
+            SizedBox(
+              width: 5,
             ),
-          ),
+            Text("destacados",
+                style: TextStyle(
+                  color: secondryColor,
+                  fontSize: 17,
+                )),
+          ]),
         ),
         bottomNavigationBar: UserPreferences.getcartStatus() == 'full' || cartStatus == 'full' ? const CartBottomButton() : null,
         body: SafeArea(
           child: Padding(
             padding: EdgeInsets.only(
-              left: leftPadding,
-              right: rightPadding,
+              left: 20,
+              right: 20,
               bottom: bottomPadding,
               top: topPadding,
             ),
@@ -228,7 +243,7 @@ class _kTrendingState extends State<kTrending> {
           child: Row(
             children: [
               ClipRRect(
-                borderRadius: BorderRadius.circular(25),
+                borderRadius: BorderRadius.circular(15),
                 child: Image.network(
                   kServices.image!,
                   width: 85,
@@ -247,26 +262,56 @@ class _kTrendingState extends State<kTrending> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  GestureDetector(
+                    onTap: () {
+                      CartController.getCartData(context, false, kServices.key, kServices.name, kServices.rating, kServices.image,
+                          kServices.chargemod, kServices.price, kServices.discount);
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Static.themeColor[500],
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 3,
+                      ),
+                      child: Row(
+                        children: [
+                          Text(
+                            Locales.string(context, 'lbl_add'),
+                            style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold),
+                          ),
+                          const Icon(
+                            Icons.add,
+                            color: Colors.white,
+                            size: 12,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                   SizedBox(
                     width: MediaQuery.of(context).size.width * .5,
                     child: Text(
                       kServices.name!,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        fontFamily: 'Roboto-Bold',
-                        color: Colors.black,
-                      ),
+                      style: TextStyle(
+                          //  fontFamily: 'Roboto-Bold',
+                          //    color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                          color: secondryColor),
                     ),
                   ),
                   Text(
                     kServices.chargemod!,
-                    style: const TextStyle(
-                      color: Static.colorTextLight,
+                    style: TextStyle(
+                      color: secondryColor,
                       fontSize: 13,
                     ),
                   ),
                   const SizedBox(height: 3),
-                  SizedBox(
+                  /* SizedBox(
                     width: MediaQuery.of(context).size.width * .5,
                     child: Row(
                       children: [
@@ -294,12 +339,12 @@ class _kTrendingState extends State<kTrending> {
                         ),
                       ],
                     ),
-                  ),
+                  ),*/
                   Container(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Container(
+                        /*   Container(
                           padding: const EdgeInsets.symmetric(
                             horizontal: 10,
                             vertical: 5,
@@ -323,9 +368,9 @@ class _kTrendingState extends State<kTrending> {
                               ),
                             ],
                           ),
-                        ),
+                        ),*/
                         SizedBox(width: MediaQuery.of(context).size.width * .15),
-                        GestureDetector(
+                        /*   GestureDetector(
                           onTap: () {
                             CartController.getCartData(context, false, kServices.key, kServices.name, kServices.rating, kServices.image,
                                 kServices.chargemod, kServices.price, kServices.discount);
@@ -355,7 +400,7 @@ class _kTrendingState extends State<kTrending> {
                               ],
                             ),
                           ),
-                        )
+                        )*/
                       ],
                     ),
                   ),

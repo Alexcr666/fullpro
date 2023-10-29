@@ -10,6 +10,9 @@ import 'package:fullpro/pages/INTEGRATION/models/user_model.dart';
 import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
 
 
+import 'package:fullpro/styles/styles.dart';
+
+
 import 'Matches.dart';
 
 
@@ -80,81 +83,105 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget build(BuildContext context) {
 
-    return Scaffold(
+    return Container(
 
-      backgroundColor: primaryColor,
+        decoration: gradientColor(),
 
-      appBar: AppBar(
+        child: Scaffold(
 
-        backgroundColor: primaryColor,
+            backgroundColor: Colors.transparent,
 
-        automaticallyImplyLeading: false,
 
-        title: Text(
+            /* appBar: AppBar(
 
-          'Messages'.toString(),
+            backgroundColor: primaryColor,
 
-          style: TextStyle(
+            automaticallyImplyLeading: false,
 
-            color: Colors.white,
+            title: Text(
 
-            fontSize: 18.0,
+              'Messages'.toString(),
 
-            fontWeight: FontWeight.bold,
+              style: TextStyle(
 
-            letterSpacing: 1.0,
+                color: Colors.white,
 
-          ),
+                fontSize: 18.0,
 
-        ),
+                fontWeight: FontWeight.bold,
 
-        elevation: 0.0,
+                letterSpacing: 1.0,
 
-      ),
+              ),
 
-      body: Container(
+            ),
 
-        height: MediaQuery.of(context).size.height,
+            elevation: 0.0,
 
-        decoration: BoxDecoration(
+          ),*/
 
-            borderRadius: BorderRadius.only(topLeft: Radius.circular(50), topRight: Radius.circular(50)), color: Colors.white),
 
-        child: ClipRRect(
+            body: Stack(
 
-          borderRadius: BorderRadius.only(topLeft: Radius.circular(50), topRight: Radius.circular(50)),
+              children: [
 
-          child: GestureDetector(
+                Container(
 
-            onTap: () => FocusScope.of(context).unfocus(),
+                  margin: EdgeInsets.only(top: 120),
 
-            child: Column(
+                  height: MediaQuery.of(context).size.height,
 
-              crossAxisAlignment: CrossAxisAlignment.start,
+                  decoration: BoxDecoration(
 
-              children: <Widget>[
+                      borderRadius: BorderRadius.only(topLeft: Radius.circular(50), topRight: Radius.circular(50)), color: Colors.white),
 
-                Matches(widget.currentUser, widget.newmatches),
+                  child: ClipRRect(
 
-                Divider(),
+                    borderRadius: BorderRadius.only(topLeft: Radius.circular(50), topRight: Radius.circular(50)),
 
-                Padding(
+                    child: GestureDetector(
 
-                  padding: const EdgeInsets.all(20),
+                      onTap: () => FocusScope.of(context).unfocus(),
 
-                  child: Text(
+                      child: Column(
 
-                    'Recent messages'.toString(),
+                        crossAxisAlignment: CrossAxisAlignment.start,
 
-                    style: TextStyle(
+                        children: <Widget>[
 
-                      color: primaryColor,
+                          Matches(widget.currentUser, widget.newmatches),
 
-                      fontSize: 18.0,
+                          Divider(),
 
-                      fontWeight: FontWeight.bold,
+                          Padding(
 
-                      letterSpacing: 1.0,
+                            padding: const EdgeInsets.all(20),
+
+                            child: Text(
+
+                              'Recent messages'.toString(),
+
+                              style: TextStyle(
+
+                                color: secondryColor,
+
+                                fontSize: 13.0,
+
+                                fontWeight: FontWeight.bold,
+
+                                letterSpacing: 1.0,
+
+                              ),
+
+                            ),
+
+                          ),
+
+                          RecentChats(widget.currentUser, widget.matches),
+
+                        ],
+
+                      ),
 
                     ),
 
@@ -162,19 +189,29 @@ class _HomeScreenState extends State<HomeScreen> {
 
                 ),
 
-                RecentChats(widget.currentUser, widget.matches),
+                Positioned.fill(
+
+                    child: Align(
+
+                        alignment: Alignment.topCenter,
+
+                        child: Container(
+
+                            margin: EdgeInsets.only(top: 20),
+
+                            child: CircleAvatar(
+
+                              child: Image.asset("images/user.png"),
+
+                              radius: 70,
+
+                              backgroundColor: Colors.grey,
+
+                            )))),
 
               ],
 
-            ),
-
-          ),
-
-        ),
-
-      ),
-
-    );
+            )));
 
   }
 

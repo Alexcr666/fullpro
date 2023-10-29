@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 
@@ -8,11 +9,15 @@ import 'package:flutter/cupertino.dart';
 
 import 'package:flutter/material.dart';
 
+
 import 'package:fullpro/pages/INTEGRATION/Chat/Matches.dart';
+
 
 import 'package:fullpro/pages/INTEGRATION/Chat/chatPage.dart';
 
+
 import 'package:fullpro/pages/INTEGRATION/models/user_model.dart';
+
 
 import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
 
@@ -143,11 +148,12 @@ class RecentChats extends StatelessWidget {
 
                                     decoration: BoxDecoration(
 
-                                      color: snapshot.data!.docs[0]['sender_id'] != currentUser.id && !snapshot.data!.docs[0]['isRead']
+                                      /*color: snapshot.data!.docs[0]['sender_id'] != currentUser.id && !snapshot.data!.docs[0]['isRead']
 
                                           ? primaryColor.withOpacity(.1)
 
-                                          : secondryColor.withOpacity(.2),
+                                          : secondryColor.withOpacity(.1),*/
+
 
                                       borderRadius: BorderRadius.only(
 
@@ -197,9 +203,9 @@ class RecentChats extends StatelessWidget {
 
                                         style: TextStyle(
 
-                                          color: Colors.grey,
+                                          color: Colors.black,
 
-                                          fontSize: 16.0,
+                                          fontSize: 17.0,
 
                                           fontWeight: FontWeight.bold,
 
@@ -217,9 +223,9 @@ class RecentChats extends StatelessWidget {
 
                                         style: TextStyle(
 
-                                          color: Colors.blueGrey,
+                                          color: Colors.grey,
 
-                                          fontSize: 15.0,
+                                          fontSize: 12.0,
 
                                           fontWeight: FontWeight.w600,
 
@@ -255,9 +261,11 @@ class RecentChats extends StatelessWidget {
 
                                               color: Colors.grey,
 
-                                              fontSize: 15.0,
 
-                                              fontWeight: FontWeight.bold,
+                                              fontSize: 11.0,
+
+
+                                              // fontWeight: FontWeight.bold,
 
                                             ),
 
