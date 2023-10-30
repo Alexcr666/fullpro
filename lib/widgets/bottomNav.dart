@@ -15,6 +15,7 @@ import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
 
 import 'package:fullpro/pages/profile/account.dart';
 import 'package:fullpro/pages/profile/orderspage.dart';
+import 'package:fullpro/pages/profile/profileOptions.dart';
 import 'package:fullpro/pages/support.dart';
 import 'package:fullpro/pages/INTEGRATION/models/user_model.dart' as userD;
 
@@ -401,10 +402,15 @@ class _BottomNavState extends State<BottomNav> {
                   shape: CircleBorder(),
                   onPressed: () {
                     //
+
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => Notifications()),
+                      MaterialPageRoute(builder: (context) => ProfileOptionsPage()),
                     );
+                    /*  Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => Notifications()),
+                    );*/
                     /*   Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => MapSample()),

@@ -3,8 +3,11 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:flutter_locales/flutter_locales.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fullpro/config.dart';
 import 'package:fullpro/models/userdata.dart';
+import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
+import 'package:fullpro/pages/profile/deleteAccount.dart';
 import 'package:fullpro/utils/globalConstants.dart';
 import 'package:fullpro/styles/statics.dart' as Static;
 import 'package:fullpro/utils/userpreferences.dart';
@@ -67,6 +70,63 @@ class _AccountState extends State<Account> with TickerProviderStateMixin {
         }
       });
     }
+  }
+
+  Widget itemOptionProfile(String title, String url, {String? subtitle}) {
+    return Container(
+        margin: EdgeInsets.only(top: 5),
+        child: Row(
+          children: [
+            Text(
+              title,
+              style: TextStyle(color: secondryColor, fontSize: 19, fontWeight: FontWeight.bold),
+            ),
+            Expanded(child: SizedBox()),
+            url == ""
+                ? SizedBox()
+                : SvgPicture.asset(
+                    url,
+                    width: 35,
+                  ),
+            subtitle == null
+                ? SizedBox()
+                : Text(
+                    subtitle,
+                    style: TextStyle(color: secondryColor, fontSize: 14, fontWeight: FontWeight.bold),
+                  ),
+          ],
+        ));
+  }
+
+  Widget itemOptionProfileOptions(String title, String url, {String? subtitle, Function? onTap}) {
+    return GestureDetector(
+        onTap: () {
+          onTap!();
+        },
+        child: Container(
+            margin: EdgeInsets.only(top: 8),
+            child: Row(
+              children: [
+                SvgPicture.asset(
+                  url,
+                  width: 35,
+                ),
+                SizedBox(
+                  width: 20,
+                ),
+                Text(
+                  title,
+                  style: TextStyle(color: secondryColor, fontSize: 19, fontWeight: FontWeight.bold),
+                ),
+                Expanded(child: SizedBox()),
+                subtitle == null
+                    ? SizedBox()
+                    : Text(
+                        subtitle,
+                        style: TextStyle(color: secondryColor, fontSize: 19, fontWeight: FontWeight.bold),
+                      ),
+              ],
+            )));
   }
 
   Future<void> updateProfile() async {
@@ -157,7 +217,7 @@ class _AccountState extends State<Account> with TickerProviderStateMixin {
     return Scaffold(
       key: scaffoldKey,
       resizeToAvoidBottomInset: false,
-      backgroundColor: Static.dashboardCard,
+      backgroundColor: Colors.white,
       appBar: AppBar(
         iconTheme: const IconThemeData(
           color: Colors.black,
@@ -180,13 +240,14 @@ class _AccountState extends State<Account> with TickerProviderStateMixin {
         ),
       ),
       body: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.only(
-            left: leftPadding,
-            right: rightPadding,
-            bottom: bottomPadding,
-            top: topPadding,
-          ),
+          child: Padding(
+        padding: EdgeInsets.only(
+          left: leftPadding,
+          right: rightPadding,
+          bottom: bottomPadding,
+          top: topPadding,
+        ),
+        child: SingleChildScrollView(
           child: Column(
             children: [
               const SizedBox(height: 30),
@@ -201,6 +262,50 @@ class _AccountState extends State<Account> with TickerProviderStateMixin {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
+                      itemOptionProfile("Mi perfil", "images/icons/profileCircle.svg"),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Container(
+                        width: double.infinity,
+                        height: 0.5,
+                        color: secondryColor,
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Row(
+                        children: [
+                          SvgPicture.asset(
+                            "images/icons/profileCircle.svg",
+                            width: 35,
+                          ),
+                          SizedBox(
+                            width: 20,
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Mi Perfil",
+                                style: TextStyle(color: secondryColor, fontSize: 17),
+                              ),
+                              Text(
+                                "Datos cliente",
+                                style: TextStyle(color: secondryColor, fontSize: 17, fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
+                          Expanded(child: SizedBox()),
+                          Text(
+                            "Datos personales",
+                            style: TextStyle(color: secondryColor, fontSize: 13, fontWeight: FontWeight.normal),
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
                       Padding(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 0,
@@ -293,6 +398,74 @@ class _AccountState extends State<Account> with TickerProviderStateMixin {
                           ),
                         ),
                       ),
+                      SizedBox(
+                        height: 30,
+                      ),
+                      itemOptionProfile("Ajustes", "images/icons/settings.svg"),
+                      SizedBox(
+                        height: 30,
+                      ),
+                      itemOptionProfileOptions("Radio de busqueda", "images/icons/location.svg", subtitle: "13 KM"),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      itemOptionProfileOptions("Ajuste de cuenta", "images/icons/profileCircle.svg", onTap: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => const DeleteAccountPage()));
+                      }),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      itemOptionProfile(
+                        "Eliminar cuenta",
+                        "images/icons/profileCircle.svg",
+                      ),
+                      itemOptionProfile(
+                        "Fecha",
+                        "",
+                        subtitle: "02/05/2023",
+                      ),
+                      itemOptionProfile("Usuario", "", subtitle: "user"),
+                      itemOptionProfile("Estado del usuario", "", subtitle: "Activado"),
+                      SizedBox(
+                        height: 30,
+                      ),
+                      itemOptionProfile("Suspender cuenta", "", subtitle: ""),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      itemOptionProfile("Archivar cuenta", "", subtitle: ""),
+                      SizedBox(
+                        height: 30,
+                      ),
+                      Row(
+                        children: [
+                          Expanded(child: SizedBox()),
+                          SvgPicture.asset(
+                            "images/icons/miprofile7.svg",
+                            width: 30,
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Text(
+                            "LOGOUT",
+                            style: TextStyle(color: secondryColor, fontSize: 20),
+                          ),
+                          Expanded(child: SizedBox()),
+                          SvgPicture.asset(
+                            "images/icons/saved.svg",
+                            width: 30,
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Text(
+                            "Guardar",
+                            style: TextStyle(color: secondryColor, fontSize: 20),
+                          ),
+                          Expanded(child: SizedBox()),
+                        ],
+                      )
                     ],
                   ),
                 ),
@@ -300,7 +473,7 @@ class _AccountState extends State<Account> with TickerProviderStateMixin {
             ],
           ),
         ),
-      ),
+      )),
     );
   }
 

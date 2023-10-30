@@ -10,6 +10,7 @@ import 'package:fullpro/models/userdata.dart';
 import 'package:fullpro/pages/Authentication/register.dart';
 import 'package:fullpro/pages/INTEGRATION/Profile/profile.dart';
 import 'package:fullpro/pages/INTEGRATION/Profile/settings.dart';
+import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
 import 'package:fullpro/pages/language.dart';
 import 'package:fullpro/utils/globalConstants.dart';
 import 'package:fullpro/controller/loader.dart';
@@ -187,7 +188,7 @@ class _ProfileButtonWithBottomSheetState extends State<ProfileButtonWithBottomSh
                                     Navigator.push(context, MaterialPageRoute(builder: (context) => const Account()));
                                     //    Navigator.push(context, MaterialPageRoute(builder: (context) => const Account()));
                                   },
-                                  icon: FeatherIcons.user,
+                                  icon: "images/icons/miprofile1.svg",
                                 ),
 
                                 const Divider(color: Colors.black12),
@@ -198,7 +199,7 @@ class _ProfileButtonWithBottomSheetState extends State<ProfileButtonWithBottomSh
                                     Navigator.pop(context);
                                     Navigator.push(context, MaterialPageRoute(builder: (context) => Profile(currentUser!, isPuchased)));
                                   },
-                                  icon: FeatherIcons.mapPin,
+                                  icon: "images/icons/miprofile2.svg",
                                 ),
 
                                 const Divider(color: Colors.black12),
@@ -208,7 +209,7 @@ class _ProfileButtonWithBottomSheetState extends State<ProfileButtonWithBottomSh
                                     Navigator.pop(context);
                                     Navigator.push(context, MaterialPageRoute(builder: (context) => const Addresses()));
                                   },
-                                  icon: FeatherIcons.mapPin,
+                                  icon: "images/icons/miprofile3.svg",
                                 ),
                                 const Divider(color: Colors.black12),
                                 ProfileButton(
@@ -217,7 +218,7 @@ class _ProfileButtonWithBottomSheetState extends State<ProfileButtonWithBottomSh
                                     Navigator.pop(context);
                                     Navigator.push(context, MaterialPageRoute(builder: (context) => const Language()));
                                   },
-                                  icon: FeatherIcons.globe,
+                                  icon: "images/icons/miprofile4.svg",
                                 ),
                                 // const Divider(color: Colors.black12),
                                 // ProfileButton(
@@ -248,7 +249,7 @@ class _ProfileButtonWithBottomSheetState extends State<ProfileButtonWithBottomSh
                                     //
                                     share();
                                   },
-                                  icon: FeatherIcons.share2,
+                                  icon: "images/icons/miprofile5.svg",
                                 ),
                                 const Divider(color: Colors.black12),
                                 ProfileButton(
@@ -258,7 +259,7 @@ class _ProfileButtonWithBottomSheetState extends State<ProfileButtonWithBottomSh
                                     Loader.page(context, const TermsPage());
                                     //
                                   },
-                                  icon: FeatherIcons.clipboard,
+                                  icon: "images/icons/miprofile6.svg",
                                 ),
                                 const Divider(color: Colors.black12),
                                 ProfileButton(
@@ -267,7 +268,7 @@ class _ProfileButtonWithBottomSheetState extends State<ProfileButtonWithBottomSh
                                     Navigator.pop(context);
                                     Loader.page(context, const AboutPage());
                                   },
-                                  icon: FeatherIcons.info,
+                                  icon: "images/icons/miprofile7.svg",
                                 ),
                                 const Divider(color: Colors.black12),
                                 ProfileButton(
@@ -277,7 +278,7 @@ class _ProfileButtonWithBottomSheetState extends State<ProfileButtonWithBottomSh
                                     _signOut().then((value) => Navigator.of(context)
                                         .pushAndRemoveUntil(MaterialPageRoute(builder: (context) => Register()), (route) => false));
                                   },
-                                  icon: FeatherIcons.logOut,
+                                  icon: "images/icons/miprofile8.svg",
                                 ),
                               ],
                             ),
@@ -344,7 +345,7 @@ class _ProfileButtonWithBottomSheetState extends State<ProfileButtonWithBottomSh
 
 class ProfileButton extends StatelessWidget {
   final String buttonName;
-  final IconData icon;
+  final String icon;
   final Function() onCLicked;
   //
   const ProfileButton({
@@ -358,6 +359,7 @@ class ProfileButton extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(0.0),
       child: MaterialButton(
+        color: Colors.white,
         elevation: 0.0,
         highlightElevation: 0.0,
         onPressed: onCLicked,
@@ -365,18 +367,21 @@ class ProfileButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(12),
         ),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.center,
+          // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //   crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            CircleAvatar(
-              backgroundColor: Static.themeColor[500],
-              child: Icon(
-                icon,
-                color: Colors.white,
-              ),
+            SvgPicture.asset(
+              icon,
+              width: 35,
+              height: 35,
             ),
-            Text(buttonName),
-            const Icon(FeatherIcons.chevronRight),
+            SizedBox(
+              width: 20,
+            ),
+            Text(
+              buttonName,
+              style: TextStyle(color: secondryColor, fontSize: 20, fontWeight: FontWeight.bold),
+            ),
           ],
         ),
       ),
