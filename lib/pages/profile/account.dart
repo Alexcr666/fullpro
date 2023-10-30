@@ -8,6 +8,9 @@ import 'package:fullpro/config.dart';
 import 'package:fullpro/models/userdata.dart';
 import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
 import 'package:fullpro/pages/profile/deleteAccount.dart';
+import 'package:fullpro/pages/profile/portafolio.dart';
+import 'package:fullpro/pages/support.dart';
+import 'package:fullpro/pages/support/support.dart';
 import 'package:fullpro/utils/globalConstants.dart';
 import 'package:fullpro/styles/statics.dart' as Static;
 import 'package:fullpro/utils/userpreferences.dart';
@@ -72,30 +75,34 @@ class _AccountState extends State<Account> with TickerProviderStateMixin {
     }
   }
 
-  Widget itemOptionProfile(String title, String url, {String? subtitle}) {
-    return Container(
-        margin: EdgeInsets.only(top: 5),
-        child: Row(
-          children: [
-            Text(
-              title,
-              style: TextStyle(color: secondryColor, fontSize: 19, fontWeight: FontWeight.bold),
-            ),
-            Expanded(child: SizedBox()),
-            url == ""
-                ? SizedBox()
-                : SvgPicture.asset(
-                    url,
-                    width: 35,
-                  ),
-            subtitle == null
-                ? SizedBox()
-                : Text(
-                    subtitle,
-                    style: TextStyle(color: secondryColor, fontSize: 14, fontWeight: FontWeight.bold),
-                  ),
-          ],
-        ));
+  Widget itemOptionProfile(String title, String url, {String? subtitle, Function? tap}) {
+    return GestureDetector(
+        onTap: () {
+          tap!();
+        },
+        child: Container(
+            margin: EdgeInsets.only(top: 5),
+            child: Row(
+              children: [
+                Text(
+                  title,
+                  style: TextStyle(color: secondryColor, fontSize: 19, fontWeight: FontWeight.bold),
+                ),
+                Expanded(child: SizedBox()),
+                url == ""
+                    ? SizedBox()
+                    : SvgPicture.asset(
+                        url,
+                        width: 35,
+                      ),
+                subtitle == null
+                    ? SizedBox()
+                    : Text(
+                        subtitle,
+                        style: TextStyle(color: secondryColor, fontSize: 14, fontWeight: FontWeight.bold),
+                      ),
+              ],
+            )));
   }
 
   Widget itemOptionProfileOptions(String title, String url, {String? subtitle, Function? onTap}) {
@@ -415,15 +422,12 @@ class _AccountState extends State<Account> with TickerProviderStateMixin {
                       SizedBox(
                         height: 20,
                       ),
-                      itemOptionProfile(
-                        "Eliminar cuenta",
-                        "images/icons/profileCircle.svg",
-                      ),
-                      itemOptionProfile(
-                        "Fecha",
-                        "",
-                        subtitle: "02/05/2023",
-                      ),
+                      itemOptionProfile("Eliminar cuenta", "images/icons/profileCircle.svg", tap: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => const SupportAppPage()));
+                      }),
+                      itemOptionProfile("Fecha", "", subtitle: "02/05/2023", tap: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => const PortafolioPage()));
+                      }),
                       itemOptionProfile("Usuario", "", subtitle: "user"),
                       itemOptionProfile("Estado del usuario", "", subtitle: "Activado"),
                       SizedBox(

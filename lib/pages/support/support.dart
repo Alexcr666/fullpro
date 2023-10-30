@@ -22,9 +22,9 @@ import 'package:fullpro/pages/homepage.dart';
 import 'package:fullpro/widgets/widget.dart';
 
 
-class DeleteAccountPage extends StatefulWidget {
+class SupportAppPage extends StatefulWidget {
 
-  const DeleteAccountPage({Key? key}) : super(key: key);
+  const SupportAppPage({Key? key}) : super(key: key);
 
 
   //static const String id = 'TermsPage';
@@ -32,12 +32,12 @@ class DeleteAccountPage extends StatefulWidget {
 
   @override
 
-  State<DeleteAccountPage> createState() => _DeleteAccountPageState();
+  State<SupportAppPage> createState() => _SupportAppPageState();
 
 }
 
 
-class _DeleteAccountPageState extends State<DeleteAccountPage> {
+class _SupportAppPageState extends State<SupportAppPage> {
 
   Widget item1(String url, String title, String subtitle) {
 
@@ -175,13 +175,15 @@ class _DeleteAccountPageState extends State<DeleteAccountPage> {
               ),
 
 
-              Container(
+              Row(
 
-                  margin: EdgeInsets.only(left: 50, right: 50),
+                children: [
 
-                  child: Text(
+                  Container(
 
-                    "Eliminar cuenta",
+                      child: Text(
+
+                    "Soporte",
 
                     style: TextStyle(
 
@@ -195,59 +197,21 @@ class _DeleteAccountPageState extends State<DeleteAccountPage> {
 
                   )),
 
+                  Expanded(child: SizedBox()),
 
-              SizedBox(
+                  Container(
 
-                height: 30,
+                      width: 40,
 
-              ),
+                      height: 40,
 
+                      decoration: BoxDecoration(shape: BoxShape.circle, color: secondryColor),
 
-              SvgPicture.asset(
+                      child: SvgPicture.asset("images/icons/add.svg")),
 
-                "images/icons/profileCircle.svg",
-
-                width: 80,
-
-              ),
-
-
-              SizedBox(
-
-                height: 20,
+                ],
 
               ),
-
-
-              Text(
-
-                "¿Desactivar la cuenta en lugar de eliminarla?",
-
-                textAlign: TextAlign.center,
-
-                style: TextStyle(
-
-                  color: secondryColor,
-
-                  fontSize: 20,
-
-                  fontWeight: FontWeight.bold,
-
-                ),
-
-              ),
-
-
-              SizedBox(
-
-                height: 50,
-
-              ),
-
-
-              item1("images/icons/eye.svg", "La desactivación de la cuenta es temporal",
-
-                  "Se ocultara el perfil,las fotos,los comentarios y los datos personales"),
 
 
               SizedBox(
@@ -257,29 +221,110 @@ class _DeleteAccountPageState extends State<DeleteAccountPage> {
               ),
 
 
-              item1("images/icons/delete.svg", "La eliminación de la cuenta es definitiva",
+              Row(
 
-                  "se eliminara el perfil,las fotos,los comentarios y los datos personales")
+                children: [
+
+                  SvgPicture.asset(
+
+                    "images/icons/profileCircle.svg",
+
+                    width: 30,
+
+                  ),
+
+                  SizedBox(
+
+                    width: 20,
+
+                  ),
+
+                  Container(
+
+                      child: Row(
+
+                    children: [
+
+                      Text(
+
+                        "Creación de",
+
+                        style: TextStyle(
+
+                          color: secondryColor,
+
+                          fontSize: 20,
+
+                        ),
+
+                      ),
+
+                      SizedBox(
+
+                        width: 10,
+
+                      ),
+
+                      Text(
+
+                        "solicitud",
+
+                        style: TextStyle(
+
+                          color: secondryColor,
+
+                          fontSize: 20,
+
+                          fontWeight: FontWeight.bold,
+
+                        ),
+
+                      )
+
+                    ],
+
+                  )),
+
+                ],
+
+              ),
 
 
-              /*Text(
+              SizedBox(
 
-                '$appName ${Locales.string(context, 'lbl_terms_para_one')}',
+                height: 30,
 
-                style: const TextStyle(
-
-                  fontSize: 14,
-
-                  fontFamily: 'Roboto-Regular',
-
-                ),
-
-                textAlign: TextAlign.center,
-
-              ),*/
+              ),
 
 
-              ,
+              SizedBox(height: 10),
+
+
+              AppWidget().texfieldFormat(title: "Nombre de usuario", urlIcon: "images/icons/support1.svg"),
+
+
+              SizedBox(height: 10),
+
+
+              AppWidget().texfieldFormat(title: "Teléfono de contacto", urlIcon: "images/icons/support2.svg"),
+
+
+              SizedBox(height: 10),
+
+
+              AppWidget().texfieldFormat(title: "Fecha de solicitud", urlIcon: "images/icons/support3.svg"),
+
+
+              SizedBox(height: 10),
+
+
+              AppWidget().texfieldFormat(title: "Descripción", urlIcon: "images/icons/support4.svg"),
+
+
+              SizedBox(height: 10),
+
+
+              AppWidget().texfieldFormat(title: "Estado de solicitud", urlIcon: "images/icons/support5.svg"),
 
 
               SizedBox(height: 30),
@@ -291,40 +336,17 @@ class _DeleteAccountPageState extends State<DeleteAccountPage> {
               //
 
 
-              const SizedBox(height: 90),
-
-
               Container(
 
 
                   //   margin: EdgeInsets.only(left: 70, right: 70),
 
 
-                  child: AppWidget().buttonForm(context, "Desactivar la cuenta", tap: () {
+                  child: AppWidget().buttonForm(context, "Enviar", tap: () {
 
                 Loader.PagewithHome(context, const kHomePage());
 
               })),
-
-
-              const SizedBox(height: 30),
-
-
-              Text(
-
-                "Eliminar cuenta",
-
-                textAlign: TextAlign.center,
-
-                style: TextStyle(
-
-                  color: secondryColor,
-
-                  fontSize: 20,
-
-                ),
-
-              ),
 
             ],
 

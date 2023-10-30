@@ -4,6 +4,9 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 
 
+import 'package:flutter/services.dart';
+
+
 import 'package:flutter/widgets.dart';
 
 
@@ -24,23 +27,258 @@ import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
 
 class AppWidget {
 
+  Widget texfieldFormat(
+
+      {String? title,
+
+      TextEditingController? controller,
+
+      bool? password,
+
+      bool? enabled,
+
+      String? urlIcon,
+
+      Color? colorBackground,
+
+      bool? number,
+
+      String? suffix,
+
+      bool? noRequired,
+
+      Function? execute,
+
+      bool? float}) {
+
+    bool _passwordVisible = true;
+
+
+    return Container(
+
+        color: Colors.white,
+
+
+        /*decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(15),
+          ),*/
+
+
+        // padding: EdgeInsets.symmetric(horizontal: 8),
+
+
+        /*  decoration: BoxDecoration(
+            border: Border.all(color: Color(0xffE8E8E8)),
+            borderRadius: BorderRadius.all(
+              Radius.circular(10),
+            ),
+          ),*/
+
+
+        //    height: 34.sp,
+
+
+        margin: EdgeInsets.only(top: 5),
+
+        child: TextFormField(
+
+          inputFormatters: number == null ? null : <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly],
+
+          enabled: enabled == true ? false : true,
+
+          controller: controller,
+
+          onChanged: (text) {
+
+            execute!();
+
+          },
+
+          obscureText: password != true ? false : _passwordVisible,
+
+          decoration: InputDecoration(
+
+            enabledBorder: OutlineInputBorder(
+
+
+                // width: 0.0 produces a thin "hairline" border
+
+
+                borderSide: BorderSide(color: secondryColor, width: 1.0),
+
+                borderRadius: BorderRadius.circular(11)),
+
+
+            border: OutlineInputBorder(borderSide: BorderSide(color: primaryColor, width: 1.0), borderRadius: BorderRadius.circular(10)),
+
+
+            contentPadding: const EdgeInsets.symmetric(vertical: 3.0, horizontal: 10.0),
+
+
+            labelText: title,
+
+
+            fillColor: Colors.white,
+
+
+            errorStyle: TextStyle(height: 0.3),
+
+
+            prefixIconConstraints: BoxConstraints(maxHeight: 0),
+
+
+            filled: true,
+
+
+            labelStyle: TextStyle(color: secondryColor, fontSize: 14),
+
+
+            //   border: InputBorder.none,
+
+
+            /*  focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.0),
+                borderSide: BorderSide(
+                  color: AppColors.green,
+                ),
+              ),*/
+
+
+            suffixIcon: IconButton(
+
+              icon: urlIcon != null
+
+                  ? SvgPicture.asset(
+                      urlIcon.toString(),
+                      width: 25,
+                    )
+
+                  : Icon(
+
+                      // Based on passwordVisible state choose the icon
+
+
+                      _passwordVisible == false ? Icons.remove_red_eye_outlined : Icons.visibility_off_outlined,
+
+
+                      color: password != true ? Colors.transparent : Colors.grey,
+
+                    ),
+
+              onPressed: () {
+
+                // Update the state i.e. toogle the state of passwordVisible variable
+
+
+                // setState(() {
+
+
+                // _passwordVisible = !_passwordVisible;
+
+
+                //});
+
+              },
+
+            ),
+
+
+            /*  focusedErrorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.0),
+                borderSide: BorderSide(
+                  color: Colors.red,
+                  width: 1.0,
+                ),
+              ),
+              errorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.0),
+                borderSide: BorderSide(
+                  color: Colors.red,
+                  width: 1.0,
+                ),
+              ),
+              disabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.0),
+                borderSide: BorderSide(
+                  color: AppColors.greyTextField2,
+                ),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.0),
+                borderSide: BorderSide(
+                  color: AppColors.greyTextField2,
+                ),
+              ),*/
+
+          ),
+
+          validator: (val) {
+
+            if (noRequired == true) {
+
+              return null;
+
+            } else {
+
+              if (val!.length == 0) {
+
+                return "Campo obligatorio";
+
+              } else {
+
+                return null;
+
+              }
+
+            }
+
+          },
+
+          keyboardType: float == true
+
+              ? TextInputType.numberWithOptions(decimal: true)
+
+              : number != null
+
+                  ? TextInputType.number
+
+                  : TextInputType.emailAddress,
+
+        ));
+
+  }
+
+
   boxShandowGrey() {
 
     return BoxDecoration(
+
       color: Colors.white,
+
       borderRadius: BorderRadius.only(
+
           topLeft: Radius.circular(30), topRight: Radius.circular(30), bottomLeft: Radius.circular(30), bottomRight: Radius.circular(30)),
+
       boxShadow: [
+
         BoxShadow(
+
           color: secondryColor.withOpacity(0.1),
+
 
           spreadRadius: 3,
 
+
           blurRadius: 3,
 
+
           offset: Offset(0, 3), // changes position of shadow
+
         ),
+
       ],
+
     );
 
   }
