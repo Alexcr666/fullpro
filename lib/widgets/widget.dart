@@ -13,6 +13,9 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/svg.dart';
 
 
+import 'package:fullpro/PROFESIONAL/views/Authentication/loginpage.dart';
+
+
 import 'package:fullpro/pages/Authentication/registerationpage.dart';
 
 
@@ -26,6 +29,23 @@ import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
 
 
 class AppWidget {
+
+  borderColor() {
+
+    return BoxDecoration(
+
+      borderRadius: BorderRadius.circular(12),
+
+
+      border: Border.all(color: secondryColor),
+
+
+      //  color: secondryColor,
+
+    );
+
+  }
+
 
   Widget texfieldFormat(
 
@@ -150,8 +170,13 @@ class AppWidget {
               icon: urlIcon != null
 
                   ? SvgPicture.asset(
+
                       urlIcon.toString(),
+
+                      color: secondryColor,
+
                       width: 25,
+
                     )
 
                   : Icon(
@@ -284,6 +309,138 @@ class AppWidget {
   }
 
 
+  boxShandowGreyRectangule() {
+
+    return BoxDecoration(
+
+      color: Colors.white,
+
+      borderRadius: BorderRadius.only(
+
+          topLeft: Radius.circular(10), topRight: Radius.circular(10), bottomLeft: Radius.circular(10), bottomRight: Radius.circular(10)),
+
+      boxShadow: [
+
+        BoxShadow(
+
+          color: secondryColor.withOpacity(0.1),
+
+
+          spreadRadius: 3,
+
+
+          blurRadius: 3,
+
+
+          offset: Offset(0, 3), // changes position of shadow
+
+        ),
+
+      ],
+
+    );
+
+  }
+
+
+  buttonShandowActive(String title, bool active, {Function? tap}) {
+
+    return GestureDetector(
+
+        onTap: () {
+
+          tap!();
+
+        },
+
+        child: Container(
+
+          height: 40,
+
+          child: Center(
+
+              child: Text(
+
+            title,
+
+            style: TextStyle(color: active ? Colors.white : secondryColor, fontSize: 13),
+
+          )),
+
+          decoration: active
+
+              ? BoxDecoration(
+
+                  borderRadius: BorderRadius.only(
+
+                      topLeft: Radius.circular(30),
+
+                      topRight: Radius.circular(30),
+
+                      bottomLeft: Radius.circular(30),
+
+                      bottomRight: Radius.circular(30)),
+
+                  gradient: LinearGradient(
+
+                      colors: [
+
+                        primaryColor,
+
+                        secondryColor,
+
+                      ],
+
+                      begin: const FractionalOffset(0.0, 1.0),
+
+                      end: const FractionalOffset(0.0, 0.0),
+
+                      stops: [0.0, 1.0],
+
+                      tileMode: TileMode.clamp),
+
+                )
+
+              : BoxDecoration(
+
+                  color: Colors.white,
+
+                  borderRadius: BorderRadius.only(
+
+                      topLeft: Radius.circular(30),
+
+                      topRight: Radius.circular(30),
+
+                      bottomLeft: Radius.circular(30),
+
+                      bottomRight: Radius.circular(30)),
+
+                  boxShadow: [
+
+                    BoxShadow(
+
+                      color: secondryColor.withOpacity(0.1),
+
+
+                      spreadRadius: 3,
+
+
+                      blurRadius: 3,
+
+
+                      offset: Offset(0, 3), // changes position of shadow
+
+                    ),
+
+                  ],
+
+                ),
+
+        ));
+
+  }
+
+
   buttonShandow(String title) {
 
     return Container(
@@ -330,6 +487,74 @@ class AppWidget {
       ),
 
     );
+
+  }
+
+
+  buttonShandowRounded(String title, bool active, {Function? tap}) {
+
+    return GestureDetector(
+
+        onTap: () {
+
+          tap!();
+
+        },
+
+        child: Container(
+
+          height: 35,
+
+          child: Container(
+
+              padding: EdgeInsets.only(left: 20, right: 20),
+
+              child: Center(
+
+                  child: Text(
+
+                title,
+
+                style: TextStyle(color: active == false ? Colors.white : secondryColor, fontSize: 13),
+
+              ))),
+
+          decoration: BoxDecoration(
+
+            color: active ? Colors.white : secondryColor,
+
+            borderRadius: BorderRadius.only(
+
+                topLeft: Radius.circular(20),
+
+                topRight: Radius.circular(20),
+
+                bottomLeft: Radius.circular(20),
+
+                bottomRight: Radius.circular(20)),
+
+            boxShadow: [
+
+              BoxShadow(
+
+                color: secondryColor.withOpacity(0.1),
+
+
+                spreadRadius: 3,
+
+
+                blurRadius: 3,
+
+
+                offset: Offset(0, 3), // changes position of shadow
+
+              ),
+
+            ],
+
+          ),
+
+        ));
 
   }
 
@@ -393,7 +618,42 @@ class AppWidget {
 
             child: Text(
 
-              "Create new account",
+              "Create new account user",
+
+              style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+
+            ),
+
+          ),
+
+        ),
+
+        SizedBox(
+
+          height: 50.0,
+
+          width: double.infinity,
+
+          child: TextButton(
+
+            onPressed: () async {
+
+              Navigator.push(
+
+                context,
+
+                MaterialPageRoute(builder: (context) => LoginPageProfesional()),
+
+              );
+
+
+              //    Navigator.pushNamedAndRemoveUntil(context, RegistrationPage.id, (route) => false);
+
+            },
+
+            child: Text(
+
+              "Create new account profesional",
 
               style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
 
@@ -580,6 +840,87 @@ class AppWidget {
               title,
 
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+
+            ),
+
+          ),
+
+        ),
+
+      ),
+
+    );
+
+  }
+
+
+  buttonFormLine(BuildContext context, String title, bool active, {Function? tap}) {
+
+    return Padding(
+
+      padding: EdgeInsets.only(
+
+        right: 0,
+
+        left: 00,
+
+      ),
+
+      child: SizedBox(
+
+        width: double.infinity,
+
+        child: ElevatedButton(
+
+          onPressed: () async {
+
+            /* var connectivityResult = await (Connectivity().checkConnectivity());
+                        if (connectivityResult != ConnectivityResult.wifi && connectivityResult != ConnectivityResult.mobile) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                Locales.string(context, 'error_no_internet'),
+                              ),
+                            ),
+                          );
+                          return;
+                        }*/
+
+
+            tap!();
+
+
+            //
+
+          },
+
+          style: ButtonStyle(
+
+            foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+
+            backgroundColor: MaterialStateProperty.all<Color>(active ? Colors.white : secondryColor),
+
+            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+
+              active == false
+
+                  ? RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))
+
+                  : RoundedRectangleBorder(borderRadius: BorderRadius.circular(12), side: BorderSide(color: secondryColor, width: 3)),
+
+            ),
+
+          ),
+
+          child: Padding(
+
+            padding: const EdgeInsets.all(14.0),
+
+            child: Text(
+
+              title,
+
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: active == false ? Colors.white : secondryColor),
 
             ),
 

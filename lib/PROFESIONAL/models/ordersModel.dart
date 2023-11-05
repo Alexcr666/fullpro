@@ -1,0 +1,143 @@
+// ignore_for_file: file_names
+
+import 'package:firebase_database/firebase_database.dart';
+
+class OrdersProfesionalModel {
+  String? key;
+  String? partnerID;
+  String? itemsNames;
+  String? address;
+  String? bookforDate;
+  String? bookforTime;
+  String? bookerToken;
+  String? orderNumber;
+  String? createdAt;
+  String? status;
+  String? totalprice;
+  String? partner;
+
+  // Item Info
+  String? image;
+  String? quantity;
+  String? name;
+  String? price;
+  String? discount;
+  String? chargemod;
+  String? rating;
+
+  OrdersProfesionalModel({
+    required this.key,
+    required this.partnerID,
+    required this.itemsNames,
+    required this.address,
+    required this.bookforDate,
+    required this.bookforTime,
+    required this.createdAt,
+    required this.status,
+    required this.totalprice,
+    required this.partner,
+    required this.bookerToken,
+    required this.orderNumber,
+
+    // Item Info
+    required this.image,
+    required this.quantity,
+    required this.name,
+    required this.price,
+    required this.discount,
+    required this.chargemod,
+    required this.rating,
+  });
+
+  OrdersProfesionalModel.fromSnapshot(DataSnapshot snapshot) {
+    key = snapshot.key;
+    partnerID = snapshot.child('partnerID').value.toString();
+    itemsNames = snapshot
+        .child('itemsNames')
+        .value
+        .toString()
+        .replaceAll(']', '')
+        .replaceAll('[', '')
+        // AC Services
+        .replaceAll('ac_installation', 'Air')
+        .replaceAll('electrical_wiring', 'Air Wiring')
+        .replaceAll('ac_dismounting', 'Air')
+        .replaceAll('ac_master_services', 'Air')
+        .replaceAll('ac_mounting_and_dismounting', 'Air')
+        .replaceAll('ac_reparing', 'Air')
+        .replaceAll('fan_dimmer_switch_installation', 'Air')
+        .replaceAll('mixer_tap_installation', 'Air')
+        .replaceAll('single_phase_breaker_replacement', 'Air')
+        .replaceAll('sofa_cleaning', 'Air')
+        .replaceAll('ups_installation_wo_wiring', 'Air')
+        // Carpenter
+        .replaceAll('catcher_replacement', 'Carpenter')
+        .replaceAll('drawer_lock_installation', 'Carpenter')
+        .replaceAll('drawer_repairing', 'Carpenter')
+        .replaceAll('room_door_lock_installation', 'Carpenter')
+        .replaceAll('carpenter_work', 'Carpenter')
+        // Carpenter
+        .replaceAll('5_seater_sofa_set_cleaning', 'Cleaning')
+        .replaceAll('6_seater_sofa_set_cleaning', 'Cleaning')
+        .replaceAll('7_seater_set_cleaning', 'Cleaning')
+        .replaceAll('carpet_cleaning', 'Cleaning')
+        .replaceAll('chair_cleaning', 'Cleaning')
+        .replaceAll('double_mattress_cleaning', 'Cleaning')
+        .replaceAll('single_mattress_cleaning', 'Cleaning')
+        .replaceAll('single_sofa_cleaning', 'Cleaning')
+        // Electrician
+        .replaceAll('32_42_inch_led_tv_mounting', 'Electrician')
+        .replaceAll('43_65_inch_led_tv_mounting', 'Electrician')
+        .replaceAll('ceiling_fan_isntallation', 'Electrician')
+        .replaceAll('smd_lights_installation', 'Electrician')
+        .replaceAll('switchboard_button_replacement', 'Electrician')
+        .replaceAll('change_over_switch_installation', 'Electrician')
+        .replaceAll('pressure_motor_installation', 'Electrician')
+        .replaceAll('single_phase_breaker_replacement', 'Electrician')
+        .replaceAll('single_phase_distribution_box_installation', 'Electrician')
+        .replaceAll('water_tank_automatic_switch_installation', 'Electrician')
+        .replaceAll('manual_washing_machine_repairing', 'Electrician')
+        .replaceAll('fan_dimmer_switch_installation', 'Electrician')
+        .replaceAll('ups_repairing', 'Electrician')
+        .replaceAll('ups_installation_wo_wiring', 'Electrician')
+        .replaceAll('exhaust_fan_installation', 'Electrician')
+        .replaceAll('new_house_wiring', 'Electrician')
+        .replaceAll('electrical_wiring', 'Electrician')
+        .replaceAll('house_electric_work', 'Electrician')
+        .replaceAll('door_piller_lights', 'Electrician')
+        .replaceAll('fancy_light_installation_wo_wiring', 'Electrician')
+        .replaceAll('ups_wiring', 'Electrician')
+        .replaceAll('led_tv_dismounting', 'Electrician')
+        .replaceAll('kitchen_hood_rpairing', 'Electrician')
+        .replaceAll('automatic_washing_machine_repairing', 'Electrician')
+        .replaceAll('kitchen_hood_installation', 'Electrician')
+        .replaceAll('fancy_light_installation_with_wiring', 'Electrician')
+        .replaceAll('smd_lights_installation_with_wiring', 'Electrician')
+        .replaceAll('switchboard_socket_replacement', 'Electrician')
+        .replaceAll('power_plug_wo_wiring', 'Electrician')
+        .replaceAll('power_plug_with_wiring', 'Electrician')
+        .replaceAll('light_plug_wo_wiring', 'Electrician')
+        .replaceAll('ceiling_fan_repairing', 'Electrician');
+
+    // itemsNames = snapshot.child('itemsNames').value.toString();
+
+    address = snapshot.child('address').value.toString();
+    bookforDate = snapshot.child('bookforDate').value.toString();
+    bookforTime = snapshot.child('bookforTime').value.toString();
+    createdAt = snapshot.child('createdAt').value.toString();
+    status = snapshot.child('status').value.toString();
+    totalprice = snapshot.child('totalprice').value.toString();
+    partner = snapshot.child('partnerID').value.toString();
+    bookerToken = snapshot.child('booker_token').value.toString();
+    orderNumber = snapshot.child('order_number').value.toString();
+
+    // Item Info
+    image = snapshot.child('serviceImage').value.toString();
+    quantity = snapshot.child('quantity').value.toString();
+    name = snapshot.child('serviceName').value.toString();
+    price = snapshot.child('servicePrice').value.toString();
+    discount = snapshot.child('serviceDiscount').value.toString();
+    chargemod = snapshot.child('servicechargemod').value.toString();
+    rating = snapshot.child('serviceRating').value.toString();
+  }
+}

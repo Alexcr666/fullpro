@@ -1,5 +1,4 @@
 {
-
     "lang_english": "English",
     "lang_arabic": "Arabic",
     "lang_afrikaans": "Afrikaans",
@@ -20,13 +19,11 @@
     "lang_vietnamese": "Vietnamese",
     "lang_hebrew": "Hebrew",
     "lang_thai": "Thai",
-
     "lbl_welcome": "Welcome",
     "lbl_home_care": "Home Care",
     "lbl_service_provider": "Service Provider",
     "lbl_app_description": "Connecting customers and technicians for quick, safe, and affordable bookings.",
     "lbl_skip": "Skip",
-
     "lbl_create_free_account": "Create a free Account",
     "lbl_lets_get_started": "Let's get started!",
     "lbl_get_started": "Get Started!",
@@ -65,17 +62,13 @@
     "error_undefined": "An undefined Error happened.",
     "error_email_already_in_use": "This email is already being used.",
     "error_contact_can_not_be_empty": "Contact number can't be empty",
-
-
     "title_trending": "All Trending Services",
     "lbl_services": "Services",
     "lbl_recommended": "Recommended",
     "lbl_booking_for": "Booking For:",
     "lbl_status": "Status:",
-
     "lbl_morning": "Good Morning",
     "lbl_evening": "Good Evening",
-
     "srvs_ac_services": "Ac Services",
     "srvs_cleaning": "Cleaning",
     "srvs_geyser": "Geyser",
@@ -85,7 +78,6 @@
     "srvs_painter": "Painter",
     "srvs_plumber": "Plumber",
     "srvs_handyman": "Handyman",
-
     "lbl_account": "Account",
     "lbl_name": "Name",
     "lbl_phone": "Phone",
@@ -94,10 +86,8 @@
     "hint_enter_phone_number": "Enter Phone Number",
     "war_phone_can_not_change": "Phone Number Can not be Changed",
     "lbl_update_profile": "Update Profile",
-
     "lbl_get_help": "Get Help",
     "lbl_help_text": "We are here to help so please get in touch with us.",
-
     "lbl_address": "Address",
     "lbl_select_address_to_use": "Select Address to use for Booking!",
     "lbl_current_address": "Current Address",
@@ -113,7 +103,6 @@
     "lbl_country": "Country",
     "lbl_state": "State",
     "lbl_city": "City",
-
     "lbl_about": "About",
     "lbl_about_heading_one": "Who Are We?",
     "lbl_about_heading_two": "What We Do?",
@@ -121,7 +110,6 @@
     "lbl_about_para_one": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed tempor a sem a ultricies. Fusce ut commodo urna, in suscipit velit. Nam rutrum erat a augue molestie semper. Phasellus porttitor hendrerit mauris non suscipit. Morbi nibh elit, tincidunt a dolor in, malesuada eleifend elit. Aenean sed metus egestas, suscipit libero in, malesuada felis. Nam leo enim, convallis sed porta non.",
     "lbl_about_para_two": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed tempor a sem a ultricies. Fusce ut commodo urna, in suscipit velit. Nam rutrum erat a augue molestie semper. Phasellus porttitor hendrerit mauris non suscipit. Morbi nibh elit, tincidunt a dolor in, malesuada eleifend elit. Aenean sed metus egestas, suscipit libero in, malesuada felis. Nam leo enim, convallis sed porta non.",
     "lbl_about_para_three": "vitae laoreet lacus. Integer tristique mattis imperdiet. Curabitur ut justo sit amet nisl feugiat dictum eget vel enim. Nunc quis metus at lacus feugiat efficitur. Proin mi est, pellentesque vel luctus volutpat, molestie eget ligula. In eleifend, augue at molestie aliquet, augue lacus maximus ex, vel consequat enim lorem facilisis felis. Vestibulum eu neque ac dui fringilla molestie. Duis nisl ante, tincidunt id leo at, sollicitudin vehicula sem.",
-
     "lbl_terms_and_conditions": "Terms & Conditions",
     "lbl_terms_heading_one": "User Agreement",
     "lbl_terms_heading_two": "Scope of Services",
@@ -129,13 +117,11 @@
     "lbl_terms_para_one": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed tempor a sem a ultricies. Fusce ut commodo urna, in suscipit velit. Nam rutrum erat a augue molestie semper. Phasellus porttitor hendrerit mauris non suscipit. Morbi nibh elit, tincidunt a dolor in, malesuada eleifend elit. Aenean sed metus egestas, suscipit libero in, malesuada felis. Nam leo enim, convallis sed porta non.",
     "lbl_terms_para_two": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed tempor a sem a ultricies. Fusce ut commodo urna, in suscipit velit. Nam rutrum erat a augue molestie semper. Phasellus porttitor hendrerit mauris non suscipit. Morbi nibh elit, tincidunt a dolor in, malesuada eleifend elit. Aenean sed metus egestas, suscipit libero in, malesuada felis. Nam leo enim, convallis sed porta non.",
     "lbl_terms_para_three": "vitae laoreet lacus. Integer tristique mattis imperdiet. Curabitur ut justo sit amet nisl feugiat dictum eget vel enim. Nunc quis metus at lacus feugiat efficitur. Proin mi est, pellentesque vel luctus volutpat, molestie eget ligula. In eleifend, augue at molestie aliquet, augue lacus maximus ex, vel consequat enim lorem facilisis felis. Vestibulum eu neque ac dui fringilla molestie. Duis nisl ante, tincidunt id leo at, sollicitudin vehicula sem.",
-
     "lbl_language": "Language",
     "lbl_invite_friends": "Invite Friends",
     "lbl_logout": "Logout",
     "lbl_learn_more": "Learn More",
     "lbl_go_home": "Go Home",
-
     "error_no_internet": "No Internet Connection",
     "lbl_select_once": "You Can Only Select This Service Once",
     "lbl_cart_full": "Cart Full - Checkout",
@@ -163,17 +149,14 @@
     "error_empty_cart": "Empty Cart",
     "lbl_remove_all": "Remove All",
     "lbl_items_list": "Items List",
-
     "cancel_reason_one": "I don't need this service anymore",
     "cancel_reason_two": "I am not comfortable with assigned Partner",
     "cancel_reason_three": "I am taking a break",
-
     "lbl_partner_assigned": "Partner Has Been Assigned!",
     "lbl_partner_declined": "Assigned Partner has Declined the order!",
     "lbl_new_partner_will_be_assigned": "New Partner Will Be Assigned Soon!",
     "lbl_order_number": "Order Number:",
     "lbl_check_orders": "Check Orders",
-
     "lbl_active": "Active",
     "lbl_completed": "Completed",
     "lbl_canceled": "Canceled",
@@ -207,8 +190,59 @@
     "lbl_thank_for_order": "Thank You for using Our Service",
     "lbl_order_placed": "Order Placed Successfully!",
     "error_try_again": "Please Try Again",
-
-
-
-    "title_language": "Select Language"
+    "title_language": "Select Language",
+    "lbl_home": "Home",
+    "lbl_list": "List",
+    "lbl_profile": "Profile",
+    "lbl_offline": "Offline",
+    "lbl_online": "Online",
+    "lbl_current_vendor_status": "Current Vendor Status!",
+    "lbl_view_all": "View All",
+    "lbl_overview": "Overview",
+    "lbl_total_orders": "Total Orders",
+    "lbl_earnings": "Earnings",
+    "lbl_wallet": "Wallet",
+    "lbl_current_earnings": "Current Earnings",
+    "lbl_payment_successful": "Payment Successfull",
+    "lbl_pay_to_admin": "Pay to Admin",
+    "lbl_how_to_pay": "How To Pay",
+    "lbl_payment_step_one": "- Click Bellow Button",
+    "lbl_payment_step_two": "- Enter Your Depit/Credit Card info",
+    "lbl_payment_step_three": "- Click Pay",
+    "lbl_payment_step_four": "- Done",
+    "warn_account_on_hold": "Account is on Hold",
+    "warn_pay_now_for_more_orders": "Pay Now To Get More Orders",
+    "warn_due_balance_exceed": "Current Due Balance is exceed the limit of",
+    "lbl_select_category": "Select Category",
+    "lbl_category_added": "Category Added!",
+    "lbl_category_not_available": "This Category Is Not Available!",
+    "lbl_select_category_first": "Select a Category First",
+    "lbl_confirm ": "Confirm",
+    "lbl_success": "Success",
+    "lbl_next": "Next",
+    "lbl_orders_list": "Orders List",
+    "lbl_orders": "Orders",
+    "lbl_accept": "Accept",
+    "lbl_decline": "Decline",
+    "lbl_new": "New",
+    "lbl_request": "Request",
+    "lbl_timeout": "timeout",
+    "lbl_order_been_assigned": "Order Has Been Assigned",
+    "lbl_order_been_canceled": "Order Already Been Canceled",
+    "lbl_order_timedout": "Order Already Timed Out",
+    "lbl_order_accepted_by_other_user": "Order Already Accepted By Other Parnter",
+    "lbl_are_you_sure_to_decline": "Are Sure You Want to Decline This Order?",
+    "lbl_are_you_sure_to_accept": "Are Sure You Want to Accept This Order?",
+    "lbl_are_you_sure_to_finish": "Are You Sure You Want To Finish?",
+    "lbl_accept_order": "Accept Order",
+    "lbl_decline_order": "Decline Order",
+    "lbl_finish_work": "Finish Work",
+    "lbl_request_payment": "Request Payment",
+    "lbl_order_completed": "Order Completed",
+    "lbl_send_request_for_payment": "Send Request To Collect Payment?",
+    "lbl_order_declined": "Order Declined Successfully!",
+    "lbl_order_finished": "Order Finished Successfully!",
+    "lbl_as_for_payment": "Ask User to Pay the Amount!",
+    "lbl_payment_request_sent": "Payment Request Sent Successfully",
+    "lbl_keep_the_app_running": "Keep the app running for more orders"
 }

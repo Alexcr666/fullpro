@@ -646,8 +646,8 @@ class _ProfileState extends State<Profile> {
                     child: Center(
                         child: Text(
                       widget.isPuchased && widget.purchases != null
-                          ? "Check Payment Details".tr().toString()
-                          : "Subscribe Plan".tr().toString(),
+                          ? "Check Payment Details".toString()
+                          : "Subscribe Plan".toString(),
                       style: TextStyle(
                           fontSize: 15,
                           color: textColor,

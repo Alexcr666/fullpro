@@ -109,7 +109,7 @@ class _NotificationsState extends State<Notifications> {
         //   title: Text(
 
 
-        //     'Notifications'.tr().toString(),
+        //     'Notifications'.toString(),
 
 
         //     style: TextStyle(
@@ -350,7 +350,7 @@ class _NotificationsState extends State<Notifications> {
                                           //title: Text(
 
 
-                                          //    "you are matched with ${doc.data['userName'] ?? "__"}".tr().toString()),
+                                          //    "you are matched with ${doc.data['userName'] ?? "__"}".toString()),
 
 
                                           title: Text(

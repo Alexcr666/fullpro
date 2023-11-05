@@ -2,6 +2,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:flutter_locales/flutter_locales.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
+import 'package:fullpro/widgets/widget.dart';
 import 'package:provider/provider.dart';
 import 'package:fullpro/animation/fadeTop.dart';
 import 'package:fullpro/config.dart';
@@ -27,6 +31,7 @@ class subServicePage extends StatefulWidget {
 }
 
 class _subServicePageState extends State<subServicePage> {
+  TextEditingController search = TextEditingController();
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   var refreshKey = GlobalKey<RefreshIndicatorState>();
   Timer? timer;
@@ -82,9 +87,9 @@ class _subServicePageState extends State<subServicePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Static.dashboardCard,
+      backgroundColor: Colors.white,
       bottomNavigationBar: UserPreferences.getcartStatus() == 'full' || cartStatus == 'full' ? const CartBottomButton() : const SizedBox(),
-      appBar: AppBar(
+      /*  appBar: AppBar(
         centerTitle: false,
         automaticallyImplyLeading: false,
         elevation: .8,
@@ -120,11 +125,12 @@ class _subServicePageState extends State<subServicePage> {
                 ),
               ],
             ),
-            const SizedBox(height: 5),
-            SizedBox(
+
+            /*   SizedBox(
               height: 50,
               child: TextField(
                 onChanged: (value) => onSearch(value),
+                
                 decoration: InputDecoration(
                   filled: true,
                   focusedBorder: OutlineInputBorder(
@@ -142,143 +148,321 @@ class _subServicePageState extends State<subServicePage> {
                     fontSize: 14,
                     color: Static.colorTextLight,
                   ),
-                  hintText: Locales.string(context, 'lbl_search'),
+                  hintText: Locales.string(context, 'lbl_search') ,
                 ),
               ),
-            ),
+            ),*/
           ],
         ),
-      ),
+      ),*/
       body: SafeArea(
         child: Padding(
-          padding: EdgeInsets.only(
-            left: leftPadding,
-            right: rightPadding,
-            bottom: bottomPadding,
-            top: topPadding,
-          ),
-          child: catDataLoaded == true
-              ? categoryServicesList.isNotEmpty || catListLoaded == true
-                  ? categoryServicesList.isNotEmpty
-                      ? fadeTop(
-                          0.3,
-                          ListView.separated(
-                            separatorBuilder: (BuildContext context, int index) => const SizedBox(),
-                            itemCount: categoryServicesList.length,
-                            itemBuilder: (context, index) {
-                              return ServicesComponent(
-                                kServices: categoryServicesList[index],
-                              );
-                            },
-                          ),
-                        )
-                      : Center(
-                          child: Padding(
-                            padding: const EdgeInsets.all(20),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Image.asset(
-                                  'images/no_order.png',
-                                  width: MediaQuery.of(context).size.width * .5,
-                                ),
-                              ],
-                            ),
-                          ),
-                        )
-                  : Center(
-                      child: Padding(
-                        padding: const EdgeInsets.all(20),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Image.asset(
-                              'images/no_order.png',
-                              width: MediaQuery.of(context).size.width * .5,
-                            ),
-                          ],
-                        ),
-                      ),
-                    )
-              : Container(
-                  color: Static.dashboardCard,
-                  child: Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(20),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
-                          DataLoadedProgress(),
-                        ],
-                      ),
-                    ),
-                  ),
+            padding: EdgeInsets.only(
+              left: leftPadding,
+              right: rightPadding,
+              bottom: bottomPadding,
+              top: topPadding,
+            ),
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 30,
                 ),
-        ),
+                Row(
+                  children: [
+                    SizedBox(
+                      width: 20,
+                    ),
+                    SvgPicture.asset(
+                      "images/icons/solicitud.svg",
+                      width: 30,
+                      height: 30,
+                    ),
+                    SizedBox(
+                      width: 20,
+                    ),
+                    Text(
+                      "Solicitudes",
+                      style: TextStyle(color: secondryColor, fontSize: 20, fontWeight: FontWeight.bold),
+                    ),
+                    Expanded(child: SizedBox()),
+                    SvgPicture.asset(
+                      "images/icons/edit.svg",
+                      width: 20,
+                      height: 20,
+                      color: secondryColor,
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 40,
+                ),
+                Row(
+                  children: [
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Flexible(child: AppWidget().buttonFormLine(context, "Servicio", false, tap: () {})),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Flexible(child: AppWidget().buttonFormLine(context, "Inspección", true, tap: () {})),
+                    SizedBox(
+                      width: 10,
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Container(
+                    margin: EdgeInsets.only(left: 10, right: 10),
+                    child: AppWidget().texfieldFormat(
+                        controller: search,
+                        title: Locales.string(context, 'lbl_search'),
+                        execute: () {
+                          onSearch(search.text.toString());
+                        })),
+                SizedBox(
+                  height: 10,
+                ),
+                Expanded(
+                    child: catDataLoaded == true
+                        ? categoryServicesList.isNotEmpty || catListLoaded == true
+                            ? categoryServicesList.isNotEmpty
+                                ? fadeTop(
+                                    0.3,
+                                    ListView.separated(
+                                      separatorBuilder: (BuildContext context, int index) => const SizedBox(),
+                                      itemCount: categoryServicesList.length,
+                                      itemBuilder: (context, index) {
+                                        return ServicesComponent(
+                                          kServices: categoryServicesList[index],
+                                        );
+                                      },
+                                    ),
+                                  )
+                                : Center(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(20),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Image.asset(
+                                            'images/no_order.png',
+                                            width: MediaQuery.of(context).size.width * .5,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  )
+                            : Center(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(20),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Image.asset(
+                                        'images/no_order.png',
+                                        width: MediaQuery.of(context).size.width * .5,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              )
+                        : Container(
+                            color: Static.dashboardCard,
+                            child: Center(
+                              child: Padding(
+                                padding: const EdgeInsets.all(20),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: const [
+                                    DataLoadedProgress(),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          )),
+              ],
+            )),
       ),
     );
   }
 
   ServicesComponent({required SingleServices kServices}) {
-    return Padding(
-      padding: EdgeInsets.all(5),
-      child: Container(
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(25),
-            color: Static.dashboardBG,
-            border: Border.all(color: Colors.black12),
-          ),
-          padding: EdgeInsets.all(10),
-          child: Row(
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(25),
-                child: Image.network(
-                  kServices.image!,
-                  width: 85,
-                  height: 85,
-                  errorBuilder: (BuildContext? context, Object? exception, StackTrace? stackTrace) {
-                    return Container(
-                      width: 90,
-                      height: 90,
-                      color: Colors.grey.withOpacity(0.3),
-                    );
-                  },
-                  fit: BoxFit.cover,
-                ),
-              ),
-              const SizedBox(width: 10),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width * .5,
-                    child: Text(
-                      kServices.name!,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        fontFamily: 'Roboto-Bold',
-                        color: Colors.black,
+    return GestureDetector(
+        onTap: () {
+          showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  insetPadding: EdgeInsets.all(0),
+                  contentPadding: EdgeInsets.all(0),
+                  content: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      SizedBox(
+                        height: 20,
                       ),
+                      Container(
+                          width: double.infinity,
+                          child: Text(
+                            "Información del servicio",
+                            style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold),
+                            textAlign: TextAlign.center,
+                          )),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(25),
+                        child: Image.network(
+                          kServices.image!,
+                          errorBuilder: (BuildContext? context, Object? exception, StackTrace? stackTrace) {
+                            return Container(
+                              width: 200,
+                              height: 100,
+                              color: Colors.grey.withOpacity(0.3),
+                            );
+                          },
+                          width: 220,
+                          height: 100,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Row(
+                        children: [
+                          Container(
+                              margin: EdgeInsets.only(left: 10),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "Nombre del servicio",
+                                    style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 16),
+                                  ),
+                                  SizedBox(
+                                    height: 2,
+                                  ),
+                                  Text(
+                                    "Categoria",
+                                    style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 13),
+                                  ),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  RatingBarIndicator(
+                                      rating: 2.5,
+                                      itemCount: 5,
+                                      itemSize: 30.0,
+                                      itemBuilder: (context, _) => Icon(
+                                            Icons.star,
+                                            color: secondryColor,
+                                          )),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                ],
+                              )),
+                          Column(
+                            children: [],
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                    ],
+                  ),
+                );
+              });
+        },
+        child: Padding(
+          padding: EdgeInsets.all(5),
+          child: Container(
+            child: Container(
+              decoration: AppWidget().boxShandowGreyRectangule(),
+              padding: EdgeInsets.all(10),
+              child: Row(
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(15),
+                    child: Image.network(
+                      kServices.image!,
+                      width: 85,
+                      height: 85,
+                      errorBuilder: (BuildContext? context, Object? exception, StackTrace? stackTrace) {
+                        return Container(
+                          width: 90,
+                          height: 90,
+                          color: Colors.grey.withOpacity(0.3),
+                        );
+                      },
+                      fit: BoxFit.cover,
                     ),
                   ),
-                  Text(
-                    kServices.chargemod!,
-                    style: const TextStyle(
-                      color: Static.colorTextLight,
-                      fontSize: 13,
-                    ),
-                  ),
-                  const SizedBox(height: 3),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width * .5,
-                    child: Row(
-                      children: [
-                        /*kServices.discount != '0'
+                  const SizedBox(width: 10),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Container(
+                              width: 160,
+                              child: Text(
+                                kServices.name!,
+                                style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold),
+                              )),
+                          Container(
+                              width: 80,
+                              child: GestureDetector(
+                                onTap: () {
+                                  CartController.getCartData(context, false, kServices.key, kServices.name, kServices.rating,
+                                      kServices.image, kServices.chargemod, kServices.price, kServices.discount);
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: secondryColor,
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 10,
+                                    vertical: 8,
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        "Solicitar",
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ))
+                        ],
+                      ),
+                      Text(
+                        kServices.chargemod!,
+                        style: const TextStyle(
+                          color: Static.colorTextLight,
+                          fontSize: 11,
+                        ),
+                      ),
+                      const SizedBox(height: 3),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width * .5,
+                        child: Row(
+                          children: [
+                            /*kServices.discount != '0'
                             ? Text(
                                 currencyPos == 'left'
                                     ? '$currencySymbol${int.parse(kServices.price.toString())}'
@@ -291,8 +475,8 @@ class _subServicePageState extends State<subServicePage> {
                                 ),
                               )
                             : const SizedBox(),*/
-                        kServices.discount! != '0' ? const SizedBox(width: 15) : const SizedBox(),
-                        /*  Text(
+                            kServices.discount! != '0' ? const SizedBox(width: 15) : const SizedBox(),
+                            /*  Text(
                           currencyPos == 'left'
                               ? '$currencySymbol${int.parse(kServices.price!) - int.parse(kServices.discount!)}'
                               : '${int.parse(kServices.price!) - int.parse(kServices.discount!)}$currencySymbol',
@@ -300,81 +484,50 @@ class _subServicePageState extends State<subServicePage> {
                             color: Colors.black,
                           ),
                         ),*/
-                      ],
-                    ),
-                  ),
-                  Container(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 10,
-                            vertical: 5,
-                          ),
-                          margin: const EdgeInsets.symmetric(
-                            vertical: 3,
-                          ),
-                          decoration: const BoxDecoration(
-                            color: Static.dashboardCard,
-                            borderRadius: BorderRadius.all(Radius.circular(50)),
-                          ),
-                          child: Row(
-                            children: [
-                              const Icon(
-                                Icons.star,
-                                size: 14,
-                                color: Colors.green,
-                              ),
-                              Text(
-                                kServices.rating!,
-                              ),
-                            ],
-                          ),
+                          ],
                         ),
-                        //
-                        SizedBox(width: MediaQuery.of(context).size.width * .15),
-                        GestureDetector(
-                          onTap: () {
-                            CartController.getCartData(context, false, kServices.key, kServices.name, kServices.rating, kServices.image,
-                                kServices.chargemod, kServices.price, kServices.discount);
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Static.themeColor[500],
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 10,
-                              vertical: 5,
-                            ),
-                            child: Row(
-                              children: [
-                                Text(
-                                  Locales.string(context, 'lbl_add'),
-                                  style: const TextStyle(
-                                    color: Colors.white,
+                      ),
+                      Container(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 5,
+                              ),
+                              margin: const EdgeInsets.symmetric(
+                                vertical: 3,
+                              ),
+                              decoration: const BoxDecoration(
+                                color: Static.dashboardCard,
+                                borderRadius: BorderRadius.all(Radius.circular(50)),
+                              ),
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    Icons.star,
+                                    size: 14,
+                                    color: secondryColor,
                                   ),
-                                ),
-                                const Icon(
-                                  Icons.add,
-                                  color: Colors.white,
-                                  size: 15,
-                                ),
-                              ],
+                                  Text(
+                                    kServices.rating!,
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                        )
-                      ],
-                    ),
+                            //
+                            SizedBox(width: MediaQuery.of(context).size.width * .15),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
-            ],
+            ),
           ),
-        ),
-      ),
-    );
+        ));
   }
 }

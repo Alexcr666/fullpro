@@ -1,4 +1,5 @@
 // ignore_for_file: prefer_const_constructors
+import 'package:fullpro/PROFESIONAL/controllers/mainController.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:fullpro/controller/mainController.dart';
@@ -33,6 +34,7 @@ Future<void> main() async {
   // User Shared Prefrences
   await UserPreferences.init();
   MainController.getSettings();
+  MainControllerProfesional.getSettings();
 
   runApp(const MyApp());
 }

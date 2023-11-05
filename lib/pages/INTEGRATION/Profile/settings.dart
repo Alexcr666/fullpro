@@ -511,7 +511,7 @@ class _SettingsState extends State<Settings> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Text(
-                            "Show me".tr().toString(),
+                            "Show me".toString(),
                             style: TextStyle(fontSize: 18, color: primaryColor, fontWeight: FontWeight.w500),
                           ),
                           ListTile(
@@ -521,11 +521,11 @@ class _SettingsState extends State<Settings> {
                               isExpanded: true,
                               items: [
                                 DropdownMenuItem(
-                                  child: Text("Man".tr().toString()),
+                                  child: Text("Man".toString()),
                                   value: "man",
                                 ),
-                                DropdownMenuItem(child: Text("Woman".tr().toString()), value: "woman"),
-                                DropdownMenuItem(child: Text("Everyone".tr().toString()), value: "everyone"),
+                                DropdownMenuItem(child: Text("Woman".toString()), value: "woman"),
+                                DropdownMenuItem(child: Text("Everyone".toString()), value: "everyone"),
                               ],
                               onChanged: (val) {
                                 changeValues.addAll({
@@ -616,7 +616,7 @@ class _SettingsState extends State<Settings> {
                       padding: const EdgeInsets.all(8.0),
                       child: ListTile(
                         title: Text(
-                          "Age range".tr().toString(),
+                          "Age range".toString(),
                           style: TextStyle(fontSize: 18, color: primaryColor, fontWeight: FontWeight.w500),
                         ),
                         trailing: Text(
@@ -959,7 +959,7 @@ class _SettingsState extends State<Settings> {
                       //  Share.share('check out my website https://google.com', //Replace with your dynamic link and msg for invite users
 
 
-                      //    subject: 'Look what I made!'.tr().toString());
+                      //    subject: 'Look what I made!'.toString());
 
                     },
 

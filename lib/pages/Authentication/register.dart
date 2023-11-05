@@ -12,6 +12,8 @@ import 'package:flutter/services.dart';
 
 import 'package:flutter_locales/flutter_locales.dart';
 
+import 'package:fullpro/PROFESIONAL/views/Authentication/loginpage.dart';
+
 
 import 'package:fullpro/pages/Authentication/country_picker.dart';
 
@@ -460,6 +462,54 @@ class _RegisterState extends State<Register> {
                             child: Text(
 
                               Locales.string(context, 'lbl_login_with_email'),
+
+                              style: const TextStyle(fontSize: 16),
+
+                            ),
+
+                          ),
+
+                        ),
+
+                      ),
+
+                      SizedBox(
+
+                        width: double.infinity,
+
+                        child: ElevatedButton(
+
+                          onPressed: () {
+
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => const LoginPageProfesional()));
+
+                          },
+
+                          style: ButtonStyle(
+
+                            foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+
+                            backgroundColor: MaterialStateProperty.all<Color>(Static.themeColor[500]!),
+
+                            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+
+                              RoundedRectangleBorder(
+
+                                borderRadius: BorderRadius.circular(12),
+
+                              ),
+
+                            ),
+
+                          ),
+
+                          child: Padding(
+
+                            padding: const EdgeInsets.all(14.0),
+
+                            child: Text(
+
+                              "Login profesional",
 
                               style: const TextStyle(fontSize: 16),
 

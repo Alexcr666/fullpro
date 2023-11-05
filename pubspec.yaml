@@ -99,6 +99,13 @@ dependencies:
   shimmer: ^2.0.0
   flutter_swiper_null_safety: ^1.0.2
   google_fonts: ^4.0.4
+  flutter_rating_bar: ^4.0.1
+
+  #PROFESIONAL
+
+  flutter_stripe: ^9.0.0+1
+  assets_audio_player: ^3.0.4+3
+
 dependency_overrides:
   flutter:
     sdk: flutter

@@ -7,6 +7,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fullpro/config.dart';
 import 'package:fullpro/models/userdata.dart';
 import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
+import 'package:fullpro/pages/pay/payList.dart';
+import 'package:fullpro/pages/profesional/profileProfesional.dart';
 import 'package:fullpro/pages/profile/deleteAccount.dart';
 import 'package:fullpro/pages/profile/portafolio.dart';
 import 'package:fullpro/pages/support.dart';
@@ -86,7 +88,7 @@ class _AccountState extends State<Account> with TickerProviderStateMixin {
               children: [
                 Text(
                   title,
-                  style: TextStyle(color: secondryColor, fontSize: 19, fontWeight: FontWeight.bold),
+                  style: TextStyle(color: secondryColor, fontSize: 16, fontWeight: FontWeight.bold),
                 ),
                 Expanded(child: SizedBox()),
                 url == ""
@@ -99,7 +101,7 @@ class _AccountState extends State<Account> with TickerProviderStateMixin {
                     ? SizedBox()
                     : Text(
                         subtitle,
-                        style: TextStyle(color: secondryColor, fontSize: 14, fontWeight: FontWeight.bold),
+                        style: TextStyle(color: secondryColor, fontSize: 15, fontWeight: FontWeight.bold),
                       ),
               ],
             )));
@@ -423,21 +425,26 @@ class _AccountState extends State<Account> with TickerProviderStateMixin {
                         height: 20,
                       ),
                       itemOptionProfile("Eliminar cuenta", "images/icons/profileCircle.svg", tap: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => const SupportAppPage()));
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => const DeleteAccountPage()));
                       }),
                       itemOptionProfile("Fecha", "", subtitle: "02/05/2023", tap: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => const PortafolioPage()));
+                        //    Navigator.push(context, MaterialPageRoute(builder: (context) => const PortafolioPage()));
                       }),
                       itemOptionProfile("Usuario", "", subtitle: "user"),
                       itemOptionProfile("Estado del usuario", "", subtitle: "Activado"),
                       SizedBox(
                         height: 30,
                       ),
-                      itemOptionProfile("Suspender cuenta", "", subtitle: ""),
+                      itemOptionProfile("Suspender cuenta", "", subtitle: "", tap: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => const DeleteAccountPage()));
+                        //   Navigator.push(context, MaterialPageRoute(builder: (context) => ProfileProfesionalPage()));
+                      }),
                       SizedBox(
                         height: 10,
                       ),
-                      itemOptionProfile("Archivar cuenta", "", subtitle: ""),
+                      itemOptionProfile("Archivar cuenta", "", subtitle: "", tap: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => const DeleteAccountPage()));
+                      }),
                       SizedBox(
                         height: 30,
                       ),

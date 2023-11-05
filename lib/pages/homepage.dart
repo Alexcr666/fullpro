@@ -46,6 +46,8 @@ class kHomePage extends StatefulWidget {
 }
 
 class _kHomePageState extends State<kHomePage> {
+  int activeCategorie = 0;
+
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   var refreshKey = GlobalKey<RefreshIndicatorState>();
   Timer? timer;
@@ -268,27 +270,20 @@ class _kHomePageState extends State<kHomePage> {
           centerTitle: false,
           title: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.center,
+            //  crossAxisAlignment: CrossAxisAlignment.start,
+            // mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Row(
-                children: [
-                  Text(
-                    '$dayTime',
-                    style: TextStyle(color: secondryColor, fontSize: 12, fontWeight: FontWeight.bold),
-                  ),
-                ],
+              Text(
+                '$dayTime',
+                style: TextStyle(color: secondryColor, fontSize: 12, fontWeight: FontWeight.bold),
               ),
-              Row(
-                children: [
-                  Text(
-                    "Hola " + '${UserPreferences.getUsername() ?? currentUserInfo?.fullName}',
-                    style: const TextStyle(
-                      fontFamily: 'Roboto-Bold',
-                      color: Colors.black,
-                      fontSize: 15,
-                    ),
-                  ),
-                ],
+              Text(
+                "Hola " + '${UserPreferences.getUsername() ?? currentUserInfo?.fullName}',
+                style: const TextStyle(
+                  fontFamily: 'Roboto-Bold',
+                  color: Colors.black,
+                  fontSize: 15,
+                ),
               ),
             ],
           ),
@@ -314,11 +309,11 @@ class _kHomePageState extends State<kHomePage> {
                   child: UserPreferences.getcartStatus() == 'full' || cartStatus == 'full'
                       ? SvgPicture.asset(
                           "images/icons/cart.svg",
-                          width: 40,
+                          width: 35,
                         )
                       : SvgPicture.asset(
                           "images/icons/cart.svg",
-                          width: 40,
+                          width: 35,
                         )),
             ),
           ],
@@ -383,13 +378,23 @@ class _kHomePageState extends State<kHomePage> {
             SizedBox(
               width: 20,
             ),
-            Container(width: 150, child: AppWidget().buttonShandow("Servicios")),
+            Container(
+                width: 150,
+                child: AppWidget().buttonShandowActive("Servicios", activeCategorie == 1 ? true : false, tap: () {
+                  activeCategorie = 1;
+                  setState(() {});
+                })),
             // Flexible(child: AppWidget().buttonForm(context, "Servicios")),
             SizedBox(
               width: 10,
             ),
 
-            Container(width: 150, child: AppWidget().buttonShandow("Servicios")),
+            Container(
+                width: 150,
+                child: AppWidget().buttonShandowActive("Inspecciones", activeCategorie == 2 ? true : false, tap: () {
+                  activeCategorie = 2;
+                  setState(() {});
+                })),
             SizedBox(
               width: 20,
             ),
@@ -399,13 +404,11 @@ class _kHomePageState extends State<kHomePage> {
         SizedBox(
           height: 20,
         ),
-
         Row(
           children: [
             Flexible(child: AppWidget().textFieldForm(context, country, "Searching....")),
-
-            Container(width: 150, child: AppWidget().buttonShandow("Servicios")),
-            //   AppWidget().buttonForm(context, "Search"),
+            //  Container(width: 150, child: AppWidget().buttonShandow("Servicios")),
+            // AppWidget().buttonForm(context, "Search"),
           ],
         ),
         // buildSearch(),
@@ -418,7 +421,7 @@ class _kHomePageState extends State<kHomePage> {
                 width: double.infinity,
                 height: 200,
                 child: GoogleMap(
-                  mapType: MapType.hybrid,
+                  mapType: MapType.normal,
                   initialCameraPosition: _kGooglePlex,
                   onMapCreated: (GoogleMapController controller) {
                     _controller.complete(controller);
@@ -629,6 +632,78 @@ class _kHomePageState extends State<kHomePage> {
                     physics: const ClampingScrollPhysics(),
                   )
                 : const Center(child: DataLoadedProgress()),
+          ),
+          StaggeredGrid.count(
+            crossAxisCount: 3,
+            children: [
+              //  Row One
+              serviceListTile(
+                subServicePage(serviceId: 'ac_services', serviceName: Locales.string(context, 'srvs_ac_services')),
+                'images/svg_icons/service_icons/air_conditioner.svg',
+                Locales.string(context, 'srvs_ac_services'),
+                const Color.fromARGB(255, 215, 35, 246),
+                Colors.purple.shade50,
+              ),
+              serviceListTile(
+                subServicePage(serviceId: 'carpenter', serviceName: Locales.string(context, 'srvs_carpenter')),
+                'images/svg_icons/service_icons/carpenter.svg',
+                Locales.string(context, 'srvs_carpenter'),
+                Colors.orange.shade800,
+                Colors.orange.shade50,
+              ),
+              serviceListTile(
+                subServicePage(serviceId: 'cleaning', serviceName: Locales.string(context, 'srvs_cleaning')),
+                'images/svg_icons/service_icons/cleaning.svg',
+                Locales.string(context, 'srvs_cleaning'),
+                Colors.lightBlue,
+                Colors.lightBlue.shade50,
+              ),
+              serviceListTile(
+                subServicePage(serviceId: 'electrician', serviceName: Locales.string(context, 'srvs_electrician')),
+                'images/svg_icons/service_icons/electrician.svg',
+                Locales.string(context, 'srvs_electrician'),
+                Colors.yellow.shade800,
+                Colors.yellow.shade50,
+              ),
+              //
+              //  Row Two
+              //
+              serviceListTile(
+                subServicePage(serviceId: 'geyser', serviceName: Locales.string(context, 'srvs_geyser')),
+                'images/svg_icons/service_icons/geyser.svg',
+                Locales.string(context, 'srvs_geyser'),
+                Colors.red,
+                Colors.red.shade50,
+              ),
+              serviceListTile(
+                subServicePage(serviceId: 'appliance', serviceName: Locales.string(context, 'srvs_appliance')),
+                'images/svg_icons/service_icons/appliance.svg',
+                Locales.string(context, 'srvs_appliance'),
+                Colors.lightBlue,
+                Colors.lightBlue.shade50,
+              ),
+              serviceListTile(
+                subServicePage(serviceId: 'painter', serviceName: Locales.string(context, 'srvs_painter')),
+                'images/svg_icons/service_icons/painter.svg',
+                Locales.string(context, 'srvs_painter'),
+                Colors.purple.shade800,
+                Colors.purple.shade50,
+              ),
+              serviceListTile(
+                subServicePage(serviceId: 'plumber', serviceName: Locales.string(context, 'srvs_plumber')),
+                'images/svg_icons/service_icons/plumber.svg',
+                Locales.string(context, 'srvs_plumber'),
+                Colors.green,
+                Colors.green.shade50,
+              ),
+              serviceListTile(
+                subServicePage(serviceId: 'handyman', serviceName: Locales.string(context, 'srvs_handyman')),
+                'images/svg_icons/service_icons/handyman.svg',
+                Locales.string(context, 'srvs_handyman'),
+                Colors.green,
+                Colors.green.shade50,
+              ),
+            ],
           ),
         ],
       ),
@@ -915,79 +990,6 @@ class _kHomePageState extends State<kHomePage> {
             },
           )
         ],
-
-        /* StaggeredGrid.count(
-            crossAxisCount: 3,
-            children: [
-              //  Row One
-              serviceListTile(
-                subServicePage(serviceId: 'ac_services', serviceName: Locales.string(context, 'srvs_ac_services')),
-                'images/svg_icons/service_icons/air_conditioner.svg',
-                Locales.string(context, 'srvs_ac_services'),
-                const Color.fromARGB(255, 215, 35, 246),
-                Colors.purple.shade50,
-              ),
-              serviceListTile(
-                subServicePage(serviceId: 'carpenter', serviceName: Locales.string(context, 'srvs_carpenter')),
-                'images/svg_icons/service_icons/carpenter.svg',
-                Locales.string(context, 'srvs_carpenter'),
-                Colors.orange.shade800,
-                Colors.orange.shade50,
-              ),
-              serviceListTile(
-                subServicePage(serviceId: 'cleaning', serviceName: Locales.string(context, 'srvs_cleaning')),
-                'images/svg_icons/service_icons/cleaning.svg',
-                Locales.string(context, 'srvs_cleaning'),
-                Colors.lightBlue,
-                Colors.lightBlue.shade50,
-              ),
-              serviceListTile(
-                subServicePage(serviceId: 'electrician', serviceName: Locales.string(context, 'srvs_electrician')),
-                'images/svg_icons/service_icons/electrician.svg',
-                Locales.string(context, 'srvs_electrician'),
-                Colors.yellow.shade800,
-                Colors.yellow.shade50,
-              ),
-              //
-              //  Row Two
-              //
-              serviceListTile(
-                subServicePage(serviceId: 'geyser', serviceName: Locales.string(context, 'srvs_geyser')),
-                'images/svg_icons/service_icons/geyser.svg',
-                Locales.string(context, 'srvs_geyser'),
-                Colors.red,
-                Colors.red.shade50,
-              ),
-              serviceListTile(
-                subServicePage(serviceId: 'appliance', serviceName: Locales.string(context, 'srvs_appliance')),
-                'images/svg_icons/service_icons/appliance.svg',
-                Locales.string(context, 'srvs_appliance'),
-                Colors.lightBlue,
-                Colors.lightBlue.shade50,
-              ),
-              serviceListTile(
-                subServicePage(serviceId: 'painter', serviceName: Locales.string(context, 'srvs_painter')),
-                'images/svg_icons/service_icons/painter.svg',
-                Locales.string(context, 'srvs_painter'),
-                Colors.purple.shade800,
-                Colors.purple.shade50,
-              ),
-              serviceListTile(
-                subServicePage(serviceId: 'plumber', serviceName: Locales.string(context, 'srvs_plumber')),
-                'images/svg_icons/service_icons/plumber.svg',
-                Locales.string(context, 'srvs_plumber'),
-                Colors.green,
-                Colors.green.shade50,
-              ),
-              serviceListTile(
-                subServicePage(serviceId: 'handyman', serviceName: Locales.string(context, 'srvs_handyman')),
-                'images/svg_icons/service_icons/handyman.svg',
-                Locales.string(context, 'srvs_handyman'),
-                Colors.green,
-                Colors.green.shade50,
-              ),
-            ],
-          ),*/
       ),
     );
   }

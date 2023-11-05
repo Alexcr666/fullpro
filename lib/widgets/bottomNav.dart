@@ -79,12 +79,12 @@ class _BottomNavState extends State<BottomNav> {
         await Alert(
           context: context,
           type: AlertType.success,
-          title: "Confirmation".tr().toString(),
-          desc: "You have successfully subscribed to our ".tr().toString() + "${widget.plan}",
+          title: "Confirmation".toString(),
+          desc: "You have successfully subscribed to our ".toString() + "${widget.plan}",
           buttons: [
             DialogButton(
               child: Text(
-                "Ok".tr().toString(),
+                "Ok".toString(),
                 style: TextStyle(color: Colors.white, fontSize: 20),
               ),
               onPressed: () => Navigator.pop(context),

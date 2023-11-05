@@ -276,9 +276,11 @@ class _PortafolioPageState extends State<NewPortafolioPage> {
 
               SizedBox(
 
-                height: 50,
+                height: 20,
 
               ),
+
+              AppWidget().texfieldFormat(title: "Nombre de portafolio", urlIcon: "images/icons/work.svg"),
 
               SizedBox(
 
@@ -286,7 +288,83 @@ class _PortafolioPageState extends State<NewPortafolioPage> {
 
               ),
 
-              AppWidget().texfieldFormat(title: "Nombre de portafolio"),
+              Row(
+
+                children: [
+
+                  Flexible(
+
+                      child: Container(
+
+                          decoration: AppWidget().borderColor(),
+
+                          child: CheckboxListTile(
+
+                            title: Text("Servicios", style: TextStyle(color: secondryColor)),
+
+
+                            value: false,
+
+
+                            onChanged: (newValue) {
+
+                              setState(() {
+
+                                //  checkedValue = newValue;
+
+                              });
+
+                            },
+
+
+                            controlAffinity: ListTileControlAffinity.leading, //  <-- leading Checkbox
+
+                          ))),
+
+                  SizedBox(
+
+                    width: 10,
+
+                  ),
+
+                  Flexible(
+
+                      child: Container(
+
+                          decoration: AppWidget().borderColor(),
+
+                          child: CheckboxListTile(
+
+                            title: Text(
+
+                              "Servicios",
+
+                              style: TextStyle(color: secondryColor),
+
+                            ),
+
+
+                            value: false,
+
+
+                            onChanged: (newValue) {
+
+                              setState(() {
+
+                                //  checkedValue = newValue;
+
+                              });
+
+                            },
+
+
+                            controlAffinity: ListTileControlAffinity.leading, //  <-- leading Checkbox
+
+                          ))),
+
+                ],
+
+              ),
 
               SizedBox(
 
@@ -296,13 +374,110 @@ class _PortafolioPageState extends State<NewPortafolioPage> {
 
               AppWidget().texfieldFormat(title: "Categorias"),
 
+              Container(
+
+                  decoration: BoxDecoration(
+
+                    borderRadius: BorderRadius.circular(12),
+
+
+                    border: Border.all(color: secondryColor),
+
+
+                    //  color: secondryColor,
+
+                  ),
+
+                  child: ListView.builder(
+
+                      padding: EdgeInsets.only(left: 10.0),
+
+                      itemCount: 2,
+
+                      physics: NeverScrollableScrollPhysics(),
+
+                      shrinkWrap: true,
+
+                      itemBuilder: (BuildContext context, int index) {
+
+                        return CheckboxListTile(
+
+                          title: Text("Categorias " + (index + 1).toString()),
+
+
+                          value: false,
+
+
+                          onChanged: (newValue) {
+
+                            setState(() {
+
+                              //  checkedValue = newValue;
+
+                            });
+
+                          },
+
+
+                          controlAffinity: ListTileControlAffinity.leading, //  <-- leading Checkbox
+
+                        );
+
+                      })),
+
               SizedBox(
 
                 height: 20,
 
               ),
 
-              SvgPicture.asset("images/icons/rectangule.svg"),
+              Text("Fotos portafolio"),
+
+              SizedBox(
+
+                height: 5,
+
+              ),
+
+              Stack(
+
+                children: [
+
+                  Container(
+
+                      alignment: Alignment.center,
+
+                      width: double.infinity,
+
+                      height: 50,
+
+                      child: Text(
+
+                        "Drag & Drop your files or Mobile",
+
+                        style: TextStyle(color: Colors.black),
+
+                      )),
+
+                  Container(
+
+                      alignment: Alignment.center,
+
+                      width: double.infinity,
+
+                      height: 50,
+
+                      child: SvgPicture.asset("images/icons/rectangule.svg")),
+
+                ],
+
+              ),
+
+              SizedBox(
+
+                height: 20,
+
+              ),
 
               Row(
 

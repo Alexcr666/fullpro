@@ -120,7 +120,7 @@ class _kSearchPageState extends State<kSearchPage> {
                 fontSize: 14,
                 color: Static.colorTextLight,
               ),
-              hintText: Locales.string(context, 'lbl_search'),
+              hintText: Locales.string(context, 'lbl_search') + "ds",
             ),
           ),
         ),
