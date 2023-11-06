@@ -15,6 +15,7 @@ import 'package:fullpro/PROFESIONAL/widget/progressDialog.dart';
 import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
 
 import 'package:fullpro/styles/statics.dart' as Static;
+import 'package:fullpro/widgets/widget.dart';
 
 class LoginPageProfesional extends StatefulWidget {
   const LoginPageProfesional({Key? key}) : super(key: key);
@@ -130,7 +131,22 @@ class _LoginPageState extends State<LoginPageProfesional> {
 
                 //    EMAIL ADDRESS ( TEXT FIELD )
                 //
-                Padding(
+                Container(
+                    margin: EdgeInsets.only(left: 20, right: 20),
+                    child: Column(
+                      children: [
+                        AppWidget().texfieldFormat(title: Locales.string(context, 'lbl_email'), controller: emailController),
+
+                        SizedBox(
+                          height: 10,
+                        ),
+                        //
+
+                        AppWidget().texfieldFormat(title: "Password", controller: passwordController),
+                      ],
+                    )),
+
+                /* Padding(
                   padding: EdgeInsets.only(
                     right: 20,
                     left: 20,
@@ -155,15 +171,11 @@ class _LoginPageState extends State<LoginPageProfesional> {
                       fontSize: 14,
                     ),
                   ),
-                ),
+                ),*/
                 //
-                //
-                SizedBox(
-                  height: 10,
-                ),
                 //
 
-                Padding(
+                /*  Padding(
                   padding: EdgeInsets.only(
                     right: 20,
                     left: 20,
@@ -188,7 +200,7 @@ class _LoginPageState extends State<LoginPageProfesional> {
                       fontSize: 14,
                     ),
                   ),
-                ),
+                ),*/
                 //
                 SizedBox(
                   height: 50,

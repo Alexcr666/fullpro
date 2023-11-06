@@ -84,6 +84,8 @@ dependencies:
   country_state_city_pro: ^0.0.3
   flutter_share: ^2.0.0
   url_launcher: ^6.1.4
+  dotted_border: ^2.1.0
+  file_picker: ^6.1.1
   #flutter_locales: ^2.0.2
   flutter_locales:
     ^3.0.1

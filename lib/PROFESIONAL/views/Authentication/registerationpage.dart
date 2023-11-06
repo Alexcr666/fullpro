@@ -1,5 +1,9 @@
 // ignore_for_file: prefer_const_constructors
+import 'dart:io';
+
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:dotted_border/dotted_border.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/gestures.dart';
@@ -29,6 +33,10 @@ class RegistrationPage extends StatefulWidget {
 class _RegistrationPageState extends State<RegistrationPage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   bool agree = false;
+  File fileLicense = File("");
+  File fileBackgroundCheck = File("");
+
+  File fileRegistroLegal = File("");
 
   var fullNameController = TextEditingController();
 
@@ -136,14 +144,258 @@ class _RegistrationPageState extends State<RegistrationPage> {
 
   Widget signUp2() {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         AppWidget().texfieldFormat(title: "Profesión"),
         Row(
           children: [
-            Flexible(child: AppWidget().texfieldFormat(title: "Profesión")),
-            Flexible(child: AppWidget().texfieldFormat(title: "Profesión")),
+            Flexible(child: AppWidget().texfieldFormat(title: "Ciudad")),
+            SizedBox(
+              width: 20,
+            ),
+            Flexible(child: AppWidget().texfieldFormat(title: "Estado")),
           ],
-        )
+        ),
+        SizedBox(
+          height: 10,
+        ),
+        Text("Licencias"),
+        SizedBox(
+          height: 5,
+        ),
+        GestureDetector(
+            onTap: () async {
+              FilePickerResult? result = await FilePicker.platform.pickFiles();
+
+              if (result != null) {
+                fileLicense = File(result.files.single.path!);
+              } else {
+                // User canceled the picker
+              }
+            },
+            child: DottedBorder(
+              borderType: BorderType.RRect,
+              radius: Radius.circular(12),
+              padding: EdgeInsets.all(6),
+              child: ClipRRect(
+                borderRadius: BorderRadius.all(Radius.circular(12)),
+                child: Container(
+                  height: 40,
+                  width: double.infinity,
+                  child: Center(child: Text(fileLicense == null ? fileLicense.path.toString() : "Drag & Drop your files or Mobile")),
+                ),
+              ),
+            )),
+        SizedBox(
+          height: 10,
+        ),
+        Text("Background check"),
+        SizedBox(
+          height: 5,
+        ),
+        GestureDetector(
+            onTap: () async {
+              FilePickerResult? result = await FilePicker.platform.pickFiles();
+
+              if (result != null) {
+                fileBackgroundCheck = File(result.files.single.path!);
+              } else {
+                // User canceled the picker
+              }
+            },
+            child: DottedBorder(
+              borderType: BorderType.RRect,
+              radius: Radius.circular(12),
+              padding: EdgeInsets.all(6),
+              child: ClipRRect(
+                borderRadius: BorderRadius.all(Radius.circular(12)),
+                child: Container(
+                  height: 40,
+                  width: double.infinity,
+                  child: Center(
+                      child: Text(fileBackgroundCheck == null ? fileBackgroundCheck.path.toString() : "Drag & Drop your files or Mobile")),
+                ),
+              ),
+            )),
+        SizedBox(
+          height: 10,
+        ),
+        Text("Registro legal w9"),
+        SizedBox(
+          height: 5,
+        ),
+        GestureDetector(
+            onTap: () async {
+              FilePickerResult? result = await FilePicker.platform.pickFiles();
+
+              if (result != null) {
+                fileRegistroLegal = File(result.files.single.path!);
+              } else {
+                // User canceled the picker
+              }
+            },
+            child: DottedBorder(
+              borderType: BorderType.RRect,
+              radius: Radius.circular(12),
+              padding: EdgeInsets.all(6),
+              child: ClipRRect(
+                borderRadius: BorderRadius.all(Radius.circular(12)),
+                child: Container(
+                  height: 40,
+                  width: double.infinity,
+                  child: Center(
+                      child: Text(fileRegistroLegal == null ? fileRegistroLegal.path.toString() : "Drag & Drop your files or Mobile")),
+                ),
+              ),
+            )),
+      ],
+    );
+  }
+
+  Widget signUp1() {
+    return Column(
+      children: [
+        AppWidget().texfieldFormat(title: "Nombre completo", controller: fullNameController, urlIcon: "images/icons/user.svg"),
+        /*  Padding(
+                  padding: EdgeInsets.only(
+                    right: 20,
+                    left: 20,
+                  ),
+                  child: TextField(
+                    controller: fullNameController,
+                    keyboardType: TextInputType.text,
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Colors.grey.shade200,
+                      border: OutlineInputBorder(borderSide: BorderSide.none, borderRadius: BorderRadius.circular(10)),
+                      labelText: Locales.string(context, 'lbl_fullname'),
+                      labelStyle: TextStyle(
+                        fontSize: 14.0,
+                      ),
+                      hintStyle: TextStyle(
+                        color: Colors.grey,
+                        fontSize: 10.0,
+                      ),
+                    ),
+                    style: TextStyle(
+                      fontSize: 14,
+                    ),
+                  ),
+                ),*/
+        //
+        //
+
+        //
+        //  Phone Number TEXT FIELD
+        //
+        SizedBox(
+          height: 10,
+        ),
+        AppWidget().texfieldFormat(title: "Fecha de nacimiento", controller: fullNameController, urlIcon: "images/icons/calendar.svg"),
+        SizedBox(
+          height: 10,
+        ),
+        AppWidget().texfieldFormat(title: "Correo electronico", controller: emailController, urlIcon: "images/icons/email.svg"),
+        SizedBox(
+          height: 10,
+        ),
+        AppWidget().texfieldFormat(title: "Celular", controller: phoneController, urlIcon: "images/icons/email.svg"),
+        /* Padding(
+                  padding: EdgeInsets.only(
+                    right: 20,
+                    left: 20,
+                  ),
+                  child: TextField(
+                    controller: phoneController,
+                    keyboardType: TextInputType.phone,
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Colors.grey.shade200,
+                      border: OutlineInputBorder(borderSide: BorderSide.none, borderRadius: BorderRadius.circular(10)),
+                      labelText: Locales.string(context, 'lbl_phone_number'),
+                      labelStyle: TextStyle(
+                        fontSize: 14.0,
+                      ),
+                      hintStyle: TextStyle(
+                        color: Colors.grey,
+                        fontSize: 10.0,
+                      ),
+                    ),
+                    style: TextStyle(
+                      fontSize: 14,
+                    ),
+                  ),
+                ),*/
+        //
+        //
+        SizedBox(
+          height: 10,
+        ),
+        //
+        //  Email Address TEXT FIELD
+        //
+        /*Padding(
+                  padding: EdgeInsets.only(
+                    right: 20,
+                    left: 20,
+                  ),
+                  child: TextField(
+                    controller: emailController,
+                    keyboardType: TextInputType.emailAddress,
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Colors.grey.shade200,
+                      border: OutlineInputBorder(borderSide: BorderSide.none, borderRadius: BorderRadius.circular(10)),
+                      labelText: Locales.string(context, 'lbl_email'),
+                      labelStyle: TextStyle(
+                        fontSize: 14.0,
+                      ),
+                      hintStyle: TextStyle(
+                        color: Colors.grey,
+                        fontSize: 10.0,
+                      ),
+                    ),
+                    style: TextStyle(
+                      fontSize: 14,
+                    ),
+                  ),
+                ),
+                //
+                //
+                SizedBox(
+                  height: 15,
+                ),*/
+        //
+        //  Password
+
+        AppWidget().texfieldFormat(title: "Password", controller: passwordController),
+        /* Padding(
+                  padding: EdgeInsets.only(
+                    right: 20,
+                    left: 20,
+                  ),
+                  child: TextField(
+                    controller: passwordController,
+                    obscureText: true,
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Colors.grey.shade200,
+                      border: OutlineInputBorder(borderSide: BorderSide.none, borderRadius: BorderRadius.circular(10)),
+                      labelText: /*Locales.string(context, 'lbl_passowrd')*/ "Password",
+                      labelStyle: TextStyle(
+                        fontSize: 14.0,
+                      ),
+                      hintStyle: TextStyle(
+                        color: Colors.grey,
+                        fontSize: 10.0,
+                      ),
+                    ),
+                    style: TextStyle(
+                      fontSize: 14,
+                    ),
+                  ),
+                ),*/
+        SizedBox(height: 15),
       ],
     );
   }
@@ -208,148 +460,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                 SizedBox(
                   height: 30,
                 ),
-                AppWidget().texfieldFormat(title: "Nombre completo", controller: fullNameController, urlIcon: "images/icons/user.svg"),
-                /*  Padding(
-                  padding: EdgeInsets.only(
-                    right: 20,
-                    left: 20,
-                  ),
-                  child: TextField(
-                    controller: fullNameController,
-                    keyboardType: TextInputType.text,
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: Colors.grey.shade200,
-                      border: OutlineInputBorder(borderSide: BorderSide.none, borderRadius: BorderRadius.circular(10)),
-                      labelText: Locales.string(context, 'lbl_fullname'),
-                      labelStyle: TextStyle(
-                        fontSize: 14.0,
-                      ),
-                      hintStyle: TextStyle(
-                        color: Colors.grey,
-                        fontSize: 10.0,
-                      ),
-                    ),
-                    style: TextStyle(
-                      fontSize: 14,
-                    ),
-                  ),
-                ),*/
-                //
-                //
-
-                //
-                //  Phone Number TEXT FIELD
-                //
-                SizedBox(
-                  height: 10,
-                ),
-                AppWidget()
-                    .texfieldFormat(title: "Fecha de nacimiento", controller: fullNameController, urlIcon: "images/icons/calendar.svg"),
-                SizedBox(
-                  height: 10,
-                ),
-                AppWidget().texfieldFormat(title: "Correo electronico", controller: emailController, urlIcon: "images/icons/email.svg"),
-                SizedBox(
-                  height: 10,
-                ),
-                AppWidget().texfieldFormat(title: "Celular", controller: phoneController, urlIcon: "images/icons/email.svg"),
-                /* Padding(
-                  padding: EdgeInsets.only(
-                    right: 20,
-                    left: 20,
-                  ),
-                  child: TextField(
-                    controller: phoneController,
-                    keyboardType: TextInputType.phone,
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: Colors.grey.shade200,
-                      border: OutlineInputBorder(borderSide: BorderSide.none, borderRadius: BorderRadius.circular(10)),
-                      labelText: Locales.string(context, 'lbl_phone_number'),
-                      labelStyle: TextStyle(
-                        fontSize: 14.0,
-                      ),
-                      hintStyle: TextStyle(
-                        color: Colors.grey,
-                        fontSize: 10.0,
-                      ),
-                    ),
-                    style: TextStyle(
-                      fontSize: 14,
-                    ),
-                  ),
-                ),*/
-                //
-                //
-                SizedBox(
-                  height: 10,
-                ),
-                //
-                //  Email Address TEXT FIELD
-                //
-                /*Padding(
-                  padding: EdgeInsets.only(
-                    right: 20,
-                    left: 20,
-                  ),
-                  child: TextField(
-                    controller: emailController,
-                    keyboardType: TextInputType.emailAddress,
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: Colors.grey.shade200,
-                      border: OutlineInputBorder(borderSide: BorderSide.none, borderRadius: BorderRadius.circular(10)),
-                      labelText: Locales.string(context, 'lbl_email'),
-                      labelStyle: TextStyle(
-                        fontSize: 14.0,
-                      ),
-                      hintStyle: TextStyle(
-                        color: Colors.grey,
-                        fontSize: 10.0,
-                      ),
-                    ),
-                    style: TextStyle(
-                      fontSize: 14,
-                    ),
-                  ),
-                ),
-                //
-                //
-                SizedBox(
-                  height: 15,
-                ),*/
-                //
-                //  Password
-
-                AppWidget().texfieldFormat(title: "Password", controller: passwordController),
-                /* Padding(
-                  padding: EdgeInsets.only(
-                    right: 20,
-                    left: 20,
-                  ),
-                  child: TextField(
-                    controller: passwordController,
-                    obscureText: true,
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: Colors.grey.shade200,
-                      border: OutlineInputBorder(borderSide: BorderSide.none, borderRadius: BorderRadius.circular(10)),
-                      labelText: /*Locales.string(context, 'lbl_passowrd')*/ "Password",
-                      labelStyle: TextStyle(
-                        fontSize: 14.0,
-                      ),
-                      hintStyle: TextStyle(
-                        color: Colors.grey,
-                        fontSize: 10.0,
-                      ),
-                    ),
-                    style: TextStyle(
-                      fontSize: 14,
-                    ),
-                  ),
-                ),*/
-                SizedBox(height: 15),
+                signUp2(),
 
                 //
                 Padding(
