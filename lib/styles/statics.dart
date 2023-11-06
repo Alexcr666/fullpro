@@ -4,10 +4,13 @@ import 'package:flutter/material.dart';
 ///   Dashboard Colors
 const Color dashboardBG = Colors.white;
 const Color dashboardCard = Color.fromARGB(255, 239, 241, 243);
+const Color redButton = Color(0xffFF0000);
+const Color yellowButton = Color(0xffFFB905);
+const Color greenButton = Color(0xff00A811);
 // const Color dashboardCard = Color.fromARGB(255, 238, 245, 254);
 
 //  App Default Colors
-const Color primaryColor = Color(0xff0CA1FB);
+//const Color primaryColor = Color(0xff0CA1FB);
 const Color primaryColorLight = Color(0xff0CA1FB);
 const Color secondaryColor = Color.fromARGB(255, 255, 196, 12);
 const Color secondaryColorLight = Color.fromARGB(255, 255, 223, 0);

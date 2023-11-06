@@ -34,6 +34,7 @@ class _subServicePageState extends State<subServicePage> {
   TextEditingController search = TextEditingController();
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   var refreshKey = GlobalKey<RefreshIndicatorState>();
+  bool inspeccion = false;
   Timer? timer;
 
   @override
@@ -202,11 +203,19 @@ class _subServicePageState extends State<subServicePage> {
                     SizedBox(
                       width: 10,
                     ),
-                    Flexible(child: AppWidget().buttonFormLine(context, "Servicio", false, tap: () {})),
+                    Flexible(
+                        child: AppWidget().buttonFormLine(context, "Servicio", inspeccion != false, tap: () {
+                      inspeccion = false;
+                      setState(() {});
+                    })),
                     SizedBox(
                       width: 10,
                     ),
-                    Flexible(child: AppWidget().buttonFormLine(context, "Inspección", true, tap: () {})),
+                    Flexible(
+                        child: AppWidget().buttonFormLine(context, "Inspección", inspeccion != true, tap: () {
+                      inspeccion = true;
+                      setState(() {});
+                    })),
                     SizedBox(
                       width: 10,
                     ),
@@ -215,14 +224,29 @@ class _subServicePageState extends State<subServicePage> {
                 SizedBox(
                   height: 10,
                 ),
-                Container(
-                    margin: EdgeInsets.only(left: 10, right: 10),
-                    child: AppWidget().texfieldFormat(
-                        controller: search,
-                        title: Locales.string(context, 'lbl_search'),
-                        execute: () {
-                          onSearch(search.text.toString());
-                        })),
+                inspeccion
+                    ? Container(
+                        margin: EdgeInsets.only(left: 10, right: 10),
+                        child: Column(
+                          children: [
+                            AppWidget().texfieldFormat(title: "Fecha de servicio", urlIcon: "images/icons/calendar.svg"),
+                            SizedBox(
+                              height: 5,
+                            ),
+                            AppWidget().texfieldFormat(title: "Hora de servicio", urlIcon: "images/icons/calendar.svg"),
+                            SizedBox(
+                              height: 20,
+                            ),
+                          ],
+                        ))
+                    : Container(
+                        margin: EdgeInsets.only(left: 10, right: 10),
+                        child: AppWidget().texfieldFormat(
+                            controller: search,
+                            title: Locales.string(context, 'lbl_search'),
+                            execute: () {
+                              onSearch(search.text.toString());
+                            })),
                 SizedBox(
                   height: 10,
                 ),
@@ -372,10 +396,48 @@ class _subServicePageState extends State<subServicePage> {
                                 ],
                               )),
                           Column(
-                            children: [],
+                            children: [
+                              Text(
+                                "Costo del servicio",
+                                style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 16),
+                              ),
+                              Text(
+                                "00.000",
+                                style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 16),
+                              ),
+                            ],
                           ),
                         ],
                       ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Container(
+                          margin: EdgeInsets.only(left: 20, right: 20),
+                          child: Text(
+                            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc mollis, enim eget fringilla porta, magna lectus commodo erat, eu pharetra augue augue nec risus. Donec consectetur nulla dui, eget posuere leo cursus vitae. Suspendisse tempor eros in dolor dapibus, sit amet",
+                            style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 12),
+                          )),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Container(
+                          margin: EdgeInsets.only(left: 20, right: 20),
+                          child: Row(
+                            children: [
+                              Flexible(
+                                  child: AppWidget().buttonFormLine(context, "Cancelar", false, tap: () {
+                                Navigator.pop(context);
+                              })),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Flexible(
+                                  child: AppWidget().buttonFormLine(context, "Aceptar", true, tap: () {
+                                Navigator.pop(context);
+                              })),
+                            ],
+                          )),
                       SizedBox(
                         height: 20,
                       ),

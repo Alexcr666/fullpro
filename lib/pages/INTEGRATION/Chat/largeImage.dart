@@ -1,8 +1,13 @@
 import 'package:cached_network_image/cached_network_image.dart';
 
+
 import 'package:flutter/cupertino.dart';
 
+
 import 'package:flutter/material.dart';
+
+import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
+
 
 import 'package:fullpro/styles/statics.dart';
 
@@ -10,6 +15,7 @@ import 'package:fullpro/styles/statics.dart';
 class LargeImage extends StatelessWidget {
 
   final largeImage;
+
 
   LargeImage(this.largeImage);
 

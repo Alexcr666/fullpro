@@ -5,6 +5,9 @@ import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:flutter_geofire/flutter_geofire.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
+import 'package:fullpro/widgets/widget.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:fullpro/animation/fadeBottom.dart';
 import 'package:fullpro/animation/fadeRight.dart';
@@ -39,6 +42,9 @@ class CartPage extends StatefulWidget {
 class _CartPageState extends State<CartPage> {
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   DateTime dateTime = DateTime.now();
+  final Completer<GoogleMapController> _controller = Completer<GoogleMapController>();
+
+  String showMe = "woman";
   int days = 10;
   Timer? timer;
   late final _probController = TextEditingController();
@@ -234,12 +240,17 @@ class _CartPageState extends State<CartPage> {
     timer?.cancel();
   }
 
+  static const CameraPosition _kGooglePlex = CameraPosition(
+    target: LatLng(37.42796133580664, -122.085749655962),
+    zoom: 14.4746,
+  );
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: scaffoldKey,
-      backgroundColor: Static.dashboardCard,
-      appBar: AppBar(
+        key: scaffoldKey,
+        backgroundColor: Colors.white,
+        /*appBar: AppBar(
         centerTitle: true,
         title: Text(
           Locales.string(context, 'lbl_book_service'),
@@ -261,35 +272,201 @@ class _CartPageState extends State<CartPage> {
           },
           icon: SvgPicture.asset('images/svg_icons/arrowLeft.svg'),
         ),
-      ),
-      body: cartItemsList.isEmpty
-          ? Center(
-              child: SafeArea(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 13,
-                    vertical: 0,
-                  ),
-                  child: SingleChildScrollView(
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    child: initWidget(),
+      ),*/
+        body: ListView(
+          children: [
+            SizedBox(
+              height: 20,
+            ),
+            Row(
+              children: [
+                SizedBox(
+                  width: 20,
+                ),
+                Text(
+                  "Resumen",
+                  style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 26),
+                ),
+                Expanded(child: SizedBox()),
+                SvgPicture.asset(
+                  "assets/icons/edit.svg",
+                  width: 30,
+                  height: 30,
+                ),
+              ],
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Container(
+                margin: EdgeInsets.only(left: 20, right: 20),
+                child: Row(
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Dirección de entrega",
+                          style: TextStyle(color: secondryColor, fontSize: 14),
+                        ),
+                        SizedBox(
+                          height: 5,
+                        ),
+                        Text(
+                          "Kr 42B # 23 A SUR - 34",
+                          style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 16),
+                        ),
+                      ],
+                    ),
+                    Expanded(child: SizedBox()),
+                    Text(
+                      "Cambiar",
+                      style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 16),
+                    ),
+                  ],
+                )),
+            SizedBox(
+              height: 20,
+            ),
+            Row(
+              children: [
+                SizedBox(
+                  width: 10,
+                ),
+                ClipRRect(
+                    borderRadius: BorderRadius.circular(15),
+                    child: Container(
+                        width: 160,
+                        height: 160,
+                        child: GoogleMap(
+                          mapType: MapType.normal,
+                          initialCameraPosition: _kGooglePlex,
+                          onMapCreated: (GoogleMapController controller) {
+                            _controller.complete(controller);
+                          },
+                        ))),
+                SizedBox(
+                  width: 20,
+                ),
+                Flexible(
+                    child: AppWidget().texfieldFormat(
+                  title: "Apt 501",
+                )),
+                SizedBox(
+                  width: 20,
+                ),
+              ],
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10),
+              child: ListTile(
+                title: Text(
+                  "Opción de servicio".toString(),
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                    color: secondryColor,
                   ),
                 ),
-              ),
-            )
-          : SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 13,
-                  vertical: 0,
-                ),
-                child: SingleChildScrollView(
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  child: initWidget(),
+                subtitle: DropdownButton(
+                  iconEnabledColor: primaryColor,
+                  iconDisabledColor: secondryColor,
+                  isExpanded: true,
+                  items: [
+                    DropdownMenuItem(
+                      child: Text("Man".toString()),
+                      value: "man",
+                    ),
+                    DropdownMenuItem(child: Text("Woman".toString()), value: "woman"),
+                    DropdownMenuItem(child: Text("Other".toString()), value: "other"),
+                  ],
+                  onChanged: (val) {
+                    //  editInfo.addAll({'userGender': val});
+
+                    setState(() {
+                      showMe = val.toString();
+                    });
+                  },
+                  value: showMe,
                 ),
               ),
             ),
-    );
+            Container(
+              margin: EdgeInsets.only(left: 20, right: 20),
+              width: double.infinity,
+              height: 1,
+              color: secondryColor,
+            ),
+            SizedBox(
+              height: 15,
+            ),
+            Container(
+                margin: EdgeInsets.only(left: 20, right: 20),
+                child: Row(
+                  children: [
+                    Text(
+                      "Hora de servicio".toString(),
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                        color: secondryColor,
+                      ),
+                    ),
+                    Expanded(child: SizedBox()),
+                    Text(
+                      "20 - 35 Min".toString(),
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                        color: secondryColor,
+                      ),
+                    )
+                  ],
+                )),
+            SizedBox(
+              height: 15,
+            ),
+            Container(
+              margin: EdgeInsets.only(left: 20, right: 20),
+              width: double.infinity,
+              height: 1,
+              color: secondryColor,
+            ),
+            SizedBox(
+              height: 15,
+            ),
+            cartItemsList.isEmpty
+                ? Center(
+                    child: SafeArea(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 13,
+                          vertical: 0,
+                        ),
+                        child: SingleChildScrollView(
+                          physics: const AlwaysScrollableScrollPhysics(),
+                          child: initWidget(),
+                        ),
+                      ),
+                    ),
+                  )
+                : SafeArea(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 13,
+                        vertical: 0,
+                      ),
+                      child: Container(
+                        //   physics: const AlwaysScrollableScrollPhysics(),
+                        child: initWidget(),
+                      ),
+                    ),
+                  ),
+          ],
+        ));
   }
 
   //  Initialization
@@ -299,22 +476,72 @@ class _CartPageState extends State<CartPage> {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (cartItemsList.isNotEmpty)
+        /* if (cartItemsList.isNotEmpty)
           fadeLeft(
             0.1,
             dateRangeSlider(),
           )
         else
-          const SizedBox(),
-        fadeRight(0.3, timeRangeSlider()),
+          const SizedBox(),*/
+        //  fadeRight(0.3, timeRangeSlider()),
         fadeTop(0.5, removeAllButton()),
         CartItems(),
         fadeBottom(.6, AddressWidget()),
         fadeBottom(.6, pricingList()),
         fadeBottom(.6, probWidget()),
 
+        Row(
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Total a pagar".toString(),
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                    color: secondryColor,
+                  ),
+                ),
+                Text(
+                  "00.000".toString(),
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 22,
+                    color: secondryColor,
+                  ),
+                ),
+              ],
+            ),
+            Expanded(child: SizedBox()),
+            Column(
+              children: [
+                Container(
+                    width: 200,
+                    child: AppWidget().buttonFormLine(context, "Solicitar", false, urlIcon: "images/icons/userDone.svg", tap: () {
+                      if (_probController.text.isEmpty || _probController.text == '') {
+                        problmValidate = Locales.string(context, "error_can_not_be_empty");
+                      } else {
+                        CartController.createRequest(context, _probController.text);
+                        // availablePartners = FireController.nearbyPartnerList;
+                        // findPartner();
+                      }
+                    })),
+                SizedBox(
+                  height: 5,
+                ),
+                Container(
+                    width: 200, child: AppWidget().buttonFormLine(context, "Cancelar", true, urlIcon: "images/icons/closeCircle.svg")),
+              ],
+            )
+          ],
+        ),
+        SizedBox(
+          height: 20,
+        ),
+
         //  Place Order
-        fadeBottom(.8, PlaceOrderButton()),
+        // fadeBottom(.8, PlaceOrderButton()),
       ],
     );
   }
@@ -384,10 +611,16 @@ class _CartPageState extends State<CartPage> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
+                /*Text(
                   Locales.string(context, "lbl_items_list"),
-                  style: const TextStyle(
-                    fontFamily: 'Roboto-Bold',
+                  style: const TextStyle(),
+                ),*/
+                Text(
+                  "Profesional info".toString(),
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                    color: secondryColor,
                   ),
                 ),
                 GestureDetector(
@@ -502,13 +735,13 @@ class _CartPageState extends State<CartPage> {
   //
   servicesComponent({required CartServices kServices}) {
     return Padding(
-      padding: const EdgeInsets.all(5),
+      padding: const EdgeInsets.all(1),
       child: Container(
         width: double.infinity,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(25),
-          color: Static.dashboardBG,
-          border: Border.all(color: Colors.black12),
+          color: Colors.white,
+          //  border: Border.all(color: Colors.black12),
         ),
         padding: const EdgeInsets.symmetric(
           horizontal: 8,
@@ -532,8 +765,8 @@ class _CartPageState extends State<CartPage> {
                           kServices.image!,
                           errorBuilder: (BuildContext? context, Object? exception, StackTrace? stackTrace) {
                             return Container(
-                              width: 90,
-                              height: 90,
+                              width: 200,
+                              height: 200,
                               color: Colors.grey.withOpacity(0.3),
                             );
                           },
@@ -555,17 +788,14 @@ class _CartPageState extends State<CartPage> {
                         child: Text(
                           kServices.name!,
                           overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            fontFamily: 'Roboto-Bold',
-                            color: Colors.black,
-                          ),
+                          style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold),
                         ),
                       ),
                       Text(
                         kServices.chargemod!,
-                        style: const TextStyle(
-                          color: Static.colorTextLight,
-                          fontSize: 13,
+                        style: TextStyle(
+                          color: secondryColor,
+                          fontSize: 11,
                         ),
                       ),
                       SizedBox(
@@ -677,9 +907,7 @@ class _CartPageState extends State<CartPage> {
                 ),
                 child: Text(
                   Locales.string(context, "lbl_address"),
-                  style: const TextStyle(
-                    fontFamily: 'Roboto-Bold',
-                  ),
+                  style: TextStyle(color: secondryColor),
                 ),
               ),
               Padding(
@@ -688,7 +916,7 @@ class _CartPageState extends State<CartPage> {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
                     color: Static.dashboardBG,
-                    border: Border.all(color: Colors.black12),
+                    //    border: Border.all(color: Colors.black12),
                   ),
                   padding: const EdgeInsets.all(20),
                   child: Row(
@@ -737,11 +965,11 @@ class _CartPageState extends State<CartPage> {
             ? Padding(
                 padding: const EdgeInsets.all(5),
                 child: Container(
-                  decoration: BoxDecoration(
+                  /* decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
                     color: Static.dashboardBG,
                     border: Border.all(color: Colors.black12),
-                  ),
+                  ),*/
                   padding: const EdgeInsets.all(20),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -760,7 +988,7 @@ class _CartPageState extends State<CartPage> {
                           },
                         ),
                       ),
-                      const Padding(
+                      /*  const Padding(
                         padding: EdgeInsets.symmetric(
                           vertical: 10,
                         ),
@@ -768,6 +996,9 @@ class _CartPageState extends State<CartPage> {
                           height: 1.5,
                           color: Colors.black54,
                         ),
+                      ),*/
+                      SizedBox(
+                        height: 10,
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -776,19 +1007,20 @@ class _CartPageState extends State<CartPage> {
                             children: [
                               Text(
                                 Locales.string(context, "lbl_total_price"),
-                                style: const TextStyle(
-                                  fontFamily: 'Roboto-Bold',
+                                style: TextStyle(
+                                  color: secondryColor,
                                   fontSize: 17,
                                 ),
                               ),
                               const SizedBox(width: 5),
-                              const Icon(Icons.wallet_outlined)
+                              //  const Icon(Icons.wallet_outlined)
                             ],
                           ),
                           Text(
                             currencyPos == 'left' ? '$currencySymbol$ktotalprice' : '$ktotalprice$currencySymbol',
-                            style: const TextStyle(
-                              fontFamily: 'Roboto-Bold',
+                            style: TextStyle(
+                              color: secondryColor,
+                              // fontFamily: 'Roboto-Bold',
                               fontSize: 17,
                             ),
                           ),
@@ -858,15 +1090,15 @@ class _CartPageState extends State<CartPage> {
                   ),
                   child: Text(
                     Locales.string(context, "lbl_problem_details"),
-                    style: const TextStyle(
-                      fontFamily: 'Roboto-Bold',
-                    ),
+                    style: TextStyle(fontWeight: FontWeight.bold, color: secondryColor
+                        //    fontFamily: 'Roboto-Bold',
+                        ),
                   ),
                 ),
                 Container(
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    border: Border.all(color: Colors.black12),
+                    // border: Border.all(color: Colors.black12),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   padding: const EdgeInsets.symmetric(

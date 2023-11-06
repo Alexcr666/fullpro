@@ -1,12 +1,20 @@
 import 'dart:async';
 
+
 import 'package:agora_rtc_engine/rtc_local_view.dart' as RtcLocalView;
+
 
 import 'package:agora_rtc_engine/rtc_remote_view.dart' as RtcRemoteView;
 
+
 import 'package:agora_rtc_engine/rtc_engine.dart';
 
+
 import 'package:flutter/material.dart';
+
+
+import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
+
 
 import 'package:fullpro/styles/statics.dart';
 
@@ -18,17 +26,21 @@ class CallPage extends StatefulWidget {
 
   /// non-modifiable channel name of the page
 
+
   final String channelName;
 
 
   /// non-modifiable client role of the page
 
+
   final ClientRole role;
+
 
   final String callType;
 
 
   /// Creates a call page with given channel name.
+
 
   const CallPage({Key? key, required this.channelName, required this.role, required this.callType}) : super(key: key);
 
@@ -44,11 +56,15 @@ class _CallPageState extends State<CallPage> {
 
   static final _users = <int>[];
 
+
   final _infoStrings = <String>[];
+
 
   bool muted = false;
 
+
   bool disable = true;
+
 
   late RtcEngine _engine;
 
@@ -59,13 +75,18 @@ class _CallPageState extends State<CallPage> {
 
     // clear users
 
+
     _users.clear();
+
 
     // destroy sdk
 
+
     _engine.leaveChannel();
 
+
     _engine.destroy();
+
 
     super.dispose();
 
@@ -78,7 +99,9 @@ class _CallPageState extends State<CallPage> {
 
     super.initState();
 
+
     // initialize agora sdk
+
 
     initialize();
 
@@ -91,6 +114,7 @@ class _CallPageState extends State<CallPage> {
 
       print('app id is missing $_infoStrings');
 
+
       setState(() {
 
         _infoStrings.add(
@@ -99,9 +123,11 @@ class _CallPageState extends State<CallPage> {
 
         );
 
+
         _infoStrings.add('Agora Engine is not starting');
 
       });
+
 
       return;
 
@@ -110,15 +136,21 @@ class _CallPageState extends State<CallPage> {
 
     await _initAgoraRtcEngine();
 
+
     _addAgoraEventHandlers();
+
 
     //await _engine.enableWebSdkInteroperability(true);
 
+
     VideoEncoderConfiguration configuration = VideoEncoderConfiguration();
+
 
     configuration.dimensions = VideoDimensions(height: 1920, width: 1080);
 
+
     await _engine.setVideoEncoderConfiguration(configuration);
+
 
     await _engine.joinChannel(null, widget.channelName, null, 0);
 
@@ -127,13 +159,17 @@ class _CallPageState extends State<CallPage> {
 
   /// Create agora sdk instance and initialize
 
+
   Future<void> _initAgoraRtcEngine() async {
 
     _engine = await RtcEngine.create(APP_ID);
 
+
     widget.callType == "VideoCall" ? await _engine.enableVideo() : await _engine.enableAudio();
 
+
     await _engine.setChannelProfile(ChannelProfile.LiveBroadcasting);
+
 
     await _engine.setClientRole(widget.role);
 
@@ -141,6 +177,7 @@ class _CallPageState extends State<CallPage> {
 
 
   /// Add agora event handlers
+
 
   void _addAgoraEventHandlers() {
 
@@ -150,7 +187,9 @@ class _CallPageState extends State<CallPage> {
 
         final info = 'onError: $code';
 
+
         _infoStrings.add(info);
+
 
         print('app id ERROR $_infoStrings');
 
@@ -162,7 +201,9 @@ class _CallPageState extends State<CallPage> {
 
         final info = 'onJoinChannel: $channel, uid: $uid';
 
+
         _infoStrings.add(info);
+
 
         print('app id is SUCCESS $_infoStrings');
 
@@ -177,6 +218,7 @@ class _CallPageState extends State<CallPage> {
 
         _infoStrings.add('onLeaveChannel');
 
+
         _users.clear();
 
       });
@@ -190,7 +232,9 @@ class _CallPageState extends State<CallPage> {
 
         final info = 'userJoined: $uid';
 
+
         _infoStrings.add(info);
+
 
         _users.add(uid);
 
@@ -205,11 +249,14 @@ class _CallPageState extends State<CallPage> {
 
         final info = 'userOffline: $uid';
 
+
         _infoStrings.add(info);
+
 
         _users.remove(uid);
 
       });
+
 
       Navigator.pop(context);
 
@@ -222,6 +269,7 @@ class _CallPageState extends State<CallPage> {
 
         final info = 'firstRemoteVideo: $uid ${width}x $height';
 
+
         _infoStrings.add(info);
 
       });
@@ -233,147 +281,213 @@ class _CallPageState extends State<CallPage> {
 
   /// Add agora event handlers
 
+
   // void _addAgoraEventHandlers() {
+
 
   //   _engine.onError = (dynamic code) {
 
+
   //     setState(() {
+
 
   //       final info = 'onError: $code';
 
+
   //       _infoStrings.add(info);
+
 
   //     });
 
+
   //   };
 
+
   //
+
 
   //   _engine.onJoinChannelSuccess = (
 
+
   //     String channel,
+
 
   //     int uid,
 
+
   //     int elapsed,
+
 
   //   ) {
 
+
   //     setState(() {
+
 
   //       final info = 'onJoinChannel: $channel, uid: $uid';
 
+
   //       _infoStrings.add(info);
+
 
   //     });
 
+
   //   };
 
+
   //
+
 
   //   AgoraRtcEngine.onLeaveChannel = () {
 
+
   //     setState(() {
+
 
   //       _infoStrings.add('onLeaveChannel');
 
+
   //       _users.clear();
+
 
   //     });
 
+
   //   };
 
+
   //
+
 
   //   AgoraRtcEngine.onUserJoined = (int uid, int elapsed) {
 
+
   //     setState(() {
+
 
   //       final info = 'userJoined: $uid';
 
+
   //       _infoStrings.add(info);
+
 
   //       _users.add(uid);
 
+
   //     });
+
 
   //   };
 
+
   //
+
 
   //   AgoraRtcEngine.onUserOffline = (int uid, int reason) {
 
+
   //     setState(() {
+
 
   //       final info = 'userOffline: $uid';
 
+
   //       _infoStrings.add(info);
+
 
   //       _users.remove(uid);
 
+
   //     });
+
 
   //     Navigator.pop(context);
 
+
   //   };
+
 
   //
 
+
   //   AgoraRtcEngine.onFirstRemoteVideoFrame = (
+
 
   //     int uid,
 
+
   //     int width,
+
 
   //     int height,
 
+
   //     int elapsed,
+
 
   //   ) {
 
+
   //     setState(() {
+
 
   //       final info = 'firstRemoteVideo: $uid ${width}x $height';
 
+
   //       _infoStrings.add(info);
+
 
   //     });
 
+
   //   };
+
 
   // }
 
 
   // /// Helper function to get list of native views
 
+
   // List<Widget> _getRenderViews() {
+
 
   //   final List<AgoraRenderWidget> list = [];
 
+
   //   if (widget.role == ClientRole.Broadcaster) {
+
 
   //     list.add(AgoraRenderWidget(0, local: true, preview: true));
 
+
   //   }
+
 
   //   _users.forEach((int uid) => list.add(AgoraRenderWidget(uid)));
 
+
   //   return list;
+
 
   // }
 
 
   /// Helper function to get list of native views
 
+
   List<Widget> _getRenderViews() {
 
     final List<StatefulWidget> list = [];
+
 
     if (widget.role == ClientRole.Broadcaster) {
 
       list.add(RtcLocalView.SurfaceView());
 
     }
+
 
     _users.forEach((int uid) => list.add(RtcRemoteView.SurfaceView(
 
@@ -383,12 +497,14 @@ class _CallPageState extends State<CallPage> {
 
         )));
 
+
     return list;
 
   }
 
 
   /// Video view wrapper
+
 
   Widget _videoView(view) {
 
@@ -399,9 +515,11 @@ class _CallPageState extends State<CallPage> {
 
   /// Video view row wrapper
 
+
   Widget _expandedVideoRow(List<Widget> views) {
 
     final wrappedViews = views.map<Widget>(_videoView).toList();
+
 
     return Expanded(
 
@@ -418,9 +536,11 @@ class _CallPageState extends State<CallPage> {
 
   /// Video layout wrapper
 
+
   Widget _viewRows() {
 
     final views = _getRenderViews();
+
 
     switch (views.length) {
 
@@ -433,6 +553,7 @@ class _CallPageState extends State<CallPage> {
           children: <Widget>[_videoView(views[0])],
 
         ));
+
 
       case 2:
 
@@ -450,6 +571,7 @@ class _CallPageState extends State<CallPage> {
 
         ));
 
+
       case 3:
 
         return Container(
@@ -459,6 +581,7 @@ class _CallPageState extends State<CallPage> {
           children: <Widget>[_expandedVideoRow(views.sublist(0, 2)), _expandedVideoRow(views.sublist(2, 3))],
 
         ));
+
 
       case 4:
 
@@ -470,9 +593,11 @@ class _CallPageState extends State<CallPage> {
 
         ));
 
+
       default:
 
     }
+
 
     return Container();
 
@@ -481,9 +606,11 @@ class _CallPageState extends State<CallPage> {
 
   /// Toolbar layout
 
+
   Widget _videoToolbar() {
 
     if (widget.role == ClientRole.Audience) return Container();
+
 
     return Container(
 
@@ -606,6 +733,7 @@ class _CallPageState extends State<CallPage> {
 
     if (widget.role == ClientRole.Audience) return Container();
 
+
     return Container(
 
       alignment: Alignment.bottomCenter,
@@ -690,6 +818,7 @@ class _CallPageState extends State<CallPage> {
 
     });
 
+
     _engine.muteLocalAudioStream(muted);
 
   }
@@ -709,6 +838,7 @@ class _CallPageState extends State<CallPage> {
       disable = !disable;
 
     });
+
 
     _engine.enableLocalVideo(disable);
 
@@ -749,7 +879,9 @@ class _CallPageState extends State<CallPage> {
 
                   ),
 
+
             // _panel(),
+
 
             widget.callType == "VideoCall" ? _videoToolbar() : _audioToolbar()
 

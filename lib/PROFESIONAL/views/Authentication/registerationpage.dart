@@ -5,6 +5,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:fullpro/PROFESIONAL/controllers/loader.dart';
 import 'package:fullpro/PROFESIONAL/utils/permissions.dart';
 import 'package:fullpro/PROFESIONAL/utils/userpreferences.dart';
@@ -13,8 +14,10 @@ import 'package:fullpro/PROFESIONAL/views/Authentication/loginpage.dart';
 import 'package:fullpro/PROFESIONAL/views/Authentication/register.dart';
 import 'package:fullpro/PROFESIONAL/views/homepage.dart';
 import 'package:fullpro/PROFESIONAL/widget/progressDialog.dart';
+import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
 
 import 'package:fullpro/styles/statics.dart' as Static;
+import 'package:fullpro/widgets/widget.dart';
 
 class RegistrationPage extends StatefulWidget {
   static const String id = 'RegistrationPage';
@@ -131,6 +134,20 @@ class _RegistrationPageState extends State<RegistrationPage> {
     locationPermision();
   }
 
+  Widget signUp2() {
+    return Column(
+      children: [
+        AppWidget().texfieldFormat(title: "Profesión"),
+        Row(
+          children: [
+            Flexible(child: AppWidget().texfieldFormat(title: "Profesión")),
+            Flexible(child: AppWidget().texfieldFormat(title: "Profesión")),
+          ],
+        )
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -138,7 +155,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: EdgeInsets.only(left: 20, right: 20),
             child: Column(
               children: <Widget>[
                 SizedBox(
@@ -157,20 +174,42 @@ class _RegistrationPageState extends State<RegistrationPage> {
                 ),
                 //
                 //
-                Text(
-                  "Registro profesional",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 20,
-                  ),
+                Row(
+                  children: [
+                    Expanded(child: SizedBox()),
+                    SvgPicture.asset(
+                      "images/icons/profileCircle.svg",
+                      width: 50,
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Registro Profesional",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: secondryColor),
+                        ),
+                        Text(
+                          "Datos personales",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: secondryColor),
+                        ),
+                      ],
+                    ),
+                    Expanded(child: SizedBox()),
+                  ],
                 ),
 
-                SizedBox(
-                  height: 20,
-                ),
                 //
                 // Full Name
-                Padding(
+                SizedBox(
+                  height: 30,
+                ),
+                AppWidget().texfieldFormat(title: "Nombre completo", controller: fullNameController, urlIcon: "images/icons/user.svg"),
+                /*  Padding(
                   padding: EdgeInsets.only(
                     right: 20,
                     left: 20,
@@ -195,16 +234,27 @@ class _RegistrationPageState extends State<RegistrationPage> {
                       fontSize: 14,
                     ),
                   ),
-                ),
+                ),*/
                 //
                 //
-                SizedBox(
-                  height: 15,
-                ),
+
                 //
                 //  Phone Number TEXT FIELD
                 //
-                Padding(
+                SizedBox(
+                  height: 10,
+                ),
+                AppWidget()
+                    .texfieldFormat(title: "Fecha de nacimiento", controller: fullNameController, urlIcon: "images/icons/calendar.svg"),
+                SizedBox(
+                  height: 10,
+                ),
+                AppWidget().texfieldFormat(title: "Correo electronico", controller: emailController, urlIcon: "images/icons/email.svg"),
+                SizedBox(
+                  height: 10,
+                ),
+                AppWidget().texfieldFormat(title: "Celular", controller: phoneController, urlIcon: "images/icons/email.svg"),
+                /* Padding(
                   padding: EdgeInsets.only(
                     right: 20,
                     left: 20,
@@ -229,16 +279,16 @@ class _RegistrationPageState extends State<RegistrationPage> {
                       fontSize: 14,
                     ),
                   ),
-                ),
+                ),*/
                 //
                 //
                 SizedBox(
-                  height: 15,
+                  height: 10,
                 ),
                 //
                 //  Email Address TEXT FIELD
                 //
-                Padding(
+                /*Padding(
                   padding: EdgeInsets.only(
                     right: 20,
                     left: 20,
@@ -268,10 +318,12 @@ class _RegistrationPageState extends State<RegistrationPage> {
                 //
                 SizedBox(
                   height: 15,
-                ),
+                ),*/
                 //
                 //  Password
-                Padding(
+
+                AppWidget().texfieldFormat(title: "Password", controller: passwordController),
+                /* Padding(
                   padding: EdgeInsets.only(
                     right: 20,
                     left: 20,
@@ -296,7 +348,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                       fontSize: 14,
                     ),
                   ),
-                ),
+                ),*/
                 SizedBox(height: 15),
 
                 //

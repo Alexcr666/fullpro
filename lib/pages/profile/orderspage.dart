@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
+import 'package:fullpro/styles/statics.dart';
 import 'package:fullpro/widgets/widget.dart';
 import 'package:provider/provider.dart';
 import 'package:fullpro/config.dart';
@@ -26,10 +27,13 @@ class OrdersPage extends StatefulWidget {
   _OrdersPageState createState() => _OrdersPageState();
 }
 
+int positionFilter = 1;
+
 class _OrdersPageState extends State<OrdersPage> with TickerProviderStateMixin {
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   var refreshKey = GlobalKey<RefreshIndicatorState>();
   late TabController _tabController;
+
   Timer? timer;
 
   Future<void> refreshList() async {
@@ -175,7 +179,7 @@ class _OrdersPageState extends State<OrdersPage> with TickerProviderStateMixin {
               Row(
                 children: [
                   Expanded(child: SizedBox()),
-                  itemAdd("images/icons/work.svg", "Usuario", tap: () {}),
+                  itemAdd("images/icons/shoping.svg", "Usuario", tap: () {}),
                   SizedBox(
                     width: 10,
                   ),
@@ -237,21 +241,39 @@ class _OrdersPageState extends State<OrdersPage> with TickerProviderStateMixin {
                   margin: EdgeInsets.only(left: 20, right: 20),
                   child: Row(
                     children: [
-                      Container(width: 110, child: AppWidget().buttonShandow("Pendiente")),
+                      Container(
+                          width: 110,
+                          child: AppWidget().buttonShandow("Pendiente",
+                              color: positionFilter != 1 ? Colors.grey.withOpacity(0.2) : redButton, colorText: Colors.white, tap: () {
+                            positionFilter = 1;
+                            setState(() {});
+                          })),
                       SizedBox(
                         width: 10,
                       ),
-                      Container(width: 110, child: AppWidget().buttonShandow("En curso")),
+                      Container(
+                          width: 110,
+                          child: AppWidget().buttonShandow("En curso",
+                              color: positionFilter != 2 ? Colors.grey.withOpacity(0.2) : yellowButton, colorText: Colors.white, tap: () {
+                            positionFilter = 2;
+                            setState(() {});
+                          })),
                       SizedBox(
                         width: 10,
                       ),
-                      Container(width: 110, child: AppWidget().buttonShandow("Terminado")),
+                      Container(
+                          width: 110,
+                          child: AppWidget().buttonShandow("Terminado",
+                              color: positionFilter != 3 ? Colors.grey.withOpacity(0.2) : greenButton, colorText: Colors.white, tap: () {
+                            positionFilter = 3;
+                            setState(() {});
+                          })),
                     ],
                   )),
               SizedBox(
                 height: 20,
               ),
-              Container(
+              /*  Container(
                 color: Colors.white,
                 child: TabBar(
                   physics: const NeverScrollableScrollPhysics(),
@@ -271,8 +293,32 @@ class _OrdersPageState extends State<OrdersPage> with TickerProviderStateMixin {
                   controller: _tabController,
                   indicatorSize: TabBarIndicatorSize.tab,
                 ),
-              ),
+              ),*/
+
               Expanded(
+                  child: Column(
+                children: [
+                  positionFilter != 1 ? SizedBox() : OrderItemsPending(),
+
+                  //
+                  // Current Orders TabView
+                  positionFilter != 2
+                      ? SizedBox()
+                      : /*Scaffold(
+                          backgroundColor: Static.dashboardCard,
+                          body: Padding(
+                            padding: const EdgeInsets.all(8),
+                            child:*/
+                      OrderItemsCanceled(),
+                  //      ),
+                  //  ),
+
+                  //
+                  // Completed Orders TabView
+                  positionFilter != 3 ? SizedBox() : OrderItemsCompleted(),
+                ],
+              )),
+              /*  Expanded(
                 child: TabBarView(
                   physics: const AlwaysScrollableScrollPhysics(),
                   children: [
@@ -307,9 +353,9 @@ class _OrdersPageState extends State<OrdersPage> with TickerProviderStateMixin {
                   ],
                   controller: _tabController,
                 ),
-              ),
+              ),*/
               //
-              const SizedBox(height: 10),
+              //   const SizedBox(height: 10),
             ],
           ),
         ),

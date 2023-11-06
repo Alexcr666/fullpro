@@ -441,52 +441,66 @@ class AppWidget {
   }
 
 
-  buttonShandow(String title) {
+  buttonShandow(String title, {Function? tap, Color? color, Color? colorText}) {
 
-    return Container(
+    return GestureDetector(
 
-      height: 40,
+        onTap: () {
 
-      child: Center(
+          tap!();
 
-          child: Text(
+        },
 
-        title,
+        child: Container(
 
-        style: TextStyle(color: secondryColor, fontSize: 13),
+          height: 40,
 
-      )),
+          child: Center(
 
-      decoration: BoxDecoration(
+              child: Text(
 
-        color: Colors.white,
+            title,
 
-        borderRadius: BorderRadius.only(
+            style: TextStyle(color: colorText != null ? colorText : secondryColor, fontSize: 13),
 
-            topLeft: Radius.circular(30), topRight: Radius.circular(30), bottomLeft: Radius.circular(30), bottomRight: Radius.circular(30)),
+          )),
 
-        boxShadow: [
+          decoration: BoxDecoration(
 
-          BoxShadow(
+            color: color != null ? color : Colors.white,
 
-            color: secondryColor.withOpacity(0.1),
+            borderRadius: BorderRadius.only(
+
+                topLeft: Radius.circular(30),
+
+                topRight: Radius.circular(30),
+
+                bottomLeft: Radius.circular(30),
+
+                bottomRight: Radius.circular(30)),
+
+            boxShadow: [
+
+              BoxShadow(
+
+                color: Colors.grey.withOpacity(0.1),
 
 
-            spreadRadius: 3,
+                spreadRadius: 3,
 
 
-            blurRadius: 3,
+                blurRadius: 3,
 
 
-            offset: Offset(0, 3), // changes position of shadow
+                offset: Offset(0, 3), // changes position of shadow
+
+              ),
+
+            ],
 
           ),
 
-        ],
-
-      ),
-
-    );
+        ));
 
   }
 
@@ -854,7 +868,7 @@ class AppWidget {
   }
 
 
-  buttonFormLine(BuildContext context, String title, bool active, {Function? tap}) {
+  buttonFormLine(BuildContext context, String title, bool active, {Function? tap, String? urlIcon}) {
 
     return Padding(
 
@@ -914,17 +928,51 @@ class AppWidget {
 
           child: Padding(
 
-            padding: const EdgeInsets.all(14.0),
+              padding: EdgeInsets.all(14.0),
 
-            child: Text(
+              child: Row(
 
-              title,
+                mainAxisSize: MainAxisSize.min,
 
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: active == false ? Colors.white : secondryColor),
+                children: [
 
-            ),
+                  Text(
 
-          ),
+                    title,
+
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: active == false ? Colors.white : secondryColor),
+
+                  ),
+
+                  urlIcon == null
+
+                      ? SizedBox()
+
+                      : SizedBox(
+
+                          width: 15,
+
+                        ),
+
+                  urlIcon == null
+
+                      ? SizedBox()
+
+                      : SvgPicture.asset(
+
+                          urlIcon,
+
+                          width: 20,
+
+                          height: 20,
+
+                          color: active == false ? Colors.white : secondryColor,
+
+                        ),
+
+                ],
+
+              )),
 
         ),
 
