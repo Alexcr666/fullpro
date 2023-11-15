@@ -35,6 +35,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
   bool agree = false;
   File fileLicense = File("");
   File fileBackgroundCheck = File("");
+  bool signUpNext = false;
 
   File fileRegistroLegal = File("");
 
@@ -44,9 +45,17 @@ class _RegistrationPageState extends State<RegistrationPage> {
 
   var emailController = TextEditingController();
 
+  var dateController = TextEditingController();
+
   var passwordController = TextEditingController();
 
   set errorMessage(String errorMessage) {}
+
+  var professionController = TextEditingController();
+
+  var cityController = TextEditingController();
+
+  var stateController = TextEditingController();
 
   void registerUser() async {
     try {
@@ -76,7 +85,11 @@ class _RegistrationPageState extends State<RegistrationPage> {
             Map userMap = {
               'fullname': 'Provider',
               'phone': phoneController.text,
-              'earnings': "0",
+              'history': "0",
+              'earnings': 0,
+              'profesion': "",
+              'city': '',
+              'state': ''
             };
             phoneRef.set(userMap);
           }
@@ -97,7 +110,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
               MaterialPageRoute(builder: (context) => const HomePage()),
             );
           } else {
-            Navigator.push(
+            /*   Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) => DatabaseEntry(
@@ -105,6 +118,11 @@ class _RegistrationPageState extends State<RegistrationPage> {
                   userid: User.uid,
                 ),
               ),
+            );*/
+
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const HomePage()),
             );
             /*   Navigator.pushReplacement(
               context,
@@ -146,14 +164,14 @@ class _RegistrationPageState extends State<RegistrationPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        AppWidget().texfieldFormat(title: "Profesión"),
+        AppWidget().texfieldFormat(title: "Profesión", controller: professionController),
         Row(
           children: [
-            Flexible(child: AppWidget().texfieldFormat(title: "Ciudad")),
+            Flexible(child: AppWidget().texfieldFormat(title: "Ciudad", controller: cityController)),
             SizedBox(
               width: 20,
             ),
-            Flexible(child: AppWidget().texfieldFormat(title: "Estado")),
+            Flexible(child: AppWidget().texfieldFormat(title: "Estado", controller: stateController)),
           ],
         ),
         SizedBox(
@@ -291,7 +309,8 @@ class _RegistrationPageState extends State<RegistrationPage> {
         SizedBox(
           height: 10,
         ),
-        AppWidget().texfieldFormat(title: "Fecha de nacimiento", controller: fullNameController, urlIcon: "images/icons/calendar.svg"),
+
+        AppWidget().texfieldFormat(title: "Fecha de nacimiento", controller: dateController, urlIcon: "images/icons/calendar.svg"),
         SizedBox(
           height: 10,
         ),
@@ -460,8 +479,9 @@ class _RegistrationPageState extends State<RegistrationPage> {
                 SizedBox(
                   height: 30,
                 ),
-                signUp2(),
 
+                signUpNext ? SizedBox() : signUp1(),
+                signUpNext == false ? SizedBox() : signUp2(),
                 //
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 15),
@@ -500,6 +520,8 @@ class _RegistrationPageState extends State<RegistrationPage> {
                 ),
                 SizedBox(height: 15),
                 //    Register Button
+
+                Text(signUpNext.toString()),
                 Padding(
                   padding: EdgeInsets.only(
                     right: 50,
@@ -561,7 +583,12 @@ class _RegistrationPageState extends State<RegistrationPage> {
                           );
                           return;
                         }
-                        registerUser();
+                        if (signUpNext == true) {
+                          registerUser();
+                        } else {
+                          signUpNext = true;
+                        }
+                        setState(() {});
                       },
                       style: ButtonStyle(
                         foregroundColor: MaterialStateProperty.all<Color>(Colors.white),

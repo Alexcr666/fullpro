@@ -18,6 +18,7 @@ import 'package:fullpro/styles/statics.dart' as Static;
 import 'package:fullpro/utils/userpreferences.dart';
 import 'package:fullpro/widgets/DataLoadedProgress.dart';
 import 'package:fullpro/widgets/ProfileWidget.dart';
+import 'package:fullpro/widgets/widget.dart';
 
 class Account extends StatefulWidget {
   const Account({Key? key}) : super(key: key);
@@ -27,6 +28,10 @@ class Account extends StatefulWidget {
   _AccountState createState() => _AccountState();
 }
 
+bool activeProfile = false;
+bool activeSetting = false;
+bool activeAjustCount = false;
+
 class _AccountState extends State<Account> with TickerProviderStateMixin {
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   var refreshKey = GlobalKey<RefreshIndicatorState>();
@@ -34,8 +39,10 @@ class _AccountState extends State<Account> with TickerProviderStateMixin {
   late TabController _tabController;
   final int _groupValue = 1;
   bool manualAdressExists = false;
+  double _currentSliderValue = 20;
   String? getUserName = '';
   String? getuserPhone = '';
+
   // Text Field Controllers
 
   late final _nameController = TextEditingController();
@@ -119,6 +126,7 @@ class _AccountState extends State<Account> with TickerProviderStateMixin {
                 SvgPicture.asset(
                   url,
                   width: 35,
+                  color: secondryColor,
                 ),
                 SizedBox(
                   width: 20,
@@ -227,7 +235,7 @@ class _AccountState extends State<Account> with TickerProviderStateMixin {
       key: scaffoldKey,
       resizeToAvoidBottomInset: false,
       backgroundColor: Colors.white,
-      appBar: AppBar(
+      /* appBar: AppBar(
         iconTheme: const IconThemeData(
           color: Colors.black,
         ),
@@ -247,7 +255,7 @@ class _AccountState extends State<Account> with TickerProviderStateMixin {
             color: Colors.black,
           ),
         ),
-      ),
+      ),*/
       body: SafeArea(
           child: Padding(
         padding: EdgeInsets.only(
@@ -264,6 +272,17 @@ class _AccountState extends State<Account> with TickerProviderStateMixin {
                 imagePath: 'images/user_icon.png',
                 onClicked: () async {},
               ),
+              SizedBox(
+                height: 10,
+              ),
+              Text(
+                "Andres peña",
+                style: TextStyle(color: secondryColor, fontSize: 22, fontWeight: FontWeight.bold),
+              ),
+              Text(
+                "Hola",
+                style: TextStyle(color: secondryColor, fontSize: 21),
+              ),
               Container(
                 padding: const EdgeInsets.all(10),
                 child: Form(
@@ -271,7 +290,10 @@ class _AccountState extends State<Account> with TickerProviderStateMixin {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      itemOptionProfile("Mi perfil", "images/icons/profileCircle.svg"),
+                      itemOptionProfile("Mi perfil", "images/icons/profileCircle.svg", tap: () {
+                        activeProfile = !activeProfile;
+                        setState(() {});
+                      }),
                       SizedBox(
                         height: 10,
                       ),
@@ -283,39 +305,43 @@ class _AccountState extends State<Account> with TickerProviderStateMixin {
                       SizedBox(
                         height: 20,
                       ),
-                      Row(
-                        children: [
-                          SvgPicture.asset(
-                            "images/icons/profileCircle.svg",
-                            width: 35,
-                          ),
-                          SizedBox(
-                            width: 20,
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Mi Perfil",
-                                style: TextStyle(color: secondryColor, fontSize: 17),
-                              ),
-                              Text(
-                                "Datos cliente",
-                                style: TextStyle(color: secondryColor, fontSize: 17, fontWeight: FontWeight.bold),
-                              ),
-                            ],
-                          ),
-                          Expanded(child: SizedBox()),
-                          Text(
-                            "Datos personales",
-                            style: TextStyle(color: secondryColor, fontSize: 13, fontWeight: FontWeight.normal),
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      Padding(
+                      activeProfile
+                          ? SizedBox()
+                          : Column(
+                              children: [
+                                Row(
+                                  children: [
+                                    SvgPicture.asset(
+                                      "images/icons/profileCircle.svg",
+                                      width: 35,
+                                    ),
+                                    SizedBox(
+                                      width: 20,
+                                    ),
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "Mi Perfil",
+                                          style: TextStyle(color: secondryColor, fontSize: 17),
+                                        ),
+                                        Text(
+                                          "Datos cliente",
+                                          style: TextStyle(color: secondryColor, fontSize: 17, fontWeight: FontWeight.bold),
+                                        ),
+                                      ],
+                                    ),
+                                    Expanded(child: SizedBox()),
+                                    Text(
+                                      "Datos personales",
+                                      style: TextStyle(color: secondryColor, fontSize: 13, fontWeight: FontWeight.normal),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(
+                                  height: 20,
+                                ),
+                                /* Padding(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 0,
                           vertical: 5,
@@ -345,9 +371,19 @@ class _AccountState extends State<Account> with TickerProviderStateMixin {
                             },
                           ),
                         ),
-                      ),
-                      const SizedBox(height: 20),
-                      Text(
+                      ),*/
+
+                                AppWidget().texfieldFormat(title: "Nombre completo", urlIcon: "images/icons/user.svg"),
+                                const SizedBox(height: 10),
+                                AppWidget().texfieldFormat(title: "Fecha de nacimiento", urlIcon: "images/icons/user.svg"),
+                                const SizedBox(height: 10),
+                                AppWidget().texfieldFormat(title: "Correo electronico", urlIcon: "images/icons/email.svg"),
+                                const SizedBox(height: 10),
+                                AppWidget().texfieldFormat(title: "Contraseña", urlIcon: "images/icons/email.svg"),
+                              ],
+                            ),
+
+                      /* Text(
                         Locales.string(context, 'war_phone_can_not_change'),
                         style: const TextStyle(fontSize: 14),
                       ),
@@ -382,9 +418,9 @@ class _AccountState extends State<Account> with TickerProviderStateMixin {
                             },
                           ),
                         ),
-                      ),
+                      ),*/
                       const SizedBox(height: 20),
-                      Center(
+                      /*  Center(
                         child: SizedBox(
                           width: MediaQuery.of(context).size.width * .6,
                           child: MaterialButton(
@@ -403,77 +439,130 @@ class _AccountState extends State<Account> with TickerProviderStateMixin {
                                 //
                                 updateProfile();
                               }
-                            },
+                            },f
                           ),
                         ),
-                      ),
+                      ),*/
                       SizedBox(
                         height: 30,
                       ),
-                      itemOptionProfile("Ajustes", "images/icons/settings.svg"),
-                      SizedBox(
-                        height: 30,
-                      ),
-                      itemOptionProfileOptions("Radio de busqueda", "images/icons/location.svg", subtitle: "13 KM"),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      itemOptionProfileOptions("Ajuste de cuenta", "images/icons/profileCircle.svg", onTap: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => const DeleteAccountPage()));
+                      itemOptionProfile("Ajustes", "images/icons/settings.svg", tap: () {
+                        activeSetting = !activeSetting;
+                        setState(() {});
                       }),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      itemOptionProfile("Eliminar cuenta", "images/icons/profileCircle.svg", tap: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => const DeleteAccountPage()));
-                      }),
-                      itemOptionProfile("Fecha", "", subtitle: "02/05/2023", tap: () {
-                        //    Navigator.push(context, MaterialPageRoute(builder: (context) => const PortafolioPage()));
-                      }),
-                      itemOptionProfile("Usuario", "", subtitle: "user"),
-                      itemOptionProfile("Estado del usuario", "", subtitle: "Activado"),
-                      SizedBox(
-                        height: 30,
-                      ),
-                      itemOptionProfile("Suspender cuenta", "", subtitle: "", tap: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => const DeleteAccountPage()));
-                        //   Navigator.push(context, MaterialPageRoute(builder: (context) => ProfileProfesionalPage()));
-                      }),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      itemOptionProfile("Archivar cuenta", "", subtitle: "", tap: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => const DeleteAccountPage()));
-                      }),
+                      activeSetting
+                          ? SizedBox()
+                          : Column(
+                              children: [
+                                SizedBox(
+                                  height: 30,
+                                ),
+                                itemOptionProfileOptions("Radio de busqueda", "images/icons/locationCircle.svg",
+                                    subtitle: _currentSliderValue.round().toString() + " KM"),
+                                Slider(
+                                  value: _currentSliderValue,
+                                  max: 100,
+                                  activeColor: secondryColor,
+                                  divisions: 5,
+                                  label: _currentSliderValue.round().toString(),
+                                  onChanged: (double value) {
+                                    setState(() {
+                                      _currentSliderValue = value;
+                                    });
+                                  },
+                                ),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                itemOptionProfileOptions("Ajuste de cuenta", "images/icons/profileCircle.svg", onTap: () {
+                                  activeAjustCount = !activeAjustCount;
+                                  setState(() {});
+
+                                  //Navigator.push(context, MaterialPageRoute(builder: (context) => const DeleteAccountPage()));
+                                }),
+                                SizedBox(
+                                  height: 20,
+                                ),
+                                activeAjustCount
+                                    ? SizedBox()
+                                    : Column(
+                                        children: [
+                                          itemOptionProfile("Eliminar cuenta", "images/icons/profileCircle.svg", tap: () {
+                                            Navigator.push(context, MaterialPageRoute(builder: (context) => const DeleteAccountPage()));
+                                          }),
+                                          itemOptionProfile("Fecha", "", subtitle: "02/05/2023", tap: () {
+                                            //    Navigator.push(context, MaterialPageRoute(builder: (context) => const PortafolioPage()));
+                                          }),
+                                          itemOptionProfile("Usuario", "", subtitle: "user"),
+                                          itemOptionProfile("Estado del usuario", "", subtitle: "Activado"),
+                                          SizedBox(
+                                            height: 30,
+                                          ),
+                                          itemOptionProfile("Suspender cuenta", "", subtitle: "", tap: () {
+                                            Navigator.push(context, MaterialPageRoute(builder: (context) => const DeleteAccountPage()));
+                                            //   Navigator.push(context, MaterialPageRoute(builder: (context) => ProfileProfesionalPage()));
+                                          }),
+                                          SizedBox(
+                                            height: 10,
+                                          ),
+                                          itemOptionProfile("Archivar cuenta", "", subtitle: "", tap: () {
+                                            Navigator.push(context, MaterialPageRoute(builder: (context) => const DeleteAccountPage()));
+                                          }),
+                                          SizedBox(
+                                            height: 30,
+                                          ),
+                                        ],
+                                      ),
+                              ],
+                            ),
                       SizedBox(
                         height: 30,
                       ),
                       Row(
                         children: [
                           Expanded(child: SizedBox()),
-                          SvgPicture.asset(
-                            "images/icons/miprofile7.svg",
-                            width: 30,
-                          ),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          Text(
-                            "LOGOUT",
-                            style: TextStyle(color: secondryColor, fontSize: 20),
-                          ),
+                          GestureDetector(
+                              onTap: () {},
+                              child: Flexible(
+                                  child: Row(
+                                children: [
+                                  SvgPicture.asset(
+                                    "images/icons/miprofile7.svg",
+                                    width: 30,
+                                  ),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Text(
+                                    "LOGOUT",
+                                    style: TextStyle(color: secondryColor, fontSize: 20),
+                                  ),
+                                ],
+                              ))),
                           Expanded(child: SizedBox()),
-                          SvgPicture.asset(
-                            "images/icons/saved.svg",
-                            width: 30,
-                          ),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          Text(
-                            "Guardar",
-                            style: TextStyle(color: secondryColor, fontSize: 20),
-                          ),
+                          GestureDetector(
+                              onTap: () {
+                                if (_formKey.currentState!.validate()) {
+                                  //
+                                  updateProfile();
+                                }
+                              },
+                              child: Flexible(
+                                  child: Row(
+                                children: [
+                                  SvgPicture.asset(
+                                    "images/icons/saved.svg",
+                                    width: 30,
+                                  ),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Text(
+                                    "Guardar",
+                                    style: TextStyle(color: secondryColor, fontSize: 20),
+                                  ),
+                                ],
+                              ))),
                           Expanded(child: SizedBox()),
                         ],
                       )

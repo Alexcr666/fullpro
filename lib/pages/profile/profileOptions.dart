@@ -144,17 +144,22 @@ class _ProfileOptionsPageState extends State<ProfileOptionsPage> {
                 height: 10,
               ),
 
-              Column(
+              Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    "Hola",
-                    style: TextStyle(color: secondryColor, fontSize: 25),
-                  ),
-                  Text(
-                    "Andres peña",
-                    style: TextStyle(color: secondryColor, fontSize: 25, fontWeight: FontWeight.bold),
-                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Hola",
+                        style: TextStyle(color: secondryColor, fontSize: 25),
+                      ),
+                      Text(
+                        "Andres peña",
+                        style: TextStyle(color: secondryColor, fontSize: 25, fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  )
                 ],
               ),
 
@@ -274,7 +279,7 @@ class _ProfileOptionsPageState extends State<ProfileOptionsPage> {
                         icon: "images/icons/miprofile4.svg",
                       ),
 
-                      // const Divider(color: Colors.black12),
+                      const Divider(color: Colors.black12),
 
                       // ProfileButton(
 
@@ -296,8 +301,6 @@ class _ProfileOptionsPageState extends State<ProfileOptionsPage> {
 
               //
 
-              const SizedBox(height: 20),
-
               Center(
                 child: Container(
                   decoration: BoxDecoration(
@@ -316,7 +319,7 @@ class _ProfileOptionsPageState extends State<ProfileOptionsPage> {
 
                           // share();
                         },
-                        icon: "images/icons/miprofile5.svg",
+                        icon: "images/icons/maletin.svg",
                       ),
                       const Divider(color: Colors.black12),
                       ProfileButton(

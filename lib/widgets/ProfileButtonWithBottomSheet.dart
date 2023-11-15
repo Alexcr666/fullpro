@@ -372,15 +372,15 @@ class ProfileButton extends StatelessWidget {
           children: [
             SvgPicture.asset(
               icon,
-              width: 35,
-              height: 35,
+              width: 30,
+              height: 30,
             ),
             SizedBox(
               width: 20,
             ),
             Text(
               buttonName,
-              style: TextStyle(color: secondryColor, fontSize: 20, fontWeight: FontWeight.bold),
+              style: TextStyle(color: secondryColor, fontSize: 19, fontWeight: FontWeight.bold),
             ),
           ],
         ),

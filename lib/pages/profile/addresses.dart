@@ -3,7 +3,10 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:flutter_locales/flutter_locales.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
+import 'package:fullpro/widgets/widget.dart';
 import 'package:geolocator/geolocator.dart';
 //import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:fullpro/utils/globalConstants.dart';
@@ -117,14 +120,17 @@ class _AddressesState extends State<Addresses> {
     return Scaffold(
       key: scaffoldKey,
       resizeToAvoidBottomInset: false,
-      backgroundColor: Static.dashboardCard,
+      backgroundColor: Colors.white,
       appBar: AppBar(
         centerTitle: true,
-        title: Text(
-          Locales.string(context, 'lbl_address'),
-          style: const TextStyle(color: Colors.black),
-        ),
-        actions: [
+        title: Row(children: [
+          Expanded(child: SizedBox()),
+          Image.asset(
+            "images/logo.png",
+            width: 70,
+          )
+        ]),
+        /* actions: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 2),
             child: MaterialButton(
@@ -136,96 +142,7 @@ class _AddressesState extends State<Addresses> {
               height: 70,
               color: Colors.transparent,
               onPressed: () {
-                showDialog(
-                    context: context,
-                    builder: (context) => AlertDialog(
-                          content: Padding(
-                            padding: const EdgeInsets.only(left: 24, top: 24, right: 24, bottom: 0),
-                            child: Column(
-                              children: [
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    InkWell(
-                                      onTap: () {
-                                        Navigator.pop(context);
-                                      },
-                                      borderRadius: BorderRadius.circular(50),
-                                      child: CircleAvatar(
-                                        radius: 35,
-                                        backgroundColor: Colors.transparent,
-                                        child: SvgPicture.asset('images/svg_icons/arrowLeft.svg'),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 20),
-                                  child: Text(
-                                    Locales.string(context, 'lbl_add_update_manual_address'),
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(height: 20),
-                                Form(
-                                  key: _formKey,
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: <Widget>[
-                                      CountryStateCityPicker(
-                                        country: country,
-                                        state: state,
-                                        city: city,
-                                        textFieldInputBorder: const UnderlineInputBorder(),
-                                      ),
-                                      const SizedBox(height: 20),
-                                      TextFormField(
-                                        controller: street,
-                                        decoration: InputDecoration(
-                                          icon: const Icon(Icons.home),
-                                          hintText: Locales.string(context, 'hint_enter_street'),
-                                          labelText: Locales.string(context, 'lbl_address'),
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.only(bottom: 30, top: 30),
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: [
-                                            MaterialButton(
-                                              onPressed: () {
-                                                updateManualAddress();
-                                              },
-                                              elevation: 0.0,
-                                              hoverElevation: 0.0,
-                                              focusElevation: 0.0,
-                                              highlightElevation: 0.0,
-                                              color: Colors.green,
-                                              textColor: Colors.white,
-                                              minWidth: 50,
-                                              height: 15,
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.circular(12),
-                                              ),
-                                              padding: const EdgeInsets.symmetric(
-                                                horizontal: 50,
-                                                vertical: 15,
-                                              ),
-                                              child: Text(Locales.string(context, 'lbl_submit')),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ));
+              
                 /* showMaterialModalBottomSheet(
                   enableDrag: true,
                   duration: const Duration(milliseconds: 200),
@@ -340,7 +257,7 @@ class _AddressesState extends State<Addresses> {
               ),
             ),
           ),
-        ],
+        ],*/
         backgroundColor: Static.dashboardBG,
         elevation: 0.0,
         toolbarHeight: 70,
@@ -352,33 +269,151 @@ class _AddressesState extends State<Addresses> {
           onPressed: () {
             Navigator.pop(context);
           },
-          icon: const Icon(Icons.arrow_back_ios_new),
+          icon: SvgPicture.asset(
+            "images/icons/back.svg",
+            width: 30,
+          ),
         ),
       ),
       body: SafeArea(
         child: Container(
-          color: Static.dashboardCard,
+          color: Colors.white,
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 const SizedBox(height: 10),
-                Text(
-                  Locales.string(context, 'lbl_select_address_to_use'),
-                  style: const TextStyle(
-                    fontSize: 12,
-                  ),
+                Row(
+                  children: [
+                    Container(
+                        width: 200,
+                        child: Text(
+                          "Agregar o escoge una dirección",
+                          style: TextStyle(fontSize: 19, color: secondryColor, fontWeight: FontWeight.bold),
+                        )),
+                    Expanded(child: SizedBox()),
+                    GestureDetector(
+                        onTap: () {
+                          var height = MediaQuery.of(context).size.height;
+                          var width = MediaQuery.of(context).size.width;
+
+                          showDialog(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                  insetPadding: EdgeInsets.all(0),
+                                  contentPadding: EdgeInsets.all(0),
+                                  content: Builder(builder: (context) {
+                                    // Get available height and width of the build area of this widget. Make a choice depending on the size.
+                                    var height = MediaQuery.of(context).size.height;
+                                    var width = MediaQuery.of(context).size.width;
+
+                                    return Container(
+                                      width: width,
+                                      color: Colors.white,
+                                      padding: const EdgeInsets.only(left: 24, top: 24, right: 24, bottom: 0),
+                                      child: ListView(
+                                        //    mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Row(
+                                            crossAxisAlignment: CrossAxisAlignment.center,
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              InkWell(
+                                                onTap: () {
+                                                  Navigator.pop(context);
+                                                },
+                                                borderRadius: BorderRadius.circular(50),
+                                                child: CircleAvatar(
+                                                  radius: 35,
+                                                  backgroundColor: Colors.transparent,
+                                                  child: SvgPicture.asset('images/svg_icons/arrowLeft.svg'),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.only(top: 20),
+                                            child: Text(
+                                              Locales.string(context, 'lbl_add_update_manual_address'),
+                                              style: const TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ),
+                                          const SizedBox(height: 20),
+                                          Form(
+                                            key: _formKey,
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: <Widget>[
+                                                CountryStateCityPicker(
+                                                  country: country,
+                                                  state: state,
+                                                  city: city,
+                                                  textFieldInputBorder: const UnderlineInputBorder(),
+                                                ),
+                                                const SizedBox(height: 20),
+                                                TextFormField(
+                                                  controller: street,
+                                                  decoration: InputDecoration(
+                                                    icon: const Icon(Icons.home),
+                                                    hintText: Locales.string(context, 'hint_enter_street'),
+                                                    labelText: Locales.string(context, 'lbl_address'),
+                                                  ),
+                                                ),
+                                                Padding(
+                                                  padding: const EdgeInsets.only(bottom: 30, top: 30),
+                                                  child: Row(
+                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                    children: [
+                                                      MaterialButton(
+                                                        onPressed: () {
+                                                          updateManualAddress();
+                                                        },
+                                                        elevation: 0.0,
+                                                        hoverElevation: 0.0,
+                                                        focusElevation: 0.0,
+                                                        highlightElevation: 0.0,
+                                                        color: Colors.green,
+                                                        textColor: Colors.white,
+                                                        minWidth: 50,
+                                                        height: 15,
+                                                        shape: RoundedRectangleBorder(
+                                                          borderRadius: BorderRadius.circular(12),
+                                                        ),
+                                                        padding: const EdgeInsets.symmetric(
+                                                          horizontal: 50,
+                                                          vertical: 15,
+                                                        ),
+                                                        child: Text(Locales.string(context, 'lbl_submit')),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  })));
+                        },
+                        child: SvgPicture.asset(
+                          "images/icons/addCircleBlue.svg",
+                          width: 40,
+                        )),
+                  ],
                 ),
+                const SizedBox(height: 20),
+                AppWidget().texfieldFormat(title: "Ingresa una nueva ubicación"),
                 const SizedBox(height: 20),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       Locales.string(context, 'lbl_current_address'),
-                      style: const TextStyle(
-                        fontFamily: 'Roboto-Bold',
-                      ),
+                      style: const TextStyle(),
                     ),
                     SizedBox(
                       width: double.infinity,
@@ -395,15 +430,13 @@ class _AddressesState extends State<Addresses> {
                       ),
                     ),
                     const SizedBox(height: 20),
-                    Text(
+                    /*Text(
                       Locales.string(context, 'lbl_manual_address'),
-                      style: const TextStyle(
-                        fontFamily: 'Roboto-Bold',
-                      ),
-                    ),
+                      style: const TextStyle(),
+                    ),*/
                     SizedBox(
                       width: double.infinity,
-                      child: addressRadio(
+                      child: addressRadioIcon(
                         selected: false,
                         background: UserPreferences.getAddressStatus() == 'manual' ? Static.themeColor[500]! : Colors.black87,
                         title: '${UserPreferences.getManualLocation() ?? currentUserInfo?.manualAddress} ',
@@ -475,6 +508,82 @@ class _AddressesState extends State<Addresses> {
     );
   }
 
+  Widget addressRadioIcon(
+      {required String title, required int value, required bool selected, required Color background, required Function(int?) onChanged}) {
+    return Padding(
+        padding: const EdgeInsets.all(5.0),
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            //color: background,
+            //  border: Border.all(color: Colors.black26),
+          ),
+          child: Slidable(
+            // Specify a key if the Slidable is dismissible.
+            key: const ValueKey(0),
+
+            // The start action pane is the one at the left or the top side.
+            startActionPane: ActionPane(
+              // A motion is a widget used to control how the pane animates.
+              motion: const ScrollMotion(),
+
+              // A pane can dismiss the Slidable.
+              dismissible: DismissiblePane(onDismissed: () {}),
+
+              // All actions are defined in the children parameter.
+              children: const [],
+            ),
+
+            // The end action pane is the one at the right or the bottom side.
+            endActionPane: const ActionPane(
+              motion: ScrollMotion(),
+              children: [
+                SlidableAction(
+                  // An action can be bigger than the others.
+                  flex: 2,
+                  onPressed: null,
+                  backgroundColor: Color(0xFFFE4A49),
+                  foregroundColor: Colors.white,
+                  icon: Icons.delete,
+                  label: 'Eliminar',
+                ),
+              ],
+            ),
+
+            // The child of the Slidable is what the user sees when the
+            // component is not dragged.
+            child: Theme(
+                data: Theme.of(context).copyWith(),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 50,
+                      height: 50,
+                      padding: EdgeInsets.all(8),
+                      child: SvgPicture.asset(
+                        "images/icons/bottom1.svg",
+                        width: 30,
+                        height: 30,
+                      ),
+                      decoration: BoxDecoration(shape: BoxShape.circle, color: secondryColor),
+                    ),
+                    Flexible(
+                        child: RadioListTile(
+                      value: value,
+                      groupValue: _groupValue,
+                      onChanged: onChanged,
+                      selected: selected,
+                      title: Text(
+                        title,
+                        style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 16),
+                      ),
+                    )),
+                  ],
+                )),
+          ),
+        ));
+  }
+
   Widget addressRadio(
       {required String title, required int value, required bool selected, required Color background, required Function(int?) onChanged}) {
     return Padding(
@@ -482,8 +591,8 @@ class _AddressesState extends State<Addresses> {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
-          color: background,
-          border: Border.all(color: Colors.black26),
+          //color: background,
+          //  border: Border.all(color: Colors.black26),
         ),
         child: Theme(
           data: Theme.of(context).copyWith(),
@@ -494,9 +603,7 @@ class _AddressesState extends State<Addresses> {
             selected: selected,
             title: Text(
               title,
-              style: const TextStyle(
-                color: Colors.white,
-              ),
+              style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 16),
             ),
           ),
         ),
@@ -561,10 +668,10 @@ class _AddressesState extends State<Addresses> {
                         color: Colors.green,
                       ),
                       const SizedBox(height: 10),
-                      const Text(
+                      /* Text(
                         'Manual Address Modified!',
                         style: TextStyle(fontSize: 15),
-                      ),
+                      ),*/
                       Center(
                           child: TextButton(
                         style: ButtonStyle(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
 import 'package:fullpro/styles/statics.dart';
@@ -369,6 +370,7 @@ class _OrdersPageState extends State<OrdersPage> with TickerProviderStateMixin {
         ? ordersItemsList.isNotEmpty || ordersListLoaded == true
             ? ordersItemsList.isNotEmpty
                 ? ListView.separated(
+                    shrinkWrap: true,
                     separatorBuilder: (BuildContext context, int index) => const SizedBox(),
                     itemCount: ordersItemsList.length,
                     itemBuilder: (context, index) {
@@ -583,12 +585,9 @@ class _OrdersPageState extends State<OrdersPage> with TickerProviderStateMixin {
               ));
         },
         child: Container(
+          margin: EdgeInsets.only(left: 10, right: 10),
           width: double.infinity,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(25),
-            color: Static.dashboardBG,
-            border: Border.all(color: Colors.black12),
-          ),
+          decoration: AppWidget().boxShandowGrey(),
           padding: const EdgeInsets.symmetric(
             horizontal: 8,
             vertical: 5,
@@ -598,13 +597,17 @@ class _OrdersPageState extends State<OrdersPage> with TickerProviderStateMixin {
               horizontal: 10,
               vertical: 10,
             ),
-            child: Column(
+            child: Row(
               children: [
+                CircleAvatar(
+                  backgroundColor: Colors.grey.withOpacity(0.4),
+                  radius: 30,
+                ),
                 // Image Row
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Column(
+                //    Row(
+                //    crossAxisAlignment: CrossAxisAlignment.center,
+                //  children: [
+                /* Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
@@ -626,53 +629,134 @@ class _OrdersPageState extends State<OrdersPage> with TickerProviderStateMixin {
                           fit: BoxFit.contain,
                         ),
                       ],
-                    ),
-                    const SizedBox(width: 10),
-                    Column(
-                      children: [
-                        SizedBox(
-                          width: MediaQuery.of(context).size.width * .6,
-                          child: Text(
-                            kServices.itemsNames!.contains('Air')
-                                ? Locales.string(context, "srvs_ac_services")
-                                // Cleaning
-                                : kServices.itemsNames!.contains('Cleaning')
-                                    ? Locales.string(context, "srvs_cleaning")
+                    ),*/
+                const SizedBox(width: 10),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      //  width: MediaQuery.of(context).size.width * .6,
+                      child: Text(
+                        kServices.itemsNames!.contains('Air')
+                            ? Locales.string(context, "srvs_ac_services")
+                            // Cleaning
+                            : kServices.itemsNames!.contains('Cleaning')
+                                ? Locales.string(context, "srvs_cleaning")
+                                // Carpenter
+                                : kServices.itemsNames!.contains('Carpenter')
+                                    ? Locales.string(context, "srvs_carpenter")
                                     // Carpenter
-                                    : kServices.itemsNames!.contains('Carpenter')
-                                        ? Locales.string(context, "srvs_carpenter")
+                                    : kServices.itemsNames!.contains('Electrician')
+                                        ? Locales.string(context, "srvs_electrician")
                                         // Carpenter
-                                        : kServices.itemsNames!.contains('Electrician')
-                                            ? Locales.string(context, "srvs_electrician")
+                                        : kServices.itemsNames!.contains('Geyser')
+                                            ? Locales.string(context, "srvs_geyser")
                                             // Carpenter
-                                            : kServices.itemsNames!.contains('Geyser')
-                                                ? Locales.string(context, "srvs_geyser")
-                                                // Carpenter
-                                                : kServices.itemsNames!.contains('Appliances')
-                                                    ? Locales.string(context, "srvs_appliance")
-                                                    : kServices.itemsNames!.contains('Plumber')
-                                                        ? Locales.string(context, "srvs_plumber")
-                                                        : kServices.itemsNames!.contains('Painter')
-                                                            ? Locales.string(context, "srvs_painter")
-                                                            : kServices.itemsNames!.contains('Handyman')
-                                                                ? Locales.string(context, "srvs_handyman")
-                                                                : '$appName Services',
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
-                              fontFamily: 'Roboto-Regular',
-                              color: Colors.black,
-                              fontSize: 18,
-                            ),
+                                            : kServices.itemsNames!.contains('Appliances')
+                                                ? Locales.string(context, "srvs_appliance")
+                                                : kServices.itemsNames!.contains('Plumber')
+                                                    ? Locales.string(context, "srvs_plumber")
+                                                    : kServices.itemsNames!.contains('Painter')
+                                                        ? Locales.string(context, "srvs_painter")
+                                                        : kServices.itemsNames!.contains('Handyman')
+                                                            ? Locales.string(context, "srvs_handyman")
+                                                            : '$appName Services',
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          color: secondryColor,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 13,
+                        ),
+                      ),
+                    ),
+                    RatingBarIndicator(
+                        rating: 2.5,
+                        itemCount: 5,
+                        itemSize: 18.0,
+                        itemBuilder: (context, _) => Icon(
+                              Icons.star,
+                              color: secondryColor,
+                            )),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Row(
+                      children: [
+                        SvgPicture.asset(
+                          "images/icons/userCircle.svg",
+                          color: secondryColor,
+                          height: 17,
+                        ),
+                        SizedBox(
+                          width: 5,
+                        ),
+                        Text(
+                          "Nombre de cliente",
+                          style: TextStyle(
+                            color: secondryColor,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 12,
                           ),
                         ),
                       ],
                     ),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Row(
+                      children: [
+                        SvgPicture.asset(
+                          "images/icons/calendar.svg",
+                          color: secondryColor,
+                          height: 17,
+                        ),
+                        SizedBox(
+                          width: 5,
+                        ),
+                        Text(
+                          "19 oct 2023",
+                          style: TextStyle(
+                            color: secondryColor,
+                            //fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                          ),
+                        ),
+                      ],
+                    )
                   ],
                 ),
-                const SizedBox(height: 10),
+
+                Column(
+                  children: [
+                    Container(
+                        width: 120,
+                        height: 40,
+                        child:
+                            AppWidget().buttonFormColor(context, MainController.capitalize(kServices.status!), Colors.yellow, tap: () {})),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Container(width: 120, height: 40, child: AppWidget().buttonFormColor(context, "Cancelar", Colors.red, tap: () {})),
+                  ],
+                )
+                /*Text(
+                  MainController.capitalize(kServices.status!),
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontFamily: 'Brand-Regular',
+                    color: kServices.status == Locales.string(context, "lbl_pending") ||
+                            kServices.status == Locales.string(context, "lbl_canceled") ||
+                            kServices.status == Locales.string(context, "lbl_canceled")
+                        ? Colors.red
+                        : Colors.green,
+                  ),
+                ),*/
+                //   ],
+                //  ),
+                // const SizedBox(height: 10),
 
                 // Booking Row
-                Row(
+                /*   Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -697,8 +781,8 @@ class _OrdersPageState extends State<OrdersPage> with TickerProviderStateMixin {
                       ),
                     ),
                   ],
-                ),
-                const SizedBox(height: 5),
+                ),*/
+                /* const SizedBox(height: 5),
 
                 // Order Numer Row
                 Row(
@@ -726,10 +810,8 @@ class _OrdersPageState extends State<OrdersPage> with TickerProviderStateMixin {
                   ],
                 ),
                 const SizedBox(height: 5),
-                // Status Row
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                // Status Row*/
+                /*   Row(
                   children: [
                     Text(
                       Locales.string(context, "lbl_status"),
@@ -752,7 +834,7 @@ class _OrdersPageState extends State<OrdersPage> with TickerProviderStateMixin {
                       ),
                     ),
                   ],
-                ),
+                ),*/
               ],
             ),
           ),
