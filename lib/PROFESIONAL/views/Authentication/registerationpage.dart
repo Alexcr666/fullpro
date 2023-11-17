@@ -20,6 +20,7 @@ import 'package:fullpro/PROFESIONAL/views/Authentication/register.dart';
 import 'package:fullpro/PROFESIONAL/views/homepage.dart';
 import 'package:fullpro/PROFESIONAL/widget/progressDialog.dart';
 import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
+import 'package:fullpro/pages/terms.dart';
 
 import 'package:fullpro/styles/statics.dart' as Static;
 import 'package:fullpro/utils/countryStateCity/AddressPicker.dart';
@@ -744,9 +745,11 @@ class _RegistrationPageState extends State<RegistrationPage> {
                             ),
                             TextSpan(
                               text: /* Locales.string(context, 'lbl_terms_and_conditions')*/ "  Terms and conditions",
-                              style: TextStyle(color: Colors.blue),
+                              style: TextStyle(color: secondryColor),
                               recognizer: TapGestureRecognizer()
                                 ..onTap = () {
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => TermsPage()));
+
                                   // Loader.page(context, TermsPage());
                                 },
                             ),

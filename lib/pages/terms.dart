@@ -71,7 +71,6 @@ class _TermsPageState extends State<TermsPage> {
                 '$appName ${Locales.string(context, 'lbl_terms_para_one')}',
                 style: const TextStyle(
                   fontSize: 14,
-                  fontFamily: 'Roboto-Regular',
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -81,8 +80,9 @@ class _TermsPageState extends State<TermsPage> {
               const SizedBox(height: 40),
               Container(
                   margin: EdgeInsets.only(left: 70, right: 70),
-                  child: AppWidget().buttonFormWhite(context, "Regresar", tap: () {
-                    Loader.PagewithHome(context, const kHomePage());
+                  child: AppWidget().buttonFormColor(context, "Regresar", secondryColor, tap: () {
+                    //Loader.PagewithHome(context, const kHomePage());
+                    Navigator.pop(context);
                   })),
               const SizedBox(height: 40),
             ],
