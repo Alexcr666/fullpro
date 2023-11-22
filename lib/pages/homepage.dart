@@ -1,12 +1,15 @@
 import 'dart:async';
+import 'package:autocomplete_textfield/autocomplete_textfield.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:flutter_geofire/flutter_geofire.dart';
 import 'package:flutter_locales/flutter_locales.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:fullpro/TESTING/testing.dart';
 import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
 import 'package:fullpro/widgets/widget.dart';
 import 'package:geolocator/geolocator.dart';
@@ -38,7 +41,7 @@ import 'package:fullpro/widgets/bottomNav.dart';
 import 'package:page_indicator/page_indicator.dart';
 
 class kHomePage extends StatefulWidget {
-  const kHomePage({Key? key}) : super(key: key);
+  kHomePage({Key? key}) : super(key: key);
   static const String id = 'kHomePage';
 
   @override
@@ -48,11 +51,129 @@ class kHomePage extends StatefulWidget {
 class _kHomePageState extends State<kHomePage> {
   int activeCategorie = 0;
 
+  TextEditingController _searchInspections = TextEditingController();
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   var refreshKey = GlobalKey<RefreshIndicatorState>();
   Timer? timer;
   Timer? timerExtra;
   PageController? slideController;
+  //List<Marker> _marker = [];
+  Set<Marker> _marker = <Marker>{};
+  var mapLists;
+
+  void _initMarkers() {
+    _marker.clear();
+    final UserRef = FirebaseDatabase.instance.ref().child("partners").once().then((value) {
+      DatabaseEvent response = value;
+
+      for (var i = 0; i < response.snapshot.children.length; i++) {
+        DataSnapshot dataList = response.snapshot.children.toList()[i];
+
+        if (dataList.child("latitud").value != null && dataList.child("longitude").value != null) {
+          MarkerId markerId = new MarkerId(dataList.key.toString());
+          _marker.add(
+            new Marker(
+              markerId: markerId,
+              position: LatLng(
+                  double.parse(dataList.child("latitud").value.toString()), double.parse(dataList.child("longitude").value.toString())),
+              onTap: () {
+                // Handle on marker tap
+              },
+              icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
+            ),
+          );
+        }
+      }
+      setState(() {});
+    });
+
+/*    UserRef.once().then((e) async {
+      final dataSnapshot = e.snapshot;
+
+     
+    });*/
+  }
+
+  String currentText = "";
+
+  GlobalKey<AutoCompleteTextFieldState<String>> key = GlobalKey();
+
+  _FirstPageState() {
+    textField = SimpleAutoCompleteTextField(
+      key: key,
+      decoration: InputDecoration(errorText: "Beans"),
+      controller: TextEditingController(text: "Starting Text"),
+      suggestions: suggestions,
+      textChanged: (text) => currentText = text,
+      clearOnSubmit: true,
+      textSubmitted: (text) => setState(() {
+        if (text != "") {
+          // added.add(text);
+        }
+      }),
+    );
+  }
+
+  List<String> suggestions = [
+    "Apple",
+    "Armidillo",
+    "Actual",
+    "Actuary",
+    "America",
+    "Argentina",
+    "Australia",
+    "Antarctica",
+    "Blueberry",
+    "Cheese",
+    "Danish",
+    "Eclair",
+    "Fudge",
+    "Granola",
+    "Hazelnut",
+    "Ice Cream",
+    "Jely",
+    "Kiwi Fruit",
+    "Lamb",
+    "Macadamia",
+    "Nachos",
+    "Oatmeal",
+    "Palm Oil",
+    "Quail",
+    "Rabbit",
+    "Salad",
+    "T-Bone Steak",
+    "Urid Dal",
+    "Vanilla",
+    "Waffles",
+    "Yam",
+    "Zest"
+  ];
+
+  SimpleAutoCompleteTextField? textField;
+
+  bool showWhichErrorText = false;
+
+  void servicesSearch() {
+    _marker.clear();
+    final UserRef = FirebaseDatabase.instance.ref().child("services").child("ac_services").once().then((value) {
+      DatabaseEvent response = value;
+
+      for (var i = 0; i < response.snapshot.children.length; i++) {
+        DataSnapshot dataList = response.snapshot.children.toList()[i];
+
+        if (dataList.child("name").value != null) {
+          suggestions.add(dataList.child("name").value.toString());
+        }
+      }
+      setState(() {});
+    });
+
+/*    UserRef.once().then((e) async {
+      final dataSnapshot = e.snapshot;
+
+     
+    });*/
+  }
 
   static const CameraPosition _kGooglePlex = CameraPosition(
     target: LatLng(37.42796133580664, -122.085749655962),
@@ -60,6 +181,8 @@ class _kHomePageState extends State<kHomePage> {
   );
 
   TextEditingController country = TextEditingController();
+
+  TextEditingController _searchHome = TextEditingController();
 
   ///   Nearby Partners Variables
   late StreamSubscription<DatabaseEvent> rideSubscription;
@@ -363,6 +486,98 @@ class _kHomePageState extends State<kHomePage> {
 
   // Initialization Widget
 
+  Widget pageProfessional() {
+    return FutureBuilder(
+        initialData: 1,
+        future: FirebaseDatabase.instance.ref().child('partners').once(),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          try {
+            if (snapshot.hasData) {
+              DatabaseEvent response = snapshot.data;
+
+              return response == null
+                  ? Text("Cargando")
+                  : ListView.builder(
+                      itemCount: response.snapshot.children.length,
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      itemBuilder: (BuildContext context, int index) {
+                        DataSnapshot dataList = response.snapshot.children.toList()[index];
+                        Widget itemList() {
+                          return dataList.child("primary").value != true
+                              ? SizedBox()
+                              : Container(
+                                  margin: EdgeInsets.only(left: 20, right: 20, top: 10),
+                                  decoration: AppWidget().boxShandowGreyRectangule(),
+                                  child: Row(
+                                    children: [
+                                      SizedBox(
+                                        width: 10,
+                                      ),
+                                      CircleAvatar(
+                                        backgroundColor: Colors.grey.withOpacity(0.3),
+                                        radius: 40,
+                                      ),
+                                      SizedBox(
+                                        width: 10,
+                                      ),
+                                      Flexible(
+                                          child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          SizedBox(
+                                            height: 14,
+                                          ),
+                                          Text(
+                                            dataList.child("fullname").value.toString(),
+                                            style: TextStyle(color: secondryColor, fontSize: 17, fontWeight: FontWeight.bold),
+                                          ),
+                                          Text(
+                                            "Opiniones clientes",
+                                            style: TextStyle(color: Colors.black, fontSize: 10),
+                                          ),
+                                          RatingBarIndicator(
+                                              rating: 2.5,
+                                              itemCount: 5,
+                                              itemSize: 16.0,
+                                              itemBuilder: (context, _) => Icon(
+                                                    Icons.star,
+                                                    color: secondryColor,
+                                                  )),
+                                          SizedBox(
+                                            height: 5,
+                                          ),
+                                          SizedBox(
+                                            height: 14,
+                                          ),
+                                        ],
+                                      ))
+                                    ],
+                                  ),
+                                );
+                        }
+
+                        if (_searchInspections.text.isEmpty == false) {
+                          if (_searchInspections.text.contains(dataList.child("fullname").value.toString())) {
+                            return itemList();
+                          } else {
+                            return SizedBox();
+                          }
+                        } else {
+                          return itemList();
+                        }
+                      });
+            } else {
+              return Text("Cargando");
+            }
+
+            ;
+          } catch (e) {
+            return Text("Cargando");
+          }
+        });
+  }
+
   Widget initWidget() {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -404,11 +619,51 @@ class _kHomePageState extends State<kHomePage> {
         SizedBox(
           height: 20,
         ),
+
+        /* SimpleAutoCompleteTextField(
+          key: key,
+          decoration: InputDecoration(errorText: "Beans"),
+          controller: TextEditingController(text: "Starting Text"),
+          suggestions: suggestions,
+          textChanged: (text) => currentText = text,
+          clearOnSubmit: true,
+          textSubmitted: (text) => setState(() {
+            if (text != "") {
+              // added.add(text);
+            }
+          }),
+        ),*/
         Row(
           children: [
-            Flexible(child: AppWidget().textFieldForm(context, country, "Searching....")),
+            /*  Flexible(
+                child: ListTile(
+                    title: textField,
+                    trailing: IconButton(
+                        icon: Icon(Icons.add),
+                        onPressed: () {
+                          textField!.triggerSubmitted();
+
+                          showWhichErrorText = !showWhichErrorText;
+
+                          textField!.updateDecoration(decoration: InputDecoration(errorText: showWhichErrorText ? "Beans" : "Tomatoes"));
+                        })))*/
+            Flexible(
+              child: SimpleAutoCompleteTextField(
+                key: key,
+                decoration: InputDecoration(errorText: "Ingresar servicio valido"),
+                controller: TextEditingController(),
+                suggestions: suggestions,
+                textChanged: (text) => currentText = text,
+                clearOnSubmit: true,
+                textSubmitted: (text) => setState(() {
+                  if (text != "") {
+                    // added.add(text);
+                  }
+                }),
+              ),
+            ),
             //  Container(width: 150, child: AppWidget().buttonShandow("Servicios")),
-            // AppWidget().buttonForm(context, "Search"),
+            //AppWidget().buttonForm(context, "Search"),
           ],
         ),
         // buildSearch(),
@@ -421,29 +676,40 @@ class _kHomePageState extends State<kHomePage> {
                 width: double.infinity,
                 height: 200,
                 child: GoogleMap(
+                  markers: _marker,
                   mapType: MapType.normal,
                   initialCameraPosition: _kGooglePlex,
                   onMapCreated: (GoogleMapController controller) {
                     _controller.complete(controller);
+                    _initMarkers();
                   },
                 ))),
         SizedBox(
           height: 20,
         ),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "Perfiles de",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: secondryColor),
-            ),
-            Text(
-              "profesionales destacados",
-              style: TextStyle(fontSize: 18, color: secondryColor),
-            ),
-          ],
-        ),
-        fadeBottom(.3, buildServicesList()),
+        GestureDetector(
+            onTap: () {
+              //  _initMarkers();
+              //    kkk
+
+              Navigator.push(context, MaterialPageRoute(builder: (context) => FirstPage()));
+            },
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Perfiles de",
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: secondryColor),
+                ),
+                Text(
+                  "profesionales destacados",
+                  style: TextStyle(fontSize: 18, color: secondryColor),
+                ),
+              ],
+            )),
+
+        pageProfessional(),
+        // fadeBottom(.3, buildServicesList()),
         trendingSlider(),
         const SizedBox(height: 20)
       ],

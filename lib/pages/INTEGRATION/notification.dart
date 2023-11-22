@@ -545,7 +545,7 @@ class _NotificationsState extends State<Notifications> {
 
                     child: Image.asset(
 
-                      "images/logo_white.png",
+                      "images/logo.png",
 
                       color: Colors.white,
 

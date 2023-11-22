@@ -11,6 +11,7 @@ import 'package:fullpro/PROFESIONAL/models/ordersModel.dart';
 import 'package:fullpro/PROFESIONAL/utils/globalConstants.dart';
 import 'package:fullpro/PROFESIONAL/widget/DataLoadedProgress.dart';
 import 'package:fullpro/PROFESIONAL/widget/accountHold.dart';
+import 'package:fullpro/PROFESIONAL/widget/widget.dart';
 
 import 'dart:async';
 import 'package:fullpro/styles/statics.dart' as appcolors;
@@ -65,8 +66,9 @@ class _OrdersListState extends State<OrdersList> with TickerProviderStateMixin {
     return Scaffold(
       key: scaffoldKey,
       resizeToAvoidBottomInset: false,
-      backgroundColor: appcolors.dashboardCard,
-      appBar: AppBar(
+      backgroundColor: Colors.white,
+      appBar: appbarProfessional(context, false),
+      /*  appBar: AppBar(
         iconTheme: const IconThemeData(
           color: Colors.black,
         ),
@@ -86,7 +88,7 @@ class _OrdersListState extends State<OrdersList> with TickerProviderStateMixin {
             color: Colors.black,
           ),
         ),
-      ),
+      ),*/
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(8),

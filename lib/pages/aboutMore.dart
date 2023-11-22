@@ -106,7 +106,7 @@ class _AboutDetailsState extends State<AboutDetails> {
                   const SizedBox(height: 40),
                   MaterialButton(
                     onPressed: () {
-                      Loader.PagewithHome(context, const kHomePage());
+                      Loader.PagewithHome(context, kHomePage());
                     },
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                     padding: const EdgeInsets.symmetric(

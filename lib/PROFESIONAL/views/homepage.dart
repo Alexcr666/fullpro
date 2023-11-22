@@ -17,6 +17,8 @@ import 'package:fullpro/PROFESIONAL/views/language.dart';
 import 'package:fullpro/PROFESIONAL/views/support.dart';
 import 'package:fullpro/PROFESIONAL/views/wallet/wallet.dart';
 import 'package:fullpro/PROFESIONAL/widget/bottomNav.dart';
+import 'package:fullpro/PROFESIONAL/widget/widget.dart';
+import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
 import 'package:geolocator/geolocator.dart';
 
 import '../utils/globalConstants.dart';
@@ -343,9 +345,75 @@ class _HomePageState extends State<HomePage> {
         resizeToAvoidBottomInset: false,
         backgroundColor: appcolors.dashboardCard,
         bottomNavigationBar: const BottomNav(),
-
+        appBar: appbarProfessional(context, false),
+        /*  appBar: AppBar(
+          centerTitle: false,
+          title: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            //  crossAxisAlignment: CrossAxisAlignment.start,
+            // mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                '$dayTime',
+                style: TextStyle(color: secondryColor, fontSize: 12, fontWeight: FontWeight.bold),
+              ),
+              Text(
+                "Hola " + 'Alex',
+                style: const TextStyle(
+                  color: Colors.black,
+                  fontSize: 15,
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            Image.asset(
+              "images/logo.png",
+              width: 70,
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: MaterialButton(
+                  elevation: 0.0,
+                  hoverElevation: 0.0,
+                  focusElevation: 0.0,
+                  highlightElevation: 0.0,
+                  minWidth: 50,
+                  height: 60,
+                  color: Colors.transparent,
+                  onPressed: () {
+                    //    Loader.page(context, const CartPage());
+                  },
+                  shape: const CircleBorder(),
+                  child: SvgPicture.asset(
+                    "images/icons/cart.svg",
+                    width: 35,
+                  )),
+            ),
+          ],
+          backgroundColor: Colors.white,
+          elevation: 0.0,
+          toolbarHeight: 70,
+          leadingWidth: 80,
+          leading: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const SizedBox(width: 20),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Column(
+                    children: [Text("Hola")],
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),*/
         // Appbar
-        appBar: AppBar(
+        /*appBar: AppBar(
           actions: [
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 30),
@@ -432,7 +500,7 @@ class _HomePageState extends State<HomePage> {
               ),
             ],
           ),
-        ),
+        ),*/
 
         // Body
         body: SingleChildScrollView(
@@ -442,7 +510,7 @@ class _HomePageState extends State<HomePage> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               //   TOP CONTAINER
-              topContainer(context),
+              //   topContainer(context),
 
               const SizedBox(height: 40),
 
@@ -526,13 +594,12 @@ Widget countsContainer(bool ordersCountLoaded, int? totalOrders, bool earningsCo
         children: [
           Container(
             decoration: ordersCountLoaded == true
-                ? BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    image: const DecorationImage(
-                      image: AssetImage("images/box_bg.png"),
-                      fit: BoxFit.cover,
-                    ),
-                  )
+                ? BoxDecoration(borderRadius: BorderRadius.circular(12), color: secondryColor
+                    //     image: const DecorationImage(
+                    // image: AssetImage("images/box_bg.png"),
+                    //  fit: BoxFit.cover,
+                    //   ),
+                    )
                 : BoxDecoration(
                     borderRadius: BorderRadius.circular(12),
                     color: Colors.white,
@@ -611,11 +678,12 @@ Widget countsContainer(bool ordersCountLoaded, int? totalOrders, bool earningsCo
           Container(
             decoration: earningsCountLoaded == true
                 ? BoxDecoration(
+                    color: secondryColor,
                     borderRadius: BorderRadius.circular(12),
-                    image: const DecorationImage(
-                      image: AssetImage("images/box_bg.png"),
-                      fit: BoxFit.cover,
-                    ),
+                    // image: const DecorationImage(
+                    // image: AssetImage("images/box_bg.png"),
+                    //  fit: BoxFit.cover,
+                    //   ),
                   )
                 : BoxDecoration(
                     borderRadius: BorderRadius.circular(12),
@@ -765,9 +833,19 @@ class OverviewList extends StatefulWidget {
   State<OverviewList> createState() => _OverviewListState();
 }
 
+String dayTime = "";
+
 class _OverviewListState extends State<OverviewList> {
   @override
   Widget build(BuildContext context) {
+    TimeOfDay day = TimeOfDay.now();
+    switch (day.period) {
+      case DayPeriod.am:
+        dayTime = Locales.string(context, 'lbl_morning');
+        break;
+      case DayPeriod.pm:
+        dayTime = Locales.string(context, 'lbl_evening');
+    }
     return Column(
       children: [
         const SizedBox(height: 20),

@@ -1,28 +1,41 @@
 import 'dart:async';
 
+
 import 'package:firebase_auth/firebase_auth.dart';
+
 
 import 'package:firebase_database/firebase_database.dart';
 
+
 import 'package:flutter/cupertino.dart';
+
 
 import 'package:flutter/material.dart';
 
+
 import 'package:flutter/scheduler.dart';
+
 
 import 'package:flutter_locales/flutter_locales.dart';
 
+
 //import 'package:google_fonts/google_fonts.dart';
+
 
 import 'package:pinput/pinput.dart';
 
+
 import 'package:fullpro/config.dart';
+
 
 import 'package:fullpro/pages/homepage.dart';
 
+
 import 'package:fullpro/pages/Authentication/Database_Entry.dart';
 
+
 import 'package:fullpro/styles/statics.dart' as Static;
+
 
 import 'package:fullpro/widgets/DataLoadedProgress.dart';
 
@@ -33,6 +46,7 @@ class OtpPage extends StatefulWidget {
 
 
   bool _isInit = true;
+
 
   var _contact = '';
 
@@ -48,27 +62,36 @@ class _OtpPageState extends State<OtpPage> {
 
   String? phoneNo;
 
+
   String smsOTP = '';
+
 
   String? verificationId;
 
+
   String? errorMessage = '';
+
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
+
   Timer? _timer;
+
 
   bool _dataisLoading = true;
 
 
   //
 
+
   final skcontroller = TextEditingController();
+
 
   final focusNode = FocusNode();
 
 
   //this is method is used to initialize data
+
 
   @override
 
@@ -76,7 +99,9 @@ class _OtpPageState extends State<OtpPage> {
 
     super.didChangeDependencies();
 
+
     // Load data only once after screen load
+
 
     if (widget._isInit) {
 
@@ -85,7 +110,9 @@ class _OtpPageState extends State<OtpPage> {
 
       generateOtp(widget._contact);
 
+
       widget._isInit = false;
+
 
       _dataisLoading = false;
 
@@ -108,13 +135,16 @@ class _OtpPageState extends State<OtpPage> {
 
   //dispose controllers
 
+
   @override
 
   void dispose() {
 
     super.dispose();
 
+
     skcontroller.dispose();
+
 
     focusNode.dispose();
 
@@ -123,15 +153,19 @@ class _OtpPageState extends State<OtpPage> {
 
   //build method for UI
 
+
   @override
 
   Widget build(BuildContext context) {
 
     const borderColor = Color.fromRGBO(30, 60, 87, 1);
 
+
     const focusedBorderColor = Color.fromRGBO(23, 171, 144, 1);
 
+
     const fillColor = Color.fromRGBO(243, 246, 249, 0);
+
 
     final defaultPinTheme = PinTheme(
 
@@ -139,10 +173,12 @@ class _OtpPageState extends State<OtpPage> {
 
       height: 56,
 
+
       /* textStyle: GoogleFonts.poppins(
         fontSize: 22,
         color: const Color.fromRGBO(30, 60, 87, 1),
       ),*/
+
 
       decoration: const BoxDecoration(),
 
@@ -174,6 +210,7 @@ class _OtpPageState extends State<OtpPage> {
       ],
 
     );
+
 
     final preFilledWidget = Column(
 
@@ -250,26 +287,34 @@ class _OtpPageState extends State<OtpPage> {
 
                     ),
 
+
                     const SizedBox(height: 30),
 
 
                     // Container(
 
+
                     //   width: 150,
+
 
                     //   child: Image.asset(
 
+
                     //     'images/otp_sent.gif',
+
 
                     //   ),
 
+
                     // ),
+
 
                     const SizedBox(
 
                       height: 5,
 
                     ),
+
 
                     Text(
 
@@ -285,11 +330,13 @@ class _OtpPageState extends State<OtpPage> {
 
                     ),
 
+
                     const SizedBox(
 
                       height: 10,
 
                     ),
+
 
                     Text(
 
@@ -307,11 +354,13 @@ class _OtpPageState extends State<OtpPage> {
 
                     ),
 
+
                     const SizedBox(
 
                       height: 15,
 
                     ),
+
 
                     Container(
 
@@ -330,6 +379,7 @@ class _OtpPageState extends State<OtpPage> {
                         children: [
 
                           // Pin Input
+
 
                           Pinput(
 
@@ -356,6 +406,7 @@ class _OtpPageState extends State<OtpPage> {
                             onClipboardFound: (value) {
 
                               debugPrint('onClipboardFound: $value');
+
 
                               skcontroller.setText(value);
 
@@ -407,11 +458,13 @@ class _OtpPageState extends State<OtpPage> {
 
                     ),
 
+
                     const SizedBox(
 
                       height: 18,
 
                     ),
+
 
                     Text(
 
@@ -431,11 +484,13 @@ class _OtpPageState extends State<OtpPage> {
 
                     ),
 
+
                     const SizedBox(
 
                       height: 18,
 
                     ),
+
 
                     TextButton(
 
@@ -476,6 +531,7 @@ class _OtpPageState extends State<OtpPage> {
 
   //Method for generate otp from firebase
 
+
   Future<void> generateOtp(String contact) async {
 
     smsOTPSent(String verId, [int? forceCodeResend]) {
@@ -505,6 +561,7 @@ class _OtpPageState extends State<OtpPage> {
 
       });
 
+
       await _auth.verifyPhoneNumber(
 
         phoneNumber: contact,
@@ -512,6 +569,7 @@ class _OtpPageState extends State<OtpPage> {
         codeAutoRetrievalTimeout: (String verId) {
 
           verificationId = verId;
+
 
           Navigator.pop(context);
 
@@ -534,6 +592,7 @@ class _OtpPageState extends State<OtpPage> {
 
           Navigator.pop(context);
 
+
           handleError(e);
 
         },
@@ -544,6 +603,7 @@ class _OtpPageState extends State<OtpPage> {
 
       Navigator.pop(context);
 
+
       handleError(e);
 
     }
@@ -552,6 +612,7 @@ class _OtpPageState extends State<OtpPage> {
 
 
   //Method for verify otp entered by user
+
 
   Future<void> verifyOtp() async {
 
@@ -567,6 +628,7 @@ class _OtpPageState extends State<OtpPage> {
 
     );
 
+
     try {
 
       final AuthCredential credential = PhoneAuthProvider.credential(
@@ -577,9 +639,12 @@ class _OtpPageState extends State<OtpPage> {
 
       );
 
+
       final UserCredential user = await _auth.signInWithCredential(credential);
 
+
       final User? currentUser = _auth.currentUser;
+
 
       assert(user.user?.uid == currentUser?.uid);
 
@@ -590,6 +655,7 @@ class _OtpPageState extends State<OtpPage> {
       phoneRef.once().then((e) async {
 
         final snapshot = e.snapshot;
+
 
         if (snapshot.exists) {
 
@@ -611,6 +677,7 @@ class _OtpPageState extends State<OtpPage> {
 
           };
 
+
           phoneRef.set(userMap);
 
         }
@@ -625,13 +692,14 @@ class _OtpPageState extends State<OtpPage> {
 
         final snapshot = e.snapshot;
 
+
         if (snapshot.exists) {
 
           Navigator.pushReplacement(
 
             context,
 
-            MaterialPageRoute(builder: (context) => const kHomePage()),
+            MaterialPageRoute(builder: (context) => kHomePage()),
 
           );
 
@@ -663,6 +731,7 @@ class _OtpPageState extends State<OtpPage> {
 
       Navigator.pop(context);
 
+
       handleError(e);
 
     }
@@ -672,6 +741,7 @@ class _OtpPageState extends State<OtpPage> {
 
   //Method for handle the errors
 
+
   void handleError(FirebaseAuthException error) {
 
     switch (error.code) {
@@ -680,17 +750,22 @@ class _OtpPageState extends State<OtpPage> {
 
         ErrorDialog(context, Locales.string(context, 'error_verification_invalid'));
 
+
         break;
+
 
       case 'invalid-verification-code':
 
         ErrorDialog(context, Locales.string(context, 'error_verification_invalid'));
 
+
         break;
+
 
       default:
 
         ErrorDialog(context, error.message!);
+
 
         break;
 
@@ -808,9 +883,11 @@ class _OtpPageState extends State<OtpPage> {
 
   //Basic alert dialogue for alert errors and confirmations
 
+
   void showAlertDialog(BuildContext context, String message) {
 
     // set up the AlertDialog
+
 
     final CupertinoAlertDialog alert = CupertinoAlertDialog(
 
@@ -838,7 +915,9 @@ class _OtpPageState extends State<OtpPage> {
 
     );
 
+
     // show the dialog
+
 
     showDialog(
 

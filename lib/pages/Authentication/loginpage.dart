@@ -7,6 +7,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:fullpro/controller/loader.dart';
+import 'package:fullpro/pages/Authentication/recoverPassword/recoverPassword.dart';
 import 'package:fullpro/pages/Authentication/registerationpage.dart';
 import 'package:fullpro/pages/Authentication/register.dart';
 import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
@@ -204,7 +205,8 @@ class _LoginPageState extends State<LoginPage> {
                   width: double.infinity,
                   child: TextButton(
                     onPressed: () async {
-                      Navigator.pushNamedAndRemoveUntil(context, RegistrationPage.id, (route) => false);
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => ResetPasswordScreen()));
+                      // Navigator.pushNamedAndRemoveUntil(context, RegistrationPage.id, (route) => false);
                     },
                     child: Text(
                       "Forgot your password",

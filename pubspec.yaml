@@ -51,6 +51,7 @@ dependencies:
   cloud_firestore: ^4.4.5
   firebase_analytics: ^10.1.6
   firebase_messaging: ^14.3.0
+  flutter_credit_card: ^4.0.1
 
   # Authentication
   flutter_otp_text_field: ^1.0.0
@@ -102,6 +103,10 @@ dependencies:
   flutter_swiper_null_safety: ^1.0.2
   google_fonts: ^4.0.4
   flutter_rating_bar: ^4.0.1
+  google_sign_in: ^6.1.6
+  #apple_sign_in: ^0.1.0
+  apple_sign_in_safety: ^0.0.6
+  autocomplete_textfield: ^2.0.1
 
   #PROFESIONAL
 

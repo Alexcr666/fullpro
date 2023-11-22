@@ -1,3 +1,15 @@
+import 'dart:io';
+
+
+import 'package:dotted_border/dotted_border.dart';
+
+
+import 'package:file_picker/file_picker.dart';
+
+
+import 'package:firebase_database/firebase_database.dart';
+
+
 import 'package:flutter/material.dart';
 
 
@@ -27,7 +39,10 @@ import '../styles/statics.dart' as Static;
 
 class NewPortafolioPage extends StatefulWidget {
 
-  const NewPortafolioPage({Key? key}) : super(key: key);
+  NewPortafolioPage({Key? key, this.idEdit}) : super(key: key);
+
+
+  String? idEdit;
 
 
   static const String id = 'TermsPage';
@@ -40,7 +55,22 @@ class NewPortafolioPage extends StatefulWidget {
 }
 
 
+bool licenceCheck = false;
+
+
+List<File> fileLicense = [];
+
+
 class _PortafolioPageState extends State<NewPortafolioPage> {
+
+  TextEditingController _namePortafolioController = TextEditingController();
+
+
+  TextEditingController _categoriController = TextEditingController();
+
+
+  bool checkInspeccion = false;
+
 
   itemPortafolio() {
 
@@ -194,312 +224,622 @@ class _PortafolioPageState extends State<NewPortafolioPage> {
   }
 
 
+  final _formKey = GlobalKey<FormState>();
+
+
   @override
 
   Widget build(BuildContext context) {
 
     return Scaffold(
 
-      backgroundColor: Colors.white,
+        backgroundColor: Colors.white,
 
-      body: SingleChildScrollView(
+        body: SingleChildScrollView(
 
-        physics: const AlwaysScrollableScrollPhysics(),
+          physics: const AlwaysScrollableScrollPhysics(),
 
-        child: Padding(
+          child: Padding(
 
-          padding: const EdgeInsets.symmetric(
+            padding: const EdgeInsets.symmetric(
 
-            vertical: 10,
+              vertical: 10,
 
-            horizontal: 24,
+              horizontal: 24,
 
-          ),
+            ),
 
-          child: Column(
+            child: Form(
 
-            crossAxisAlignment: CrossAxisAlignment.start,
+              key: _formKey,
 
-            children: [
+              child: Column(
 
-              SizedBox(
-
-                height: 40,
-
-              ),
-
-              AppWidget().back(context),
-
-              SizedBox(
-
-                height: 40,
-
-              ),
-
-              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
 
                 children: [
-
-                  Container(
-
-                      child: Text(
-
-                    "Nuevo portafolio",
-
-                    style: TextStyle(
-
-                      color: secondryColor,
-
-                      fontSize: 20,
-
-                      fontWeight: FontWeight.bold,
-
-                    ),
-
-                  )),
-
-                  Expanded(child: SizedBox()),
-
-                  Container(
-
-                      width: 40,
-
-                      height: 40,
-
-                      decoration: BoxDecoration(shape: BoxShape.circle, color: secondryColor),
-
-                      child: SvgPicture.asset("images/icons/add.svg")),
-
-                ],
-
-              ),
-
-              SizedBox(
-
-                height: 20,
-
-              ),
-
-              AppWidget().texfieldFormat(title: "Nombre de portafolio", urlIcon: "images/icons/work.svg"),
-
-              SizedBox(
-
-                height: 20,
-
-              ),
-
-              Row(
-
-                children: [
-
-                  Flexible(
-
-                      child: Container(
-
-                          decoration: AppWidget().borderColor(),
-
-                          child: CheckboxListTile(
-
-                            title: Text("Servicios", style: TextStyle(color: secondryColor)),
-
-
-                            value: false,
-
-
-                            onChanged: (newValue) {
-
-                              setState(() {
-
-                                //  checkedValue = newValue;
-
-                              });
-
-                            },
-
-
-                            controlAffinity: ListTileControlAffinity.leading, //  <-- leading Checkbox
-
-                          ))),
 
                   SizedBox(
 
-                    width: 10,
+                    height: 40,
 
                   ),
 
-                  Flexible(
+                  AppWidget().back(context),
 
-                      child: Container(
+                  SizedBox(
 
-                          decoration: AppWidget().borderColor(),
-
-                          child: CheckboxListTile(
-
-                            title: Text(
-
-                              "Servicios",
-
-                              style: TextStyle(color: secondryColor),
-
-                            ),
-
-
-                            value: false,
-
-
-                            onChanged: (newValue) {
-
-                              setState(() {
-
-                                //  checkedValue = newValue;
-
-                              });
-
-                            },
-
-
-                            controlAffinity: ListTileControlAffinity.leading, //  <-- leading Checkbox
-
-                          ))),
-
-                ],
-
-              ),
-
-              SizedBox(
-
-                height: 20,
-
-              ),
-
-              AppWidget().texfieldFormat(title: "Categorias"),
-
-              Container(
-
-                  decoration: BoxDecoration(
-
-                    borderRadius: BorderRadius.circular(12),
-
-
-                    border: Border.all(color: secondryColor),
-
-
-                    //  color: secondryColor,
+                    height: 40,
 
                   ),
 
-                  child: ListView.builder(
+                  Row(
 
-                      padding: EdgeInsets.only(left: 10.0),
+                    children: [
 
-                      itemCount: 2,
+                      Container(
 
-                      physics: NeverScrollableScrollPhysics(),
+                          child: Text(
 
-                      shrinkWrap: true,
+                        "Nuevo portafolio",
 
-                      itemBuilder: (BuildContext context, int index) {
+                        style: TextStyle(
 
-                        return CheckboxListTile(
+                          color: secondryColor,
 
-                          title: Text("Categorias " + (index + 1).toString()),
+                          fontSize: 20,
 
+                          fontWeight: FontWeight.bold,
 
-                          value: false,
-
-
-                          onChanged: (newValue) {
-
-                            setState(() {
-
-                              //  checkedValue = newValue;
-
-                            });
-
-                          },
-
-
-                          controlAffinity: ListTileControlAffinity.leading, //  <-- leading Checkbox
-
-                        );
-
-                      })),
-
-              SizedBox(
-
-                height: 20,
-
-              ),
-
-              Text("Fotos portafolio"),
-
-              SizedBox(
-
-                height: 5,
-
-              ),
-
-              Stack(
-
-                children: [
-
-                  Container(
-
-                      alignment: Alignment.center,
-
-                      width: double.infinity,
-
-                      height: 50,
-
-                      child: Text(
-
-                        "Drag & Drop your files or Mobile",
-
-                        style: TextStyle(color: Colors.black),
+                        ),
 
                       )),
 
+                      Expanded(child: SizedBox()),
+
+                      SvgPicture.asset(
+
+                        "images/icons/edit.svg",
+
+                        width: 30,
+
+                      ),
+
+                    ],
+
+                  ),
+
+                  SizedBox(
+
+                    height: 20,
+
+                  ),
+
+                  AppWidget().texfieldFormat(
+
+                      title: "Nombre de portafolio", urlIcon: "images/icons/maletin.svg", controller: _namePortafolioController),
+
+                  SizedBox(
+
+                    height: 20,
+
+                  ),
+
+                  Row(
+
+                    children: [
+
+                      Flexible(
+
+                          child: Container(
+
+                              decoration: AppWidget().borderColor(),
+
+                              child: CheckboxListTile(
+
+                                activeColor: secondryColor,
+
+
+                                contentPadding: EdgeInsets.all(0),
+
+
+                                title: Text("Servicios", style: TextStyle(color: secondryColor)),
+
+
+                                value: checkInspeccion == true,
+
+
+                                onChanged: (newValue) {
+
+                                  setState(() {
+
+                                    checkInspeccion = true;
+
+
+                                    //  checkedValue = newValue;
+
+                                  });
+
+                                },
+
+
+                                controlAffinity: ListTileControlAffinity.leading, //  <-- leading Checkbox
+
+                              ))),
+
+                      SizedBox(
+
+                        width: 8,
+
+                      ),
+
+                      Flexible(
+
+                          child: Container(
+
+                              decoration: AppWidget().borderColor(),
+
+                              child: CheckboxListTile(
+
+                                activeColor: secondryColor,
+
+
+                                contentPadding: EdgeInsets.all(0),
+
+
+                                title: Text(
+
+                                  "Inspecciones",
+
+                                  style: TextStyle(color: secondryColor, fontSize: 14),
+
+                                ),
+
+
+                                value: checkInspeccion == false,
+
+
+                                onChanged: (newValue) {
+
+                                  setState(() {
+
+                                    checkInspeccion = false;
+
+
+                                    //  checkedValue = newValue;
+
+                                  });
+
+                                },
+
+
+                                controlAffinity: ListTileControlAffinity.leading, //  <-- leading Checkbox
+
+                              ))),
+
+                    ],
+
+                  ),
+
+                  SizedBox(
+
+                    height: 20,
+
+                  ),
+
+                  AppWidget().texfieldFormat(title: "Categorias", controller: _categoriController),
+
                   Container(
 
-                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
 
-                      width: double.infinity,
+                        borderRadius: BorderRadius.circular(12),
 
-                      height: 50,
 
-                      child: SvgPicture.asset("images/icons/rectangule.svg")),
+                        border: Border.all(color: secondryColor),
+
+
+                        //  color: secondryColor,
+
+                      ),
+
+                      child: ListView.builder(
+
+                          padding: EdgeInsets.only(left: 10.0),
+
+                          itemCount: 2,
+
+                          physics: NeverScrollableScrollPhysics(),
+
+                          shrinkWrap: true,
+
+                          itemBuilder: (BuildContext context, int index) {
+
+                            return CheckboxListTile(
+
+                              title: Text("Categorias " + (index + 1).toString()),
+
+
+                              value: false,
+
+
+                              onChanged: (newValue) {
+
+                                setState(() {
+
+                                  //  checkedValue = newValue;
+
+                                });
+
+                              },
+
+
+                              controlAffinity: ListTileControlAffinity.leading, //  <-- leading Checkbox
+
+                            );
+
+                          })),
+
+                  SizedBox(
+
+                    height: 20,
+
+                  ),
+
+                  Text("Fotos portafolio"),
+
+                  SizedBox(
+
+                    height: 10,
+
+                  ),
+
+                  fileLicense.length == 0
+
+                      ? SizedBox()
+
+                      : Container(
+
+                          height: 40,
+
+                          child: ListView.builder(
+
+                              padding: EdgeInsets.only(left: 10.0),
+
+                              itemCount: fileLicense.length,
+
+                              scrollDirection: Axis.horizontal,
+
+                              shrinkWrap: true,
+
+                              itemBuilder: (BuildContext context, int index) {
+
+                                return Container(
+
+                                  width: 150,
+
+                                  margin: EdgeInsets.only(left: 5),
+
+                                  padding: EdgeInsets.all(2),
+
+                                  alignment: Alignment.center,
+
+                                  decoration: BoxDecoration(
+
+                                    color: Color(0xff38CAB3),
+
+
+                                    // Set border width
+
+
+                                    borderRadius: BorderRadius.all(Radius.circular(10.0)), // Set rounded corner radius
+
+                                  ),
+
+                                  child: Row(
+
+                                    children: [
+
+                                      SizedBox(
+
+                                        width: 10,
+
+                                      ),
+
+                                      GestureDetector(
+
+                                          onTap: () {
+
+                                            fileLicense.removeAt(0);
+
+
+                                            setState(() {});
+
+                                          },
+
+                                          child: SvgPicture.asset(
+
+                                            "images/icons/closeFile.svg",
+
+                                            width: 35,
+
+                                          )),
+
+                                      SizedBox(
+
+                                        width: 5,
+
+                                      ),
+
+                                      Container(
+
+                                          child: Column(
+
+                                        mainAxisSize: MainAxisSize.min,
+
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+
+                                        children: [
+
+                                          Text(
+
+                                            "Foto: " + index.toString(),
+
+                                            style: TextStyle(color: Colors.white, fontSize: 10),
+
+                                          ),
+
+                                          Text(
+
+                                            "291 KB",
+
+                                            style: TextStyle(color: Colors.white, fontSize: 9),
+
+                                          ),
+
+                                        ],
+
+                                      )),
+
+                                      SizedBox(
+
+                                        width: 15,
+
+                                      ),
+
+                                    ],
+
+                                  ),
+
+                                );
+
+                              })),
+
+                  SizedBox(
+
+                    height: 5,
+
+                  ),
+
+                  GestureDetector(
+
+                      onTap: () async {
+
+                        FilePickerResult? result = await FilePicker.platform.pickFiles();
+
+
+                        if (result != null) {
+
+                          fileLicense.add(File(result.files.single.path!));
+
+
+                          licenceCheck = false;
+
+
+                          setState(() {});
+
+                        } else {
+
+                          // User canceled the picker
+
+                        }
+
+                      },
+
+                      child: DottedBorder(
+
+                        color: licenceCheck ? Colors.red : Colors.grey,
+
+                        borderType: BorderType.RRect,
+
+                        radius: Radius.circular(12),
+
+                        padding: EdgeInsets.all(6),
+
+                        child: ClipRRect(
+
+                          borderRadius: BorderRadius.all(Radius.circular(12)),
+
+                          child: Container(
+
+                            height: 40,
+
+                            width: double.infinity,
+
+                            child: Center(child: Text("Drag & Drop your files or Mobile")),
+
+                          ),
+
+                        ),
+
+                      )),
+
+                  SizedBox(
+
+                    height: 20,
+
+                  ),
+
+                  Row(
+
+                    children: [
+
+                      Flexible(child: AppWidget().buttonFormLine(context, "Cancelar", true, urlIcon: "images/icons/closeCircle.svg")),
+
+                      SizedBox(
+
+                        width: 5,
+
+                      ),
+
+                      Flexible(
+
+                          child: AppWidget().buttonFormLine(context, "Guardar", false, urlIcon: "images/icons/saved.svg", tap: () {
+
+                        savedData() {
+
+                          DatabaseReference newUserRef = FirebaseDatabase.instance.ref().child('portafolio/1');
+
+
+                          // Prepare data to be saved on users table
+
+
+                          Map userMap = {
+
+                            'name': _namePortafolioController.text,
+
+                            'type': checkInspeccion ? 1 : 2,
+
+                            'category': "tecno",
+
+                            'foto': '1'
+
+                          };
+
+
+                          newUserRef.set(userMap).then((value) {
+
+                            Navigator.pop(context);
+
+
+                            AppWidget().itemMessage("Guardado", context);
+
+                          }).catchError((onError) {
+
+                            AppWidget().itemMessage("Error al guardar", context);
+
+                          });
+
+                        }
+
+
+                        updateData() {
+
+                          DatabaseReference newUserRef = FirebaseDatabase.instance.ref().child('portafolio/' + widget.idEdit.toString());
+
+
+                          // Prepare data to be saved on users table
+
+
+                          Map userMap = {
+
+                            'name': _namePortafolioController.text,
+
+                            'type': checkInspeccion ? 1 : 2,
+
+                            'category': "tecno",
+
+                            'foto': '1'
+
+                          };
+
+
+                          newUserRef.set(userMap).then((value) {
+
+                            Navigator.pop(context);
+
+
+                            AppWidget().itemMessage("Actualizado", context);
+
+                          }).catchError((onError) {
+
+                            AppWidget().itemMessage("Error al guardar", context);
+
+                          });
+
+                        }
+
+
+                        if (_formKey.currentState!.validate()) {
+
+                          if (fileLicense.length != 0) {
+
+                            savedData();
+
+
+                            licenceCheck = false;
+
+                          } else {
+
+                            licenceCheck = true;
+
+                          }
+
+
+                          setState(() {});
+
+                        }
+
+                      })),
+
+                    ],
+
+                  )
 
                 ],
 
               ),
 
-              SizedBox(
-
-                height: 20,
-
-              ),
-
-              Row(
-
-                children: [
-
-                  Flexible(child: AppWidget().buttonForm(context, "Cancelar")),
-
-                  Flexible(child: AppWidget().buttonForm(context, "Guardar")),
-
-                ],
-
-              ),
-
-            ],
+            ),
 
           ),
 
-        ),
+        ));
 
-      ),
+  }
 
-    );
+
+  @override
+
+  void initState() {
+
+    super.initState();
+
+
+    if (widget.idEdit != null) {
+
+      final UserRef = FirebaseDatabase.instance.ref().child("portafolio").child("1");
+
+
+      UserRef.once().then((e) async {
+
+        final dataSnapshot = e.snapshot;
+
+
+        _namePortafolioController.text = dataSnapshot.child("name").value.toString();
+
+
+        _categoriController.text = dataSnapshot.child("category").value.toString();
+
+        if (dataSnapshot.child("type").value.toString() == "1") {
+          checkInspeccion = true;
+        } else {
+          checkInspeccion = false;
+        }
+
+      });
+
+    }
 
   }
 

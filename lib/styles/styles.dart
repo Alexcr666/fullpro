@@ -5,7 +5,7 @@ final kDrawerItemStyle = TextStyle(fontSize: 16, color: Colors.black);
 
 gradientColor() {
   return BoxDecoration(
-    borderRadius: BorderRadius.circular(10),
+    //  borderRadius: BorderRadius.circular(10),
     gradient: LinearGradient(
         colors: [
           secondryColor,

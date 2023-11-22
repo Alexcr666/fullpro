@@ -1,5 +1,7 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fullpro/PROFESIONAL/config.dart';
 import 'package:fullpro/PROFESIONAL/controllers/loader.dart';
@@ -10,9 +12,12 @@ import 'package:fullpro/PROFESIONAL/utils/globalConstants.dart';
 import 'package:fullpro/PROFESIONAL/views/Orders/orderDetail.dart';
 import 'package:fullpro/PROFESIONAL/widget/DataLoadedProgress.dart';
 import 'package:fullpro/PROFESIONAL/widget/accountHold.dart';
+import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
 
 import 'dart:async';
 import 'package:fullpro/styles/statics.dart' as appcolors;
+import 'package:fullpro/styles/statics.dart';
+import 'package:fullpro/widgets/widget.dart';
 
 class MyOrders extends StatefulWidget {
   const MyOrders({Key? key}) : super(key: key);
@@ -26,6 +31,13 @@ class _MyOrdersState extends State<MyOrders> with TickerProviderStateMixin {
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   var refreshKey = GlobalKey<RefreshIndicatorState>();
   late TabController _tabController;
+  String searchText = "";
+  var _searchController = TextEditingController();
+
+  bool userCheck = false;
+  bool profesionalCheck = false;
+  bool serviceCheck = false;
+
   Timer? timer;
 
   Future<void> refreshList() async {
@@ -59,13 +71,259 @@ class _MyOrdersState extends State<MyOrders> with TickerProviderStateMixin {
     timer?.cancel();
   }
 
+  int positionFilter = 0;
+
+  Widget itemAdd(String url, String title, bool active, {Function? tap}) {
+    return GestureDetector(
+        onTap: () {
+          tap!();
+        },
+        child: Column(
+          children: [
+            Container(
+              width: 100,
+              height: 100,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                gradient: LinearGradient(
+                    colors: [
+                      secondryColor,
+                      primaryColor,
+                    ],
+                    begin: const FractionalOffset(1.0, 0.0),
+                    end: const FractionalOffset(1.0, 1.0),
+                    stops: [0.0, 1.0],
+                    tileMode: TileMode.clamp),
+              ),
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Container(
+                      alignment: Alignment.centerRight,
+                      height: 20,
+                      child: active
+                          ? Container(
+                              margin: EdgeInsets.only(right: 10),
+                              // or ClipRRect if you need to clip the content
+                              decoration: BoxDecoration(shape: BoxShape.circle, border: Border.all(width: 1, color: Colors.white)),
+                              child: Container(
+                                padding: EdgeInsets.all(3),
+                                child: Icon(
+                                  Icons.check,
+                                  color: Colors.white,
+                                  size: 14,
+                                ),
+                              ), // inner content
+                            )
+                          : SvgPicture.asset("images/icons/add.svg")),
+                  SvgPicture.asset(
+                    url,
+                    width: 60,
+                    height: 60,
+                  )
+                ],
+              ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Text(
+              title.toString(),
+              style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold),
+            ),
+          ],
+        ));
+  }
+
+  Widget pageUsers() {
+    return FutureBuilder(
+        initialData: 1,
+        future: FirebaseDatabase.instance.ref().child('users').once(),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          try {
+            if (snapshot.hasData) {
+              DatabaseEvent response = snapshot.data;
+
+              return response == null
+                  ? Text("Cargando")
+                  : ListView.builder(
+                      itemCount: response.snapshot.children.length,
+                      shrinkWrap: true,
+                      physics: AlwaysScrollableScrollPhysics(),
+                      itemBuilder: (BuildContext context, int index) {
+                        DataSnapshot dataList = response.snapshot.children.toList()[index];
+                        Widget itemList() {
+                          return Container(
+                            margin: EdgeInsets.only(left: 20, right: 20, top: 10),
+                            decoration: AppWidget().boxShandowGreyRectangule(),
+                            child: Row(
+                              children: [
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                CircleAvatar(
+                                  backgroundColor: Colors.grey.withOpacity(0.3),
+                                  radius: 40,
+                                ),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Flexible(
+                                    child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    SizedBox(
+                                      height: 14,
+                                    ),
+                                    Text(
+                                      dataList.child("fullname").value.toString(),
+                                      style: TextStyle(color: secondryColor, fontSize: 17, fontWeight: FontWeight.bold),
+                                    ),
+                                    Text(
+                                      "Opiniones clientes",
+                                      style: TextStyle(color: Colors.black, fontSize: 10),
+                                    ),
+                                    RatingBarIndicator(
+                                        rating: 2.5,
+                                        itemCount: 5,
+                                        itemSize: 16.0,
+                                        itemBuilder: (context, _) => Icon(
+                                              Icons.star,
+                                              color: secondryColor,
+                                            )),
+                                    SizedBox(
+                                      height: 5,
+                                    ),
+                                    SizedBox(
+                                      height: 14,
+                                    ),
+                                  ],
+                                ))
+                              ],
+                            ),
+                          );
+                        }
+
+                        if (_searchController.text.isEmpty == false) {
+                          if (searchText.contains(dataList.child("fullname").value.toString())) {
+                            return itemList();
+                          } else {
+                            return SizedBox();
+                          }
+                        } else {
+                          return itemList();
+                        }
+                      });
+            } else {
+              return Text("Cargando");
+            }
+
+            ;
+          } catch (e) {
+            return Text("Cargando");
+          }
+        });
+  }
+
+  Widget pageProfessional() {
+    return FutureBuilder(
+        initialData: 1,
+        future: FirebaseDatabase.instance.ref().child('partners').once(),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          try {
+            if (snapshot.hasData) {
+              DatabaseEvent response = snapshot.data;
+
+              return response == null
+                  ? Text("Cargando")
+                  : ListView.builder(
+                      itemCount: response.snapshot.children.length,
+                      shrinkWrap: true,
+                      physics: AlwaysScrollableScrollPhysics(),
+                      itemBuilder: (BuildContext context, int index) {
+                        DataSnapshot dataList = response.snapshot.children.toList()[index];
+                        Widget itemList() {
+                          return Container(
+                            margin: EdgeInsets.only(left: 20, right: 20, top: 10),
+                            decoration: AppWidget().boxShandowGreyRectangule(),
+                            child: Row(
+                              children: [
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                CircleAvatar(
+                                  backgroundColor: Colors.grey.withOpacity(0.3),
+                                  radius: 40,
+                                ),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Flexible(
+                                    child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    SizedBox(
+                                      height: 14,
+                                    ),
+                                    Text(
+                                      dataList.child("fullname").value.toString(),
+                                      style: TextStyle(color: secondryColor, fontSize: 17, fontWeight: FontWeight.bold),
+                                    ),
+                                    Text(
+                                      "Opiniones clientes",
+                                      style: TextStyle(color: Colors.black, fontSize: 10),
+                                    ),
+                                    RatingBarIndicator(
+                                        rating: 2.5,
+                                        itemCount: 5,
+                                        itemSize: 16.0,
+                                        itemBuilder: (context, _) => Icon(
+                                              Icons.star,
+                                              color: secondryColor,
+                                            )),
+                                    SizedBox(
+                                      height: 5,
+                                    ),
+                                    SizedBox(
+                                      height: 14,
+                                    ),
+                                  ],
+                                ))
+                              ],
+                            ),
+                          );
+                        }
+
+                        if (_searchController.text.isEmpty == false) {
+                          if (searchText.contains(dataList.child("fullname").value.toString())) {
+                            return itemList();
+                          } else {
+                            return SizedBox();
+                          }
+                        } else {
+                          return itemList();
+                        }
+                      });
+            } else {
+              return Text("Cargando");
+            }
+
+            ;
+          } catch (e) {
+            return Text("Cargando");
+          }
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: scaffoldKey,
       resizeToAvoidBottomInset: false,
       backgroundColor: appcolors.dashboardCard,
-      appBar: AppBar(
+      /* appBar: AppBar(
         iconTheme: const IconThemeData(
           color: Colors.black,
         ),
@@ -85,14 +343,14 @@ class _MyOrdersState extends State<MyOrders> with TickerProviderStateMixin {
             color: Colors.black,
           ),
         ),
-      ),
+      ),*/
       body: SafeArea(
         child: Container(
           color: appcolors.dashboardCard,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Container(
+              /* Container(
                 color: Colors.white,
                 child: TabBar(
                   physics: const NeverScrollableScrollPhysics(),
@@ -102,16 +360,180 @@ class _MyOrdersState extends State<MyOrders> with TickerProviderStateMixin {
                     Tab(
                       text: Locales.string(context, 'lbl_active'),
                     ),
+                    //kkkk
                     Tab(
-                      text: Locales.string(context, 'lbl_completed'),
+                      text: Locales.string(context, 'lbl_completed') ,
                     )
                   ],
                   controller: _tabController,
                   indicatorSize: TabBarIndicatorSize.tab,
                 ),
+              ),*/
+
+              SizedBox(
+                height: 40,
+              ),
+
+              Container(
+                  margin: EdgeInsets.only(left: 30),
+                  child: Text(
+                    "Buscar: ",
+                    style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 20),
+                  )),
+              SizedBox(
+                height: 20,
+              ),
+              Row(
+                children: [
+                  Expanded(child: SizedBox()),
+                  itemAdd("images/icons/shoping.svg", "Usuario", userCheck, tap: () {
+                    userCheck = !userCheck;
+                    profesionalCheck = false;
+                    serviceCheck = false;
+                    setState(() {});
+                  }),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  itemAdd("images/icons/profesional.svg", "Profesional", profesionalCheck, tap: () {
+                    profesionalCheck = !profesionalCheck;
+                    serviceCheck = false;
+                    userCheck = false;
+                    setState(() {});
+                  }),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  itemAdd(
+                    "images/icons/userCircle.svg",
+                    "Servicios",
+                    serviceCheck,
+                    tap: () {
+                      profesionalCheck = false;
+                      userCheck = false;
+                      serviceCheck = !serviceCheck;
+                      setState(() {});
+                    },
+                  ),
+                  Expanded(child: SizedBox()),
+                ],
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              Row(
+                children: [
+                  SizedBox(
+                    width: 20,
+                  ),
+                  Container(
+                      margin: EdgeInsets.only(left: 30),
+                      child: Text(
+                        "Historial: ",
+                        style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 20),
+                      )),
+                  Expanded(child: SizedBox()),
+                  Container(
+                      margin: EdgeInsets.only(left: 30),
+                      child: Row(
+                        children: [
+                          Text(
+                            "Filtro",
+                            style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 20),
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          SvgPicture.asset(
+                            "images/icons/add.svg",
+                            width: 23,
+                            color: secondryColor,
+                          ),
+                        ],
+                      )),
+                  SizedBox(
+                    width: 50,
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: 20,
+              ),
+
+              Container(
+                  margin: EdgeInsets.only(left: 20, right: 20),
+                  child: AppWidget().texfieldFormat(
+                      controller: _searchController,
+                      title: "Buscar",
+                      execute: () {
+                        searchText = _searchController.text.toString();
+                        setState(() {});
+                      })),
+              SizedBox(
+                height: 10,
+              ),
+
+              Text("Resultados de :" + searchText.toString()),
+              SizedBox(
+                height: 20,
+              ),
+
+              serviceCheck == false
+                  ? SizedBox()
+                  : Container(
+                      margin: EdgeInsets.only(left: 20, right: 20),
+                      child: Row(
+                        children: [
+                          Container(
+                              width: 110,
+                              child: AppWidget().buttonShandow("Pendiente",
+                                  color: positionFilter != 1 ? Colors.grey.withOpacity(0.2) : redButton, colorText: Colors.white, tap: () {
+                                positionFilter = 1;
+                                setState(() {});
+                              })),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Container(
+                              width: 110,
+                              child: AppWidget().buttonShandow("En curso",
+                                  color: positionFilter != 2 ? Colors.grey.withOpacity(0.2) : yellowButton,
+                                  colorText: Colors.white, tap: () {
+                                positionFilter = 2;
+                                setState(() {});
+                              })),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Container(
+                              width: 110,
+                              child: AppWidget().buttonShandow("Terminado",
+                                  color: positionFilter != 3 ? Colors.grey.withOpacity(0.2) : greenButton,
+                                  colorText: Colors.white, tap: () {
+                                positionFilter = 3;
+                                setState(() {});
+                              })),
+                        ],
+                      )),
+              SizedBox(
+                height: 20,
               ),
               Expanded(
-                child: TabBarView(
+                  child: ListView(
+                children: [
+                  userCheck == false ? SizedBox() : pageUsers(),
+                  profesionalCheck == false ? SizedBox() : pageProfessional(),
+                  serviceCheck == false
+                      ? SizedBox()
+                      : Column(
+                          children: [
+                            positionFilter != 1 ? SizedBox() : orderItemsPending(),
+                            positionFilter != 2 ? SizedBox() : orderItemsCompleted()
+                          ],
+                        )
+                ],
+              )
+                  /* TabBarView(
                   physics: const AlwaysScrollableScrollPhysics(),
                   controller: _tabController,
                   children: [
@@ -135,8 +557,8 @@ class _MyOrdersState extends State<MyOrders> with TickerProviderStateMixin {
                       ),
                     ),
                   ],
-                ),
-              ),
+                ),*/
+                  ),
               //
               const SizedBox(height: 10),
             ],

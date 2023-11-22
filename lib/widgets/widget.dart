@@ -15,6 +15,8 @@ import 'package:flutter_svg/svg.dart';
 
 import 'package:fullpro/PROFESIONAL/views/Authentication/loginpage.dart';
 
+import 'package:fullpro/pages/Authentication/redsocial/google.dart';
+
 
 import 'package:fullpro/pages/Authentication/registerationpage.dart';
 
@@ -29,6 +31,13 @@ import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
 
 
 class AppWidget {
+
+  itemMessage(String title, BuildContext context) {
+
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(title)));
+
+  }
+
 
   borderColor() {
 
@@ -723,7 +732,10 @@ class AppWidget {
 
         GestureDetector(
 
-            onTap: () {},
+            onTap: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => SignInDemo()));
+
+            },
 
             child: Image.asset(
 
@@ -1021,7 +1033,7 @@ class AppWidget {
 
                     title,
 
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: active == false ? Colors.white : secondryColor),
+                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: active == false ? Colors.white : secondryColor),
 
                   ),
 

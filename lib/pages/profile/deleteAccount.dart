@@ -302,7 +302,7 @@ class _DeleteAccountPageState extends State<DeleteAccountPage> {
 
                   child: AppWidget().buttonForm(context, "Desactivar la cuenta", tap: () {
 
-                Loader.PagewithHome(context, const kHomePage());
+                Loader.PagewithHome(context, kHomePage());
 
               })),
 
@@ -310,21 +310,99 @@ class _DeleteAccountPageState extends State<DeleteAccountPage> {
               const SizedBox(height: 30),
 
 
-              Text(
+              GestureDetector(
 
-                "Eliminar cuenta",
+                  onTap: () {
 
-                textAlign: TextAlign.center,
+                    showModalBottomSheet(
 
-                style: TextStyle(
+                        context: context,
 
-                  color: secondryColor,
+                        builder: (context) {
 
-                  fontSize: 20,
+                          return Column(
 
-                ),
+                            mainAxisSize: MainAxisSize.min,
 
-              ),
+                            children: <Widget>[
+
+                              SizedBox(
+
+                                height: 20,
+
+                              ),
+
+                              Container(
+
+                                  margin: EdgeInsets.only(left: 20, right: 20),
+
+                                  child: Text(
+
+                                    "Estas seguro que quieres eliminar tu cuenta de forma definitiva",
+
+                                    style: TextStyle(fontWeight: FontWeight.bold),
+
+                                  )),
+
+                              SizedBox(
+
+                                height: 20,
+
+                              ),
+
+                              SizedBox(
+
+                                height: 20,
+
+                              ),
+
+                              ListTile(
+
+                                title: new Text('Eliminar'),
+
+                                onTap: () {
+
+                                  Navigator.pop(context);
+
+                                },
+
+                              ),
+
+                              ListTile(
+
+                                title: new Text('Cancelar'),
+
+                                onTap: () {
+
+                                  Navigator.pop(context);
+
+                                },
+
+                              ),
+
+                            ],
+
+                          );
+
+                        });
+
+                  },
+
+                  child: Text(
+
+                    "Eliminar cuenta",
+
+                    textAlign: TextAlign.center,
+
+                    style: TextStyle(
+
+                      color: secondryColor,
+
+                      fontSize: 20,
+
+                    ),
+
+                  )),
 
             ],
 

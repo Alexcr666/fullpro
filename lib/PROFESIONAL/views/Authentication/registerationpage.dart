@@ -43,6 +43,14 @@ class _RegistrationPageState extends State<RegistrationPage> {
   bool signUpNext = false;
 
   List<File> fileRegistroLegal = [];
+  bool licenceCheck = false;
+  bool backgroundCheck = false;
+  bool registroCheck = false;
+
+  TextEditingController country = TextEditingController();
+  TextEditingController state = TextEditingController();
+  TextEditingController city = TextEditingController();
+  TextEditingController street = TextEditingController();
 
   var fullNameController = TextEditingController();
 
@@ -93,9 +101,12 @@ class _RegistrationPageState extends State<RegistrationPage> {
               'dateBirthay': dateController.text,
               'history': "0",
               'earnings': 0,
-              'profesion': "",
-              'city': '',
-              'state': ''
+              'profesion': professionController.text,
+              //'city': '',
+              //  'state': '',
+              'country': country.text,
+              'state': state.text,
+              'city': city.text,
             };
             phoneRef.set(userMap);
           }
@@ -166,17 +177,16 @@ class _RegistrationPageState extends State<RegistrationPage> {
     locationPermision();
   }
 
-  TextEditingController country = TextEditingController();
-  TextEditingController state = TextEditingController();
-  TextEditingController city = TextEditingController();
-  TextEditingController street = TextEditingController();
-
+  final _formKey = GlobalKey<FormState>();
+  final _formKey1 = GlobalKey<FormState>();
   Widget signUp2() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        AppWidget().texfieldFormat(title: "Profesión", controller: professionController),
-        /*   Row(
+    return Form(
+        key: _formKey,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            AppWidget().texfieldFormat(title: "Profesión", controller: professionController),
+            /*   Row(
           children: [
             Flexible(child: AppWidget().texfieldFormat(title: "Ciudad", controller: cityController)),
             SizedBox(
@@ -185,303 +195,312 @@ class _RegistrationPageState extends State<RegistrationPage> {
             Flexible(child: AppWidget().texfieldFormat(title: "Estado", controller: stateController)),
           ],
         ),*/
-        SizedBox(
-          height: 10,
-        ),
-        CountryStateCityPickerRow(
-          country: country,
-          state: state,
-          city: city,
-          textFieldInputBorder: const UnderlineInputBorder(),
-        ),
-        SizedBox(
-          height: 10,
-        ),
-        Text("Licencias"),
-        SizedBox(
-          height: 5,
-        ),
-        fileLicense.length == 0
-            ? SizedBox()
-            : Container(
-                height: 40,
-                child: ListView.builder(
-                    padding: EdgeInsets.only(left: 10.0),
-                    itemCount: fileLicense.length,
-                    scrollDirection: Axis.horizontal,
-                    shrinkWrap: true,
-                    itemBuilder: (BuildContext context, int index) {
-                      return Container(
-                        width: 150,
-                        margin: EdgeInsets.only(left: 5),
-                        padding: EdgeInsets.all(2),
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          color: Color(0xff38CAB3),
-                          // Set border width
-                          borderRadius: BorderRadius.all(Radius.circular(10.0)), // Set rounded corner radius
-                        ),
-                        child: Row(
-                          children: [
-                            SizedBox(
-                              width: 10,
+            SizedBox(
+              height: 10,
+            ),
+            CountryStateCityPickerRow(
+              country: country,
+              state: state,
+              city: city,
+              textFieldInputBorder: const UnderlineInputBorder(),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Text("Licencias"),
+            SizedBox(
+              height: 5,
+            ),
+            fileLicense.length == 0
+                ? SizedBox()
+                : Container(
+                    height: 40,
+                    child: ListView.builder(
+                        padding: EdgeInsets.only(left: 10.0),
+                        itemCount: fileLicense.length,
+                        scrollDirection: Axis.horizontal,
+                        shrinkWrap: true,
+                        itemBuilder: (BuildContext context, int index) {
+                          return Container(
+                            width: 150,
+                            margin: EdgeInsets.only(left: 5),
+                            padding: EdgeInsets.all(2),
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              color: Color(0xff38CAB3),
+                              // Set border width
+                              borderRadius: BorderRadius.all(Radius.circular(10.0)), // Set rounded corner radius
                             ),
-                            GestureDetector(
-                                onTap: () {
-                                  fileLicense.removeAt(0);
-                                  setState(() {});
-                                },
-                                child: SvgPicture.asset(
-                                  "images/icons/closeFile.svg",
-                                  width: 35,
-                                )),
-                            SizedBox(
-                              width: 5,
-                            ),
-                            Container(
-                                child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                            child: Row(
                               children: [
-                                Text(
-                                  "Foto: " + index.toString(),
-                                  style: TextStyle(color: Colors.white, fontSize: 10),
+                                SizedBox(
+                                  width: 10,
                                 ),
-                                Text(
-                                  "291 KB",
-                                  style: TextStyle(color: Colors.white, fontSize: 9),
+                                GestureDetector(
+                                    onTap: () {
+                                      fileLicense.removeAt(0);
+                                      setState(() {});
+                                    },
+                                    child: SvgPicture.asset(
+                                      "images/icons/closeFile.svg",
+                                      width: 35,
+                                    )),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                Container(
+                                    child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "Foto: " + index.toString(),
+                                      style: TextStyle(color: Colors.white, fontSize: 10),
+                                    ),
+                                    Text(
+                                      "291 KB",
+                                      style: TextStyle(color: Colors.white, fontSize: 9),
+                                    ),
+                                  ],
+                                )),
+                                SizedBox(
+                                  width: 15,
                                 ),
                               ],
-                            )),
-                            SizedBox(
-                              width: 15,
                             ),
-                          ],
-                        ),
-                      );
-                    })),
-        /* Row(
+                          );
+                        })),
+            /* Row(
           children: [
             kkk
            
           ],
         ),*/
-        SizedBox(
-          height: 5,
-        ),
-        GestureDetector(
-            onTap: () async {
-              FilePickerResult? result = await FilePicker.platform.pickFiles();
+            SizedBox(
+              height: 5,
+            ),
+            GestureDetector(
+                onTap: () async {
+                  FilePickerResult? result = await FilePicker.platform.pickFiles();
 
-              if (result != null) {
-                fileLicense.add(File(result.files.single.path!));
-                setState(() {});
-              } else {
-                // User canceled the picker
-              }
-            },
-            child: DottedBorder(
-              borderType: BorderType.RRect,
-              radius: Radius.circular(12),
-              padding: EdgeInsets.all(6),
-              child: ClipRRect(
-                borderRadius: BorderRadius.all(Radius.circular(12)),
-                child: Container(
-                  height: 40,
-                  width: double.infinity,
-                  child: Center(child: Text("Drag & Drop your files or Mobile")),
-                ),
-              ),
-            )),
-        SizedBox(
-          height: 10,
-        ),
-        Text("Background check"),
-        fileBackgroundCheck.length == 0
-            ? SizedBox()
-            : Container(
-                height: 40,
-                child: ListView.builder(
-                    padding: EdgeInsets.only(left: 10.0),
-                    itemCount: fileBackgroundCheck.length,
-                    scrollDirection: Axis.horizontal,
-                    shrinkWrap: true,
-                    itemBuilder: (BuildContext context, int index) {
-                      return Container(
-                        width: 150,
-                        margin: EdgeInsets.only(left: 5),
-                        padding: EdgeInsets.all(2),
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          color: Color(0xff38CAB3),
-                          // Set border width
-                          borderRadius: BorderRadius.all(Radius.circular(10.0)), // Set rounded corner radius
-                        ),
-                        child: Row(
-                          children: [
-                            SizedBox(
-                              width: 10,
+                  if (result != null) {
+                    fileLicense.add(File(result.files.single.path!));
+                    licenceCheck = false;
+
+                    setState(() {});
+                  } else {
+                    // User canceled the picker
+                  }
+                },
+                child: DottedBorder(
+                  color: licenceCheck ? Colors.red : Colors.grey,
+                  borderType: BorderType.RRect,
+                  radius: Radius.circular(12),
+                  padding: EdgeInsets.all(6),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.all(Radius.circular(12)),
+                    child: Container(
+                      height: 40,
+                      width: double.infinity,
+                      child: Center(child: Text("Drag & Drop your files or Mobile")),
+                    ),
+                  ),
+                )),
+            SizedBox(
+              height: 10,
+            ),
+            Text("Background check"),
+            fileBackgroundCheck.length == 0
+                ? SizedBox()
+                : Container(
+                    height: 40,
+                    child: ListView.builder(
+                        padding: EdgeInsets.only(left: 10.0),
+                        itemCount: fileBackgroundCheck.length,
+                        scrollDirection: Axis.horizontal,
+                        shrinkWrap: true,
+                        itemBuilder: (BuildContext context, int index) {
+                          return Container(
+                            width: 150,
+                            margin: EdgeInsets.only(left: 5),
+                            padding: EdgeInsets.all(2),
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              color: Color(0xff38CAB3),
+                              // Set border width
+                              borderRadius: BorderRadius.all(Radius.circular(10.0)), // Set rounded corner radius
                             ),
-                            GestureDetector(
-                                onTap: () {
-                                  fileBackgroundCheck.removeAt(0);
-                                  setState(() {});
-                                },
-                                child: SvgPicture.asset(
-                                  "images/icons/closeFile.svg",
-                                  width: 35,
-                                )),
-                            SizedBox(
-                              width: 5,
-                            ),
-                            Container(
-                                child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                            child: Row(
                               children: [
-                                Text(
-                                  "Foto: " + index.toString(),
-                                  style: TextStyle(color: Colors.white, fontSize: 10),
+                                SizedBox(
+                                  width: 10,
                                 ),
-                                Text(
-                                  "291 KB",
-                                  style: TextStyle(color: Colors.white, fontSize: 9),
+                                GestureDetector(
+                                    onTap: () {
+                                      fileBackgroundCheck.removeAt(0);
+                                      setState(() {});
+                                    },
+                                    child: SvgPicture.asset(
+                                      "images/icons/closeFile.svg",
+                                      width: 35,
+                                    )),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                Container(
+                                    child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "Foto: " + index.toString(),
+                                      style: TextStyle(color: Colors.white, fontSize: 10),
+                                    ),
+                                    Text(
+                                      "291 KB",
+                                      style: TextStyle(color: Colors.white, fontSize: 9),
+                                    ),
+                                  ],
+                                )),
+                                SizedBox(
+                                  width: 15,
                                 ),
                               ],
-                            )),
-                            SizedBox(
-                              width: 15,
                             ),
-                          ],
-                        ),
-                      );
-                    })),
-        SizedBox(
-          height: 5,
-        ),
-        GestureDetector(
-            onTap: () async {
-              FilePickerResult? result = await FilePicker.platform.pickFiles();
+                          );
+                        })),
+            SizedBox(
+              height: 5,
+            ),
+            GestureDetector(
+                onTap: () async {
+                  FilePickerResult? result = await FilePicker.platform.pickFiles();
 
-              if (result != null) {
-                fileBackgroundCheck.add(File(result.files.single.path!));
-              } else {
-                // User canceled the picker
-              }
-              setState(() {});
-            },
-            child: DottedBorder(
-              borderType: BorderType.RRect,
-              radius: Radius.circular(12),
-              padding: EdgeInsets.all(6),
-              child: ClipRRect(
-                borderRadius: BorderRadius.all(Radius.circular(12)),
-                child: Container(
-                  height: 40,
-                  width: double.infinity,
-                  child: Center(child: Text("Drag & Drop your files or Mobile")),
-                ),
-              ),
-            )),
-        SizedBox(
-          height: 10,
-        ),
-        Text("Registro legal w9"),
-        fileRegistroLegal.length == 0
-            ? SizedBox()
-            : Container(
-                height: 40,
-                child: ListView.builder(
-                    padding: EdgeInsets.only(left: 10.0),
-                    itemCount: fileRegistroLegal.length,
-                    scrollDirection: Axis.horizontal,
-                    shrinkWrap: true,
-                    itemBuilder: (BuildContext context, int index) {
-                      return Container(
-                        width: 150,
-                        margin: EdgeInsets.only(left: 5),
-                        padding: EdgeInsets.all(2),
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          color: Color(0xff38CAB3),
-                          // Set border width
-                          borderRadius: BorderRadius.all(Radius.circular(10.0)), // Set rounded corner radius
-                        ),
-                        child: Row(
-                          children: [
-                            SizedBox(
-                              width: 10,
+                  if (result != null) {
+                    fileBackgroundCheck.add(File(result.files.single.path!));
+                    backgroundCheck = false;
+                  } else {
+                    // User canceled the picker
+                  }
+                  setState(() {});
+                },
+                child: DottedBorder(
+                  color: backgroundCheck ? Colors.red : Colors.grey,
+                  borderType: BorderType.RRect,
+                  radius: Radius.circular(12),
+                  padding: EdgeInsets.all(6),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.all(Radius.circular(12)),
+                    child: Container(
+                      height: 40,
+                      width: double.infinity,
+                      child: Center(child: Text("Drag & Drop your files or Mobile")),
+                    ),
+                  ),
+                )),
+            SizedBox(
+              height: 10,
+            ),
+            Text("Registro legal w9"),
+            fileRegistroLegal.length == 0
+                ? SizedBox()
+                : Container(
+                    height: 40,
+                    child: ListView.builder(
+                        padding: EdgeInsets.only(left: 10.0),
+                        itemCount: fileRegistroLegal.length,
+                        scrollDirection: Axis.horizontal,
+                        shrinkWrap: true,
+                        itemBuilder: (BuildContext context, int index) {
+                          return Container(
+                            width: 150,
+                            margin: EdgeInsets.only(left: 5),
+                            padding: EdgeInsets.all(2),
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              color: Color(0xff38CAB3),
+                              // Set border width
+                              borderRadius: BorderRadius.all(Radius.circular(10.0)), // Set rounded corner radius
                             ),
-                            GestureDetector(
-                                onTap: () {
-                                  fileRegistroLegal.removeAt(0);
-                                  setState(() {});
-                                },
-                                child: SvgPicture.asset(
-                                  "images/icons/closeFile.svg",
-                                  width: 35,
-                                )),
-                            SizedBox(
-                              width: 5,
-                            ),
-                            Container(
-                                child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                            child: Row(
                               children: [
-                                Text(
-                                  "Foto: " + index.toString(),
-                                  style: TextStyle(color: Colors.white, fontSize: 10),
+                                SizedBox(
+                                  width: 10,
                                 ),
-                                Text(
-                                  "291 KB",
-                                  style: TextStyle(color: Colors.white, fontSize: 9),
+                                GestureDetector(
+                                    onTap: () {
+                                      fileRegistroLegal.removeAt(0);
+                                      setState(() {});
+                                    },
+                                    child: SvgPicture.asset(
+                                      "images/icons/closeFile.svg",
+                                      width: 35,
+                                    )),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                Container(
+                                    child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "Foto: " + index.toString(),
+                                      style: TextStyle(color: Colors.white, fontSize: 10),
+                                    ),
+                                    Text(
+                                      "291 KB",
+                                      style: TextStyle(color: Colors.white, fontSize: 9),
+                                    ),
+                                  ],
+                                )),
+                                SizedBox(
+                                  width: 15,
                                 ),
                               ],
-                            )),
-                            SizedBox(
-                              width: 15,
                             ),
-                          ],
-                        ),
-                      );
-                    })),
-        SizedBox(
-          height: 5,
-        ),
-        GestureDetector(
-            onTap: () async {
-              FilePickerResult? result = await FilePicker.platform.pickFiles();
+                          );
+                        })),
+            SizedBox(
+              height: 5,
+            ),
+            GestureDetector(
+                onTap: () async {
+                  FilePickerResult? result = await FilePicker.platform.pickFiles();
 
-              if (result != null) {
-                fileRegistroLegal.add(File(result.files.single.path!));
-              } else {
-                // User canceled the picker
-              }
-              setState(() {});
-            },
-            child: DottedBorder(
-              borderType: BorderType.RRect,
-              radius: Radius.circular(12),
-              padding: EdgeInsets.all(6),
-              child: ClipRRect(
-                borderRadius: BorderRadius.all(Radius.circular(12)),
-                child: Container(
-                  height: 40,
-                  width: double.infinity,
-                  child: Center(child: Text("Drag & Drop your files or Mobile")),
-                ),
-              ),
-            )),
-      ],
-    );
+                  if (result != null) {
+                    fileRegistroLegal.add(File(result.files.single.path!));
+                    registroCheck = false;
+                  } else {
+                    // User canceled the picker
+                  }
+                  setState(() {});
+                },
+                child: DottedBorder(
+                  color: registroCheck ? Colors.red : Colors.grey,
+                  borderType: BorderType.RRect,
+                  radius: Radius.circular(12),
+                  padding: EdgeInsets.all(6),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.all(Radius.circular(12)),
+                    child: Container(
+                      height: 40,
+                      width: double.infinity,
+                      child: Center(child: Text("Drag & Drop your files or Mobile")),
+                    ),
+                  ),
+                )),
+          ],
+        ));
   }
 
   Widget signUp1() {
-    return Column(
-      children: [
-        AppWidget().texfieldFormat(title: "Nombre completo", controller: fullNameController, urlIcon: "images/icons/user.svg"),
-        /*  Padding(
+    return Form(
+        key: _formKey1,
+        child: Column(
+          children: [
+            AppWidget().texfieldFormat(title: "Nombre completo", controller: fullNameController, urlIcon: "images/icons/user.svg"),
+            /*  Padding(
                   padding: EdgeInsets.only(
                     right: 20,
                     left: 20,
@@ -507,58 +526,58 @@ class _RegistrationPageState extends State<RegistrationPage> {
                     ),
                   ),
                 ),*/
-        //
-        //
+            //
+            //
 
-        //
-        //  Phone Number TEXT FIELD
-        //
-        SizedBox(
-          height: 10,
-        ),
+            //
+            //  Phone Number TEXT FIELD
+            //
+            SizedBox(
+              height: 10,
+            ),
 
-        GestureDetector(
-            onTap: () {
-              void _showIOS_DatePicker(ctx) {
-                showCupertinoModalPopup(
-                    context: ctx,
-                    builder: (_) => Container(
-                          height: 190,
-                          color: Color.fromARGB(255, 255, 255, 255),
-                          child: Column(
-                            children: [
-                              Container(
-                                height: 180,
-                                child: CupertinoDatePicker(
-                                    mode: CupertinoDatePickerMode.date,
-                                    initialDateTime: DateTime.now(),
-                                    onDateTimeChanged: (val) {
-                                      setState(() {
-                                        final f = new DateFormat('yyyy-MM-dd');
+            GestureDetector(
+                onTap: () {
+                  void _showIOS_DatePicker(ctx) {
+                    showCupertinoModalPopup(
+                        context: ctx,
+                        builder: (_) => Container(
+                              height: 190,
+                              color: Color.fromARGB(255, 255, 255, 255),
+                              child: Column(
+                                children: [
+                                  Container(
+                                    height: 180,
+                                    child: CupertinoDatePicker(
+                                        mode: CupertinoDatePickerMode.date,
+                                        initialDateTime: DateTime.now(),
+                                        onDateTimeChanged: (val) {
+                                          setState(() {
+                                            final f = new DateFormat('yyyy-MM-dd');
 
-                                        dateController.text = f.format(val);
-                                        //  dateSelected = val.toString();
-                                      });
-                                    }),
+                                            dateController.text = f.format(val);
+                                            //  dateSelected = val.toString();
+                                          });
+                                        }),
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
-                        ));
-              }
+                            ));
+                  }
 
-              _showIOS_DatePicker(context);
-            },
-            child: AppWidget().texfieldFormat(
-                title: "Fecha de nacimiento", controller: dateController, urlIcon: "images/icons/calendar.svg", enabled: true)),
-        SizedBox(
-          height: 10,
-        ),
-        AppWidget().texfieldFormat(title: "Correo electronico", controller: emailController, urlIcon: "images/icons/message.svg"),
-        SizedBox(
-          height: 10,
-        ),
-        AppWidget().texfieldFormat(title: "Celular", controller: phoneController, urlIcon: "images/icons/phone.svg"),
-        /* Padding(
+                  _showIOS_DatePicker(context);
+                },
+                child: AppWidget().texfieldFormat(
+                    title: "Fecha de nacimiento", controller: dateController, urlIcon: "images/icons/calendar.svg", enabled: true)),
+            SizedBox(
+              height: 10,
+            ),
+            AppWidget().texfieldFormat(title: "Correo electronico", controller: emailController, urlIcon: "images/icons/message.svg"),
+            SizedBox(
+              height: 10,
+            ),
+            AppWidget().texfieldFormat(title: "Celular", controller: phoneController, urlIcon: "images/icons/phone.svg"),
+            /* Padding(
                   padding: EdgeInsets.only(
                     right: 20,
                     left: 20,
@@ -584,15 +603,15 @@ class _RegistrationPageState extends State<RegistrationPage> {
                     ),
                   ),
                 ),*/
-        //
-        //
-        SizedBox(
-          height: 10,
-        ),
-        //
-        //  Email Address TEXT FIELD
-        //
-        /*Padding(
+            //
+            //
+            SizedBox(
+              height: 10,
+            ),
+            //
+            //  Email Address TEXT FIELD
+            //
+            /*Padding(
                   padding: EdgeInsets.only(
                     right: 20,
                     left: 20,
@@ -623,11 +642,12 @@ class _RegistrationPageState extends State<RegistrationPage> {
                 SizedBox(
                   height: 15,
                 ),*/
-        //
-        //  Password
+            //
+            //  Password
 
-        AppWidget().texfieldFormat(title: "Password", controller: passwordController, urlIcon: "images/icons/password.svg"),
-        /* Padding(
+            AppWidget()
+                .texfieldFormat(title: "Password", controller: passwordController, urlIcon: "images/icons/password.svg", password: true),
+            /* Padding(
                   padding: EdgeInsets.only(
                     right: 20,
                     left: 20,
@@ -653,9 +673,9 @@ class _RegistrationPageState extends State<RegistrationPage> {
                     ),
                   ),
                 ),*/
-        SizedBox(height: 15),
-      ],
-    );
+            SizedBox(height: 15),
+          ],
+        ));
   }
 
   @override
@@ -722,43 +742,45 @@ class _RegistrationPageState extends State<RegistrationPage> {
                 signUpNext ? SizedBox() : signUp1(),
                 signUpNext == false ? SizedBox() : signUp2(),
                 //
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 15),
-                  child: Row(
-                    children: [
-                      Material(
-                        child: Checkbox(
-                          value: agree,
-                          onChanged: (value) {
-                            setState(() {
-                              agree = value ?? false;
-                            });
-                          },
-                        ),
-                      ),
-                      RichText(
-                        text: TextSpan(
+                signUpNext == false
+                    ? SizedBox()
+                    : Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 15),
+                        child: Row(
                           children: [
-                            TextSpan(
-                              text: Locales.string(context, 'lbl_i_have_read_terms'),
-                              style: TextStyle(color: Colors.black),
-                            ),
-                            TextSpan(
-                              text: /* Locales.string(context, 'lbl_terms_and_conditions')*/ "  Terms and conditions",
-                              style: TextStyle(color: secondryColor),
-                              recognizer: TapGestureRecognizer()
-                                ..onTap = () {
-                                  Navigator.push(context, MaterialPageRoute(builder: (context) => TermsPage()));
-
-                                  // Loader.page(context, TermsPage());
+                            Material(
+                              child: Checkbox(
+                                value: agree,
+                                onChanged: (value) {
+                                  setState(() {
+                                    agree = value ?? false;
+                                  });
                                 },
+                              ),
                             ),
+                            RichText(
+                              text: TextSpan(
+                                children: [
+                                  TextSpan(
+                                    text: Locales.string(context, 'lbl_i_have_read_terms'),
+                                    style: TextStyle(color: Colors.black),
+                                  ),
+                                  TextSpan(
+                                    text: /* Locales.string(context, 'lbl_terms_and_conditions')*/ "  Terms and conditions",
+                                    style: TextStyle(color: secondryColor),
+                                    recognizer: TapGestureRecognizer()
+                                      ..onTap = () {
+                                        Navigator.push(context, MaterialPageRoute(builder: (context) => TermsPage()));
+
+                                        // Loader.page(context, TermsPage());
+                                      },
+                                  ),
+                                ],
+                              ),
+                            )
                           ],
                         ),
-                      )
-                    ],
-                  ),
-                ),
+                      ),
                 SizedBox(height: 15),
                 //    Register Button
 
@@ -772,8 +794,6 @@ class _RegistrationPageState extends State<RegistrationPage> {
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: () async {
-                        signUpNext = true;
-                        setState(() {});
                         var connectivityResult = await (Connectivity().checkConnectivity());
                         if (connectivityResult != ConnectivityResult.wifi && connectivityResult != ConnectivityResult.mobile) {
                           ScaffoldMessenger.of(context).showSnackBar(
@@ -826,10 +846,34 @@ class _RegistrationPageState extends State<RegistrationPage> {
                           );
                           return;
                         }
-                        if (signUpNext == true) {
-                          registerUser();
+                        if (fileLicense.length == 0) {
+                          licenceCheck = true;
                         } else {
-                          signUpNext = true;
+                          licenceCheck = false;
+                        }
+                        if (fileBackgroundCheck.length == 0) {
+                          backgroundCheck = true;
+                        } else {
+                          backgroundCheck = false;
+                        }
+                        if (fileRegistroLegal.length == 0) {
+                          registroCheck = true;
+                        } else {
+                          registroCheck = false;
+                        }
+
+                        if (signUpNext == true) {
+                          if (agree == true) {
+                            if (_formKey.currentState!.validate()) {
+                              registerUser();
+                            }
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Debe aceptar los terminos y condiciones")));
+                          }
+                        } else {
+                          if (_formKey1.currentState!.validate()) {
+                            signUpNext = true;
+                          }
                         }
                         signUpNext = true;
                         setState(() {});

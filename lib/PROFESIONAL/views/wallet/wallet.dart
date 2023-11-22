@@ -40,7 +40,7 @@ class _WalletState extends State<Wallet> {
   void initState() {
     super.initState();
 
-    bankNameController.text = bankName!;
+    bankNameController.text = bankName.toString()!;
     accountNumberController.text = accountNumber!;
     ibanNumberController.text = ibanNumber!;
     accountTitleController.text = accountTitle!;

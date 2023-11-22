@@ -1,7 +1,13 @@
+import 'package:firebase_database/firebase_database.dart';
+
+
 import 'package:flutter/material.dart';
 
 
 import 'package:flutter_locales/flutter_locales.dart';
+
+
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 
 import 'package:flutter_svg/flutter_svg.dart';
@@ -45,154 +51,337 @@ class PortafolioPage extends StatefulWidget {
 
 class _PortafolioPageState extends State<PortafolioPage> {
 
-  itemPortafolio() {
+  Widget stateIndicator0() {
 
-    return Container(
+    return FutureBuilder(
 
-        margin: EdgeInsets.only(top: 10),
+        initialData: 1,
 
-        child: Row(
+        future: FirebaseDatabase.instance.ref().child('portafolio').once(),
 
-          children: [
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
 
-            CircleAvatar(
+          try {
 
-              backgroundColor: Colors.grey.withOpacity(0.3),
+            if (snapshot.hasData) {
 
-              radius: 30,
+              DatabaseEvent response = snapshot.data;
 
-            ),
 
-            SizedBox(
+              return response == null
 
-              width: 30,
+                  ? Text("Cargando")
 
-            ),
+                  : ListView.builder(
 
-            Container(
+                      itemCount: response.snapshot.children.length,
 
-                width: 250,
+                      shrinkWrap: true,
 
-                child: Column(
+                      itemBuilder: (BuildContext context, int index) {
 
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                        DataSnapshot dataList = response.snapshot.children.toList()[index];
 
-                  children: [
 
-                    Row(
+                        return Container(
 
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            decoration: AppWidget().boxShandowGrey(),
 
-                      children: [
+                            margin: EdgeInsets.only(top: 10),
 
-                        Flexible(
+                            padding: EdgeInsets.only(top: 20, right: 20, bottom: 20),
 
-                            child: Column(
+                            child: Row(
 
-                          children: [
+                              children: [
 
-                            Text(
+                                SizedBox(
 
-                              "Alex",
+                                  width: 10,
 
-                              textAlign: TextAlign.center,
+                                ),
 
-                              style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: secondryColor),
+                                ClipRRect(
 
-                            ),
+                                  borderRadius: BorderRadius.circular(15),
 
-                            Text(
+                                  child: Image.network(
 
-                              "titulo",
+                                    dataList.child("foto").value.toString(),
 
-                              textAlign: TextAlign.center,
+                                    errorBuilder: (BuildContext? context, Object? exception, StackTrace? stackTrace) {
 
-                              style: TextStyle(fontSize: 11, color: secondryColor),
+                                      return Container(
 
-                            ),
+                                        width: 70,
 
-                          ],
+                                        height: 70,
 
-                        )),
+                                        color: Colors.grey.withOpacity(0.3),
 
+                                      );
 
-                        // Expanded(child: SizedBox()),
+                                    },
 
-                      ],
+                                    width: 70,
 
-                    ),
+                                    height: 70,
 
-                    SizedBox(
+                                    fit: BoxFit.cover,
 
-                      height: 5,
+                                  ),
 
-                    ),
+                                ),
 
-                    Row(
+                                SizedBox(
 
-                      children: [
+                                  width: 10,
 
-                        Icon(
+                                ),
 
-                          Icons.star_border_rounded,
+                                Container(
 
-                          color: secondryColor,
+                                    width: 220,
 
-                          size: 20,
+                                    child: Column(
 
-                        ),
+                                      crossAxisAlignment: CrossAxisAlignment.start,
 
-                        Icon(
+                                      children: [
 
-                          Icons.star_border_rounded,
+                                        Row(
 
-                          color: secondryColor,
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
 
-                          size: 20,
+                                          children: [
 
-                        ),
+                                            Flexible(
 
-                        Icon(
+                                                child: Column(
 
-                          Icons.star_border_rounded,
+                                              crossAxisAlignment: CrossAxisAlignment.start,
 
-                          color: secondryColor,
+                                              children: [
 
-                          size: 20,
+                                                Text(
 
-                        ),
+                                                  dataList.child("name").value.toString(),
 
-                        Icon(
+                                                  textAlign: TextAlign.center,
 
-                          Icons.star_border_rounded,
+                                                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: secondryColor),
 
-                          color: secondryColor,
+                                                ),
 
-                          size: 20,
+                                                Text(
 
-                        ),
+                                                  dataList.child("type").value.toString(),
 
-                        Icon(
+                                                  textAlign: TextAlign.center,
 
-                          Icons.star_border_rounded,
+                                                  style: TextStyle(fontSize: 10, color: secondryColor),
 
-                          color: secondryColor,
+                                                ),
 
-                          size: 20,
+                                              ],
 
-                        ),
+                                            )),
 
-                      ],
 
-                    )
+                                            // Expanded(child: SizedBox()),
 
-                  ],
+                                          ],
 
-                ))
+                                        ),
 
-          ],
+                                        Row(
 
-        ));
+                                          children: [
+
+                                            Icon(
+
+                                              Icons.star_border_rounded,
+
+                                              color: secondryColor,
+
+                                              size: 20,
+
+                                            ),
+
+                                            Icon(
+
+                                              Icons.star_border_rounded,
+
+                                              color: secondryColor,
+
+                                              size: 20,
+
+                                            ),
+
+                                            Icon(
+
+                                              Icons.star_border_rounded,
+
+                                              color: secondryColor,
+
+                                              size: 20,
+
+                                            ),
+
+                                            Icon(
+
+                                              Icons.star_border_rounded,
+
+                                              color: secondryColor,
+
+                                              size: 20,
+
+                                            ),
+
+                                            Icon(
+
+                                              Icons.star_border_rounded,
+
+                                              color: secondryColor,
+
+                                              size: 20,
+
+                                            ),
+
+                                          ],
+
+                                        )
+
+                                      ],
+
+                                    )),
+
+                                MaterialButton(
+
+                                    height: 30,
+
+                                    shape: CircleBorder(),
+
+                                    color: Colors.grey.withOpacity(0.5),
+
+                                    onPressed: () {
+
+                                      showModalBottomSheet(
+
+                                          context: context,
+
+                                          builder: (context) {
+
+                                            return Column(
+
+                                              mainAxisSize: MainAxisSize.min,
+
+                                              children: <Widget>[
+
+                                                ListTile(
+
+                                                  title: new Text('Eliminar'),
+
+                                                  onTap: () {
+
+                                                    dataList.ref.remove().then((value) {
+
+                                                      AppWidget().itemMessage("Eliminado", context);
+
+
+                                                      setState(() {});
+
+                                                    });
+
+
+                                                    Navigator.pop(context);
+
+                                                  },
+
+                                                ),
+
+                                                ListTile(
+
+                                                  title: new Text('Actualizar'),
+
+                                                  onTap: () {
+
+                                                    Navigator.pop(context);
+
+
+                                                    Navigator.push(
+
+                                                        context,
+
+                                                        MaterialPageRoute(
+
+                                                            builder: (context) => NewPortafolioPage(
+
+                                                                  idEdit: dataList.key.toString(),
+
+                                                                )));
+
+                                                  },
+
+                                                ),
+
+                                                ListTile(
+
+                                                  title: new Text('Cancelar'),
+
+                                                  onTap: () {
+
+                                                    Navigator.pop(context);
+
+                                                  },
+
+                                                ),
+
+                                              ],
+
+                                            );
+
+                                          });
+
+
+                                      /*  dataList.ref.remove().then((value) {
+
+                                        AppWidget().itemMessage("Eliminado", context);
+
+                                        setState(() {});
+
+                                      });*/
+
+                                    },
+
+                                    child: Icon(
+
+                                      Icons.more_vert_rounded,
+
+                                    ))
+
+                              ],
+
+                            ));
+
+                      });
+
+            } else {
+
+              return Text("Cargando");
+
+            }
+
+
+            ;
+
+          } catch (e) {
+
+            return Text("Cargando");
+
+          }
+
+        });
 
   }
 
@@ -231,9 +420,7 @@ class _PortafolioPageState extends State<PortafolioPage> {
 
               ),
 
-
               AppWidget().back(context),
-
 
               SizedBox(
 
@@ -241,10 +428,25 @@ class _PortafolioPageState extends State<PortafolioPage> {
 
               ),
 
-
               Row(
 
                 children: [
+
+                  SvgPicture.asset(
+
+                    "images/icons/maletin.svg",
+
+                    color: secondryColor,
+
+                    width: 35,
+
+                  ),
+
+                  SizedBox(
+
+                    width: 10,
+
+                  ),
 
                   Container(
 
@@ -280,6 +482,8 @@ class _PortafolioPageState extends State<PortafolioPage> {
 
                           height: 40,
 
+                          padding: EdgeInsets.all(7),
+
                           decoration: BoxDecoration(shape: BoxShape.circle, color: secondryColor),
 
                           child: SvgPicture.asset("images/icons/add.svg"))),
@@ -288,58 +492,13 @@ class _PortafolioPageState extends State<PortafolioPage> {
 
               ),
 
-
               SizedBox(
 
                 height: 50,
 
               ),
 
-
-              itemPortafolio(),
-
-
-              Text(
-
-                '$appName ${Locales.string(context, 'lbl_terms_para_one')}',
-
-                style: const TextStyle(
-
-                  fontSize: 14,
-
-                  fontFamily: 'Roboto-Regular',
-
-                ),
-
-                textAlign: TextAlign.center,
-
-              ),
-
-
-              const SizedBox(height: 30),
-
-
-              //
-
-
-              //
-
-
-              const SizedBox(height: 40),
-
-
-              Container(
-
-                  margin: EdgeInsets.only(left: 70, right: 70),
-
-                  child: AppWidget().buttonFormWhite(context, "Regresar", tap: () {
-
-                    Loader.PagewithHome(context, const kHomePage());
-
-                  })),
-
-
-              const SizedBox(height: 40),
+              stateIndicator0(),
 
             ],
 

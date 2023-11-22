@@ -13,15 +13,15 @@ import 'package:fullpro/PROFESIONAL/widget/profileWidget.dart';
 
 import 'package:fullpro/styles/statics.dart' as appcolors;
 
-class Account extends StatefulWidget {
-  const Account({Key? key}) : super(key: key);
+class AccountProfessional extends StatefulWidget {
+  const AccountProfessional({Key? key}) : super(key: key);
   static const String id = 'Account';
 
   @override
-  _AccountState createState() => _AccountState();
+  _AccountProfessionalState createState() => _AccountProfessionalState();
 }
 
-class _AccountState extends State<Account> with TickerProviderStateMixin {
+class _AccountProfessionalState extends State<AccountProfessional> with TickerProviderStateMixin {
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   var refreshKey = GlobalKey<RefreshIndicatorState>();
   final _formKey = GlobalKey<FormState>();
