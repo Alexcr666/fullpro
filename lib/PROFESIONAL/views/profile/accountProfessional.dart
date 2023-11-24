@@ -563,8 +563,7 @@ class _AccountProfessionalState extends State<AccountProfessional> with TickerPr
               ),
 
               Text(
-
-                "Andres peña",
+                '${UserPreferences.getUsername() ?? currentUserInfo?.fullName}',
 
                 style: TextStyle(color: secondryColor, fontSize: 22, fontWeight: FontWeight.bold),
 
@@ -850,6 +849,7 @@ class _AccountProfessionalState extends State<AccountProfessional> with TickerPr
                                             color: secondryColor,
 
                                           ),
+
                                           SizedBox(
 
                                             height: 20,

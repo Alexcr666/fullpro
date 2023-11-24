@@ -15,6 +15,7 @@ import 'package:flutter_svg/svg.dart';
 
 import 'package:fullpro/PROFESIONAL/views/Authentication/loginpage.dart';
 
+
 import 'package:fullpro/pages/Authentication/redsocial/google.dart';
 
 
@@ -31,6 +32,75 @@ import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
 
 
 class AppWidget {
+
+  Widget titleAdd(String title, {Function? tap}) {
+
+    return Row(
+
+      children: [
+
+        Container(
+
+            child: Text(
+
+          title.toString(),
+
+          style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 20),
+
+        )),
+
+        Expanded(child: SizedBox()),
+
+        GestureDetector(
+
+            onTap: () {
+
+              tap!();
+
+            },
+
+            child: Container(
+
+                margin: EdgeInsets.only(left: 30),
+
+                child: Row(
+
+                  children: [
+
+                    Text(
+
+                      "Filtro",
+
+                      style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 20),
+
+                    ),
+
+                    SizedBox(
+
+                      width: 10,
+
+                    ),
+
+                    SvgPicture.asset(
+
+                      "images/icons/add.svg",
+
+                      width: 30,
+
+                      color: secondryColor,
+
+                    ),
+
+                  ],
+
+                ))),
+
+      ],
+
+    );
+
+  }
+
 
   itemMessage(String title, BuildContext context) {
 
@@ -582,7 +652,7 @@ class AppWidget {
   }
 
 
-  Widget back(BuildContext context) {
+  Widget back(BuildContext context, {Function? tap}) {
 
     return Row(
 
@@ -598,7 +668,15 @@ class AppWidget {
 
             onTap: () {
 
-              Navigator.pop(context);
+              if (tap == null) {
+
+                Navigator.pop(context);
+
+              } else {
+
+                tap();
+
+              }
 
             },
 
@@ -635,7 +713,10 @@ class AppWidget {
 
             onPressed: () async {
 
-              Navigator.pushNamedAndRemoveUntil(context, RegistrationPage.id, (route) => false);
+              Navigator.push(context, MaterialPageRoute(builder: (context) => RegistrationPage()));
+
+
+              //   Navigator.pushNamedAndRemoveUntil(context, RegistrationPage.id, (route) => false);
 
             },
 
@@ -733,6 +814,7 @@ class AppWidget {
         GestureDetector(
 
             onTap: () {
+
               Navigator.push(context, MaterialPageRoute(builder: (context) => SignInDemo()));
 
             },
@@ -880,7 +962,7 @@ class AppWidget {
   }
 
 
-  buttonFormColor(BuildContext context, String title, Color color, {Function? tap}) {
+  buttonFormColor(BuildContext context, String title, Color color, {Function? tap, Color? colorText}) {
 
     return Padding(
 
@@ -946,7 +1028,7 @@ class AppWidget {
 
               title,
 
-              style: TextStyle(fontSize: 13),
+              style: TextStyle(fontSize: 13, color: colorText != null ? colorText : Colors.white),
 
             ),
 

@@ -9,8 +9,8 @@ import 'package:fullpro/widgets/widget.dart';
 import '../styles/statics.dart' as Static;
 
 class TermsPage extends StatefulWidget {
-  const TermsPage({Key? key}) : super(key: key);
-  static const String id = 'TermsPage';
+  TermsPage({Key? key, this.state}) : super(key: key);
+  bool? state;
 
   @override
   State<TermsPage> createState() => _TermsPageState();
@@ -56,7 +56,7 @@ class _TermsPageState extends State<TermsPage> {
               Container(
                   margin: EdgeInsets.only(left: 50, right: 50),
                   child: Text(
-                    "Términos , condiciones y políticas de privacidad : ",
+                    widget.state != true ? "Acerca de la applicación" : "Términos , condiciones y políticas de privacidad : ",
                     style: TextStyle(
                       color: secondryColor,
                       fontSize: 20,
@@ -80,7 +80,7 @@ class _TermsPageState extends State<TermsPage> {
               const SizedBox(height: 40),
               Container(
                   margin: EdgeInsets.only(left: 70, right: 70),
-                  child: AppWidget().buttonFormColor(context, "Regresar", secondryColor, tap: () {
+                  child: AppWidget().buttonFormColor(context, "Regresar", Colors.white, colorText: secondryColor, tap: () {
                     //Loader.PagewithHome(context, const kHomePage());
                     Navigator.pop(context);
                   })),

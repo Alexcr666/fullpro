@@ -13,6 +13,7 @@ import 'package:fullpro/PROFESIONAL/views/Orders/orderDetail.dart';
 import 'package:fullpro/PROFESIONAL/widget/DataLoadedProgress.dart';
 import 'package:fullpro/PROFESIONAL/widget/accountHold.dart';
 import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
+import 'package:fullpro/pages/profesional/profileProfesional.dart';
 
 import 'dart:async';
 import 'package:fullpro/styles/statics.dart' as appcolors;
@@ -487,8 +488,8 @@ class _MyOrdersState extends State<MyOrders> with TickerProviderStateMixin {
                           Container(
                               width: 110,
                               child: AppWidget().buttonShandow("Pendiente",
-                                  color: positionFilter != 1 ? Colors.grey.withOpacity(0.2) : redButton, colorText: Colors.white, tap: () {
-                                positionFilter = 1;
+                                  color: positionFilter != 0 ? Colors.grey.withOpacity(0.2) : redButton, colorText: Colors.white, tap: () {
+                                positionFilter = 0;
                                 setState(() {});
                               })),
                           SizedBox(
@@ -523,14 +524,16 @@ class _MyOrdersState extends State<MyOrders> with TickerProviderStateMixin {
                 children: [
                   userCheck == false ? SizedBox() : pageUsers(),
                   profesionalCheck == false ? SizedBox() : pageProfessional(),
-                  serviceCheck == false
+                  //    Text(positionFilter.toString()),
+                  serviceCheck == false ? SizedBox() : pageOrdens()
+                  /*  serviceCheck == false
                       ? SizedBox()
                       : Column(
                           children: [
                             positionFilter != 1 ? SizedBox() : orderItemsPending(),
                             positionFilter != 2 ? SizedBox() : orderItemsCompleted()
                           ],
-                        )
+                        )*/
                 ],
               )
                   /* TabBarView(
@@ -566,6 +569,106 @@ class _MyOrdersState extends State<MyOrders> with TickerProviderStateMixin {
         ),
       ),
     );
+  }
+
+  Widget pageOrdens() {
+    return FutureBuilder(
+        initialData: 1,
+        future: FirebaseDatabase.instance.ref().child('ordens').once(),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          try {
+            if (snapshot.hasData) {
+              DatabaseEvent response = snapshot.data;
+
+              return response == null
+                  ? Text("Cargando")
+                  : ListView.builder(
+                      itemCount: response.snapshot.children.length,
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      itemBuilder: (BuildContext context, int index) {
+                        DataSnapshot dataList = response.snapshot.children.toList()[index];
+                        Widget itemList() {
+                          return dataList.child("professional").value != "4HCtFRnu3xYIyl0nZqPhD7LZtyb2"
+                              ? SizedBox()
+                              : GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => OrderDetailsPage(
+                                                  reqID: dataList.key.toString(),
+                                                  status: 'true',
+                                                )));
+                                  },
+                                  child: Container(
+                                    margin: EdgeInsets.only(left: 20, right: 20, top: 10),
+                                    decoration: AppWidget().boxShandowGreyRectangule(),
+                                    child: Row(
+                                      children: [
+                                        SizedBox(
+                                          width: 10,
+                                        ),
+                                        CircleAvatar(
+                                          backgroundColor: Colors.grey.withOpacity(0.3),
+                                          radius: 40,
+                                        ),
+                                        SizedBox(
+                                          width: 10,
+                                        ),
+                                        Flexible(
+                                            child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            SizedBox(
+                                              height: 14,
+                                            ),
+                                            Text(
+                                              dataList.child("name").value.toString(),
+                                              style: TextStyle(color: secondryColor, fontSize: 17, fontWeight: FontWeight.bold),
+                                            ),
+                                            Text(
+                                              "Opiniones clientes",
+                                              style: TextStyle(color: Colors.black, fontSize: 10),
+                                            ),
+                                            RatingBarIndicator(
+                                                rating: 2.5,
+                                                itemCount: 5,
+                                                itemSize: 16.0,
+                                                itemBuilder: (context, _) => Icon(
+                                                      Icons.star,
+                                                      color: secondryColor,
+                                                    )),
+                                            SizedBox(
+                                              height: 5,
+                                            ),
+                                            SizedBox(
+                                              height: 14,
+                                            ),
+                                          ],
+                                        ))
+                                      ],
+                                    ),
+                                  ));
+                        }
+
+                        if (positionFilter == 0) {
+                          return itemList();
+                        } else {
+                          if (dataList.child("state").value == positionFilter) {
+                            return itemList();
+                          }
+                        }
+                      });
+            } else {
+              return Text("Cargando");
+            }
+
+            ;
+          } catch (e) {
+            return Text("Cargando");
+          }
+        });
   }
 
   // Pending Orders

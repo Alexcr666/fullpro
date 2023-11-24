@@ -12,6 +12,7 @@ import 'package:fullpro/pages/INTEGRATION/Profile/profile.dart';
 import 'package:fullpro/pages/INTEGRATION/Profile/settings.dart';
 import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
 import 'package:fullpro/pages/language.dart';
+import 'package:fullpro/pages/profile/profileOptions.dart';
 import 'package:fullpro/utils/globalConstants.dart';
 import 'package:fullpro/controller/loader.dart';
 import 'package:fullpro/pages/about.dart';
@@ -120,7 +121,8 @@ class _ProfileButtonWithBottomSheetState extends State<ProfileButtonWithBottomSh
       shape: const CircleBorder(),
       padding: const EdgeInsets.all(5),
       onPressed: () {
-        showDialog(
+        Navigator.push(context, MaterialPageRoute(builder: (context) => ProfileOptionsPage()));
+        /*    showDialog(
             context: context,
             builder: (context) => AlertDialog(
                   contentPadding: EdgeInsets.zero,
@@ -287,7 +289,7 @@ class _ProfileButtonWithBottomSheetState extends State<ProfileButtonWithBottomSh
                       ],
                     ),
                   ),
-                ));
+                ));*/
         /*  showMaterialModalBottomSheet(
         backgroundColor: Static.dashboardBG,
         duration: const Duration(milliseconds: 200),

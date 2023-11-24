@@ -292,7 +292,10 @@ class _successUserPageState extends State<successUserPage> {
                 ),
 
 
-                AppWidget().buttonForm(context, "Finalizar"),
+                AppWidget().buttonForm(context, "Finalizar", tap: () {
+                  Navigator.pushNamedAndRemoveUntil(context, kHomePage.id, (route) => false);
+
+                }),
 
 
                 //

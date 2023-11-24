@@ -4,6 +4,9 @@ import 'dart:convert';
 import 'dart:io';
 
 
+import 'dart:math';
+
+
 import 'package:connectivity_plus/connectivity_plus.dart';
 
 
@@ -78,7 +81,10 @@ import '../styles/statics.dart' as Static;
 
 class ProfileProfesionalPage extends StatefulWidget {
 
-  const ProfileProfesionalPage({Key? key}) : super(key: key);
+  ProfileProfesionalPage({Key? key, this.id}) : super(key: key);
+
+
+  String? id;
 
 
   @override
@@ -1818,6 +1824,47 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
   }
 
 
+  void getProfile(String id) {
+
+    final UserRef = FirebaseDatabase.instance.ref().child("partners").child(id);
+
+
+    UserRef.once().then((e) async {
+
+      final dataSnapshot = e.snapshot;
+
+
+      if (dataSnapshot.child("fullname").value != null) {
+
+        nameProfesional = dataSnapshot.child("fullname").value.toString();
+
+
+        nameController.text = dataSnapshot.child("fullname").value.toString();
+
+
+        nameController.text = dataSnapshot.child("fullname").value.toString();
+
+        emailController.text = dataSnapshot.child("fullname").value.toString();
+
+        phoneController.text = dataSnapshot.child("phone").value.toString();
+
+      } else {}
+
+    });
+
+
+    setState(() {});
+
+
+/*    UserRef.once().then((e) async {
+      final dataSnapshot = e.snapshot;
+
+     
+    });*/
+
+  }
+
+
   @override
 
   void initState() {
@@ -1828,7 +1875,15 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
     super.initState();
 
 
-    getUserInfo();
+    if (widget.id != null) {
+
+      getProfile(widget.id.toString());
+
+    } else {
+
+      getUserInfo();
+
+    }
 
   }
 

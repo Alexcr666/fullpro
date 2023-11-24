@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:flutter_locales/flutter_locales.dart';
@@ -6,6 +8,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
 import 'package:fullpro/widgets/widget.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:fullpro/animation/fadeTop.dart';
 import 'package:fullpro/config.dart';
@@ -20,11 +23,8 @@ import 'package:fullpro/widgets/DataLoadedProgress.dart';
 import 'package:fullpro/widgets/cartBottomButton.dart';
 
 class subServicePage extends StatefulWidget {
-  final String serviceId;
-  final String serviceName;
-  const subServicePage({Key? key, required this.serviceId, required this.serviceName}) : super(key: key);
-
-  static const String id = 'subServicesPage';
+  subServicePage({Key? key, this.idPage}) : super(key: key);
+  String? idPage;
 
   @override
   _subServicePageState createState() => _subServicePageState();
@@ -32,6 +32,9 @@ class subServicePage extends StatefulWidget {
 
 class _subServicePageState extends State<subServicePage> {
   TextEditingController search = TextEditingController();
+
+  TextEditingController dateService = TextEditingController();
+  TextEditingController hourService = TextEditingController();
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   var refreshKey = GlobalKey<RefreshIndicatorState>();
   bool inspeccion = false;
@@ -46,7 +49,7 @@ class _subServicePageState extends State<subServicePage> {
       setState(() {
         if (catDataLoaded == false && categoryServicesList.isEmpty) {
           setState(() {
-            CategoryController.getSingleServiceCat(widget.serviceId, context);
+            //  CategoryController.getSingleServiceCat(widget.serviceId, context);
           });
         }
         if (catDataLoaded == true && categoryServicesList.isEmpty) {
@@ -83,6 +86,297 @@ class _subServicePageState extends State<subServicePage> {
     catDataLoaded = false;
     catListLoaded = false;
     timer?.cancel();
+  }
+
+  Widget pageProfessional() {
+    return FutureBuilder(
+        //  initialData: 1,
+        future: FirebaseDatabase.instance.ref().child('partners').once(),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          try {
+            if (snapshot.hasData) {
+              DatabaseEvent response = snapshot.data;
+
+              return response == null
+                  ? Text("Cargando")
+                  : ListView.builder(
+                      itemCount: response.snapshot.children.length,
+                      shrinkWrap: true,
+                      physics: AlwaysScrollableScrollPhysics(),
+                      itemBuilder: (BuildContext context, int index) {
+                        DataSnapshot dataList = response.snapshot.children.toList()[index];
+
+                        Widget itemList() {
+                          return dataList.child("professionalId").value.toString() != widget.idPage.toString()
+                              ? SizedBox()
+                              : GestureDetector(
+                                  onTap: () {
+                                    showDialog(
+                                        context: context,
+                                        builder: (BuildContext contextAlert) {
+                                          return AlertDialog(
+                                            backgroundColor: Colors.white,
+                                            insetPadding: EdgeInsets.all(0),
+                                            contentPadding: EdgeInsets.all(0),
+                                            content: Container(
+                                                color: Colors.white,
+                                                child: Column(
+                                                  mainAxisSize: MainAxisSize.min,
+                                                  children: [
+                                                    SizedBox(
+                                                      height: 20,
+                                                    ),
+                                                    Container(
+                                                        width: double.infinity,
+                                                        child: Text(
+                                                          "Información del servicio",
+                                                          style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 17),
+                                                          textAlign: TextAlign.center,
+                                                        )),
+                                                    SizedBox(
+                                                      height: 20,
+                                                    ),
+                                                    ClipRRect(
+                                                      borderRadius: BorderRadius.circular(25),
+                                                      child: Image.network(
+                                                        "",
+                                                        errorBuilder: (BuildContext? context, Object? exception, StackTrace? stackTrace) {
+                                                          return Container(
+                                                            width: 200,
+                                                            height: 100,
+                                                            color: Colors.grey.withOpacity(0.3),
+                                                          );
+                                                        },
+                                                        width: 220,
+                                                        height: 100,
+                                                        fit: BoxFit.cover,
+                                                      ),
+                                                    ),
+                                                    SizedBox(
+                                                      height: 20,
+                                                    ),
+                                                    Row(
+                                                      children: [
+                                                        Container(
+                                                            margin: EdgeInsets.only(left: 10),
+                                                            child: Column(
+                                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                                              children: [
+                                                                Text(
+                                                                  "Nombre del servicio",
+                                                                  style: TextStyle(
+                                                                      color: secondryColor, fontWeight: FontWeight.bold, fontSize: 16),
+                                                                ),
+                                                                SizedBox(
+                                                                  height: 2,
+                                                                ),
+                                                                Text(
+                                                                  "Categoria",
+                                                                  style: TextStyle(
+                                                                      color: Colors.black, fontWeight: FontWeight.bold, fontSize: 13),
+                                                                ),
+                                                                SizedBox(
+                                                                  height: 10,
+                                                                ),
+                                                                RatingBarIndicator(
+                                                                    rating: 2.5,
+                                                                    itemCount: 5,
+                                                                    itemSize: 30.0,
+                                                                    itemBuilder: (context, _) => Icon(
+                                                                          Icons.star_border_rounded,
+                                                                          color: secondryColor,
+                                                                        )),
+                                                                SizedBox(
+                                                                  height: 10,
+                                                                ),
+                                                              ],
+                                                            )),
+                                                        Expanded(child: SizedBox()),
+                                                        Column(
+                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                          children: [
+                                                            Text(
+                                                              "Costo del servicio",
+                                                              style: TextStyle(
+                                                                  color: secondryColor, fontWeight: FontWeight.bold, fontSize: 16),
+                                                            ),
+                                                            Text(
+                                                              "00.000",
+                                                              style:
+                                                                  TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 16),
+                                                            ),
+                                                            SizedBox(
+                                                              height: 40,
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        SizedBox(
+                                                          width: 20,
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    SizedBox(
+                                                      height: 20,
+                                                    ),
+                                                    Container(
+                                                        margin: EdgeInsets.only(left: 20, right: 20),
+                                                        child: Text(
+                                                          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc mollis, enim eget fringilla porta, magna lectus commodo erat, eu pharetra augue augue nec risus. Donec consectetur nulla dui, eget posuere leo cursus vitae. Suspendisse tempor eros in dolor dapibus, sit amet",
+                                                          style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 12),
+                                                        )),
+                                                    SizedBox(
+                                                      height: 20,
+                                                    ),
+                                                    Container(
+                                                        margin: EdgeInsets.only(left: 20, right: 20),
+                                                        child: Row(
+                                                          children: [
+                                                            Flexible(
+                                                                child: AppWidget().buttonFormLine(context, "Cancelar", true, tap: () {
+                                                              Navigator.pop(context);
+                                                            })),
+                                                            SizedBox(
+                                                              width: 10,
+                                                            ),
+                                                            Flexible(
+                                                                child: AppWidget().buttonFormLine(context, "Aceptar", false, tap: () {
+                                                              Navigator.pop(context);
+
+                                                              savedData() {
+                                                                DatabaseReference newUserRef =
+                                                                    FirebaseDatabase.instance.ref().child('ordens').push();
+
+                                                                // Prepare data to be saved on users table
+
+                                                                Map userMap = {
+                                                                  'name': "tecno",
+                                                                  'professional': dataList.key.toString(),
+                                                                  'user': currentFirebaseUser!.uid.toString(),
+                                                                  'state': 0,
+                                                                };
+
+                                                                newUserRef.set(userMap).then((value) {
+                                                                  Navigator.pop(contextAlert);
+
+                                                                  AppWidget().itemMessage("Guardado", context);
+                                                                }).catchError((onError) {
+                                                                  AppWidget().itemMessage("Guardado", context);
+                                                                });
+                                                              }
+
+                                                              savedData();
+                                                            })),
+                                                          ],
+                                                        )),
+                                                    SizedBox(
+                                                      height: 20,
+                                                    ),
+                                                  ],
+                                                )),
+                                          );
+                                        });
+                                  },
+                                  child: Container(
+                                    margin: EdgeInsets.only(top: 10),
+                                    decoration: AppWidget().boxShandowGreyRectangule(),
+                                    child: Row(
+                                      children: [
+                                        SizedBox(
+                                          width: 10,
+                                        ),
+                                        CircleAvatar(
+                                          backgroundColor: Colors.grey.withOpacity(0.3),
+                                          radius: 40,
+                                        ),
+                                        SizedBox(
+                                          width: 10,
+                                        ),
+                                        Flexible(
+                                            child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            SizedBox(
+                                              height: 14,
+                                            ),
+                                            Row(
+                                              children: [
+                                                Text(
+                                                  dataList.child("fullname").value.toString(),
+                                                  style: TextStyle(color: secondryColor, fontSize: 17, fontWeight: FontWeight.bold),
+                                                ),
+                                                Expanded(child: SizedBox()),
+                                                Container(
+                                                    width: 80,
+                                                    child: GestureDetector(
+                                                      onTap: () {},
+                                                      child: Container(
+                                                        decoration: BoxDecoration(
+                                                          color: secondryColor,
+                                                          borderRadius: BorderRadius.circular(12),
+                                                        ),
+                                                        padding: const EdgeInsets.symmetric(
+                                                          horizontal: 10,
+                                                          vertical: 8,
+                                                        ),
+                                                        child: Row(
+                                                          children: [
+                                                            Text(
+                                                              "Solicitar",
+                                                              style: const TextStyle(
+                                                                color: Colors.white,
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    )),
+                                                SizedBox(width: 40),
+                                              ],
+                                            ),
+                                            Text(
+                                              "Opiniones clientes",
+                                              style: TextStyle(color: Colors.black, fontSize: 10),
+                                            ),
+                                            RatingBarIndicator(
+                                                rating: 2.5,
+                                                itemCount: 5,
+                                                itemSize: 16.0,
+                                                itemBuilder: (context, _) => Icon(
+                                                      Icons.star,
+                                                      color: secondryColor,
+                                                    )),
+                                            SizedBox(
+                                              height: 5,
+                                            ),
+                                            SizedBox(
+                                              height: 14,
+                                            ),
+                                          ],
+                                        ))
+                                      ],
+                                    ),
+                                  ));
+                        }
+
+                        if (search.text.isEmpty == false) {
+                          if (search.text.contains(dataList.child("fullname").value.toString())) {
+                            return itemList();
+                          } else {
+                            return SizedBox();
+                          }
+                        } else {
+                          return itemList();
+                        }
+                      });
+            } else {
+              return Text("Cargando");
+            }
+
+            ;
+          } catch (e) {
+            return Text("Cargando");
+          }
+        });
   }
 
   @override
@@ -229,11 +523,81 @@ class _subServicePageState extends State<subServicePage> {
                         margin: EdgeInsets.only(left: 10, right: 10),
                         child: Column(
                           children: [
-                            AppWidget().texfieldFormat(title: "Fecha de servicio", urlIcon: "images/icons/calendar.svg"),
+                            GestureDetector(
+                                onTap: () {
+                                  void _showIOS_DatePicker(ctx) {
+                                    showCupertinoModalPopup(
+                                        context: ctx,
+                                        builder: (_) => Container(
+                                              height: 190,
+                                              color: Color.fromARGB(255, 255, 255, 255),
+                                              child: Column(
+                                                children: [
+                                                  Container(
+                                                    height: 180,
+                                                    child: CupertinoDatePicker(
+                                                        mode: CupertinoDatePickerMode.date,
+                                                        initialDateTime: DateTime.now(),
+                                                        onDateTimeChanged: (val) {
+                                                          setState(() {
+                                                            final f = new DateFormat('yyyy-MM-dd');
+
+                                                            dateService.text = f.format(val);
+                                                            //  dateSelected = val.toString();
+                                                          });
+                                                        }),
+                                                  ),
+                                                ],
+                                              ),
+                                            ));
+                                  }
+
+                                  _showIOS_DatePicker(context);
+                                },
+                                child: AppWidget().texfieldFormat(
+                                    title: "Fecha de servicio",
+                                    urlIcon: "images/icons/calendar.svg",
+                                    enabled: true,
+                                    controller: dateService)),
                             SizedBox(
                               height: 5,
                             ),
-                            AppWidget().texfieldFormat(title: "Hora de servicio", urlIcon: "images/icons/calendar.svg"),
+                            GestureDetector(
+                                onTap: () {
+                                  void _showIOS_DatePicker(ctx) {
+                                    showCupertinoModalPopup(
+                                        context: ctx,
+                                        builder: (_) => Container(
+                                              height: 190,
+                                              color: Color.fromARGB(255, 255, 255, 255),
+                                              child: Column(
+                                                children: [
+                                                  Container(
+                                                    height: 180,
+                                                    child: CupertinoDatePicker(
+                                                        mode: CupertinoDatePickerMode.time,
+                                                        initialDateTime: DateTime.now(),
+                                                        onDateTimeChanged: (val) {
+                                                          setState(() {
+                                                            //    final f = new DateFormat('yyyy-MM-dd');
+
+                                                            hourService.text = DateFormat('hh:mm:ss').format(val).toString();
+                                                            //  dateSelected = val.toString();
+                                                          });
+                                                        }),
+                                                  ),
+                                                ],
+                                              ),
+                                            ));
+                                  }
+
+                                  _showIOS_DatePicker(context);
+                                },
+                                child: AppWidget().texfieldFormat(
+                                    title: "Hora de servicio",
+                                    urlIcon: "images/icons/calendar.svg",
+                                    enabled: true,
+                                    controller: hourService)),
                             SizedBox(
                               height: 20,
                             ),
@@ -250,22 +614,38 @@ class _subServicePageState extends State<subServicePage> {
                 SizedBox(
                   height: 10,
                 ),
-                Expanded(
-                    child: catDataLoaded == true
-                        ? categoryServicesList.isNotEmpty || catListLoaded == true
-                            ? categoryServicesList.isNotEmpty
-                                ? fadeTop(
-                                    0.3,
-                                    ListView.separated(
-                                      separatorBuilder: (BuildContext context, int index) => const SizedBox(),
-                                      itemCount: categoryServicesList.length,
-                                      itemBuilder: (context, index) {
-                                        return ServicesComponent(
-                                          kServices: categoryServicesList[index],
-                                        );
-                                      },
-                                    ),
-                                  )
+                inspeccion ? SizedBox() : Expanded(child: pageProfessional())
+                /* Expanded(
+                        child: catDataLoaded == true
+                            ? categoryServicesList.isNotEmpty || catListLoaded == true
+                                ? categoryServicesList.isNotEmpty
+                                    ? fadeTop(
+                                        0.3,
+                                        ListView.separated(
+                                          separatorBuilder: (BuildContext context, int index) => const SizedBox(),
+                                          itemCount: categoryServicesList.length,
+                                          itemBuilder: (context, index) {
+                                            return ServicesComponent(
+                                              kServices: categoryServicesList[index],
+                                            );
+                                          },
+                                        ),
+                                      )
+                                    : Center(
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(20),
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.center,
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              Image.asset(
+                                                'images/no_order.png',
+                                                width: MediaQuery.of(context).size.width * .5,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      )
                                 : Center(
                                     child: Padding(
                                       padding: const EdgeInsets.all(20),
@@ -281,36 +661,21 @@ class _subServicePageState extends State<subServicePage> {
                                       ),
                                     ),
                                   )
-                            : Center(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(20),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Image.asset(
-                                        'images/no_order.png',
-                                        width: MediaQuery.of(context).size.width * .5,
-                                      ),
-                                    ],
+                            : Container(
+                                color: Static.dashboardCard,
+                                child: Center(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(20),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: const [
+                                        DataLoadedProgress(),
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              )
-                        : Container(
-                            color: Static.dashboardCard,
-                            child: Center(
-                              child: Padding(
-                                padding: const EdgeInsets.all(20),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: const [
-                                    DataLoadedProgress(),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          )),
+                              )),*/
               ],
             )),
       ),
@@ -324,125 +689,136 @@ class _subServicePageState extends State<subServicePage> {
               context: context,
               builder: (BuildContext context) {
                 return AlertDialog(
+                  backgroundColor: Colors.white,
                   insetPadding: EdgeInsets.all(0),
                   contentPadding: EdgeInsets.all(0),
-                  content: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      SizedBox(
-                        height: 20,
-                      ),
-                      Container(
-                          width: double.infinity,
-                          child: Text(
-                            "Información del servicio",
-                            style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold),
-                            textAlign: TextAlign.center,
-                          )),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(25),
-                        child: Image.network(
-                          kServices.image!,
-                          errorBuilder: (BuildContext? context, Object? exception, StackTrace? stackTrace) {
-                            return Container(
-                              width: 200,
-                              height: 100,
-                              color: Colors.grey.withOpacity(0.3),
-                            );
-                          },
-                          width: 220,
-                          height: 100,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      Row(
+                  content: Container(
+                      color: Colors.white,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
                         children: [
+                          SizedBox(
+                            height: 20,
+                          ),
                           Container(
-                              margin: EdgeInsets.only(left: 10),
-                              child: Column(
+                              width: double.infinity,
+                              child: Text(
+                                "Información del servicio",
+                                style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 17),
+                                textAlign: TextAlign.center,
+                              )),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(25),
+                            child: Image.network(
+                              kServices.image!,
+                              errorBuilder: (BuildContext? context, Object? exception, StackTrace? stackTrace) {
+                                return Container(
+                                  width: 200,
+                                  height: 100,
+                                  color: Colors.grey.withOpacity(0.3),
+                                );
+                              },
+                              width: 220,
+                              height: 100,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          Row(
+                            children: [
+                              Container(
+                                  margin: EdgeInsets.only(left: 10),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "Nombre del servicio",
+                                        style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 16),
+                                      ),
+                                      SizedBox(
+                                        height: 2,
+                                      ),
+                                      Text(
+                                        "Categoria",
+                                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 13),
+                                      ),
+                                      SizedBox(
+                                        height: 10,
+                                      ),
+                                      RatingBarIndicator(
+                                          rating: 2.5,
+                                          itemCount: 5,
+                                          itemSize: 30.0,
+                                          itemBuilder: (context, _) => Icon(
+                                                Icons.star_border_rounded,
+                                                color: secondryColor,
+                                              )),
+                                      SizedBox(
+                                        height: 10,
+                                      ),
+                                    ],
+                                  )),
+                              Expanded(child: SizedBox()),
+                              Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    "Nombre del servicio",
+                                    "Costo del servicio",
                                     style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 16),
                                   ),
-                                  SizedBox(
-                                    height: 2,
-                                  ),
                                   Text(
-                                    "Categoria",
-                                    style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 13),
+                                    "00.000",
+                                    style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 16),
                                   ),
                                   SizedBox(
-                                    height: 10,
-                                  ),
-                                  RatingBarIndicator(
-                                      rating: 2.5,
-                                      itemCount: 5,
-                                      itemSize: 30.0,
-                                      itemBuilder: (context, _) => Icon(
-                                            Icons.star,
-                                            color: secondryColor,
-                                          )),
-                                  SizedBox(
-                                    height: 10,
+                                    height: 40,
                                   ),
                                 ],
-                              )),
-                          Column(
-                            children: [
-                              Text(
-                                "Costo del servicio",
-                                style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 16),
                               ),
-                              Text(
-                                "00.000",
-                                style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 16),
+                              SizedBox(
+                                width: 20,
                               ),
                             ],
                           ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          Container(
+                              margin: EdgeInsets.only(left: 20, right: 20),
+                              child: Text(
+                                "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc mollis, enim eget fringilla porta, magna lectus commodo erat, eu pharetra augue augue nec risus. Donec consectetur nulla dui, eget posuere leo cursus vitae. Suspendisse tempor eros in dolor dapibus, sit amet",
+                                style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 12),
+                              )),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          Container(
+                              margin: EdgeInsets.only(left: 20, right: 20),
+                              child: Row(
+                                children: [
+                                  Flexible(
+                                      child: AppWidget().buttonFormLine(context, "Cancelar", true, tap: () {
+                                    Navigator.pop(context);
+                                  })),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Flexible(
+                                      child: AppWidget().buttonFormLine(context, "Aceptar", false, tap: () {
+                                    Navigator.pop(context);
+                                  })),
+                                ],
+                              )),
+                          SizedBox(
+                            height: 20,
+                          ),
                         ],
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      Container(
-                          margin: EdgeInsets.only(left: 20, right: 20),
-                          child: Text(
-                            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc mollis, enim eget fringilla porta, magna lectus commodo erat, eu pharetra augue augue nec risus. Donec consectetur nulla dui, eget posuere leo cursus vitae. Suspendisse tempor eros in dolor dapibus, sit amet",
-                            style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 12),
-                          )),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      Container(
-                          margin: EdgeInsets.only(left: 20, right: 20),
-                          child: Row(
-                            children: [
-                              Flexible(
-                                  child: AppWidget().buttonFormLine(context, "Cancelar", false, tap: () {
-                                Navigator.pop(context);
-                              })),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Flexible(
-                                  child: AppWidget().buttonFormLine(context, "Aceptar", true, tap: () {
-                                Navigator.pop(context);
-                              })),
-                            ],
-                          )),
-                      SizedBox(
-                        height: 20,
-                      ),
-                    ],
-                  ),
+                      )),
                 );
               });
         },

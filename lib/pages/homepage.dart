@@ -11,6 +11,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fullpro/TESTING/testing.dart';
 import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
+import 'package:fullpro/pages/profesional/profileProfesional.dart';
 import 'package:fullpro/widgets/widget.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -48,10 +49,13 @@ class kHomePage extends StatefulWidget {
   _kHomePageState createState() => _kHomePageState();
 }
 
+TextEditingController _searchHome = TextEditingController();
+
 class _kHomePageState extends State<kHomePage> {
   int activeCategorie = 0;
 
   TextEditingController _searchInspections = TextEditingController();
+
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   var refreshKey = GlobalKey<RefreshIndicatorState>();
   Timer? timer;
@@ -114,59 +118,41 @@ class _kHomePageState extends State<kHomePage> {
     );
   }
 
-  List<String> suggestions = [
-    "Apple",
-    "Armidillo",
-    "Actual",
-    "Actuary",
-    "America",
-    "Argentina",
-    "Australia",
-    "Antarctica",
-    "Blueberry",
-    "Cheese",
-    "Danish",
-    "Eclair",
-    "Fudge",
-    "Granola",
-    "Hazelnut",
-    "Ice Cream",
-    "Jely",
-    "Kiwi Fruit",
-    "Lamb",
-    "Macadamia",
-    "Nachos",
-    "Oatmeal",
-    "Palm Oil",
-    "Quail",
-    "Rabbit",
-    "Salad",
-    "T-Bone Steak",
-    "Urid Dal",
-    "Vanilla",
-    "Waffles",
-    "Yam",
-    "Zest"
-  ];
+  List<String> suggestions = [];
 
   SimpleAutoCompleteTextField? textField;
 
   bool showWhichErrorText = false;
 
-  void servicesSearch() {
-    _marker.clear();
-    final UserRef = FirebaseDatabase.instance.ref().child("services").child("ac_services").once().then((value) {
-      DatabaseEvent response = value;
+  void servicesSearch(int type) {
+    suggestions.clear();
+    if (type == 1) {
+      final UserRef = FirebaseDatabase.instance.ref().child("categories").once().then((value) {
+        DatabaseEvent response = value;
 
-      for (var i = 0; i < response.snapshot.children.length; i++) {
-        DataSnapshot dataList = response.snapshot.children.toList()[i];
+        for (var i = 0; i < response.snapshot.children.length; i++) {
+          DataSnapshot dataList = response.snapshot.children.toList()[i];
 
-        if (dataList.child("name").value != null) {
-          suggestions.add(dataList.child("name").value.toString());
+          if (dataList.child("name").value != null) {
+            suggestions.add(dataList.child("name").value.toString());
+          }
         }
-      }
-      setState(() {});
-    });
+        setState(() {});
+      });
+    } else {
+      final UserRef = FirebaseDatabase.instance.ref().child("inspections").once().then((value) {
+        DatabaseEvent response = value;
+
+        for (var i = 0; i < response.snapshot.children.length; i++) {
+          DataSnapshot dataList = response.snapshot.children.toList()[i];
+
+          if (dataList.child("name").value != null) {
+            suggestions.add(dataList.child("name").value.toString());
+          }
+        }
+        setState(() {});
+      });
+    }
 
 /*    UserRef.once().then((e) async {
       final dataSnapshot = e.snapshot;
@@ -181,8 +167,6 @@ class _kHomePageState extends State<kHomePage> {
   );
 
   TextEditingController country = TextEditingController();
-
-  TextEditingController _searchHome = TextEditingController();
 
   ///   Nearby Partners Variables
   late StreamSubscription<DatabaseEvent> rideSubscription;
@@ -506,55 +490,64 @@ class _kHomePageState extends State<kHomePage> {
                         Widget itemList() {
                           return dataList.child("primary").value != true
                               ? SizedBox()
-                              : Container(
-                                  margin: EdgeInsets.only(left: 20, right: 20, top: 10),
-                                  decoration: AppWidget().boxShandowGreyRectangule(),
-                                  child: Row(
-                                    children: [
-                                      SizedBox(
-                                        width: 10,
-                                      ),
-                                      CircleAvatar(
-                                        backgroundColor: Colors.grey.withOpacity(0.3),
-                                        radius: 40,
-                                      ),
-                                      SizedBox(
-                                        width: 10,
-                                      ),
-                                      Flexible(
-                                          child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          SizedBox(
-                                            height: 14,
-                                          ),
-                                          Text(
-                                            dataList.child("fullname").value.toString(),
-                                            style: TextStyle(color: secondryColor, fontSize: 17, fontWeight: FontWeight.bold),
-                                          ),
-                                          Text(
-                                            "Opiniones clientes",
-                                            style: TextStyle(color: Colors.black, fontSize: 10),
-                                          ),
-                                          RatingBarIndicator(
-                                              rating: 2.5,
-                                              itemCount: 5,
-                                              itemSize: 16.0,
-                                              itemBuilder: (context, _) => Icon(
-                                                    Icons.star,
-                                                    color: secondryColor,
-                                                  )),
-                                          SizedBox(
-                                            height: 5,
-                                          ),
-                                          SizedBox(
-                                            height: 14,
-                                          ),
-                                        ],
-                                      ))
-                                    ],
-                                  ),
-                                );
+                              : GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => ProfileProfesionalPage(
+                                                  id: dataList.key.toString(),
+                                                )));
+                                  },
+                                  child: Container(
+                                    margin: EdgeInsets.only(left: 20, right: 20, top: 10),
+                                    decoration: AppWidget().boxShandowGreyRectangule(),
+                                    child: Row(
+                                      children: [
+                                        SizedBox(
+                                          width: 10,
+                                        ),
+                                        CircleAvatar(
+                                          backgroundColor: Colors.grey.withOpacity(0.3),
+                                          radius: 40,
+                                        ),
+                                        SizedBox(
+                                          width: 10,
+                                        ),
+                                        Flexible(
+                                            child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            SizedBox(
+                                              height: 14,
+                                            ),
+                                            Text(
+                                              dataList.child("fullname").value.toString(),
+                                              style: TextStyle(color: secondryColor, fontSize: 17, fontWeight: FontWeight.bold),
+                                            ),
+                                            Text(
+                                              "Opiniones clientes",
+                                              style: TextStyle(color: Colors.black, fontSize: 10),
+                                            ),
+                                            RatingBarIndicator(
+                                                rating: 2.5,
+                                                itemCount: 5,
+                                                itemSize: 16.0,
+                                                itemBuilder: (context, _) => Icon(
+                                                      Icons.star,
+                                                      color: secondryColor,
+                                                    )),
+                                            SizedBox(
+                                              height: 5,
+                                            ),
+                                            SizedBox(
+                                              height: 14,
+                                            ),
+                                          ],
+                                        ))
+                                      ],
+                                    ),
+                                  ));
                         }
 
                         if (_searchInspections.text.isEmpty == false) {
@@ -597,6 +590,9 @@ class _kHomePageState extends State<kHomePage> {
                 width: 150,
                 child: AppWidget().buttonShandowActive("Servicios", activeCategorie == 1 ? true : false, tap: () {
                   activeCategorie = 1;
+
+                  servicesSearch(1);
+
                   setState(() {});
                 })),
             // Flexible(child: AppWidget().buttonForm(context, "Servicios")),
@@ -608,6 +604,7 @@ class _kHomePageState extends State<kHomePage> {
                 width: 150,
                 child: AppWidget().buttonShandowActive("Inspecciones", activeCategorie == 2 ? true : false, tap: () {
                   activeCategorie = 2;
+                  servicesSearch(2);
                   setState(() {});
                 })),
             SizedBox(
@@ -650,15 +647,26 @@ class _kHomePageState extends State<kHomePage> {
             Flexible(
               child: SimpleAutoCompleteTextField(
                 key: key,
-                decoration: InputDecoration(errorText: "Ingresar servicio valido"),
-                controller: TextEditingController(),
+                decoration: InputDecoration(
+                  errorText: "Ingresar servicio valido",
+                  contentPadding: EdgeInsets.only(top: 17, bottom: 17, left: 15),
+                  enabledBorder:
+                      OutlineInputBorder(borderSide: BorderSide(color: secondryColor, width: 1.0), borderRadius: BorderRadius.circular(11)),
+                  errorBorder:
+                      OutlineInputBorder(borderSide: BorderSide(color: primaryColor, width: 1.0), borderRadius: BorderRadius.circular(10)),
+                  border:
+                      OutlineInputBorder(borderSide: BorderSide(color: primaryColor, width: 1.0), borderRadius: BorderRadius.circular(10)),
+                  labelText: "Buscar",
+                  labelStyle: TextStyle(fontSize: 12.0, color: Colors.black),
+                ),
+                controller: _searchHome,
                 suggestions: suggestions,
                 textChanged: (text) => currentText = text,
                 clearOnSubmit: true,
                 textSubmitted: (text) => setState(() {
-                  if (text != "") {
-                    // added.add(text);
-                  }
+                  _searchHome.text = text;
+                  setState(() {});
+                  // added.add(text);
                 }),
               ),
             ),
@@ -692,7 +700,8 @@ class _kHomePageState extends State<kHomePage> {
               //  _initMarkers();
               //    kkk
 
-              Navigator.push(context, MaterialPageRoute(builder: (context) => FirstPage()));
+              //  Navigator.push(context, MaterialPageRoute(builder: (context) => FirstPage()));
+              servicesSearch(1);
             },
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -719,49 +728,62 @@ class _kHomePageState extends State<kHomePage> {
   // Slider Widget
 
   Widget buildSlider() {
-    return Padding(
-      padding: const EdgeInsets.only(top: 10),
-      child: SizedBox(
-        height: 130,
-        child: PageIndicatorContainer(
-            child: PageView(
-              children: <Widget>[
-                Container(
+    return FutureBuilder(
+        initialData: 1,
+        future: FirebaseDatabase.instance.ref().child('important').once(),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          try {
+            if (snapshot.hasData) {
+              DatabaseEvent response = snapshot.data;
+              // response.snapshot.children!.length
+              //  DataSnapshot dataList = response.snapshot.children.toList()[index];
+
+              // List<String> urls = [];
+              List<Widget> pageView = [];
+
+              for (var i = 0; i < response.snapshot.children.toList().length; i++) {
+                DataSnapshot dataList = response.snapshot.children.toList()[i];
+                pageView.add(Container(
                   decoration: BoxDecoration(
                     image: DecorationImage(
-                      image: AssetImage([
-                        'images/banner1.png',
-                        'images/banner1.png',
-                      ][0]),
+                      image: NetworkImage(dataList.child("foto").value.toString()),
                       fit: BoxFit.cover,
                     ),
                     color: Static.dashboardCard,
                     borderRadius: BorderRadius.circular(12),
                   ),
+                ));
+              }
+
+              return Padding(
+                padding: const EdgeInsets.only(top: 10),
+                child: SizedBox(
+                  height: 130,
+                  child: PageIndicatorContainer(
+                      child: PageView(
+                        children: pageView,
+                        controller: slideController,
+                      ),
+                      align: IndicatorAlign.bottom,
+                      length: response.snapshot.children.toList().length,
+                      indicatorSpace: 20.0,
+                      padding: const EdgeInsets.all(10),
+                      indicatorColor: Colors.black,
+                      indicatorSelectorColor: Colors.white,
+                      shape: IndicatorShape.circle(size: 5)),
                 ),
-                Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage(mainSlider[1]),
-                      fit: BoxFit.cover,
-                    ),
-                    color: Static.dashboardCard,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-              ],
-              controller: slideController,
-            ),
-            align: IndicatorAlign.bottom,
-            length: 2,
-            indicatorSpace: 20.0,
-            padding: const EdgeInsets.all(10),
-            indicatorColor: Colors.black,
-            indicatorSelectorColor: Colors.white,
-            shape: IndicatorShape.circle(size: 5)),
-      ),
-    );
+              );
+            } else {
+              return Text("Cargando");
+            }
+
+            ;
+          } catch (e) {
+            return Text("Cargando");
+          }
+        });
+
+    // return
   }
 
   // Search Widget
@@ -816,6 +838,89 @@ class _kHomePageState extends State<kHomePage> {
     );
   }
 
+  Widget gridviewCategories() {
+    return FutureBuilder(
+        initialData: 1,
+        future: FirebaseDatabase.instance.ref().child('categories').once(),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          try {
+            if (snapshot.hasData && snapshot.data != null) {
+              DatabaseEvent response;
+
+              response = snapshot.data;
+
+              return response == null
+                  ? Text("Cargando")
+                  : Container(
+                      width: double.infinity,
+                      height: 300,
+                      child: AlignedGridView.count(
+                        crossAxisCount: 3,
+                        itemCount: response.snapshot.children.length,
+                        mainAxisSpacing: 2,
+                        crossAxisSpacing: 2,
+                        itemBuilder: (context, index) {
+                          DataSnapshot dataList = response.snapshot.children.toList()[index];
+
+                          return GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => subServicePage(
+                                              idPage: dataList.key.toString(),
+                                            )));
+                              },
+                              child: Container(
+                                  margin: EdgeInsets.only(left: 10, right: 10),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      Stack(
+                                        children: [
+                                          ClipRRect(
+                                            borderRadius: BorderRadius.circular(20),
+                                            child: Image.network(
+                                              dataList.child("image").value.toString(),
+                                              errorBuilder: (BuildContext? context, Object? exception, StackTrace? stackTrace) {
+                                                return Container(
+                                                  width: 110,
+                                                  height: 110,
+                                                  color: Colors.grey.withOpacity(0.3),
+                                                );
+                                              },
+                                              width: 80,
+                                              height: 80,
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      SizedBox(
+                                        height: 10,
+                                      ),
+                                      Text(
+                                        dataList.child("name").value.toString(),
+                                        style: TextStyle(color: secondryColor, fontSize: 12, fontWeight: FontWeight.bold),
+                                      ),
+                                      SizedBox(
+                                        height: 10,
+                                      ),
+                                    ],
+                                  )));
+                        },
+                      ));
+            } else {
+              return Text("Cargando");
+            }
+
+            ;
+          } catch (e) {
+            return Text("Cargando");
+          }
+        });
+  }
+
 // Trending Services
   Widget trendingSlider() {
     return Container(
@@ -852,21 +957,14 @@ class _kHomePageState extends State<kHomePage> {
             ),
           ),*/
           SizedBox(
-            height: 10,
+            height: 20,
           ),
-          Row(
+          /*  Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "Trabajos",
+                "Categorias",
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: secondryColor),
-              ),
-              SizedBox(
-                width: 10,
-              ),
-              Text(
-                "destacados",
-                style: TextStyle(fontSize: 18, color: secondryColor),
               ),
               Expanded(child: SizedBox()),
               GestureDetector(
@@ -877,29 +975,20 @@ class _kHomePageState extends State<kHomePage> {
                     "See all",
                     style: TextStyle(fontSize: 16, color: primaryColor, fontWeight: FontWeight.bold),
                   )),
+
+                  Svg
             ],
-          ),
+          ),*/
+          AppWidget().titleAdd("Categorias", tap: () {}),
           SizedBox(
-            height: 10,
+            height: 20,
           ),
+          AppWidget().texfieldFormat(title: "Buscar"),
           SizedBox(
-            height: 130,
-            child: Provider.of<AppData>(context).homeTrendingData.isNotEmpty
-                ? ListView.separated(
-                    scrollDirection: Axis.horizontal,
-                    padding: const EdgeInsets.all(0),
-                    itemBuilder: (context, index) {
-                      return servicesComponent(
-                        kServices: Provider.of<AppData>(context).homeTrendingData[index],
-                      );
-                    },
-                    separatorBuilder: (BuildContext context, int index) => const SizedBox(),
-                    itemCount: Provider.of<AppData>(context).homeTrendingData.length,
-                    physics: const ClampingScrollPhysics(),
-                  )
-                : const Center(child: DataLoadedProgress()),
+            height: 20,
           ),
-          StaggeredGrid.count(
+          gridviewCategories(),
+          /* StaggeredGrid.count(
             crossAxisCount: 3,
             children: [
               //  Row One
@@ -970,7 +1059,7 @@ class _kHomePageState extends State<kHomePage> {
                 Colors.green.shade50,
               ),
             ],
-          ),
+          ),*/
         ],
       ),
     );

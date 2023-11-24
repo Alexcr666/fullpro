@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:flutter_geofire/flutter_geofire.dart';
@@ -40,6 +41,7 @@ class CartPage extends StatefulWidget {
 }
 
 class _CartPageState extends State<CartPage> {
+  String hourService = "";
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   DateTime dateTime = DateTime.now();
   final Completer<GoogleMapController> _controller = Completer<GoogleMapController>();
@@ -298,33 +300,7 @@ class _CartPageState extends State<CartPage> {
             SizedBox(
               height: 20,
             ),
-            Container(
-                margin: EdgeInsets.only(left: 20, right: 20),
-                child: Row(
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Dirección de entrega",
-                          style: TextStyle(color: secondryColor, fontSize: 14),
-                        ),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        Text(
-                          "Kr 42B # 23 A SUR - 34",
-                          style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 16),
-                        ),
-                      ],
-                    ),
-                    Expanded(child: SizedBox()),
-                    Text(
-                      "Cambiar",
-                      style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 16),
-                    ),
-                  ],
-                )),
+            fadeBottom(.6, AddressWidget()),
             SizedBox(
               height: 20,
             ),
@@ -380,7 +356,7 @@ class _CartPageState extends State<CartPage> {
                       child: Text("Man".toString()),
                       value: "man",
                     ),
-                    DropdownMenuItem(child: Text("Woman".toString()), value: "woman"),
+                    DropdownMenuItem(child: Text("Other".toString()), value: "woman"),
                     DropdownMenuItem(child: Text("Other".toString()), value: "other"),
                   ],
                   onChanged: (val) {
@@ -403,29 +379,60 @@ class _CartPageState extends State<CartPage> {
             SizedBox(
               height: 15,
             ),
-            Container(
-                margin: EdgeInsets.only(left: 20, right: 20),
-                child: Row(
-                  children: [
-                    Text(
-                      "Hora de servicio".toString(),
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                        color: secondryColor,
-                      ),
-                    ),
-                    Expanded(child: SizedBox()),
-                    Text(
-                      "20 - 35 Min".toString(),
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                        color: secondryColor,
-                      ),
-                    )
-                  ],
-                )),
+            GestureDetector(
+                onTap: () {
+                  void _showIOS_DatePicker(ctx) {
+                    showCupertinoModalPopup(
+                        context: ctx,
+                        builder: (_) => Container(
+                              height: 190,
+                              color: Color.fromARGB(255, 255, 255, 255),
+                              child: Column(
+                                children: [
+                                  Container(
+                                    height: 180,
+                                    child: CupertinoDatePicker(
+                                        mode: CupertinoDatePickerMode.time,
+                                        initialDateTime: DateTime.now(),
+                                        onDateTimeChanged: (val) {
+                                          setState(() {
+                                            //    final f = new DateFormat('yyyy-MM-dd');
+
+                                            hourService = DateFormat('hh:mm:ss').format(val).toString();
+                                            //  dateSelected = val.toString();
+                                          });
+                                        }),
+                                  ),
+                                ],
+                              ),
+                            ));
+                  }
+
+                  _showIOS_DatePicker(context);
+                },
+                child: Container(
+                    margin: EdgeInsets.only(left: 20, right: 20),
+                    child: Row(
+                      children: [
+                        Text(
+                          "Hora de servicio".toString(),
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: secondryColor,
+                          ),
+                        ),
+                        Expanded(child: SizedBox()),
+                        Text(
+                          hourService.toString(),
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: secondryColor,
+                          ),
+                        )
+                      ],
+                    ))),
             SizedBox(
               height: 15,
             ),
@@ -486,7 +493,19 @@ class _CartPageState extends State<CartPage> {
         //  fadeRight(0.3, timeRangeSlider()),
         fadeTop(0.5, removeAllButton()),
         CartItems(),
-        fadeBottom(.6, AddressWidget()),
+        SizedBox(
+          height: 10,
+        ),
+        Container(
+          margin: EdgeInsets.only(left: 10, right: 10),
+          width: double.infinity,
+          height: 1,
+          color: secondryColor,
+        ),
+        SizedBox(
+          height: 10,
+        ),
+
         fadeBottom(.6, pricingList()),
         fadeBottom(.6, probWidget()),
 
@@ -504,7 +523,7 @@ class _CartPageState extends State<CartPage> {
                   ),
                 ),
                 Text(
-                  "00.000".toString(),
+                  currencyPos == 'left' ? '$currencySymbol' : '$ktotalprice',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 22,
@@ -522,7 +541,24 @@ class _CartPageState extends State<CartPage> {
                       if (_probController.text.isEmpty || _probController.text == '') {
                         problmValidate = Locales.string(context, "error_can_not_be_empty");
                       } else {
-                        CartController.createRequest(context, _probController.text);
+                        void _initMarkers() {
+                          final UserRef = FirebaseDatabase.instance.ref().child("ordens").once().then((value) {
+                            DatabaseEvent response = value;
+
+                            for (var i = 0; i < response.snapshot.children.length; i++) {
+                              DataSnapshot dataList = response.snapshot.children.toList()[i];
+                              dataList.ref.update({'state': 1}).then((value) {
+                                Navigator.pop(context);
+                                AppWidget().itemMessage("Pedido carrito", context);
+                              });
+                            }
+                            setState(() {});
+                          });
+                        }
+
+                        _initMarkers();
+
+                        //   CartController.createRequest(context, _probController.text);
                         // availablePartners = FireController.nearbyPartnerList;
                         // findPartner();
                       }
@@ -664,7 +700,7 @@ class _CartPageState extends State<CartPage> {
         ? Container(
             width: double.infinity,
             height: cartItemsList.isNotEmpty ? cartItemsList.length * 110 : 300,
-            color: Static.dashboardCard,
+            color: Colors.white,
             child: cartItemsList.isNotEmpty
                 ? fadeTop(
                     .5,
@@ -900,35 +936,41 @@ class _CartPageState extends State<CartPage> {
         ? Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Container(
+                  margin: EdgeInsets.only(left: 10),
+                  child: Text(
+                    "Dirección de entrega",
+                    style: TextStyle(color: secondryColor, fontSize: 14),
+                  )),
               Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 8,
-                  vertical: 5,
-                ),
-                child: Text(
-                  Locales.string(context, "lbl_address"),
-                  style: TextStyle(color: secondryColor),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(5),
+                padding: const EdgeInsets.all(0),
                 child: Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
                     color: Static.dashboardBG,
                     //    border: Border.all(color: Colors.black12),
                   ),
-                  padding: const EdgeInsets.all(20),
+                  padding: const EdgeInsets.all(10),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       Expanded(
                         child: Text(
                           '${UserPreferences.getAddressStatus() != 'current' || UserPreferences.getAddressStatus() != 'manual' ? UserPreferences.getAddressStatus() == 'current' ? UserPreferences.getUserLocation() : UserPreferences.getManualLocation() : Locales.string(context, 'lbl_add_manual_address')}',
+                          style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 16),
                         ),
                       ),
                       const SizedBox(width: 5),
-                      SizedBox(
+                      GestureDetector(
+                          onTap: () {
+                            Loader.page(context, const Addresses());
+                          },
+                          child: Text(
+                            'Cambiar',
+                            style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 16),
+                          )),
+
+                      /*  SizedBox(
                         width: 45,
                         child: MaterialButton(
                           shape: const CircleBorder(),
@@ -945,7 +987,7 @@ class _CartPageState extends State<CartPage> {
                             size: 20,
                           ),
                         ),
-                      ),
+                      ),*/
                     ],
                   ),
                 ),
@@ -974,9 +1016,16 @@ class _CartPageState extends State<CartPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      Text(
+                        "Resumen",
+                        style: TextStyle(color: secondryColor, fontSize: 15, fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
                       SizedBox(
                         width: double.infinity,
-                        height: cartItemsList.isNotEmpty ? cartItemsList.length * 25 : 25,
+                        height: cartItemsList.isNotEmpty ? cartItemsList.length * 35 : 35,
                         child: ListView.separated(
                           physics: const NeverScrollableScrollPhysics(),
                           separatorBuilder: (BuildContext context, int index) => const SizedBox(),
@@ -1017,7 +1066,7 @@ class _CartPageState extends State<CartPage> {
                             ],
                           ),
                           Text(
-                            currencyPos == 'left' ? '$currencySymbol$ktotalprice' : '$ktotalprice$currencySymbol',
+                            currencyPos == 'left' ? '$ktotalprice' : '$ktotalprice',
                             style: TextStyle(
                               color: secondryColor,
                               // fontFamily: 'Roboto-Bold',
@@ -1039,16 +1088,15 @@ class _CartPageState extends State<CartPage> {
   //
   pricingListComponent({required CartServices kServices}) {
     return Padding(
-      padding: const EdgeInsets.all(3),
+      padding: const EdgeInsets.only(top: 10),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
             kServices.name!,
             overflow: TextOverflow.ellipsis,
-            style: const TextStyle(
-              fontFamily: 'Roboto-Bold',
-              color: Colors.black,
+            style: TextStyle(
+              color: secondryColor,
             ),
           ),
           Row(
@@ -1056,9 +1104,8 @@ class _CartPageState extends State<CartPage> {
               Text(
                 kServices.price != null ? "0" : '${int.tryParse(kServices.price!)! - int.tryParse(kServices.discount!)!}',
                 overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  fontFamily: 'Roboto-Bold',
-                  color: Colors.black,
+                style: TextStyle(
+                  color: secondryColor,
                 ),
               ),
               Text(

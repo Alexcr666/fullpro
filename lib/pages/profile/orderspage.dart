@@ -299,7 +299,7 @@ class _OrdersPageState extends State<OrdersPage> with TickerProviderStateMixin {
               Expanded(
                   child: Column(
                 children: [
-                  positionFilter != 1 ? SizedBox() : OrderItemsPending(),
+                  positionFilter != 1 ? SizedBox() : Expanded(child: OrderItemsPending()),
 
                   //
                   // Current Orders TabView
@@ -316,7 +316,7 @@ class _OrdersPageState extends State<OrdersPage> with TickerProviderStateMixin {
 
                   //
                   // Completed Orders TabView
-                  positionFilter != 3 ? SizedBox() : OrderItemsCompleted(),
+                  positionFilter != 3 ? SizedBox() : Expanded(child: OrderItemsCompleted()),
                 ],
               )),
               /*  Expanded(

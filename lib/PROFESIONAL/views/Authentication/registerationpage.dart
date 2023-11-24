@@ -688,6 +688,14 @@ class _RegistrationPageState extends State<RegistrationPage> {
             padding: EdgeInsets.only(left: 20, right: 20),
             child: Column(
               children: <Widget>[
+                AppWidget().back(context, tap: () {
+                  if (signUpNext == true) {
+                    signUpNext = false;
+                    setState(() {});
+                  } else {
+                    Navigator.pop(context);
+                  }
+                }),
                 SizedBox(
                   height: 70,
                 ),
@@ -750,6 +758,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                           children: [
                             Material(
                               child: Checkbox(
+                                activeColor: secondryColor,
                                 value: agree,
                                 onChanged: (value) {
                                   setState(() {
@@ -770,7 +779,12 @@ class _RegistrationPageState extends State<RegistrationPage> {
                                     style: TextStyle(color: secondryColor),
                                     recognizer: TapGestureRecognizer()
                                       ..onTap = () {
-                                        Navigator.push(context, MaterialPageRoute(builder: (context) => TermsPage()));
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) => TermsPage(
+                                                      state: true,
+                                                    )));
 
                                         // Loader.page(context, TermsPage());
                                       },
@@ -784,7 +798,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                 SizedBox(height: 15),
                 //    Register Button
 
-                Text(signUpNext.toString()),
+                //   Text(signUpNext.toString()),
                 Padding(
                   padding: EdgeInsets.only(
                     right: 50,

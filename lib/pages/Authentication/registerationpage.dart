@@ -71,7 +71,10 @@ class _RegistrationPageState extends State<RegistrationPage> {
 
         newUserRef.set(userMap);
 
-        Navigator.pushNamedAndRemoveUntil(context, kHomePage.id, (route) => false);
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const successUserPage()),
+        );
       }
     } on FirebaseAuthException catch (ex) {
       switch (ex.code) {
@@ -296,6 +299,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                     children: [
                       Material(
                         child: Checkbox(
+                          activeColor: secondryColor,
                           value: agree,
                           onChanged: (value) {
                             setState(() {
@@ -316,7 +320,11 @@ class _RegistrationPageState extends State<RegistrationPage> {
                               style: TextStyle(color: Colors.blue),
                               recognizer: TapGestureRecognizer()
                                 ..onTap = () {
-                                  Loader.page(context, TermsPage());
+                                  Loader.page(
+                                      context,
+                                      TermsPage(
+                                        state: true,
+                                      ));
                                 },
                             ),
                           ],
@@ -410,10 +418,6 @@ class _RegistrationPageState extends State<RegistrationPage> {
                   ),
                 ),*/
                 AppWidget().buttonForm(context, "Register", tap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const successUserPage()),
-                  );
                   /*   var connectivityResult = await(Connectivity().checkConnectivity());
                   if (connectivityResult != ConnectivityResult.wifi && connectivityResult != ConnectivityResult.mobile) {
                     ScaffoldMessenger.of(context).showSnackBar(

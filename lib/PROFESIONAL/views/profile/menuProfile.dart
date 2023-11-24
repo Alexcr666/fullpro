@@ -58,6 +58,9 @@ import 'package:fullpro/pages/support/support.dart';
 import 'package:fullpro/pages/terms.dart';
 
 
+import 'package:fullpro/utils/globalConstants.dart';
+
+
 import 'package:fullpro/utils/userpreferences.dart';
 
 
@@ -278,7 +281,7 @@ class _ProfileOptionsProfessionalPageState extends State<ProfileOptionsProfessio
 
                       Text(
 
-                        "Andres peña",
+                        '${UserPreferences.getUsername() ?? currentUserInfo?.fullName}',
 
                         style: TextStyle(color: secondryColor, fontSize: 25, fontWeight: FontWeight.bold),
 
@@ -397,7 +400,7 @@ class _ProfileOptionsProfessionalPageState extends State<ProfileOptionsProfessio
                           //
 
 
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => const ProfileProfesionalPage()));
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => ProfileProfesionalPage()));
 
 
                           //    Navigator.push(context, MaterialPageRoute(builder: (context) => const Account()));
@@ -472,7 +475,7 @@ class _ProfileOptionsProfessionalPageState extends State<ProfileOptionsProfessio
                           //   Navigator.pop(context);
 
 
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => const TermsPage()));
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => TermsPage(state: false)));
 
 
                           //Navigator.push(context, MaterialPageRoute(builder: (context) => const Language()));

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -19,6 +21,7 @@ import 'package:fullpro/utils/userpreferences.dart';
 import 'package:fullpro/widgets/DataLoadedProgress.dart';
 import 'package:fullpro/widgets/ProfileWidget.dart';
 import 'package:fullpro/widgets/widget.dart';
+import 'package:image_picker/image_picker.dart';
 
 class Account extends StatefulWidget {
   const Account({Key? key}) : super(key: key);
@@ -31,6 +34,8 @@ class Account extends StatefulWidget {
 bool activeProfile = false;
 bool activeSetting = false;
 bool activeAjustCount = false;
+
+File? imagePickerFile;
 
 class _AccountState extends State<Account> with TickerProviderStateMixin {
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
@@ -267,16 +272,38 @@ class _AccountState extends State<Account> with TickerProviderStateMixin {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              const SizedBox(height: 30),
+              GestureDetector(
+                  onTap: () async {
+                    ImagePicker imagePicker = ImagePicker();
+
+                    var image = await imagePicker.pickImage(source: ImageSource.gallery);
+                    imagePickerFile = File(image!.path);
+                    setState(() {});
+                  },
+                  child: imagePickerFile != null
+                      ? ClipRRect(
+                          borderRadius: BorderRadius.circular(100),
+                          child: Image.file(
+                            imagePickerFile!,
+                            fit: BoxFit.cover,
+                            width: 130,
+                            height: 130,
+                          ),
+                        )
+                      : SvgPicture.asset(
+                          "images/icons/profileCircle.svg",
+                          width: 130,
+                        )),
+              /* const SizedBox(height: 30),
               ProfileWidget(
                 imagePath: 'images/user_icon.png',
                 onClicked: () async {},
-              ),
+              ),*/
               SizedBox(
                 height: 10,
               ),
               Text(
-                "Andres peña",
+                '${UserPreferences.getUsername() ?? currentUserInfo?.fullName}',
                 style: TextStyle(color: secondryColor, fontSize: 22, fontWeight: FontWeight.bold),
               ),
               Text(
@@ -311,10 +338,12 @@ class _AccountState extends State<Account> with TickerProviderStateMixin {
                               children: [
                                 Row(
                                   children: [
-                                    SvgPicture.asset(
-                                      "images/icons/profileCircle.svg",
-                                      width: 35,
-                                    ),
+                                    GestureDetector(
+                                        onTap: () async {},
+                                        child: SvgPicture.asset(
+                                          "images/icons/profileCircle.svg",
+                                          width: 35,
+                                        )),
                                     SizedBox(
                                       width: 20,
                                     ),

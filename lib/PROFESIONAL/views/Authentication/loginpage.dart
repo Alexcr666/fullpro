@@ -12,6 +12,7 @@ import 'package:fullpro/PROFESIONAL/views/Authentication/register.dart';
 import 'package:fullpro/PROFESIONAL/views/Authentication/registerationpage.dart';
 import 'package:fullpro/PROFESIONAL/views/homepage.dart';
 import 'package:fullpro/PROFESIONAL/widget/progressDialog.dart';
+import 'package:fullpro/pages/Authentication/recoverPassword/recoverPassword.dart';
 import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
 
 import 'package:fullpro/styles/statics.dart' as Static;
@@ -94,6 +95,7 @@ class _LoginPageState extends State<LoginPageProfesional> {
             padding: const EdgeInsets.all(8.0),
             child: Column(
               children: <Widget>[
+                AppWidget().back(context),
                 SizedBox(
                   height: 65,
                 ),
@@ -145,6 +147,22 @@ class _LoginPageState extends State<LoginPageProfesional> {
                         AppWidget().texfieldFormat(title: "Password", controller: passwordController),
                       ],
                     )),
+
+                Container(
+                  alignment: Alignment.centerRight,
+                  margin: EdgeInsets.only(top: 10, bottom: 0),
+                  width: double.infinity,
+                  child: TextButton(
+                    onPressed: () async {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => ResetPasswordScreen()));
+                      // Navigator.pushNamedAndRemoveUntil(context, RegistrationPage.id, (route) => false);
+                    },
+                    child: Text(
+                      "Forgot your password",
+                      style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
 
                 /* Padding(
                   padding: EdgeInsets.only(
@@ -203,7 +221,7 @@ class _LoginPageState extends State<LoginPageProfesional> {
                 ),*/
                 //
                 SizedBox(
-                  height: 50,
+                  height: 20,
                 ),
                 //
                 //
