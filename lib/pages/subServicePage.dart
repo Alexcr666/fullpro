@@ -7,6 +7,8 @@ import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
+import 'package:fullpro/pages/cartPage.dart';
+import 'package:fullpro/pages/profesional/profileProfesional.dart';
 import 'package:fullpro/widgets/widget.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -23,8 +25,11 @@ import 'package:fullpro/widgets/DataLoadedProgress.dart';
 import 'package:fullpro/widgets/cartBottomButton.dart';
 
 class subServicePage extends StatefulWidget {
-  subServicePage({Key? key, this.idPage}) : super(key: key);
+  subServicePage({Key? key, this.idPage, this.title, this.price, this.description}) : super(key: key);
   String? idPage;
+  String? title;
+  String? price;
+  String? description;
 
   @override
   _subServicePageState createState() => _subServicePageState();
@@ -111,170 +116,12 @@ class _subServicePageState extends State<subServicePage> {
                               ? SizedBox()
                               : GestureDetector(
                                   onTap: () {
-                                    showDialog(
-                                        context: context,
-                                        builder: (BuildContext contextAlert) {
-                                          return AlertDialog(
-                                            backgroundColor: Colors.white,
-                                            insetPadding: EdgeInsets.all(0),
-                                            contentPadding: EdgeInsets.all(0),
-                                            content: Container(
-                                                color: Colors.white,
-                                                child: Column(
-                                                  mainAxisSize: MainAxisSize.min,
-                                                  children: [
-                                                    SizedBox(
-                                                      height: 20,
-                                                    ),
-                                                    Container(
-                                                        width: double.infinity,
-                                                        child: Text(
-                                                          "Información del servicio",
-                                                          style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 17),
-                                                          textAlign: TextAlign.center,
-                                                        )),
-                                                    SizedBox(
-                                                      height: 20,
-                                                    ),
-                                                    ClipRRect(
-                                                      borderRadius: BorderRadius.circular(25),
-                                                      child: Image.network(
-                                                        "",
-                                                        errorBuilder: (BuildContext? context, Object? exception, StackTrace? stackTrace) {
-                                                          return Container(
-                                                            width: 200,
-                                                            height: 100,
-                                                            color: Colors.grey.withOpacity(0.3),
-                                                          );
-                                                        },
-                                                        width: 220,
-                                                        height: 100,
-                                                        fit: BoxFit.cover,
-                                                      ),
-                                                    ),
-                                                    SizedBox(
-                                                      height: 20,
-                                                    ),
-                                                    Row(
-                                                      children: [
-                                                        Container(
-                                                            margin: EdgeInsets.only(left: 10),
-                                                            child: Column(
-                                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                                              children: [
-                                                                Text(
-                                                                  "Nombre del servicio",
-                                                                  style: TextStyle(
-                                                                      color: secondryColor, fontWeight: FontWeight.bold, fontSize: 16),
-                                                                ),
-                                                                SizedBox(
-                                                                  height: 2,
-                                                                ),
-                                                                Text(
-                                                                  "Categoria",
-                                                                  style: TextStyle(
-                                                                      color: Colors.black, fontWeight: FontWeight.bold, fontSize: 13),
-                                                                ),
-                                                                SizedBox(
-                                                                  height: 10,
-                                                                ),
-                                                                RatingBarIndicator(
-                                                                    rating: 2.5,
-                                                                    itemCount: 5,
-                                                                    itemSize: 30.0,
-                                                                    itemBuilder: (context, _) => Icon(
-                                                                          Icons.star_border_rounded,
-                                                                          color: secondryColor,
-                                                                        )),
-                                                                SizedBox(
-                                                                  height: 10,
-                                                                ),
-                                                              ],
-                                                            )),
-                                                        Expanded(child: SizedBox()),
-                                                        Column(
-                                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                                          children: [
-                                                            Text(
-                                                              "Costo del servicio",
-                                                              style: TextStyle(
-                                                                  color: secondryColor, fontWeight: FontWeight.bold, fontSize: 16),
-                                                            ),
-                                                            Text(
-                                                              "00.000",
-                                                              style:
-                                                                  TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 16),
-                                                            ),
-                                                            SizedBox(
-                                                              height: 40,
-                                                            ),
-                                                          ],
-                                                        ),
-                                                        SizedBox(
-                                                          width: 20,
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    SizedBox(
-                                                      height: 20,
-                                                    ),
-                                                    Container(
-                                                        margin: EdgeInsets.only(left: 20, right: 20),
-                                                        child: Text(
-                                                          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc mollis, enim eget fringilla porta, magna lectus commodo erat, eu pharetra augue augue nec risus. Donec consectetur nulla dui, eget posuere leo cursus vitae. Suspendisse tempor eros in dolor dapibus, sit amet",
-                                                          style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 12),
-                                                        )),
-                                                    SizedBox(
-                                                      height: 20,
-                                                    ),
-                                                    Container(
-                                                        margin: EdgeInsets.only(left: 20, right: 20),
-                                                        child: Row(
-                                                          children: [
-                                                            Flexible(
-                                                                child: AppWidget().buttonFormLine(context, "Cancelar", true, tap: () {
-                                                              Navigator.pop(context);
-                                                            })),
-                                                            SizedBox(
-                                                              width: 10,
-                                                            ),
-                                                            Flexible(
-                                                                child: AppWidget().buttonFormLine(context, "Aceptar", false, tap: () {
-                                                              Navigator.pop(context);
-
-                                                              savedData() {
-                                                                DatabaseReference newUserRef =
-                                                                    FirebaseDatabase.instance.ref().child('ordens').push();
-
-                                                                // Prepare data to be saved on users table
-
-                                                                Map userMap = {
-                                                                  'name': "tecno",
-                                                                  'professional': dataList.key.toString(),
-                                                                  'user': currentFirebaseUser!.uid.toString(),
-                                                                  'state': 0,
-                                                                };
-
-                                                                newUserRef.set(userMap).then((value) {
-                                                                  Navigator.pop(contextAlert);
-
-                                                                  AppWidget().itemMessage("Guardado", context);
-                                                                }).catchError((onError) {
-                                                                  AppWidget().itemMessage("Guardado", context);
-                                                                });
-                                                              }
-
-                                                              savedData();
-                                                            })),
-                                                          ],
-                                                        )),
-                                                    SizedBox(
-                                                      height: 20,
-                                                    ),
-                                                  ],
-                                                )),
-                                          );
-                                        });
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => ProfileProfesionalPage(
+                                                  id: dataList.child("professionalId").value.toString(),
+                                                )));
                                   },
                                   child: Container(
                                     margin: EdgeInsets.only(top: 10),
@@ -308,7 +155,194 @@ class _subServicePageState extends State<subServicePage> {
                                                 Container(
                                                     width: 80,
                                                     child: GestureDetector(
-                                                      onTap: () {},
+                                                      onTap: () {
+                                                        showDialog(
+                                                            context: context,
+                                                            builder: (BuildContext contextAlert) {
+                                                              return AlertDialog(
+                                                                backgroundColor: Colors.white,
+                                                                insetPadding: EdgeInsets.all(0),
+                                                                contentPadding: EdgeInsets.all(0),
+                                                                content: Container(
+                                                                    color: Colors.white,
+                                                                    child: Column(
+                                                                      mainAxisSize: MainAxisSize.min,
+                                                                      children: [
+                                                                        SizedBox(
+                                                                          height: 20,
+                                                                        ),
+                                                                        Container(
+                                                                            width: double.infinity,
+                                                                            child: Text(
+                                                                              "Información del servicio",
+                                                                              style: TextStyle(
+                                                                                  color: secondryColor,
+                                                                                  fontWeight: FontWeight.bold,
+                                                                                  fontSize: 17),
+                                                                              textAlign: TextAlign.center,
+                                                                            )),
+                                                                        SizedBox(
+                                                                          height: 20,
+                                                                        ),
+                                                                        ClipRRect(
+                                                                          borderRadius: BorderRadius.circular(25),
+                                                                          child: Image.network(
+                                                                            "",
+                                                                            errorBuilder: (BuildContext? context, Object? exception,
+                                                                                StackTrace? stackTrace) {
+                                                                              return Container(
+                                                                                width: 200,
+                                                                                height: 100,
+                                                                                color: Colors.grey.withOpacity(0.3),
+                                                                              );
+                                                                            },
+                                                                            width: 220,
+                                                                            height: 100,
+                                                                            fit: BoxFit.cover,
+                                                                          ),
+                                                                        ),
+                                                                        SizedBox(
+                                                                          height: 20,
+                                                                        ),
+                                                                        Row(
+                                                                          children: [
+                                                                            Container(
+                                                                                margin: EdgeInsets.only(left: 10),
+                                                                                child: Column(
+                                                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                  children: [
+                                                                                    Text(
+                                                                                      widget.title.toString(),
+                                                                                      style: TextStyle(
+                                                                                          color: secondryColor,
+                                                                                          fontWeight: FontWeight.bold,
+                                                                                          fontSize: 16),
+                                                                                    ),
+                                                                                    SizedBox(
+                                                                                      height: 2,
+                                                                                    ),
+                                                                                    Text(
+                                                                                      "Categoria",
+                                                                                      style: TextStyle(
+                                                                                          color: Colors.black,
+                                                                                          fontWeight: FontWeight.bold,
+                                                                                          fontSize: 13),
+                                                                                    ),
+                                                                                    SizedBox(
+                                                                                      height: 10,
+                                                                                    ),
+                                                                                    RatingBarIndicator(
+                                                                                        rating: 2.5,
+                                                                                        itemCount: 5,
+                                                                                        itemSize: 30.0,
+                                                                                        itemBuilder: (context, _) => Icon(
+                                                                                              Icons.star_border_rounded,
+                                                                                              color: secondryColor,
+                                                                                            )),
+                                                                                    SizedBox(
+                                                                                      height: 10,
+                                                                                    ),
+                                                                                  ],
+                                                                                )),
+                                                                            Expanded(child: SizedBox()),
+                                                                            Column(
+                                                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                                                              children: [
+                                                                                Text(
+                                                                                  "Costo del servicio",
+                                                                                  style: TextStyle(
+                                                                                      color: secondryColor,
+                                                                                      fontWeight: FontWeight.bold,
+                                                                                      fontSize: 16),
+                                                                                ),
+                                                                                Text(
+                                                                                  widget.price.toString(),
+                                                                                  style: TextStyle(
+                                                                                      color: Colors.black,
+                                                                                      fontWeight: FontWeight.bold,
+                                                                                      fontSize: 16),
+                                                                                ),
+                                                                                SizedBox(
+                                                                                  height: 40,
+                                                                                ),
+                                                                              ],
+                                                                            ),
+                                                                            SizedBox(
+                                                                              width: 20,
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                        SizedBox(
+                                                                          height: 20,
+                                                                        ),
+                                                                        Container(
+                                                                            margin: EdgeInsets.only(left: 20, right: 20),
+                                                                            child: Text(
+                                                                              widget.description.toString(),
+                                                                              style: TextStyle(
+                                                                                  color: secondryColor,
+                                                                                  fontWeight: FontWeight.bold,
+                                                                                  fontSize: 12),
+                                                                            )),
+                                                                        SizedBox(
+                                                                          height: 20,
+                                                                        ),
+                                                                        Container(
+                                                                            margin: EdgeInsets.only(left: 20, right: 20),
+                                                                            child: Row(
+                                                                              children: [
+                                                                                Flexible(
+                                                                                    child: AppWidget()
+                                                                                        .buttonFormLine(context, "Cancelar", true, tap: () {
+                                                                                  Navigator.pop(context);
+                                                                                })),
+                                                                                SizedBox(
+                                                                                  width: 10,
+                                                                                ),
+                                                                                Flexible(
+                                                                                    child: AppWidget().buttonFormLine(
+                                                                                        context, "Solicitar", false, tap: () {
+                                                                                  savedData() {
+                                                                                    DatabaseReference newUserRef = FirebaseDatabase.instance
+                                                                                        .ref()
+                                                                                        .child('ordens')
+                                                                                        .push();
+
+                                                                                    // Prepare data to be saved on users table
+
+                                                                                    Map userMap = {
+                                                                                      'name': "tecno",
+                                                                                      'professional': dataList.key.toString(),
+                                                                                      'user': currentFirebaseUser!.uid.toString(),
+                                                                                      'state': 0,
+                                                                                    };
+
+                                                                                    newUserRef.set(userMap).then((value) {
+                                                                                      Navigator.pop(contextAlert);
+
+                                                                                      AppWidget().itemMessage("Guardado", context);
+
+                                                                                      Navigator.push(
+                                                                                          context,
+                                                                                          MaterialPageRoute(
+                                                                                              builder: (context) => CartPage()));
+                                                                                    }).catchError((onError) {
+                                                                                      AppWidget().itemMessage("Guardado", context);
+                                                                                    });
+                                                                                  }
+
+                                                                                  savedData();
+                                                                                })),
+                                                                              ],
+                                                                            )),
+                                                                        SizedBox(
+                                                                          height: 20,
+                                                                        ),
+                                                                      ],
+                                                                    )),
+                                                              );
+                                                            });
+                                                      },
                                                       child: Container(
                                                         decoration: BoxDecoration(
                                                           color: secondryColor,

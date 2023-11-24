@@ -247,11 +247,36 @@ class _CartPageState extends State<CartPage> {
     zoom: 14.4746,
   );
 
+  Widget pageOrdens() {
+    return FutureBuilder(
+        future: FirebaseDatabase.instance.ref().child('ordens').once(),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          if (snapshot.hasData) {
+            DatabaseEvent response = snapshot.data;
+
+            DataSnapshot? dataListObject = null;
+
+            for (var i = 0; i < response.snapshot.children.toList().length; i++) {
+              DataSnapshot dataList = response.snapshot.children.toList()[i];
+
+              if (dataList.child("user").value.toString() == "LapnDojkb8QGfSOioTXLkiPAiNt2") {
+                DataSnapshot dataListObject = dataList;
+                return Text(dataListObject!.child("name").value.toString());
+              }
+            }
+            return Text("hola");
+          } else {
+            return SizedBox();
+          }
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         key: scaffoldKey,
         backgroundColor: Colors.white,
+
         /*appBar: AppBar(
         centerTitle: true,
         title: Text(
@@ -297,6 +322,7 @@ class _CartPageState extends State<CartPage> {
                 ),
               ],
             ),
+            pageOrdens(),
             SizedBox(
               height: 20,
             ),
