@@ -50,6 +50,7 @@ class kHomePage extends StatefulWidget {
 }
 
 TextEditingController _searchHome = TextEditingController();
+GlobalKey<AutoCompleteTextFieldState<String>> key = GlobalKey();
 
 class _kHomePageState extends State<kHomePage> {
   int activeCategorie = 0;
@@ -99,8 +100,6 @@ class _kHomePageState extends State<kHomePage> {
   }
 
   String currentText = "";
-
-  GlobalKey<AutoCompleteTextFieldState<String>> key = GlobalKey();
 
   _FirstPageState() {
     textField = SimpleAutoCompleteTextField(
@@ -881,7 +880,7 @@ class _kHomePageState extends State<kHomePage> {
                                           ClipRRect(
                                             borderRadius: BorderRadius.circular(20),
                                             child: Image.network(
-                                              dataList.child("image").value.toString(),
+                                              dataList.child("photo").value.toString(),
                                               errorBuilder: (BuildContext? context, Object? exception, StackTrace? stackTrace) {
                                                 return Container(
                                                   width: 110,

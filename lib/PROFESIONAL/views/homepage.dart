@@ -58,6 +58,7 @@ class _HomePageState extends State<HomePage> {
   Color availabilityColor = Colors.red;
   bool isAvailable = false;
   int? totalOrders;
+
   bool dataLoading = true;
 
   String? availability = '';
@@ -99,6 +100,29 @@ class _HomePageState extends State<HomePage> {
     Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.bestForNavigation);
     currentPosition = position;
     debugPrint('done setup');
+  }
+
+  void getOrdersHome() {
+    final UserRef = FirebaseDatabase.instance.ref().child("ordens").once().then((value) {
+      DatabaseEvent response = value;
+
+      /* for (var i = 0; i < response.snapshot.children.length; i++) {
+          DataSnapshot dataList = response.snapshot.children.toList()[i];
+
+          if (dataList.child("name").value != null) {
+            suggestions.add(dataList.child("name").value.toString());
+          }
+        }*/
+      totalOrders = response.snapshot.children.length;
+
+      setState(() {});
+    });
+
+/*    UserRef.once().then((e) async {
+      final dataSnapshot = e.snapshot;
+
+     
+    });*/
   }
 
   void getUserInfo() async {
@@ -294,13 +318,15 @@ class _HomePageState extends State<HomePage> {
     checkTotalOrders();
 
     // Repeating Function
-    timer = Timer.periodic(
+    /*  timer = Timer.periodic(
       const Duration(seconds: 5),
       (Timer t) => setState(() {
         //  Get User Info
         locationPermision();
       }),
     );
+
+    getOrdersHome();
 
     // Repeating Function
     timer = Timer.periodic(
@@ -313,7 +339,7 @@ class _HomePageState extends State<HomePage> {
         checkTotalOrders();
         MainControllerProfesional.getSettings();
       }),
-    );
+    );*/
   }
 
   Future<void> refreshList() async {
@@ -674,7 +700,7 @@ Widget countsContainer(bool ordersCountLoaded, int? totalOrders, bool earningsCo
               ),
             ),
           ),
-          Expanded(child: Container()),
+          /*    Expanded(child: Container()),
           Container(
             decoration: earningsCountLoaded == true
                 ? BoxDecoration(
@@ -763,8 +789,8 @@ Widget countsContainer(bool ordersCountLoaded, int? totalOrders, bool earningsCo
                   ],
                 ),
               ),
-            ),
-          ),
+            ),*/
+          //   ),
         ],
       ),
     ),
@@ -799,7 +825,8 @@ Widget overviewContainer(context, int? totalOrders, bool ordersCountLoaded, bool
                         style: const TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
-                          fontFamily: 'Roboto-Bold',
+
+                          ///  fontFamily: 'Roboto-Bold',
                         ),
                       ),
               ],
@@ -857,7 +884,6 @@ class _OverviewListState extends State<OverviewList> {
               Locales.string(context, 'lbl_total_orders'),
               style: const TextStyle(
                 fontSize: 14,
-                fontFamily: 'Roboto-Regular',
                 color: Colors.black,
               ),
             ),
@@ -865,14 +891,13 @@ class _OverviewListState extends State<OverviewList> {
               '${widget.totalOrders}',
               style: const TextStyle(
                 fontSize: 14,
-                fontFamily: 'Roboto-Regular',
                 color: Colors.black,
               ),
             ),
           ],
         ),
         const SizedBox(height: 15),
-        Row(
+        /*  Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -895,9 +920,9 @@ class _OverviewListState extends State<OverviewList> {
               ),
             ),
           ],
-        ),
+        ),*/
         const SizedBox(height: 15),
-        Row(
+        /* Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -920,7 +945,7 @@ class _OverviewListState extends State<OverviewList> {
               ),
             ),
           ],
-        ),
+        ),*/
       ],
     );
   }

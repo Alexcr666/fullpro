@@ -1,4 +1,5 @@
 // ignore_for_file: prefer_const_constructors
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -14,6 +15,7 @@ import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
 import 'package:fullpro/pages/homepage.dart';
 import 'package:fullpro/pages/terms.dart';
 import 'package:fullpro/styles/statics.dart' as Static;
+import 'package:fullpro/styles/styles.dart';
 import 'package:fullpro/utils/permissions.dart';
 import 'package:fullpro/utils/userpreferences.dart';
 import 'package:fullpro/widgets/progressDialog.dart';
@@ -64,6 +66,8 @@ class _RegistrationPageState extends State<RegistrationPage> {
           'fullname': fullNameController.text,
           'email': emailController.text,
           'phone': phoneController.text,
+          'date': FieldValue.serverTimestamp(),
+          'state': 1,
         };
 
         UserPreferences.setUserPhone(phoneController.text);
@@ -137,7 +141,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                         Text(
                           "Registro Cliente",
                           textAlign: TextAlign.center,
-                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: secondryColor),
+                          style: AppStyle().boldText(18),
                         ),
                         Text(
                           "Datos personales",
@@ -495,7 +499,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                   height: 10,
                 ),
 
-                AppWidget().redSocial(context),
+                AppWidget().redSocial(context, true),
                 //
                 //
                 /* Padding(

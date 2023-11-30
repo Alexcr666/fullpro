@@ -150,6 +150,161 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
   TextEditingController passwordController = TextEditingController();
 
 
+  Widget pageOrdens() {
+
+    return FutureBuilder(
+
+        future: FirebaseDatabase.instance.ref().child('ordens').once(),
+
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+
+          if (snapshot.hasData) {
+
+            DatabaseEvent response = snapshot.data;
+
+
+            DataSnapshot? dataListObject = null;
+
+
+            //   for (var i = 0; i < response.snapshot.children.toList().length; i++) {
+
+
+            //return Text(dataListObject!.child("name").value.toString());
+
+
+            return ListView.builder(
+
+                padding: EdgeInsets.only(left: 10.0),
+
+                itemCount: response.snapshot.children.toList().length,
+
+                physics: NeverScrollableScrollPhysics(),
+
+                shrinkWrap: true,
+
+                itemBuilder: (BuildContext context, int i) {
+
+                  DataSnapshot dataList = response.snapshot.children.toList()[i];
+
+
+                  return /*dataList.child("user").value.toString() == "LapnDojkb8QGfSOioTXLkiPAiNt2"
+
+                      ? SizedBox()
+
+                      :*/
+
+
+                      Row(
+
+                    children: [
+
+                      Container(
+
+                          decoration: AppWidget().boxShandowGreyRectangule(),
+
+                          padding: EdgeInsets.only(left: 30, right: 20, top: 15, bottom: 15),
+
+                          child: Row(
+
+                            children: [
+
+                              Column(
+
+                                crossAxisAlignment: CrossAxisAlignment.start,
+
+                                children: [
+
+                                  Text(
+
+                                    dataList.child("name").value.toString(),
+
+                                    style: TextStyle(color: Colors.black, fontSize: 17, fontWeight: FontWeight.bold),
+
+                                  ),
+
+                                  Text(
+
+                                    dataList.child("price").value.toString(),
+
+                                    style: TextStyle(color: Colors.black, fontSize: 23, fontWeight: FontWeight.bold),
+
+                                  ),
+
+                                  Text(
+
+                                    dataList.child("description").value.toString(),
+
+                                    style: TextStyle(color: Colors.grey, fontSize: 13, fontWeight: FontWeight.bold),
+
+                                  ),
+
+                                  /*  Text(
+
+                                    "+8,956",
+
+                                    style: TextStyle(color: secondryColor, fontSize: 15, fontWeight: FontWeight.bold),
+
+                                  ),*/
+
+                                ],
+
+                              ),
+
+                              SizedBox(
+
+                                width: 25,
+
+                              ),
+
+                              Container(
+
+                                width: 55,
+
+                                height: 55,
+
+                                padding: EdgeInsets.all(10),
+
+                                child: SvgPicture.asset(
+
+                                  "images/icons/calendar.svg",
+
+                                  color: Colors.white,
+
+                                ),
+
+                                color: secondryColor,
+
+                              ),
+
+                              SizedBox(
+
+                                width: 20,
+
+                              ),
+
+                            ],
+
+                          ))
+
+                    ],
+
+                  );
+
+                });
+
+          }
+
+
+          // }
+
+
+          return Text("hola");
+
+        });
+
+  }
+
+
   @override
 
   Widget build(BuildContext context) {
@@ -248,107 +403,17 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
 
             ),
 
+            Container(
+
+                margin: EdgeInsets.only(left: 110, right: 110), child: AppWidget().buttonFormLine(context, "Solicitar", false, tap: () {})),
+
             SizedBox(
 
               height: 20,
 
             ),
 
-            Row(
-
-              children: [
-
-                Container(
-
-                    decoration: AppWidget().boxShandowGreyRectangule(),
-
-                    padding: EdgeInsets.only(left: 30, right: 20, top: 15, bottom: 15),
-
-                    child: Row(
-
-                      children: [
-
-                        Column(
-
-                          crossAxisAlignment: CrossAxisAlignment.start,
-
-                          children: [
-
-                            Text(
-
-                              "lorem impum",
-
-                              style: TextStyle(color: Colors.black, fontSize: 17, fontWeight: FontWeight.bold),
-
-                            ),
-
-                            Text(
-
-                              "8,956",
-
-                              style: TextStyle(color: Colors.black, fontSize: 23, fontWeight: FontWeight.bold),
-
-                            ),
-
-                            Text(
-
-                              "Lomrem impusmp",
-
-                              style: TextStyle(color: Colors.grey, fontSize: 13, fontWeight: FontWeight.bold),
-
-                            ),
-
-                            Text(
-
-                              "+8,956",
-
-                              style: TextStyle(color: secondryColor, fontSize: 15, fontWeight: FontWeight.bold),
-
-                            ),
-
-                          ],
-
-                        ),
-
-                        SizedBox(
-
-                          width: 25,
-
-                        ),
-
-                        Container(
-
-                          width: 55,
-
-                          height: 55,
-
-                          padding: EdgeInsets.all(10),
-
-                          child: SvgPicture.asset(
-
-                            "images/icons/calendar.svg",
-
-                            color: Colors.white,
-
-                          ),
-
-                          color: secondryColor,
-
-                        ),
-
-                        SizedBox(
-
-                          width: 20,
-
-                        ),
-
-                      ],
-
-                    ))
-
-              ],
-
-            ),
+            pageOrdens(),
 
             SizedBox(
 
@@ -1844,7 +1909,9 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
 
         nameController.text = dataSnapshot.child("fullname").value.toString();
 
+
         emailController.text = dataSnapshot.child("fullname").value.toString();
+
 
         phoneController.text = dataSnapshot.child("phone").value.toString();
 

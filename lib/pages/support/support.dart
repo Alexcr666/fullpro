@@ -337,7 +337,6 @@ class _SupportAppPageState extends State<SupportAppPage> {
 
 
                   AppWidget()
-
                       .texfieldFormat(title: "Fecha de solicitud", urlIcon: "images/icons/support3.svg", controller: _dateController),
 
 

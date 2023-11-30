@@ -7,12 +7,16 @@ import 'package:fullpro/PROFESIONAL/config.dart';
 import 'package:fullpro/PROFESIONAL/controllers/loader.dart';
 import 'package:fullpro/PROFESIONAL/controllers/mainController.dart';
 import 'package:fullpro/PROFESIONAL/controllers/orderController.dart';
+import 'package:fullpro/PROFESIONAL/detailsOrderProfessional.dart';
 import 'package:fullpro/PROFESIONAL/models/ordersModel.dart';
 import 'package:fullpro/PROFESIONAL/utils/globalConstants.dart';
 import 'package:fullpro/PROFESIONAL/views/Orders/orderDetail.dart';
 import 'package:fullpro/PROFESIONAL/widget/DataLoadedProgress.dart';
 import 'package:fullpro/PROFESIONAL/widget/accountHold.dart';
+import 'package:fullpro/const.dart';
+import 'package:fullpro/controller/mainController.dart';
 import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
+import 'package:fullpro/pages/detailsOrder.dart';
 import 'package:fullpro/pages/profesional/profileProfesional.dart';
 
 import 'dart:async';
@@ -318,6 +322,296 @@ class _MyOrdersState extends State<MyOrders> with TickerProviderStateMixin {
         });
   }
 
+  Widget pageOrdensWidget() {
+    return FutureBuilder(
+        future: FirebaseDatabase.instance.ref().child('ordens').once(),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          if (snapshot.hasData) {
+            DatabaseEvent response = snapshot.data;
+
+            DataSnapshot? dataListObject = null;
+
+            //   for (var i = 0; i < response.snapshot.children.toList().length; i++) {
+
+            //return Text(dataListObject!.child("name").value.toString());
+
+            return ListView.builder(
+                padding: EdgeInsets.only(left: 10.0),
+                itemCount: response.snapshot.children.toList().length,
+                physics: NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                itemBuilder: (BuildContext context, int i) {
+                  DataSnapshot dataList = response.snapshot.children.toList()[i];
+
+                  return /*dataList.child("user").value.toString() == "LapnDojkb8QGfSOioTXLkiPAiNt2"
+
+                      ? SizedBox()
+
+                      :*/
+
+                      Padding(
+                    padding: const EdgeInsets.all(5),
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => DetailsOrderProfessionalPage()));
+                      },
+                      child: Container(
+                        margin: EdgeInsets.only(left: 10, right: 10),
+                        width: double.infinity,
+                        decoration: AppWidget().boxShandowGrey(),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 5,
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 10,
+                          ),
+                          child: Row(
+                            children: [
+                              CircleAvatar(
+                                backgroundColor: Colors.grey.withOpacity(0.4),
+                                radius: 30,
+                              ),
+                              // Image Row
+                              //    Row(
+                              //    crossAxisAlignment: CrossAxisAlignment.center,
+                              //  children: [
+                              /* Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        SvgPicture.asset(
+                          kServices.itemsNames!.contains('Air')
+                              ? 'images/svg_icons/service_icons/air_conditioner.svg'
+                              //  Cleaning
+                              : kServices.itemsNames!.contains('Cleaning')
+                                  ? 'images/svg_icons/service_icons/cleaning.svg'
+                                  // Electrician
+                                  : kServices.itemsNames!.contains('Electrician')
+                                      ? 'images/svg_icons/service_icons/electrician.svg'
+                                      : kServices.itemsNames!.contains('Carpenter')
+                                          ? 'images/svg_icons/service_icons/carpenter.svg'
+                                          // Else
+                                          : 'images/svg_icons/service_icons/carpenter.svg',
+                          width: kServices.itemsNames!.contains('Air') ? 25 : 40,
+                          height: kServices.itemsNames!.contains('Air') ? 25 : 40,
+                          fit: BoxFit.contain,
+                        ),
+                      ],
+                    ),*/
+                              const SizedBox(width: 10),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SizedBox(
+                                    //  width: MediaQuery.of(context).size.width * .6,
+                                    child: Text(
+                                      dataList.child("name").value.toString(),
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                        color: secondryColor,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 13,
+                                      ),
+                                    ),
+                                  ),
+                                  RatingBarIndicator(
+                                      rating: 2.5,
+                                      itemCount: 5,
+                                      itemSize: 18.0,
+                                      itemBuilder: (context, _) => Icon(
+                                            Icons.star,
+                                            color: secondryColor,
+                                          )),
+                                  SizedBox(
+                                    height: 5,
+                                  ),
+                                  Row(
+                                    children: [
+                                      SvgPicture.asset(
+                                        "images/icons/userCircle.svg",
+                                        color: secondryColor,
+                                        height: 17,
+                                      ),
+                                      SizedBox(
+                                        width: 5,
+                                      ),
+                                      Text(
+                                        dataList.child("nameProfessional").value.toString(),
+                                        style: TextStyle(
+                                          color: secondryColor,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 12,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    height: 5,
+                                  ),
+                                  Row(
+                                    children: [
+                                      SvgPicture.asset(
+                                        "images/icons/calendar.svg",
+                                        color: secondryColor,
+                                        height: 17,
+                                      ),
+                                      SizedBox(
+                                        width: 5,
+                                      ),
+                                      Text(
+                                        dataList.child("date").value.toString(),
+                                        style: TextStyle(
+                                          color: secondryColor,
+                                          //fontWeight: FontWeight.bold,
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                                ],
+                              ),
+                              /* SizedBox(
+                                width: 10,
+                              ),*/
+                              Expanded(child: SizedBox()),
+
+                              Column(
+                                children: [
+                                  Container(
+                                      width: 120,
+                                      height: 40,
+                                      child: AppWidget().buttonFormColor(
+                                          context,
+                                          stateOrder[int.parse(dataList!.child("state").value.toString())],
+                                          stateOrderColor[int.parse(dataList!.child("state").value.toString())],
+                                          tap: () {})),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  Container(
+                                      width: 120,
+                                      height: 40,
+                                      child: AppWidget().buttonFormColor(context, "Cancelar", Colors.red, tap: () {
+                                        dataList.ref.update({'state': 3}).then((value) {
+                                          AppWidget().itemMessage("Actualizado", context);
+                                        });
+                                      })),
+                                ],
+                              )
+                              /*Text(
+                  MainController.capitalize(kServices.status!),
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontFamily: 'Brand-Regular',
+                    color: kServices.status == Locales.string(context, "lbl_pending") ||
+                            kServices.status == Locales.string(context, "lbl_canceled") ||
+                            kServices.status == Locales.string(context, "lbl_canceled")
+                        ? Colors.red
+                        : Colors.green,
+                  ),
+                ),*/
+                              //   ],
+                              //  ),
+                              // const SizedBox(height: 10),
+
+                              // Booking Row
+                              /*   Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      Locales.string(context, "lbl_booking_for"),
+                      style: const TextStyle(
+                        color: Colors.black,
+                        fontFamily: 'Roboto-Bold',
+                        fontWeight: FontWeight.bold,
+                        fontSize: 13,
+                      ),
+                    ),
+                    Container(
+                      child: Text(
+                        '${kServices.bookforDate!} / ${kServices.bookforTime!}',
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontFamily: 'Brand-Regular',
+                          fontSize: 13,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),*/
+                              /* const SizedBox(height: 5),
+
+                // Order Numer Row
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      Locales.string(context, "lbl_order_number"),
+                      style: const TextStyle(
+                        color: Colors.black,
+                        fontFamily: 'Roboto-Bold',
+                        fontWeight: FontWeight.bold,
+                        fontSize: 13,
+                      ),
+                    ),
+                    Text(
+                      kServices.orderNumber!,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        fontFamily: 'Brand-Regular',
+                        fontSize: 13,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 5),
+                // Status Row*/
+                              /*   Row(
+                  children: [
+                    Text(
+                      Locales.string(context, "lbl_status"),
+                      style: const TextStyle(
+                        color: Colors.black,
+                        fontFamily: 'Roboto-Bold',
+                        fontSize: 13,
+                      ),
+                    ),
+                    Text(
+                      MainController.capitalize(kServices.status!),
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontFamily: 'Brand-Regular',
+                        color: kServices.status == Locales.string(context, "lbl_pending") ||
+                                kServices.status == Locales.string(context, "lbl_canceled") ||
+                                kServices.status == Locales.string(context, "lbl_canceled")
+                            ? Colors.red
+                            : Colors.green,
+                      ),
+                    ),
+                  ],
+                ),*/
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                });
+          }
+
+          // }
+
+          return Text("hola");
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -525,7 +819,7 @@ class _MyOrdersState extends State<MyOrders> with TickerProviderStateMixin {
                   userCheck == false ? SizedBox() : pageUsers(),
                   profesionalCheck == false ? SizedBox() : pageProfessional(),
                   //    Text(positionFilter.toString()),
-                  serviceCheck == false ? SizedBox() : pageOrdens()
+                  serviceCheck == false ? SizedBox() : pageOrdensWidget()
                   /*  serviceCheck == false
                       ? SizedBox()
                       : Column(

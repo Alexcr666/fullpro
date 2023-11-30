@@ -16,6 +16,7 @@ import 'package:fullpro/pages/Authentication/recoverPassword/recoverPassword.dar
 import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
 
 import 'package:fullpro/styles/statics.dart' as Static;
+import 'package:fullpro/styles/styles.dart';
 import 'package:fullpro/widgets/widget.dart';
 
 class LoginPageProfesional extends StatefulWidget {
@@ -109,15 +110,7 @@ class _LoginPageState extends State<LoginPageProfesional> {
                 ),
                 //
                 //
-                Text(
-                  "Welcome back",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: secondryColor,
-                    fontSize: 19,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+                Text("Welcome back", textAlign: TextAlign.center, style: AppStyle().boldText(20)),
 
                 SizedBox(
                   height: 1,
@@ -144,7 +137,7 @@ class _LoginPageState extends State<LoginPageProfesional> {
                         ),
                         //
 
-                        AppWidget().texfieldFormat(title: "Password", controller: passwordController),
+                        AppWidget().texfieldFormat(title: "Password", controller: passwordController, password: true),
                       ],
                     )),
 
@@ -227,8 +220,8 @@ class _LoginPageState extends State<LoginPageProfesional> {
                 //
                 Padding(
                   padding: EdgeInsets.only(
-                    right: 50,
-                    left: 50,
+                    right: 20,
+                    left: 20,
                   ),
                   child: SizedBox(
                     width: double.infinity,

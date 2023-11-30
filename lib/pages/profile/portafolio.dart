@@ -55,7 +55,9 @@ class _PortafolioPageState extends State<PortafolioPage> {
 
     return FutureBuilder(
 
-        initialData: 1,
+
+        // initialData: 1,
+
 
         future: FirebaseDatabase.instance.ref().child('portafolio').once(),
 
@@ -83,180 +85,264 @@ class _PortafolioPageState extends State<PortafolioPage> {
                         DataSnapshot dataList = response.snapshot.children.toList()[index];
 
 
-                        return Container(
+                        return GestureDetector(
 
-                            decoration: AppWidget().boxShandowGrey(),
+                            onTap: () {
 
-                            margin: EdgeInsets.only(top: 10),
+                              showModalBottomSheet(
 
-                            padding: EdgeInsets.only(top: 20, right: 20, bottom: 20),
+                                  context: context,
 
-                            child: Row(
+                                  builder: (context) {
 
-                              children: [
+                                    return Column(
 
-                                SizedBox(
+                                      mainAxisSize: MainAxisSize.min,
 
-                                  width: 10,
+                                      children: <Widget>[
 
-                                ),
+                                        ListTile(
 
-                                ClipRRect(
+                                          title: new Text('Eliminar'),
 
-                                  borderRadius: BorderRadius.circular(15),
+                                          onTap: () {
 
-                                  child: Image.network(
+                                            dataList.ref.remove().then((value) {
 
-                                    dataList.child("foto").value.toString(),
+                                              AppWidget().itemMessage("Eliminado", context);
 
-                                    errorBuilder: (BuildContext? context, Object? exception, StackTrace? stackTrace) {
 
-                                      return Container(
+                                              setState(() {});
+
+                                            });
+
+
+                                            Navigator.pop(context);
+
+                                          },
+
+                                        ),
+
+                                        ListTile(
+
+                                          title: new Text('Actualizar'),
+
+                                          onTap: () {
+
+                                            Navigator.pop(context);
+
+
+                                            Navigator.push(
+
+                                                context,
+
+                                                MaterialPageRoute(
+
+                                                    builder: (context) => NewPortafolioPage(
+
+                                                          idEdit: dataList.key.toString(),
+
+                                                        )));
+
+                                          },
+
+                                        ),
+
+                                        ListTile(
+
+                                          title: new Text('Cancelar'),
+
+                                          onTap: () {
+
+                                            Navigator.pop(context);
+
+                                          },
+
+                                        ),
+
+                                      ],
+
+                                    );
+
+                                  });
+
+                            },
+
+                            child: Container(
+
+                                decoration: AppWidget().boxShandowGrey(),
+
+                                margin: EdgeInsets.only(top: 10),
+
+                                padding: EdgeInsets.only(top: 20, right: 20, bottom: 20),
+
+                                child: Row(
+
+                                  children: [
+
+                                    SizedBox(
+
+                                      width: 10,
+
+                                    ),
+
+                                    ClipRRect(
+
+                                      borderRadius: BorderRadius.circular(15),
+
+                                      child: Image.network(
+
+                                        dataList.child("foto").value.toString(),
+
+                                        errorBuilder: (BuildContext? context, Object? exception, StackTrace? stackTrace) {
+
+                                          return Container(
+
+                                            width: 70,
+
+                                            height: 70,
+
+                                            color: Colors.grey.withOpacity(0.3),
+
+                                          );
+
+                                        },
 
                                         width: 70,
 
                                         height: 70,
 
-                                        color: Colors.grey.withOpacity(0.3),
+                                        fit: BoxFit.cover,
 
-                                      );
+                                      ),
 
-                                    },
+                                    ),
 
-                                    width: 70,
+                                    SizedBox(
 
-                                    height: 70,
+                                      width: 10,
 
-                                    fit: BoxFit.cover,
+                                    ),
 
-                                  ),
+                                    Container(
 
-                                ),
+                                        width: 220,
 
-                                SizedBox(
+                                        child: Column(
 
-                                  width: 10,
-
-                                ),
-
-                                Container(
-
-                                    width: 220,
-
-                                    child: Column(
-
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-
-                                      children: [
-
-                                        Row(
-
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
 
                                           children: [
 
-                                            Flexible(
+                                            Row(
 
-                                                child: Column(
-
-                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
 
                                               children: [
 
-                                                Text(
+                                                Flexible(
 
-                                                  dataList.child("name").value.toString(),
+                                                    child: Column(
 
-                                                  textAlign: TextAlign.center,
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
 
-                                                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: secondryColor),
+                                                  children: [
+
+                                                    Text(
+
+                                                      dataList.child("name").value.toString(),
+
+                                                      textAlign: TextAlign.center,
+
+                                                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: secondryColor),
+
+                                                    ),
+
+                                                    Text(
+
+                                                      dataList.child("type").value.toString(),
+
+                                                      textAlign: TextAlign.center,
+
+                                                      style: TextStyle(fontSize: 10, color: secondryColor),
+
+                                                    ),
+
+                                                  ],
+
+                                                )),
+
+
+                                                // Expanded(child: SizedBox()),
+
+                                              ],
+
+                                            ),
+
+                                            Row(
+
+                                              children: [
+
+                                                Icon(
+
+                                                  Icons.star_border_rounded,
+
+                                                  color: secondryColor,
+
+                                                  size: 20,
 
                                                 ),
 
-                                                Text(
+                                                Icon(
 
-                                                  dataList.child("type").value.toString(),
+                                                  Icons.star_border_rounded,
 
-                                                  textAlign: TextAlign.center,
+                                                  color: secondryColor,
 
-                                                  style: TextStyle(fontSize: 10, color: secondryColor),
+                                                  size: 20,
+
+                                                ),
+
+                                                Icon(
+
+                                                  Icons.star_border_rounded,
+
+                                                  color: secondryColor,
+
+                                                  size: 20,
+
+                                                ),
+
+                                                Icon(
+
+                                                  Icons.star_border_rounded,
+
+                                                  color: secondryColor,
+
+                                                  size: 20,
+
+                                                ),
+
+                                                Icon(
+
+                                                  Icons.star_border_rounded,
+
+                                                  color: secondryColor,
+
+                                                  size: 20,
 
                                                 ),
 
                                               ],
 
-                                            )),
-
-
-                                            // Expanded(child: SizedBox()),
+                                            )
 
                                           ],
 
-                                        ),
+                                        )),
 
-                                        Row(
 
-                                          children: [
-
-                                            Icon(
-
-                                              Icons.star_border_rounded,
-
-                                              color: secondryColor,
-
-                                              size: 20,
-
-                                            ),
-
-                                            Icon(
-
-                                              Icons.star_border_rounded,
-
-                                              color: secondryColor,
-
-                                              size: 20,
-
-                                            ),
-
-                                            Icon(
-
-                                              Icons.star_border_rounded,
-
-                                              color: secondryColor,
-
-                                              size: 20,
-
-                                            ),
-
-                                            Icon(
-
-                                              Icons.star_border_rounded,
-
-                                              color: secondryColor,
-
-                                              size: 20,
-
-                                            ),
-
-                                            Icon(
-
-                                              Icons.star_border_rounded,
-
-                                              color: secondryColor,
-
-                                              size: 20,
-
-                                            ),
-
-                                          ],
-
-                                        )
-
-                                      ],
-
-                                    )),
-
-                                MaterialButton(
+                                    /*  MaterialButton(
 
                                     height: 30,
 
@@ -266,83 +352,7 @@ class _PortafolioPageState extends State<PortafolioPage> {
 
                                     onPressed: () {
 
-                                      showModalBottomSheet(
-
-                                          context: context,
-
-                                          builder: (context) {
-
-                                            return Column(
-
-                                              mainAxisSize: MainAxisSize.min,
-
-                                              children: <Widget>[
-
-                                                ListTile(
-
-                                                  title: new Text('Eliminar'),
-
-                                                  onTap: () {
-
-                                                    dataList.ref.remove().then((value) {
-
-                                                      AppWidget().itemMessage("Eliminado", context);
-
-
-                                                      setState(() {});
-
-                                                    });
-
-
-                                                    Navigator.pop(context);
-
-                                                  },
-
-                                                ),
-
-                                                ListTile(
-
-                                                  title: new Text('Actualizar'),
-
-                                                  onTap: () {
-
-                                                    Navigator.pop(context);
-
-
-                                                    Navigator.push(
-
-                                                        context,
-
-                                                        MaterialPageRoute(
-
-                                                            builder: (context) => NewPortafolioPage(
-
-                                                                  idEdit: dataList.key.toString(),
-
-                                                                )));
-
-                                                  },
-
-                                                ),
-
-                                                ListTile(
-
-                                                  title: new Text('Cancelar'),
-
-                                                  onTap: () {
-
-                                                    Navigator.pop(context);
-
-                                                  },
-
-                                                ),
-
-                                              ],
-
-                                            );
-
-                                          });
-
+                                     
 
                                       /*  dataList.ref.remove().then((value) {
 
@@ -358,11 +368,11 @@ class _PortafolioPageState extends State<PortafolioPage> {
 
                                       Icons.more_vert_rounded,
 
-                                    ))
+                                    ))*/
 
-                              ],
+                                  ],
 
-                            ));
+                                )));
 
                       });
 

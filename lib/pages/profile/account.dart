@@ -7,7 +7,9 @@ import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fullpro/config.dart';
+import 'package:fullpro/const.dart';
 import 'package:fullpro/models/userdata.dart';
+import 'package:fullpro/pages/Authentication/recoverPassword/changePassword.dart';
 import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
 import 'package:fullpro/pages/pay/payList.dart';
 import 'package:fullpro/pages/profesional/profileProfesional.dart';
@@ -48,10 +50,17 @@ class _AccountState extends State<Account> with TickerProviderStateMixin {
   String? getUserName = '';
   String? getuserPhone = '';
 
+  late DataSnapshot userDataProfile;
+
   // Text Field Controllers
 
   late final _nameController = TextEditingController();
   final _phoneController = TextEditingController();
+
+  late final _nameControllerProfile = TextEditingController();
+  late final _dateController = TextEditingController();
+  late final _emailController = TextEditingController();
+  late final _passwordController = TextEditingController();
 
   Future<void> refreshList() async {
     refreshKey.currentState?.show(atTop: false);
@@ -62,31 +71,38 @@ class _AccountState extends State<Account> with TickerProviderStateMixin {
     currentFirebaseUser = FirebaseAuth.instance.currentUser;
     String? userid = currentFirebaseUser?.uid;
 
-    if (UserPreferences.getUsername() != null && UserPreferences.getUserPhone() != null) {
+    /* if (UserPreferences.getUsername() != null && UserPreferences.getUserPhone() != null) {
       _nameController.text = UserPreferences.getUsername() ?? '';
       _phoneController.text = UserPreferences.getUserPhone() ?? '';
-    } else {
-      final UserRef = FirebaseDatabase.instance.ref().child("users").child(userid!);
-      UserRef.once().then((e) async {
-        final DataSnapshot = e.snapshot;
+    } else {*/
+    final UserRef = FirebaseDatabase.instance.ref().child("users").child(userid!);
+    UserRef.once().then((e) async {
+      final DataSnapshot = e.snapshot;
+      userDataProfile = e.snapshot;
+      setState(() {});
 
-        currentUserInfo = UserData.fromSnapshot(DataSnapshot);
-        if (mounted) {
-          setState(() {
-            if (UserPreferences.getUsername() == null) {
-              _nameController.text = currentUserInfo!.fullName.toString();
-            } else {
-              _nameController.text = UserPreferences.getUsername() ?? '';
-            }
-            if (UserPreferences.getUserPhone() == null) {
-              _phoneController.text = currentUserInfo!.phone.toString();
-            } else {
-              _phoneController.text = UserPreferences.getUserPhone() ?? '';
-            }
-          });
-        }
-      });
-    }
+      currentUserInfo = UserData.fromSnapshot(DataSnapshot);
+      _dateController.text = userDataProfile.child("date").value.toString();
+      _emailController.text = userDataProfile.child("email").value.toString();
+
+      _nameController.text = userDataProfile.child("fullname").value.toString();
+
+      /*  if (mounted) {
+        setState(() {
+          if (UserPreferences.getUsername() == null) {
+            _nameController.text = currentUserInfo!.fullName.toString();
+          } else {
+            _nameController.text = UserPreferences.getUsername() ?? '';
+          }
+          if (UserPreferences.getUserPhone() == null) {
+            _phoneController.text = currentUserInfo!.phone.toString();
+          } else {
+            _phoneController.text = UserPreferences.getUserPhone() ?? '';
+          }
+        });
+      }*/
+    });
+    //  }
   }
 
   Widget itemOptionProfile(String title, String url, {String? subtitle, Function? tap}) {
@@ -95,7 +111,7 @@ class _AccountState extends State<Account> with TickerProviderStateMixin {
           tap!();
         },
         child: Container(
-            margin: EdgeInsets.only(top: 5),
+            margin: EdgeInsets.only(top: 15),
             child: Row(
               children: [
                 Text(
@@ -131,7 +147,7 @@ class _AccountState extends State<Account> with TickerProviderStateMixin {
                 SvgPicture.asset(
                   url,
                   width: 35,
-                  color: secondryColor,
+                  //  color: secondryColor,
                 ),
                 SizedBox(
                   width: 20,
@@ -402,13 +418,17 @@ class _AccountState extends State<Account> with TickerProviderStateMixin {
                         ),
                       ),*/
 
-                                AppWidget().texfieldFormat(title: "Nombre completo", urlIcon: "images/icons/user.svg"),
+                                AppWidget().texfieldFormat(
+                                    title: "Nombre completo", urlIcon: "images/icons/user.svg", controller: _nameController),
                                 const SizedBox(height: 10),
-                                AppWidget().texfieldFormat(title: "Fecha de nacimiento", urlIcon: "images/icons/user.svg"),
+                                AppWidget().texfieldFormat(
+                                    title: "Fecha de nacimiento", urlIcon: "images/icons/calendar.svg", controller: _dateController),
                                 const SizedBox(height: 10),
-                                AppWidget().texfieldFormat(title: "Correo electronico", urlIcon: "images/icons/email.svg"),
+                                AppWidget().texfieldFormat(
+                                    title: "Correo electronico", urlIcon: "images/icons/message.svg", controller: _emailController),
                                 const SizedBox(height: 10),
-                                AppWidget().texfieldFormat(title: "Contraseña", urlIcon: "images/icons/email.svg"),
+                                //   AppWidget().texfieldFormat(
+                                //     title: "Contraseña", urlIcon: "images/icons/password.svg", controller: _passwordController),
                               ],
                             ),
 
@@ -519,14 +539,19 @@ class _AccountState extends State<Account> with TickerProviderStateMixin {
                                           itemOptionProfile("Eliminar cuenta", "images/icons/profileCircle.svg", tap: () {
                                             Navigator.push(context, MaterialPageRoute(builder: (context) => const DeleteAccountPage()));
                                           }),
-                                          itemOptionProfile("Fecha", "", subtitle: "02/05/2023", tap: () {
+                                          itemOptionProfile("Fecha", "", subtitle: userDataProfile.child("date").value.toString(), tap: () {
                                             //    Navigator.push(context, MaterialPageRoute(builder: (context) => const PortafolioPage()));
                                           }),
-                                          itemOptionProfile("Usuario", "", subtitle: "user"),
-                                          itemOptionProfile("Estado del usuario", "", subtitle: "Activado"),
+                                          itemOptionProfile("Usuario", "", subtitle: userDataProfile.child("name").value.toString()),
+                                          itemOptionProfile("Estado del usuario", "",
+                                              subtitle: stateOrderUser[int.parse(userDataProfile.child("state").value.toString())]),
                                           SizedBox(
                                             height: 30,
                                           ),
+                                          itemOptionProfile("Cambiar contraseña", "", subtitle: "", tap: () {
+                                            Navigator.push(context, MaterialPageRoute(builder: (context) => ChangePasswordScreen()));
+                                            //   Navigator.push(context, MaterialPageRoute(builder: (context) => ProfileProfesionalPage()));
+                                          }),
                                           itemOptionProfile("Suspender cuenta", "", subtitle: "", tap: () {
                                             Navigator.push(context, MaterialPageRoute(builder: (context) => const DeleteAccountPage()));
                                             //   Navigator.push(context, MaterialPageRoute(builder: (context) => ProfileProfesionalPage()));
@@ -534,9 +559,9 @@ class _AccountState extends State<Account> with TickerProviderStateMixin {
                                           SizedBox(
                                             height: 10,
                                           ),
-                                          itemOptionProfile("Archivar cuenta", "", subtitle: "", tap: () {
+                                          /*  itemOptionProfile("Archivar cuenta", "", subtitle: "", tap: () {
                                             Navigator.push(context, MaterialPageRoute(builder: (context) => const DeleteAccountPage()));
-                                          }),
+                                          }),*/
                                           SizedBox(
                                             height: 30,
                                           ),
@@ -571,10 +596,13 @@ class _AccountState extends State<Account> with TickerProviderStateMixin {
                           Expanded(child: SizedBox()),
                           GestureDetector(
                               onTap: () {
-                                if (_formKey.currentState!.validate()) {
-                                  //
-                                  updateProfile();
-                                }
+                                // if (_formKey.currentState!.validate()) {
+                                //
+                                //updateProfile();
+
+                                userDataProfile.ref.update({'radio': int.parse(_currentSliderValue.round().toString())});
+
+                                //  }
                               },
                               child: Flexible(
                                   child: Row(

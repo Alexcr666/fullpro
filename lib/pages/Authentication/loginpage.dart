@@ -13,10 +13,12 @@ import 'package:fullpro/pages/Authentication/register.dart';
 import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
 import 'package:fullpro/pages/homepage.dart';
 import 'package:fullpro/styles/statics.dart' as Static;
+import 'package:fullpro/styles/styles.dart';
 import 'package:fullpro/utils/permissions.dart';
 import 'package:fullpro/utils/userpreferences.dart';
 import 'package:fullpro/widgets/progressDialog.dart';
 import 'package:fullpro/widgets/widget.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -108,15 +110,7 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 //
                 //
-                Text(
-                  "Welcome back",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: secondryColor,
-                    fontSize: 19,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+                Text("Welcome back", textAlign: TextAlign.center, style: AppStyle().boldText(20)),
 
                 SizedBox(
                   height: 1,
@@ -291,7 +285,7 @@ class _LoginPageState extends State<LoginPage> {
                   height: 10,
                 ),
 
-                AppWidget().redSocial(context),
+                AppWidget().redSocial(context, false),
               ],
             ),
           ),

@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 import 'dart:io';
 
+import 'package:autocomplete_textfield/autocomplete_textfield.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:file_picker/file_picker.dart';
@@ -23,6 +24,7 @@ import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
 import 'package:fullpro/pages/terms.dart';
 
 import 'package:fullpro/styles/statics.dart' as Static;
+import 'package:fullpro/styles/styles.dart';
 import 'package:fullpro/utils/countryStateCity/AddressPicker.dart';
 import 'package:fullpro/utils/countryStateCity/AddressPickerRow.dart';
 import 'package:fullpro/widgets/widget.dart';
@@ -34,6 +36,9 @@ class RegistrationPage extends StatefulWidget {
   @override
   State<RegistrationPage> createState() => _RegistrationPageState();
 }
+
+TextEditingController _searchHome = TextEditingController();
+GlobalKey<AutoCompleteTextFieldState<String>> key = GlobalKey();
 
 class _RegistrationPageState extends State<RegistrationPage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -101,7 +106,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
               'dateBirthay': dateController.text,
               'history': "0",
               'earnings': 0,
-              'profesion': professionController.text,
+              'profesion': _searchHome.text,
               //'city': '',
               //  'state': '',
               'country': country.text,
@@ -169,6 +174,46 @@ class _RegistrationPageState extends State<RegistrationPage> {
     }
   }
 
+  String currentText = "";
+  List<String> suggestions = [];
+
+  void servicesSearch(int type) {
+    suggestions.clear();
+    if (type == 1) {
+      final UserRef = FirebaseDatabase.instance.ref().child("categories").once().then((value) {
+        DatabaseEvent response = value;
+
+        for (var i = 0; i < response.snapshot.children.length; i++) {
+          DataSnapshot dataList = response.snapshot.children.toList()[i];
+
+          if (dataList.child("name").value != null) {
+            suggestions.add(dataList.child("name").value.toString());
+          }
+        }
+        setState(() {});
+      });
+    } else {
+      final UserRef = FirebaseDatabase.instance.ref().child("inspections").once().then((value) {
+        DatabaseEvent response = value;
+
+        for (var i = 0; i < response.snapshot.children.length; i++) {
+          DataSnapshot dataList = response.snapshot.children.toList()[i];
+
+          if (dataList.child("name").value != null) {
+            suggestions.add(dataList.child("name").value.toString());
+          }
+        }
+        setState(() {});
+      });
+    }
+
+/*    UserRef.once().then((e) async {
+      final dataSnapshot = e.snapshot;
+
+     
+    });*/
+  }
+
   ///   LOCATION PERMISSION
 
   @override
@@ -185,7 +230,31 @@ class _RegistrationPageState extends State<RegistrationPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            AppWidget().texfieldFormat(title: "Profesión", controller: professionController),
+            SimpleAutoCompleteTextField(
+              key: key,
+              decoration: InputDecoration(
+                // errorText: "Ingresar servicio valido",
+                contentPadding: EdgeInsets.only(top: 17, bottom: 17, left: 15),
+                enabledBorder:
+                    OutlineInputBorder(borderSide: BorderSide(color: secondryColor, width: 1.0), borderRadius: BorderRadius.circular(11)),
+                errorBorder:
+                    OutlineInputBorder(borderSide: BorderSide(color: secondryColor, width: 1.0), borderRadius: BorderRadius.circular(10)),
+                border:
+                    OutlineInputBorder(borderSide: BorderSide(color: secondryColor, width: 1.0), borderRadius: BorderRadius.circular(10)),
+                labelText: "Profesión",
+                labelStyle: TextStyle(fontSize: 12.0, color: Colors.black),
+              ),
+              controller: _searchHome,
+              suggestions: suggestions,
+              //   textChanged: (text) => currentText = text,
+              clearOnSubmit: true,
+              textSubmitted: (text) => setState(() {
+                _searchHome.text = text;
+                // setState(() {});
+                // added.add(text);
+              }),
+            ),
+            //   AppWidget().texfieldFormat(title: "Profesión", controller: professionController),
             /*   Row(
           children: [
             Flexible(child: AppWidget().texfieldFormat(title: "Ciudad", controller: cityController)),
@@ -688,6 +757,9 @@ class _RegistrationPageState extends State<RegistrationPage> {
             padding: EdgeInsets.only(left: 20, right: 20),
             child: Column(
               children: <Widget>[
+                SizedBox(
+                  height: 20,
+                ),
                 AppWidget().back(context, tap: () {
                   if (signUpNext == true) {
                     signUpNext = false;
@@ -696,50 +768,52 @@ class _RegistrationPageState extends State<RegistrationPage> {
                     Navigator.pop(context);
                   }
                 }),
-                SizedBox(
-                  height: 70,
-                ),
+
                 //
                 //
                 Image(
                   image: AssetImage("images/logo.png"),
                   alignment: Alignment.center,
-                  height: 100.0,
-                  width: 200.0,
+                  height: 120.0,
+                  width: 120.0,
                 ),
                 SizedBox(
                   height: 15,
                 ),
                 //
                 //
-                Row(
-                  children: [
-                    Expanded(child: SizedBox()),
-                    SvgPicture.asset(
-                      "images/icons/profileCircle.svg",
-                      width: 50,
-                    ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                GestureDetector(
+                    onTap: () {
+                      servicesSearch(1);
+                    },
+                    child: Row(
                       children: [
-                        Text(
-                          "Registro Profesional",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: secondryColor),
+                        Expanded(child: SizedBox()),
+                        SvgPicture.asset(
+                          "images/icons/profileCircle.svg",
+                          width: 50,
                         ),
-                        Text(
-                          "Datos personales",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: secondryColor),
+                        SizedBox(
+                          width: 10,
                         ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Registro Profesional",
+                              textAlign: TextAlign.center,
+                              style: AppStyle().boldText(18),
+                            ),
+                            Text(
+                              "Datos personales",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: secondryColor),
+                            ),
+                          ],
+                        ),
+                        Expanded(child: SizedBox()),
                       ],
-                    ),
-                    Expanded(child: SizedBox()),
-                  ],
-                ),
+                    )),
 
                 //
                 // Full Name
@@ -801,8 +875,8 @@ class _RegistrationPageState extends State<RegistrationPage> {
                 //   Text(signUpNext.toString()),
                 Padding(
                   padding: EdgeInsets.only(
-                    right: 50,
-                    left: 50,
+                    right: 0,
+                    left: 0,
                   ),
                   child: SizedBox(
                     width: double.infinity,
@@ -919,7 +993,6 @@ class _RegistrationPageState extends State<RegistrationPage> {
                 //
                 //
                 SizedBox(
-                  height: 30.0,
                   width: double.infinity,
                   child: TextButton(
                     onPressed: () async {

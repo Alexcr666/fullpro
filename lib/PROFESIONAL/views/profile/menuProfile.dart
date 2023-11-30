@@ -281,7 +281,7 @@ class _ProfileOptionsProfessionalPageState extends State<ProfileOptionsProfessio
 
                       Text(
 
-                        '${UserPreferences.getUsername() ?? currentUserInfo?.fullName}',
+                        "Alex",
 
                         style: TextStyle(color: secondryColor, fontSize: 25, fontWeight: FontWeight.bold),
 

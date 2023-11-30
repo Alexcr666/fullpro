@@ -212,7 +212,7 @@ class _subServicePageState extends State<subServicePage> {
                                                                                   crossAxisAlignment: CrossAxisAlignment.start,
                                                                                   children: [
                                                                                     Text(
-                                                                                      widget.title.toString(),
+                                                                                      "Tecnologia",
                                                                                       style: TextStyle(
                                                                                           color: secondryColor,
                                                                                           fontWeight: FontWeight.bold,
@@ -256,7 +256,7 @@ class _subServicePageState extends State<subServicePage> {
                                                                                       fontSize: 16),
                                                                                 ),
                                                                                 Text(
-                                                                                  widget.price.toString(),
+                                                                                  "1.000",
                                                                                   style: TextStyle(
                                                                                       color: Colors.black,
                                                                                       fontWeight: FontWeight.bold,
@@ -278,7 +278,7 @@ class _subServicePageState extends State<subServicePage> {
                                                                         Container(
                                                                             margin: EdgeInsets.only(left: 20, right: 20),
                                                                             child: Text(
-                                                                              widget.description.toString(),
+                                                                              widget.description ?? "",
                                                                               style: TextStyle(
                                                                                   color: secondryColor,
                                                                                   fontWeight: FontWeight.bold,
@@ -302,6 +302,8 @@ class _subServicePageState extends State<subServicePage> {
                                                                                 Flexible(
                                                                                     child: AppWidget().buttonFormLine(
                                                                                         context, "Solicitar", false, tap: () {
+                                                                                  Navigator.push(context,
+                                                                                      MaterialPageRoute(builder: (context) => CartPage()));
                                                                                   savedData() {
                                                                                     DatabaseReference newUserRef = FirebaseDatabase.instance
                                                                                         .ref()
@@ -318,14 +320,14 @@ class _subServicePageState extends State<subServicePage> {
                                                                                     };
 
                                                                                     newUserRef.set(userMap).then((value) {
-                                                                                      Navigator.pop(contextAlert);
+                                                                                      //  Navigator.pop(contextAlert);
 
-                                                                                      AppWidget().itemMessage("Guardado", context);
+                                                                                      //  AppWidget().itemMessage("Guardado", context);
 
-                                                                                      Navigator.push(
+                                                                                      /*Navigator.push(
                                                                                           context,
                                                                                           MaterialPageRoute(
-                                                                                              builder: (context) => CartPage()));
+                                                                                              builder: (context) => CartPage()));*/
                                                                                     }).catchError((onError) {
                                                                                       AppWidget().itemMessage("Guardado", context);
                                                                                     });

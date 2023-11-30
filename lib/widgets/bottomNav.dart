@@ -439,7 +439,7 @@ class _BottomNavState extends State<BottomNav> {
                     // Loader.page(context, SupportPage());
                   },
                   child: SvgPicture.asset(
-                    "images/icons/bottom4.svg",
+                    "images/icons/user.svg",
                     width: 30,
                     color: Colors.white,
                   ),

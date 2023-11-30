@@ -52,6 +52,8 @@ class _CartPageState extends State<CartPage> {
   late final _probController = TextEditingController();
   String problmValidate = '';
 
+  DataSnapshot? dataListObjectGeneral;
+
   ///   Nearby Parnters Variables
   List<NearbyPartner> availablePartners = [];
   bool nearbtPartnerKeysLoaded = false;
@@ -194,7 +196,7 @@ class _CartPageState extends State<CartPage> {
   void initState() {
     super.initState();
 
-    startGeofireListener();
+    //  startGeofireListener();
 
     // Get Time & Date
     DateTime now = DateTime.now();
@@ -203,7 +205,7 @@ class _CartPageState extends State<CartPage> {
     // kselectedTime = '7AM - 8AM';
 
     // CHeck if Cart Data is Loaded
-    if (cartDataLoaded == true && cartItemsList.isEmpty) {
+    /* if (cartDataLoaded == true && cartItemsList.isEmpty) {
       CartController.userCart(context);
     }
 
@@ -230,7 +232,7 @@ class _CartPageState extends State<CartPage> {
         CartController.getToatlPrice();
         MainController.getUserInfo(context);
       }),
-    );
+    );*/
   }
 
   @override
@@ -261,7 +263,24 @@ class _CartPageState extends State<CartPage> {
 
               if (dataList.child("user").value.toString() == "LapnDojkb8QGfSOioTXLkiPAiNt2") {
                 DataSnapshot dataListObject = dataList;
-                return Text(dataListObject!.child("name").value.toString());
+                dataListObjectGeneral = dataListObject;
+
+                //return Text(dataListObject!.child("name").value.toString());
+
+                return ListView.builder(
+                    padding: EdgeInsets.only(left: 10.0),
+                    itemCount: 1,
+                    physics: NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    itemBuilder: (BuildContext context, int index) {
+                      return ListTile(
+                        leading: CircleAvatar(
+                          backgroundColor: Colors.grey.withOpacity(0.3),
+                          radius: 30,
+                        ),
+                        title: Text(dataList.child("nameProfessional").value.toString()),
+                      );
+                    });
               }
             }
             return Text("hola");
@@ -322,7 +341,6 @@ class _CartPageState extends State<CartPage> {
                 ),
               ],
             ),
-            pageOrdens(),
             SizedBox(
               height: 20,
             ),
@@ -450,7 +468,9 @@ class _CartPageState extends State<CartPage> {
                         ),
                         Expanded(child: SizedBox()),
                         Text(
-                          hourService.toString(),
+                          /* hourService.toString()*/ dataListObjectGeneral == null
+                              ? ""
+                              : dataListObjectGeneral!.child("date").value.toString(),
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 16,
@@ -468,6 +488,10 @@ class _CartPageState extends State<CartPage> {
               height: 1,
               color: secondryColor,
             ),
+            SizedBox(
+              height: 15,
+            ),
+            pageOrdens(),
             SizedBox(
               height: 15,
             ),
@@ -517,7 +541,7 @@ class _CartPageState extends State<CartPage> {
         else
           const SizedBox(),*/
         //  fadeRight(0.3, timeRangeSlider()),
-        fadeTop(0.5, removeAllButton()),
+        /*fadeTop(0.5, removeAllButton()),
         CartItems(),
         SizedBox(
           height: 10,
@@ -533,7 +557,7 @@ class _CartPageState extends State<CartPage> {
         ),
 
         fadeBottom(.6, pricingList()),
-        fadeBottom(.6, probWidget()),
+        fadeBottom(.6, probWidget()),*/
 
         Row(
           children: [
@@ -549,7 +573,9 @@ class _CartPageState extends State<CartPage> {
                   ),
                 ),
                 Text(
-                  currencyPos == 'left' ? '$currencySymbol' : '$ktotalprice',
+                  /* currencyPos == 'left' ? '$currencySymbol' : '$ktotalprice'*/ dataListObjectGeneral == null
+                      ? "0"
+                      : dataListObjectGeneral!.child("price").value.toString(),
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 22,
@@ -581,6 +607,7 @@ class _CartPageState extends State<CartPage> {
                             setState(() {});
                           });
                         }
+                        // dataListObjectGeneral.ref().update({'state': 1});
 
                         _initMarkers();
 
@@ -593,7 +620,10 @@ class _CartPageState extends State<CartPage> {
                   height: 5,
                 ),
                 Container(
-                    width: 200, child: AppWidget().buttonFormLine(context, "Cancelar", true, urlIcon: "images/icons/closeCircle.svg")),
+                    width: 200,
+                    child: AppWidget().buttonFormLine(context, "Cancelar", true, urlIcon: "images/icons/closeCircle.svg", tap: () {
+                      Navigator.pop(context);
+                    })),
               ],
             )
           ],
@@ -958,45 +988,47 @@ class _CartPageState extends State<CartPage> {
   //  Address Widget
   //
   Widget AddressWidget() {
-    return cartItemsList.isNotEmpty
-        ? Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                  margin: EdgeInsets.only(left: 10),
-                  child: Text(
-                    "Dirección de entrega",
-                    style: TextStyle(color: secondryColor, fontSize: 14),
-                  )),
-              Padding(
-                padding: const EdgeInsets.all(0),
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: Static.dashboardBG,
-                    //    border: Border.all(color: Colors.black12),
-                  ),
-                  padding: const EdgeInsets.all(10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Expanded(
-                        child: Text(
-                          '${UserPreferences.getAddressStatus() != 'current' || UserPreferences.getAddressStatus() != 'manual' ? UserPreferences.getAddressStatus() == 'current' ? UserPreferences.getUserLocation() : UserPreferences.getManualLocation() : Locales.string(context, 'lbl_add_manual_address')}',
-                          style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 16),
-                        ),
-                      ),
-                      const SizedBox(width: 5),
-                      GestureDetector(
-                          onTap: () {
-                            Loader.page(context, const Addresses());
-                          },
-                          child: Text(
-                            'Cambiar',
-                            style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 16),
-                          )),
+    return //cartItemsList.isNotEmpty
+        //  ?
 
-                      /*  SizedBox(
+        Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+            margin: EdgeInsets.only(left: 10),
+            child: Text(
+              "Dirección de entrega",
+              style: TextStyle(color: secondryColor, fontSize: 14),
+            )),
+        Padding(
+          padding: const EdgeInsets.all(0),
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color: Static.dashboardBG,
+              //    border: Border.all(color: Colors.black12),
+            ),
+            padding: const EdgeInsets.all(10),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Expanded(
+                  child: Text(
+                    '${UserPreferences.getAddressStatus() != 'current' || UserPreferences.getAddressStatus() != 'manual' ? UserPreferences.getAddressStatus() == 'current' ? UserPreferences.getUserLocation() : UserPreferences.getManualLocation() : Locales.string(context, 'lbl_add_manual_address')}',
+                    style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
+                ),
+                const SizedBox(width: 5),
+                GestureDetector(
+                    onTap: () {
+                      Loader.page(context, const Addresses());
+                    },
+                    child: Text(
+                      'Cambiar',
+                      style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 16),
+                    )),
+
+                /*  SizedBox(
                         width: 45,
                         child: MaterialButton(
                           shape: const CircleBorder(),
@@ -1014,13 +1046,13 @@ class _CartPageState extends State<CartPage> {
                           ),
                         ),
                       ),*/
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          )
-        : const SizedBox();
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+    //   : const SizedBox();
   }
 
   //  Pricing List Widget

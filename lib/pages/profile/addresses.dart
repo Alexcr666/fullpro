@@ -6,6 +6,7 @@ import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
+import 'package:fullpro/pages/support/newSupport.dart';
 import 'package:fullpro/widgets/widget.dart';
 import 'package:geolocator/geolocator.dart';
 //import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -16,6 +17,8 @@ import 'package:fullpro/utils/countryStateCity/AddressPicker.dart';
 import 'package:fullpro/utils/userpreferences.dart';
 import 'package:fullpro/widgets/DataLoadedProgress.dart';
 import 'dart:async';
+
+import 'package:string_similarity/string_similarity.dart';
 
 class Addresses extends StatefulWidget {
   const Addresses({Key? key}) : super(key: key);
@@ -34,6 +37,8 @@ class _AddressesState extends State<Addresses> {
   String? countryValue;
   String? stateValue;
   String? cityValue;
+
+  var searchTextController = TextEditingController();
 
   void setupPositionLocator() async {
     Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.bestForNavigation);
@@ -98,6 +103,138 @@ class _AddressesState extends State<Addresses> {
     });
   }
 
+  openDialog(bool edit, {DataSnapshot? dataList}) {
+    var height = MediaQuery.of(context).size.height;
+    var width = MediaQuery.of(context).size.width;
+    country.text = dataList!.child("country").value.toString();
+    state.text = dataList!.child("state").value.toString();
+    city.text = dataList!.child("city").value.toString();
+
+    showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+            insetPadding: EdgeInsets.all(0),
+            contentPadding: EdgeInsets.all(0),
+            content: Builder(builder: (context) {
+              // Get available height and width of the build area of this widget. Make a choice depending on the size.
+              var height = MediaQuery.of(context).size.height;
+              var width = MediaQuery.of(context).size.width;
+
+              return Container(
+                width: width,
+                color: Colors.white,
+                padding: const EdgeInsets.only(left: 24, top: 24, right: 24, bottom: 0),
+                child: ListView(
+                  //    mainAxisSize: MainAxisSize.min,
+                  children: [
+                    AppWidget().back(context),
+                    const SizedBox(height: 20),
+                    const SizedBox(height: 20),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 20),
+                      child: Text(
+                        "Agregar dirección" + edit.toString(),
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    const SizedBox(height: 20),
+                    Form(
+                      key: _formKey,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          //kkkk
+                          CountryStateCityPicker(
+                            country: country,
+                            state: state,
+                            city: city,
+                            textFieldInputBorder: const UnderlineInputBorder(),
+                          ),
+                          const SizedBox(height: 20),
+                          TextFormField(
+                            controller: street,
+                            decoration: InputDecoration(
+                              hintText: Locales.string(context, 'hint_enter_street'),
+                              labelText: Locales.string(context, 'lbl_address'),
+                            ),
+                          ),
+
+                          SizedBox(
+                            height: 20,
+                          ),
+                          AppWidget().buttonFormColor(context, "Guardar", secondryColor, tap: () {
+                            savedData() {
+                              DatabaseReference newUserRef = FirebaseDatabase.instance.ref().child('address').push();
+                              String placeName = '${street.text}, ${city.text}, ${state.text}, ${country.text}';
+
+                              // Prepare data to be saved on users table
+
+                              Map userMap = {
+                                'name': placeName,
+                                'user': FirebaseAuth.instance.currentUser!.uid.toString(),
+                              };
+
+                              newUserRef.set(userMap).then((value) {
+                                Navigator.pop(context);
+
+                                AppWidget().itemMessage("Guardado", context);
+                              }).catchError((onError) {
+                                AppWidget().itemMessage("Error al guardar", context);
+                              });
+                            }
+
+                            if (_formKey.currentState!.validate()) {
+                              savedData();
+                            }
+                          }),
+
+                          /*  Padding(
+                                                  padding: const EdgeInsets.only(bottom: 30, top: 30),
+                                                  child: Row(
+                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                    children: [
+
+
+                                                  /*    MaterialButton(
+                                                        onPressed: () {
+                                                          // updateManualAddress();
+
+                                                          
+                                                        },
+                                                        elevation: 0.0,
+                                                        hoverElevation: 0.0,
+                                                        focusElevation: 0.0,
+                                                        highlightElevation: 0.0,
+                                                        color: Colors.green,
+                                                        textColor: Colors.white,
+                                                        minWidth: 50,
+                                                        height: 15,
+                                                        shape: RoundedRectangleBorder(
+                                                          borderRadius: BorderRadius.circular(12),
+                                                        ),
+                                                        padding: const EdgeInsets.symmetric(
+                                                          horizontal: 50,
+                                                          vertical: 15,
+                                                        ),
+                                                        child: Text(Locales.string(context, 'lbl_submit')),
+                                                      ),*/
+                                                    ],
+                                                  ),
+                                                ),
+
+                                                */
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            })));
+  }
+
   @override
   void initState() {
     setupPositionLocator();
@@ -115,13 +252,110 @@ class _AddressesState extends State<Addresses> {
   TextEditingController city = TextEditingController();
   TextEditingController street = TextEditingController();
 
+  Widget pageAddress() {
+    return FutureBuilder(
+        future: FirebaseDatabase.instance.ref().child('address').once(),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          if (snapshot.hasData) {
+            DatabaseEvent response = snapshot.data;
+
+            DataSnapshot? dataListObject = null;
+
+            //   for (var i = 0; i < response.snapshot.children.toList().length; i++) {
+
+            //return Text(dataListObject!.child("name").value.toString());
+
+            return ListView.builder(
+                padding: EdgeInsets.only(left: 10.0),
+                itemCount: response.snapshot.children.toList().length,
+                physics: NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                itemBuilder: (BuildContext context, int i) {
+                  DataSnapshot dataList = response.snapshot.children.toList()[i];
+
+                  Widget itemAddress() {
+                    return Row(
+                      children: [
+                        SvgPicture.asset(
+                          "images/icons/iconLocation.svg",
+                          width: 50,
+                          height: 50,
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Flexible(
+                            child: Text(
+                          dataList.child("name").value.toString(),
+                          style: TextStyle(color: secondryColor, fontSize: 16, fontWeight: FontWeight.bold),
+                        )),
+                        GestureDetector(
+                          onTap: () {
+                            showModalBottomSheet(
+                                context: context,
+                                builder: (context) {
+                                  return Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: <Widget>[
+                                      ListTile(
+                                        title: new Text('Eliminar'),
+                                        onTap: () {
+                                          dataList.ref.remove().then((value) {
+                                            AppWidget().itemMessage("Eliminado", context);
+
+                                            setState(() {});
+                                          });
+
+                                          Navigator.pop(context);
+                                        },
+                                      ),
+                                      ListTile(
+                                        title: new Text('Actualizar'),
+                                        onTap: () {
+                                          Navigator.pop(context);
+                                          openDialog(true, dataList: dataList);
+                                        },
+                                      ),
+                                      ListTile(
+                                        title: new Text('Cancelar'),
+                                        onTap: () {
+                                          Navigator.pop(context);
+                                        },
+                                      ),
+                                    ],
+                                  );
+                                });
+                          },
+                          child: Icon(
+                            Icons.more_vert_sharp,
+                            color: secondryColor,
+                          ),
+                        )
+                      ],
+                    );
+                  }
+
+                  return searchTextController.text.isEmpty
+                      ? itemAddress()
+                      : searchTextController.text.similarityTo(dataList.child("name").value.toString()) >= 0.5
+                          ? SizedBox()
+                          : itemAddress();
+                });
+          }
+
+          // }
+
+          return Text("hola");
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: scaffoldKey,
       resizeToAvoidBottomInset: false,
       backgroundColor: Colors.white,
-      appBar: AppBar(
+      /*  appBar: AppBar(
         centerTitle: true,
         title: Row(children: [
           Expanded(child: SizedBox()),
@@ -274,7 +508,7 @@ class _AddressesState extends State<Addresses> {
             width: 30,
           ),
         ),
-      ),
+      ),*/
       body: SafeArea(
         child: Container(
           color: Colors.white,
@@ -283,6 +517,7 @@ class _AddressesState extends State<Addresses> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
+                AppWidget().back(context),
                 const SizedBox(height: 10),
                 Row(
                   children: [
@@ -295,110 +530,7 @@ class _AddressesState extends State<Addresses> {
                     Expanded(child: SizedBox()),
                     GestureDetector(
                         onTap: () {
-                          var height = MediaQuery.of(context).size.height;
-                          var width = MediaQuery.of(context).size.width;
-
-                          showDialog(
-                              context: context,
-                              builder: (context) => AlertDialog(
-                                  insetPadding: EdgeInsets.all(0),
-                                  contentPadding: EdgeInsets.all(0),
-                                  content: Builder(builder: (context) {
-                                    // Get available height and width of the build area of this widget. Make a choice depending on the size.
-                                    var height = MediaQuery.of(context).size.height;
-                                    var width = MediaQuery.of(context).size.width;
-
-                                    return Container(
-                                      width: width,
-                                      color: Colors.white,
-                                      padding: const EdgeInsets.only(left: 24, top: 24, right: 24, bottom: 0),
-                                      child: ListView(
-                                        //    mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Row(
-                                            crossAxisAlignment: CrossAxisAlignment.center,
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              InkWell(
-                                                onTap: () {
-                                                  Navigator.pop(context);
-                                                },
-                                                borderRadius: BorderRadius.circular(50),
-                                                child: CircleAvatar(
-                                                  radius: 35,
-                                                  backgroundColor: Colors.transparent,
-                                                  child: SvgPicture.asset('images/svg_icons/arrowLeft.svg'),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.only(top: 20),
-                                            child: Text(
-                                              Locales.string(context, 'lbl_add_update_manual_address'),
-                                              style: const TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                          ),
-                                          const SizedBox(height: 20),
-                                          Form(
-                                            key: _formKey,
-                                            child: Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: <Widget>[
-                                                //kkkk
-                                                CountryStateCityPicker(
-                                                  country: country,
-                                                  state: state,
-                                                  city: city,
-                                                  textFieldInputBorder: const UnderlineInputBorder(),
-                                                ),
-                                                const SizedBox(height: 20),
-                                                TextFormField(
-                                                  controller: street,
-                                                  decoration: InputDecoration(
-                                                    icon: const Icon(Icons.home),
-                                                    hintText: Locales.string(context, 'hint_enter_street'),
-                                                    labelText: Locales.string(context, 'lbl_address'),
-                                                  ),
-                                                ),
-                                                Padding(
-                                                  padding: const EdgeInsets.only(bottom: 30, top: 30),
-                                                  child: Row(
-                                                    mainAxisAlignment: MainAxisAlignment.center,
-                                                    children: [
-                                                      MaterialButton(
-                                                        onPressed: () {
-                                                          updateManualAddress();
-                                                        },
-                                                        elevation: 0.0,
-                                                        hoverElevation: 0.0,
-                                                        focusElevation: 0.0,
-                                                        highlightElevation: 0.0,
-                                                        color: Colors.green,
-                                                        textColor: Colors.white,
-                                                        minWidth: 50,
-                                                        height: 15,
-                                                        shape: RoundedRectangleBorder(
-                                                          borderRadius: BorderRadius.circular(12),
-                                                        ),
-                                                        padding: const EdgeInsets.symmetric(
-                                                          horizontal: 50,
-                                                          vertical: 15,
-                                                        ),
-                                                        child: Text(Locales.string(context, 'lbl_submit')),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    );
-                                  })));
+                          openDialog(false);
                         },
                         child: SvgPicture.asset(
                           "images/icons/addCircleBlue.svg",
@@ -407,15 +539,16 @@ class _AddressesState extends State<Addresses> {
                   ],
                 ),
                 const SizedBox(height: 20),
-                AppWidget().texfieldFormat(title: "Ingresa una nueva ubicación"),
+                AppWidget().texfieldFormat(
+                    title: "Ingresa una nueva ubicación",
+                    controller: searchTextController,
+                    execute: () {
+                      setState(() {});
+                    }),
                 const SizedBox(height: 20),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      Locales.string(context, 'lbl_current_address'),
-                      style: const TextStyle(),
-                    ),
                     SizedBox(
                       width: double.infinity,
                       child: addressRadio(
@@ -435,7 +568,9 @@ class _AddressesState extends State<Addresses> {
                       Locales.string(context, 'lbl_manual_address'),
                       style: const TextStyle(),
                     ),*/
-                    SizedBox(
+
+                    pageAddress(),
+                    /*  SizedBox(
                       width: double.infinity,
                       child: addressRadioIcon(
                         selected: false,
@@ -498,7 +633,7 @@ class _AddressesState extends State<Addresses> {
                           }
                         },
                       ),
-                    ),
+                    ),*/
                   ],
                 ),
               ],
@@ -590,25 +725,34 @@ class _AddressesState extends State<Addresses> {
     return Padding(
       padding: const EdgeInsets.all(5.0),
       child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          //color: background,
-          //  border: Border.all(color: Colors.black26),
-        ),
-        child: Theme(
-          data: Theme.of(context).copyWith(),
-          child: RadioListTile(
-            value: value,
-            groupValue: _groupValue,
-            onChanged: onChanged,
-            selected: selected,
-            title: Text(
-              title,
-              style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 16),
-            ),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            //color: background,
+            //  border: Border.all(color: Colors.black26),
           ),
-        ),
-      ),
+          child: Row(
+            children: [
+              SvgPicture.asset(
+                "images/icons/locationActual.svg",
+                width: 50,
+                height: 50,
+              ),
+              Flexible(
+                  child: Theme(
+                data: Theme.of(context).copyWith(),
+                child: RadioListTile(
+                  value: value,
+                  groupValue: _groupValue,
+                  onChanged: onChanged,
+                  selected: selected,
+                  title: Text(
+                    title,
+                    style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
+                ),
+              )),
+            ],
+          )),
     );
   }
 
