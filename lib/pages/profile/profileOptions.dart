@@ -31,6 +31,7 @@ import 'package:fullpro/pages/profesional/profileProfesional.dart';
 import 'package:fullpro/pages/profile/account.dart';
 
 import 'package:fullpro/pages/profile/addresses.dart';
+import 'package:fullpro/pages/support/listSupport.dart';
 
 import 'package:fullpro/pages/support/support.dart';
 
@@ -348,7 +349,7 @@ class _ProfileOptionsPageState extends State<ProfileOptionsPage> {
                       ProfileButton(
                         buttonName: /* Locales.string(context, 'lbl_terms_and_conditions')*/ "Soporte",
                         onCLicked: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => const SupportAppPage()));
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => ListSupportPage()));
 
                           //  Navigator.pop(context);
 
