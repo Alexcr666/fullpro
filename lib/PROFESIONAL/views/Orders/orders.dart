@@ -639,13 +639,10 @@ class _MyOrdersState extends State<MyOrders> with TickerProviderStateMixin {
           ),
         ),
       ),*/
-      body: SafeArea(
-        child: Container(
-          color: appcolors.dashboardCard,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              /* Container(
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          /* Container(
                 color: Colors.white,
                 child: TabBar(
                   physics: const NeverScrollableScrollPhysics(),
@@ -665,162 +662,160 @@ class _MyOrdersState extends State<MyOrders> with TickerProviderStateMixin {
                 ),
               ),*/
 
-              SizedBox(
-                height: 40,
-              ),
+          SizedBox(
+            height: 40,
+          ),
 
+          Container(
+              margin: EdgeInsets.only(left: 30),
+              child: Text(
+                "Buscar: ",
+                style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 20),
+              )),
+          SizedBox(
+            height: 20,
+          ),
+          Row(
+            children: [
+              Expanded(child: SizedBox()),
+              itemAdd("images/icons/shoping.svg", "Usuario", userCheck, tap: () {
+                userCheck = !userCheck;
+                profesionalCheck = false;
+                serviceCheck = false;
+                setState(() {});
+              }),
+              SizedBox(
+                width: 10,
+              ),
+              itemAdd("images/icons/profesional.svg", "Profesional", profesionalCheck, tap: () {
+                profesionalCheck = !profesionalCheck;
+                serviceCheck = false;
+                userCheck = false;
+                setState(() {});
+              }),
+              SizedBox(
+                width: 10,
+              ),
+              itemAdd(
+                "images/icons/userCircle.svg",
+                "Servicios",
+                serviceCheck,
+                tap: () {
+                  profesionalCheck = false;
+                  userCheck = false;
+                  serviceCheck = !serviceCheck;
+                  setState(() {});
+                },
+              ),
+              Expanded(child: SizedBox()),
+            ],
+          ),
+          SizedBox(
+            height: 20,
+          ),
+          Row(
+            children: [
+              SizedBox(
+                width: 20,
+              ),
               Container(
                   margin: EdgeInsets.only(left: 30),
                   child: Text(
-                    "Buscar: ",
+                    "Historial: ",
                     style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 20),
                   )),
-              SizedBox(
-                height: 20,
-              ),
-              Row(
-                children: [
-                  Expanded(child: SizedBox()),
-                  itemAdd("images/icons/shoping.svg", "Usuario", userCheck, tap: () {
-                    userCheck = !userCheck;
-                    profesionalCheck = false;
-                    serviceCheck = false;
-                    setState(() {});
-                  }),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  itemAdd("images/icons/profesional.svg", "Profesional", profesionalCheck, tap: () {
-                    profesionalCheck = !profesionalCheck;
-                    serviceCheck = false;
-                    userCheck = false;
-                    setState(() {});
-                  }),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  itemAdd(
-                    "images/icons/userCircle.svg",
-                    "Servicios",
-                    serviceCheck,
-                    tap: () {
-                      profesionalCheck = false;
-                      userCheck = false;
-                      serviceCheck = !serviceCheck;
-                      setState(() {});
-                    },
-                  ),
-                  Expanded(child: SizedBox()),
-                ],
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              Row(
-                children: [
-                  SizedBox(
-                    width: 20,
-                  ),
-                  Container(
-                      margin: EdgeInsets.only(left: 30),
-                      child: Text(
-                        "Historial: ",
-                        style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 20),
-                      )),
-                  Expanded(child: SizedBox()),
-                  Container(
-                      margin: EdgeInsets.only(left: 30),
-                      child: Row(
-                        children: [
-                          Text(
-                            "Filtro",
-                            style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 20),
-                          ),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          SvgPicture.asset(
-                            "images/icons/add.svg",
-                            width: 23,
-                            color: secondryColor,
-                          ),
-                        ],
-                      )),
-                  SizedBox(
-                    width: 50,
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 20,
-              ),
-
+              Expanded(child: SizedBox()),
               Container(
+                  margin: EdgeInsets.only(left: 30),
+                  child: Row(
+                    children: [
+                      Text(
+                        "Filtro",
+                        style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 20),
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      SvgPicture.asset(
+                        "images/icons/add.svg",
+                        width: 23,
+                        color: secondryColor,
+                      ),
+                    ],
+                  )),
+              SizedBox(
+                width: 50,
+              ),
+            ],
+          ),
+          SizedBox(
+            height: 20,
+          ),
+
+          Container(
+              margin: EdgeInsets.only(left: 20, right: 20),
+              child: AppWidget().texfieldFormat(
+                  controller: _searchController,
+                  title: "Buscar",
+                  execute: () {
+                    searchText = _searchController.text.toString();
+                    setState(() {});
+                  })),
+          SizedBox(
+            height: 10,
+          ),
+
+          Text("Resultados de :" + searchText.toString()),
+          SizedBox(
+            height: 20,
+          ),
+
+          serviceCheck == false
+              ? SizedBox()
+              : Container(
                   margin: EdgeInsets.only(left: 20, right: 20),
-                  child: AppWidget().texfieldFormat(
-                      controller: _searchController,
-                      title: "Buscar",
-                      execute: () {
-                        searchText = _searchController.text.toString();
-                        setState(() {});
-                      })),
-              SizedBox(
-                height: 10,
-              ),
-
-              Text("Resultados de :" + searchText.toString()),
-              SizedBox(
-                height: 20,
-              ),
-
-              serviceCheck == false
-                  ? SizedBox()
-                  : Container(
-                      margin: EdgeInsets.only(left: 20, right: 20),
-                      child: Row(
-                        children: [
-                          Container(
-                              width: 110,
-                              child: AppWidget().buttonShandow("Pendiente",
-                                  color: positionFilter != 0 ? Colors.grey.withOpacity(0.2) : redButton, colorText: Colors.white, tap: () {
-                                positionFilter = 0;
-                                setState(() {});
-                              })),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          Container(
-                              width: 110,
-                              child: AppWidget().buttonShandow("En curso",
-                                  color: positionFilter != 2 ? Colors.grey.withOpacity(0.2) : yellowButton,
-                                  colorText: Colors.white, tap: () {
-                                positionFilter = 2;
-                                setState(() {});
-                              })),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          Container(
-                              width: 110,
-                              child: AppWidget().buttonShandow("Terminado",
-                                  color: positionFilter != 3 ? Colors.grey.withOpacity(0.2) : greenButton,
-                                  colorText: Colors.white, tap: () {
-                                positionFilter = 3;
-                                setState(() {});
-                              })),
-                        ],
-                      )),
-              SizedBox(
-                height: 20,
-              ),
-              Expanded(
-                  child: ListView(
-                children: [
-                  userCheck == false ? SizedBox() : pageUsers(),
-                  profesionalCheck == false ? SizedBox() : pageProfessional(),
-                  //    Text(positionFilter.toString()),
-                  serviceCheck == false ? SizedBox() : pageOrdensWidget()
-                  /*  serviceCheck == false
+                  child: Row(
+                    children: [
+                      Container(
+                          width: 110,
+                          child: AppWidget().buttonShandow("Pendiente",
+                              color: positionFilter != 0 ? Colors.grey.withOpacity(0.2) : redButton, colorText: Colors.white, tap: () {
+                            positionFilter = 0;
+                            setState(() {});
+                          })),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Container(
+                          width: 110,
+                          child: AppWidget().buttonShandow("En curso",
+                              color: positionFilter != 2 ? Colors.grey.withOpacity(0.2) : yellowButton, colorText: Colors.white, tap: () {
+                            positionFilter = 2;
+                            setState(() {});
+                          })),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Container(
+                          width: 110,
+                          child: AppWidget().buttonShandow("Terminado",
+                              color: positionFilter != 3 ? Colors.grey.withOpacity(0.2) : greenButton, colorText: Colors.white, tap: () {
+                            positionFilter = 3;
+                            setState(() {});
+                          })),
+                    ],
+                  )),
+          SizedBox(
+            height: 20,
+          ),
+          Expanded(
+              child: ListView(
+            children: [
+              userCheck == false ? SizedBox() : pageUsers(),
+              profesionalCheck == false ? SizedBox() : pageProfessional(),
+              //    Text(positionFilter.toString()),
+              serviceCheck == false ? SizedBox() : pageOrdensWidget()
+              /*  serviceCheck == false
                       ? SizedBox()
                       : Column(
                           children: [
@@ -828,9 +823,9 @@ class _MyOrdersState extends State<MyOrders> with TickerProviderStateMixin {
                             positionFilter != 2 ? SizedBox() : orderItemsCompleted()
                           ],
                         )*/
-                ],
-              )
-                  /* TabBarView(
+            ],
+          )
+              /* TabBarView(
                   physics: const AlwaysScrollableScrollPhysics(),
                   controller: _tabController,
                   children: [
@@ -855,12 +850,9 @@ class _MyOrdersState extends State<MyOrders> with TickerProviderStateMixin {
                     ),
                   ],
                 ),*/
-                  ),
-              //
-              const SizedBox(height: 10),
-            ],
-          ),
-        ),
+              ),
+          //
+        ],
       ),
     );
   }

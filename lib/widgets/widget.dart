@@ -1,3 +1,6 @@
+import 'dart:io';
+import 'dart:math';
+
 import 'package:connectivity_plus/connectivity_plus.dart';
 
 import 'package:flutter/material.dart';
@@ -21,6 +24,26 @@ import 'package:flutter_locales/flutter_locales.dart';
 import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
 
 class AppWidget {
+  getFileSize(int bytes, int decimals) {
+    //  var file = File(filepath);
+    // int bytes = await file.length();
+    if (bytes <= 0) return "0 B";
+    const suffixes = ["B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+    var i = (log(bytes) / log(1024)).floor();
+    return ((bytes / pow(1024, i)).toStringAsFixed(decimals)) + ' ' + suffixes[i];
+  }
+
+  Widget noResult() {
+    return Column(
+      children: [
+        Text(
+          "No hay resultados",
+          style: TextStyle(color: secondryColor, fontSize: 20),
+        ),
+      ],
+    );
+  }
+
   Widget titleAdd(String title, {Function? tap}) {
     return Row(
       children: [

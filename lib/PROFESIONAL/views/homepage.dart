@@ -13,6 +13,7 @@ import 'package:fullpro/PROFESIONAL/models/nearbyOrders.dart';
 import 'package:fullpro/PROFESIONAL/models/partner.dart';
 import 'package:fullpro/PROFESIONAL/utils/userpreferences.dart';
 import 'package:fullpro/PROFESIONAL/views/Orders/orders.dart';
+import 'package:fullpro/PROFESIONAL/views/Orders/ordersListUser.dart';
 import 'package:fullpro/PROFESIONAL/views/language.dart';
 import 'package:fullpro/PROFESIONAL/views/support.dart';
 import 'package:fullpro/PROFESIONAL/views/wallet/wallet.dart';
@@ -642,7 +643,8 @@ Widget countsContainer(bool ordersCountLoaded, int? totalOrders, bool earningsCo
                 borderRadius: BorderRadius.circular(12),
               ),
               onPressed: () {
-                Loader.page(context, const MyOrders());
+                Navigator.push(context, MaterialPageRoute(builder: (context) => SolicitudList()));
+                //  Loader.page(context, const MyOrders());
               },
               child: SizedBox(
                 width: MediaQuery.of(context).size.width * .4,

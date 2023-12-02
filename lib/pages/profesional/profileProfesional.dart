@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'dart:math';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 
 import 'package:dotted_border/dotted_border.dart';
@@ -13,6 +14,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/cupertino.dart';
 
 import 'package:flutter/material.dart';
 
@@ -96,7 +98,10 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
 
   TextEditingController phoneController = TextEditingController();
 
-  TextEditingController passwordController = TextEditingController();
+  TextEditingController professionController = TextEditingController();
+  String imageUser = "";
+
+  // TextEditingController passwordController = TextEditingController();
 
   Widget pageOrdens() {
     return FutureBuilder(
@@ -337,6 +342,29 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
         });
   }
 
+  Widget statePoratolfio() {
+    return FutureBuilder(
+
+        // initialData: 1,
+
+        future: FirebaseDatabase.instance.ref().child('portafolio').once(),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          try {
+            if (snapshot.hasData) {
+              DatabaseEvent response = snapshot.data;
+
+              return response == null ? Text("Cargando") : SizedBox();
+            } else {
+              return Text("Cargando");
+            }
+
+            ;
+          } catch (e) {
+            return Text("Cargando");
+          }
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -363,9 +391,23 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                             SizedBox(
                               height: 60,
                             ),
-                            CircleAvatar(
-                              radius: 65,
-                              backgroundColor: Colors.grey.withOpacity(0.5),
+                            Container(
+                                height: 120,
+                                width: 120,
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(90),
+                                  child: CachedNetworkImage(
+                                    fit: BoxFit.cover,
+                                    imageUrl: imageUser ?? '',
+                                    useOldImageOnUrlChange: true,
+                                    placeholder: (context, url) => CupertinoActivityIndicator(
+                                      radius: 20,
+                                    ),
+                                    errorWidget: (context, url, error) => Icon(Icons.error),
+                                  ),
+                                )),
+                            SizedBox(
+                              height: 10,
                             ),
                             Text(
                               nameProfesional,
@@ -624,7 +666,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
       SizedBox(
         height: 20,
       ),
-      Row(
+      /*  Row(
         children: [
           Expanded(child: SizedBox()),
           SvgPicture.asset(
@@ -674,7 +716,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
       AppWidget().textFieldForm(context, passwordController, "Contraseña"),
       SizedBox(
         height: 20,
-      ),
+      ),*/
       Row(
         children: [
           Expanded(child: SizedBox()),
@@ -709,27 +751,23 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
       SizedBox(
         height: 20,
       ),
-      AppWidget().textFieldForm(context, passwordController, "Nombre Completo"),
+      AppWidget().textFieldForm(context, nameController, "Nombre Completo"),
       SizedBox(
         height: 10,
       ),
-      AppWidget().textFieldForm(context, passwordController, "Fecha"),
+      AppWidget().textFieldForm(context, dateController, "Fecha"),
       SizedBox(
         height: 10,
       ),
-      AppWidget().textFieldForm(context, passwordController, "Correo electronico"),
+      AppWidget().textFieldForm(context, emailController, "Correo electronico"),
       SizedBox(
         height: 10,
       ),
-      AppWidget().textFieldForm(context, passwordController, "Celular"),
+      AppWidget().textFieldForm(context, phoneController, "Celular"),
       SizedBox(
         height: 10,
       ),
-      AppWidget().textFieldForm(context, passwordController, "Contraseña"),
-      SizedBox(
-        height: 10,
-      ),
-      AppWidget().textFieldForm(context, passwordController, "Profesión"),
+      AppWidget().textFieldForm(context, professionController, "Profesión"),
       SizedBox(
         height: 10,
       ),
@@ -1183,6 +1221,8 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
         emailController.text = dataSnapshot.child("fullname").value.toString();
 
         phoneController.text = dataSnapshot.child("phone").value.toString();
+        imageUser = dataSnapshot.child("photo").value.toString();
+        setState(() {});
       } else {}
     });
 
@@ -1200,12 +1240,12 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
     // TODO: implement initState
 
     super.initState();
-
-    if (widget.id != null) {
+    getProfile(widget.id.toString());
+    /*if (widget.id != null) {
       getProfile(widget.id.toString());
     } else {
       getUserInfo();
-    }
+    }*/
   }
 
   Widget portafolio() {
@@ -1221,68 +1261,70 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
 
               return response == null
                   ? Text("Cargando")
-                  : Container(
-                      width: double.infinity,
-                      height: 300,
-                      child: AlignedGridView.count(
-                        crossAxisCount: 3,
-                        itemCount: response.snapshot.children.length,
-                        mainAxisSpacing: 2,
-                        crossAxisSpacing: 2,
-                        itemBuilder: (context, index) {
-                          DataSnapshot dataList = response.snapshot.children.toList()[index];
+                  : response.snapshot.children.toList().length == 0
+                      ? AppWidget().noResult()
+                      : Container(
+                          width: double.infinity,
+                          height: 300,
+                          child: AlignedGridView.count(
+                            crossAxisCount: 3,
+                            itemCount: response.snapshot.children.length,
+                            mainAxisSpacing: 2,
+                            crossAxisSpacing: 2,
+                            itemBuilder: (context, index) {
+                              DataSnapshot dataList = response.snapshot.children.toList()[index];
 
-                          return Container(
-                              margin: EdgeInsets.only(left: 10, right: 10),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Stack(
+                              return Container(
+                                  margin: EdgeInsets.only(left: 10, right: 10),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      ClipRRect(
-                                        borderRadius: BorderRadius.circular(20),
-                                        child: Image.network(
-                                          dataList.child("value").value.toString(),
-                                          errorBuilder: (BuildContext? context, Object? exception, StackTrace? stackTrace) {
-                                            return Container(
-                                              width: 110,
-                                              height: 110,
-                                              color: Colors.grey.withOpacity(0.3),
-                                            );
-                                          },
-                                          width: 80,
-                                          height: 80,
-                                          fit: BoxFit.cover,
-                                        ),
+                                      Stack(
+                                        children: [
+                                          ClipRRect(
+                                            borderRadius: BorderRadius.circular(20),
+                                            child: Image.network(
+                                              dataList.child("value").value.toString(),
+                                              errorBuilder: (BuildContext? context, Object? exception, StackTrace? stackTrace) {
+                                                return Container(
+                                                  width: 110,
+                                                  height: 110,
+                                                  color: Colors.grey.withOpacity(0.3),
+                                                );
+                                              },
+                                              width: 80,
+                                              height: 80,
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
+                                          Positioned.fill(
+                                              child: Align(
+                                                  alignment: Alignment.center,
+                                                  child: SvgPicture.asset(
+                                                    "images/icons/addCircleBlue.svg",
+                                                    width: 40,
+                                                  ))),
+                                        ],
                                       ),
-                                      Positioned.fill(
-                                          child: Align(
-                                              alignment: Alignment.center,
-                                              child: SvgPicture.asset(
-                                                "images/icons/addCircleBlue.svg",
-                                                width: 40,
-                                              ))),
+                                      Text(
+                                        "Reparación",
+                                        style: TextStyle(color: secondryColor, fontSize: 12, fontWeight: FontWeight.bold),
+                                      ),
+                                      Text(
+                                        "Casas",
+                                        style: TextStyle(color: secondryColor, fontSize: 11),
+                                      ),
                                     ],
-                                  ),
-                                  Text(
-                                    "Reparación",
-                                    style: TextStyle(color: secondryColor, fontSize: 12, fontWeight: FontWeight.bold),
-                                  ),
-                                  Text(
-                                    "Casas",
-                                    style: TextStyle(color: secondryColor, fontSize: 11),
-                                  ),
-                                ],
-                              ));
-                        },
-                      ));
+                                  ));
+                            },
+                          ));
             } else {
-              return Text("Cargando");
+              return AppWidget().noResult();
             }
 
             ;
           } catch (e) {
-            return Text("Cargando");
+            return AppWidget().noResult();
           }
         });
   }

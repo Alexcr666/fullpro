@@ -50,10 +50,10 @@ class kHomePage extends StatefulWidget {
 }
 
 TextEditingController _searchHome = TextEditingController();
-GlobalKey<AutoCompleteTextFieldState<String>> key = GlobalKey();
 
 class _kHomePageState extends State<kHomePage> {
   int activeCategorie = 0;
+  GlobalKey<AutoCompleteTextFieldState<String>> key = GlobalKey();
 
   TextEditingController _searchInspections = TextEditingController();
 

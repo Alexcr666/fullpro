@@ -318,20 +318,22 @@ class _RegistrationPageState extends State<RegistrationPage> {
                                   width: 5,
                                 ),
                                 Container(
-                                    child: Column(
+                                    child: Flexible(
+                                        child: Column(
                                   mainAxisSize: MainAxisSize.min,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      "Foto: " + index.toString(),
+                                      fileLicense[index].path.split('/').last,
+                                      maxLines: 1,
                                       style: TextStyle(color: Colors.white, fontSize: 10),
                                     ),
                                     Text(
-                                      "291 KB",
+                                      AppWidget().getFileSize(fileLicense[index].lengthSync(), 1),
                                       style: TextStyle(color: Colors.white, fontSize: 9),
                                     ),
                                   ],
-                                )),
+                                ))),
                                 SizedBox(
                                   width: 15,
                                 ),
@@ -417,20 +419,22 @@ class _RegistrationPageState extends State<RegistrationPage> {
                                   width: 5,
                                 ),
                                 Container(
-                                    child: Column(
+                                    child: Flexible(
+                                        child: Column(
                                   mainAxisSize: MainAxisSize.min,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      "Foto: " + index.toString(),
+                                      fileBackgroundCheck[index].path.split('/').last,
+                                      maxLines: 1,
                                       style: TextStyle(color: Colors.white, fontSize: 10),
                                     ),
                                     Text(
-                                      "291 KB",
+                                      AppWidget().getFileSize(fileBackgroundCheck[index].lengthSync(), 1),
                                       style: TextStyle(color: Colors.white, fontSize: 9),
                                     ),
                                   ],
-                                )),
+                                ))),
                                 SizedBox(
                                   width: 15,
                                 ),
@@ -509,20 +513,22 @@ class _RegistrationPageState extends State<RegistrationPage> {
                                   width: 5,
                                 ),
                                 Container(
-                                    child: Column(
+                                    child: Flexible(
+                                        child: Column(
                                   mainAxisSize: MainAxisSize.min,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      "Foto: " + index.toString(),
+                                      fileRegistroLegal[index].path.split('/').last,
+                                      maxLines: 1,
                                       style: TextStyle(color: Colors.white, fontSize: 10),
                                     ),
                                     Text(
-                                      "291 KB",
+                                      AppWidget().getFileSize(fileRegistroLegal[index].lengthSync(), 1),
                                       style: TextStyle(color: Colors.white, fontSize: 9),
                                     ),
                                   ],
-                                )),
+                                ))),
                                 SizedBox(
                                   width: 15,
                                 ),
