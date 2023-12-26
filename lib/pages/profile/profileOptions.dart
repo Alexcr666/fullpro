@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
@@ -40,6 +41,7 @@ import 'package:fullpro/pages/terms.dart';
 import 'package:fullpro/utils/globalConstants.dart';
 
 import 'package:fullpro/utils/userpreferences.dart';
+import 'package:fullpro/utils/utils.dart';
 
 import 'package:fullpro/widgets/ProfileButtonWithBottomSheet.dart';
 
@@ -362,10 +364,11 @@ class _ProfileOptionsPageState extends State<ProfileOptionsPage> {
                       const Divider(color: Colors.black12),
                       ProfileButton(
                         buttonName: /* Locales.string(context, 'lbl_about')*/ "Cerrar sesión",
-                        onCLicked: () {
-                          Navigator.pop(context);
+                        onCLicked: () async {
+                          AppUtils().signOut(context);
+                          //   Navigator.pop(context);
 
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => const LoginPage()));
+                          // Navigator.push(context, MaterialPageRoute(builder: (context) => const LoginPage()));
 
                           // Loader.page(context, const AboutPage());
                         },

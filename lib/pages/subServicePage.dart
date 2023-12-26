@@ -93,10 +93,27 @@ class _subServicePageState extends State<subServicePage> {
     timer?.cancel();
   }
 
+  Future<DatabaseEvent> getQuerySubService() {
+    Future<DatabaseEvent> data =
+        FirebaseDatabase.instance.ref().child('partners').orderByChild("professionalId").equalTo(widget.idPage.toString()).once();
+    /* if (search.text.isNotEmpty) {
+
+      data = FirebaseDatabase.instance
+          .ref()
+          .child("partners")
+          .orderByChild("fullname")
+          .startAt(_searchController.text.toString())
+          .endAt(_searchController.text.toString() + "\uf8ff")
+          .limitToFirst(int.parse(dropdownvalue.toString()))
+          .once();
+    }*/
+    return data;
+  }
+
   Widget pageProfessional() {
     return FutureBuilder(
         //  initialData: 1,
-        future: FirebaseDatabase.instance.ref().child('partners').once(),
+        future: getQuerySubService(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           try {
             if (snapshot.hasData) {
@@ -104,17 +121,17 @@ class _subServicePageState extends State<subServicePage> {
 
               return response == null
                   ? Text("Cargando")
-                  : ListView.builder(
-                      itemCount: response.snapshot.children.length,
-                      shrinkWrap: true,
-                      physics: AlwaysScrollableScrollPhysics(),
-                      itemBuilder: (BuildContext context, int index) {
-                        DataSnapshot dataList = response.snapshot.children.toList()[index];
+                  : response.snapshot.children.length == 0
+                      ? AppWidget().noResult()
+                      : ListView.builder(
+                          itemCount: response.snapshot.children.length,
+                          shrinkWrap: true,
+                          physics: AlwaysScrollableScrollPhysics(),
+                          itemBuilder: (BuildContext context, int index) {
+                            DataSnapshot dataList = response.snapshot.children.toList()[index];
 
-                        Widget itemList() {
-                          return dataList.child("professionalId").value.toString() != widget.idPage.toString()
-                              ? SizedBox()
-                              : GestureDetector(
+                            Widget itemList() {
+                              return GestureDetector(
                                   onTap: () {
                                     Navigator.push(
                                         context,
@@ -392,18 +409,18 @@ class _subServicePageState extends State<subServicePage> {
                                       ],
                                     ),
                                   ));
-                        }
+                            }
 
-                        if (search.text.isEmpty == false) {
-                          if (search.text.contains(dataList.child("fullname").value.toString())) {
-                            return itemList();
-                          } else {
-                            return SizedBox();
-                          }
-                        } else {
-                          return itemList();
-                        }
-                      });
+                            if (search.text.isEmpty == false) {
+                              if (search.text.contains(dataList.child("fullname").value.toString())) {
+                                return itemList();
+                              } else {
+                                return SizedBox();
+                              }
+                            } else {
+                              return itemList();
+                            }
+                          });
             } else {
               return Text("Cargando");
             }

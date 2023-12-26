@@ -133,9 +133,15 @@ class _OrdersPageState extends State<OrdersPage> with TickerProviderStateMixin {
         ));
   }
 
+  Future<DatabaseEvent> getFilterState() {
+    Future<DatabaseEvent> data = FirebaseDatabase.instance.ref().child("ordens").child("state").equalTo(positionFilter).once();
+
+    return data;
+  }
+
   Widget pageOrdens() {
     return FutureBuilder(
-        future: FirebaseDatabase.instance.ref().child('ordens').once(),
+        future: getFilterState(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (snapshot.hasData) {
             DatabaseEvent response = snapshot.data;
@@ -149,7 +155,7 @@ class _OrdersPageState extends State<OrdersPage> with TickerProviderStateMixin {
             return ListView.builder(
                 padding: EdgeInsets.only(left: 10.0),
                 itemCount: response.snapshot.children.toList().length,
-                physics: NeverScrollableScrollPhysics(),
+                //   physics: NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
                 itemBuilder: (BuildContext context, int i) {
                   DataSnapshot dataList = response.snapshot.children.toList()[i];
@@ -292,7 +298,7 @@ class _OrdersPageState extends State<OrdersPage> with TickerProviderStateMixin {
                               Column(
                                 children: [
                                   Container(
-                                      width: 130,
+                                      width: 140,
                                       height: 40,
                                       child: AppWidget().buttonFormColor(
                                           context,
@@ -303,7 +309,7 @@ class _OrdersPageState extends State<OrdersPage> with TickerProviderStateMixin {
                                     height: 10,
                                   ),
                                   Container(
-                                      width: 130,
+                                      width: 140,
                                       height: 40,
                                       child: AppWidget().buttonFormColor(context, "Cancelar", Colors.red, tap: () {
                                         dataList.ref.update({'state': 3}).then((value) {
@@ -588,11 +594,12 @@ class _OrdersPageState extends State<OrdersPage> with TickerProviderStateMixin {
                   indicatorSize: TabBarIndicatorSize.tab,
                 ),
               ),*/
+              Expanded(child: pageOrdens()),
 
-              Expanded(
+              /* Expanded(
                   child: Column(
                 children: [
-                  pageOrdens()
+                
                   /* positionFilter != 1 ? SizedBox() : Expanded(child: OrderItemsPending()),
 
                   //
@@ -612,7 +619,7 @@ class _OrdersPageState extends State<OrdersPage> with TickerProviderStateMixin {
                   // Completed Orders TabView
                   positionFilter != 3 ? SizedBox() : Expanded(child: OrderItemsCompleted()),*/
                 ],
-              )),
+              )),*/
               /*  Expanded(
                 child: TabBarView(
                   physics: const AlwaysScrollableScrollPhysics(),

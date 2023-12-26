@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 import 'package:autocomplete_textfield/autocomplete_textfield.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -49,9 +50,9 @@ class kHomePage extends StatefulWidget {
   _kHomePageState createState() => _kHomePageState();
 }
 
-TextEditingController _searchHome = TextEditingController();
-
 class _kHomePageState extends State<kHomePage> {
+  TextEditingController _searchHome = TextEditingController();
+  TextEditingController _searchHomeCategorie = TextEditingController();
   int activeCategorie = 0;
   GlobalKey<AutoCompleteTextFieldState<String>> key = GlobalKey();
 
@@ -68,25 +69,28 @@ class _kHomePageState extends State<kHomePage> {
 
   void _initMarkers() {
     _marker.clear();
+
     final UserRef = FirebaseDatabase.instance.ref().child("partners").once().then((value) {
       DatabaseEvent response = value;
 
       for (var i = 0; i < response.snapshot.children.length; i++) {
         DataSnapshot dataList = response.snapshot.children.toList()[i];
 
-        if (dataList.child("latitud").value != null && dataList.child("longitude").value != null) {
-          MarkerId markerId = new MarkerId(dataList.key.toString());
-          _marker.add(
-            new Marker(
-              markerId: markerId,
-              position: LatLng(
-                  double.parse(dataList.child("latitud").value.toString()), double.parse(dataList.child("longitude").value.toString())),
-              onTap: () {
-                // Handle on marker tap
-              },
-              icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
-            ),
-          );
+        if (dataList.child("professional").value.toString() == _searchHome.text.toString()) {
+          if (dataList.child("latitud").value != null && dataList.child("longitude").value != null) {
+            MarkerId markerId = new MarkerId(dataList.key.toString());
+            _marker.add(
+              new Marker(
+                markerId: markerId,
+                position: LatLng(
+                    double.parse(dataList.child("latitud").value.toString()), double.parse(dataList.child("longitude").value.toString())),
+                onTap: () {
+                  // Handle on marker tap
+                },
+                icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
+              ),
+            );
+          }
         }
       }
       setState(() {});
@@ -312,7 +316,7 @@ class _kHomePageState extends State<kHomePage> {
     //
     //
     locationPermision();
-    slideController = PageController();
+    /*slideController = PageController();
 
     //  Get Trending Services Slider
     if (hometrendingDataLoaded == false) {
@@ -343,7 +347,9 @@ class _kHomePageState extends State<kHomePage> {
         MainController.getUserInfo(context);
         MainController.getSettings();
       }),
-    );
+    );*/
+
+    servicesSearch(1);
   }
 
   // Dispose
@@ -486,78 +492,92 @@ class _kHomePageState extends State<kHomePage> {
                       physics: NeverScrollableScrollPhysics(),
                       itemBuilder: (BuildContext context, int index) {
                         DataSnapshot dataList = response.snapshot.children.toList()[index];
-                        Widget itemList() {
-                          return dataList.child("primary").value != true
-                              ? SizedBox()
-                              : GestureDetector(
-                                  onTap: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => ProfileProfesionalPage(
-                                                  id: dataList.key.toString(),
-                                                )));
-                                  },
-                                  child: Container(
-                                    margin: EdgeInsets.only(left: 20, right: 20, top: 10),
-                                    decoration: AppWidget().boxShandowGreyRectangule(),
-                                    child: Row(
+                        //  Widget itemList() {
+                        Widget itemProfile() {
+                          return GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => ProfileProfesionalPage(
+                                              id: dataList.key.toString(),
+                                            )));
+                              },
+                              child: Container(
+                                margin: EdgeInsets.only(left: 20, right: 20, top: 10),
+                                decoration: AppWidget().boxShandowGreyRectangule(),
+                                child: Row(
+                                  children: [
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    CircleAvatar(
+                                      backgroundColor: Colors.grey.withOpacity(0.3),
+                                      radius: 40,
+                                    ),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    Flexible(
+                                        child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         SizedBox(
-                                          width: 10,
+                                          height: 14,
                                         ),
-                                        CircleAvatar(
-                                          backgroundColor: Colors.grey.withOpacity(0.3),
-                                          radius: 40,
+                                        Text(
+                                          dataList.child("fullname").value.toString(),
+                                          style: TextStyle(color: secondryColor, fontSize: 17, fontWeight: FontWeight.bold),
+                                        ),
+                                        Text(
+                                          "Opiniones clientes",
+                                          style: TextStyle(color: Colors.black, fontSize: 10),
+                                        ),
+                                        RatingBarIndicator(
+                                            rating: 2.5,
+                                            itemCount: 5,
+                                            itemSize: 16.0,
+                                            itemBuilder: (context, _) => Icon(
+                                                  Icons.star,
+                                                  color: secondryColor,
+                                                )),
+                                        SizedBox(
+                                          height: 5,
                                         ),
                                         SizedBox(
-                                          width: 10,
+                                          height: 14,
                                         ),
-                                        Flexible(
-                                            child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            SizedBox(
-                                              height: 14,
-                                            ),
-                                            Text(
-                                              dataList.child("fullname").value.toString(),
-                                              style: TextStyle(color: secondryColor, fontSize: 17, fontWeight: FontWeight.bold),
-                                            ),
-                                            Text(
-                                              "Opiniones clientes",
-                                              style: TextStyle(color: Colors.black, fontSize: 10),
-                                            ),
-                                            RatingBarIndicator(
-                                                rating: 2.5,
-                                                itemCount: 5,
-                                                itemSize: 16.0,
-                                                itemBuilder: (context, _) => Icon(
-                                                      Icons.star,
-                                                      color: secondryColor,
-                                                    )),
-                                            SizedBox(
-                                              height: 5,
-                                            ),
-                                            SizedBox(
-                                              height: 14,
-                                            ),
-                                          ],
-                                        ))
                                       ],
-                                    ),
-                                  ));
+                                    ))
+                                  ],
+                                ),
+                              ));
+
+                          //  }
+
+                          /* */
+
+                          //  return dataList.child("primary").value != true ? SizedBox() : itemProfile();
                         }
 
-                        if (_searchInspections.text.isEmpty == false) {
+                        return Text(dataList.child("professional").value.toString() + "   " + _searchHome.text.toString());
+
+                        /*         if (dataList.child("professional").value.toString() == _searchHome.text.toString() &&
+                            dataList.child("primary").value == true) {
+                          return itemProfile();
+                        } else {
+                          return SizedBox();
+                        }*/
+
+                        /*  if (_searchInspections.text.isEmpty == false) {
                           if (_searchInspections.text.contains(dataList.child("fullname").value.toString())) {
                             return itemList();
                           } else {
                             return SizedBox();
                           }
-                        } else {
-                          return itemList();
-                        }
+                        } else {*/
+
+                        //  }
                       });
             } else {
               return Text("Cargando");
@@ -663,7 +683,9 @@ class _kHomePageState extends State<kHomePage> {
                 textChanged: (text) => currentText = text,
                 clearOnSubmit: true,
                 textSubmitted: (text) => setState(() {
+                  print("set: " + _searchHome.text.toString());
                   _searchHome.text = text;
+                  _initMarkers();
                   setState(() {});
                   // added.add(text);
                 }),
@@ -673,6 +695,7 @@ class _kHomePageState extends State<kHomePage> {
             //AppWidget().buttonForm(context, "Search"),
           ],
         ),
+        Text("Resultados de " + _searchHome.text.toString()),
         // buildSearch(),
         SizedBox(
           height: 20,
@@ -837,10 +860,27 @@ class _kHomePageState extends State<kHomePage> {
     );
   }
 
+  Future<DatabaseEvent> getFilterCategorie() async {
+    Future<DatabaseEvent> data = FirebaseDatabase.instance.ref().child('categories').once();
+
+    if (_searchHomeCategorie.text.trim().length != 0) {
+      data = FirebaseDatabase.instance
+          .ref()
+          .child("categories")
+          .orderByChild("name")
+          .startAt(_searchHomeCategorie.text.toString())
+          .endAt(_searchHomeCategorie.text.toString() + "\uf8ff")
+          // .limitToFirst(int.parse("10"))
+          .once();
+    }
+
+    return data;
+  }
+
   Widget gridviewCategories() {
     return FutureBuilder(
         initialData: 1,
-        future: FirebaseDatabase.instance.ref().child('categories').once(),
+        future: getFilterCategorie(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           try {
             if (snapshot.hasData && snapshot.data != null) {
@@ -888,8 +928,8 @@ class _kHomePageState extends State<kHomePage> {
                                                   color: Colors.grey.withOpacity(0.3),
                                                 );
                                               },
-                                              width: 80,
-                                              height: 80,
+                                              width: 110,
+                                              height: 110,
                                               fit: BoxFit.cover,
                                             ),
                                           ),
@@ -982,7 +1022,7 @@ class _kHomePageState extends State<kHomePage> {
           SizedBox(
             height: 20,
           ),
-          AppWidget().texfieldFormat(title: "Buscar"),
+          AppWidget().texfieldFormat(title: "Buscar", controller: _searchHomeCategorie),
           SizedBox(
             height: 20,
           ),
