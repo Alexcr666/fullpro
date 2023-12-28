@@ -70,7 +70,7 @@ class MyApp extends StatelessWidget {
               ),
             ),
           ),
-          initialRoute: currentFirebaseUser != null ? kHomePage.id : RegistrationPage.id,
+          initialRoute: currentFirebaseUser != null ? kHomePage.id : LoginPage.id,
           routes: {
             kHomePage.id: (context) => kHomePage(),
             kTrending.id: (context) => kTrending(),

@@ -75,7 +75,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
 
   var stateController = TextEditingController();
 
-  void registerUser() async {
+  void registerUser(BuildContext context) async {
     try {
       final User = (await _auth.createUserWithEmailAndPassword(
         email: emailController.text,
@@ -116,6 +116,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
             phoneRef.set(userMap);
           }
         }).catchError((onError) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(Locales.string(context, "Error al crear usuario"))));
           print("error" + onError.toString());
         });
 
@@ -127,10 +128,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
         nameRef.once().then((e) async {
           final snapshot = e.snapshot;
           if (snapshot.exists) {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => const HomePage()),
-            );
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(Locales.string(context, "Usuario ya existe"))));
           } else {
             /*   Navigator.push(
               context,
@@ -158,10 +156,15 @@ class _RegistrationPageState extends State<RegistrationPage> {
           }
         }).catchError((onError) {
           print("error" + onError.toString());
+
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(Locales.string(context, "Error al crear usuario"))));
         });
         ;
 
         //  Navigator.pushNamedAndRemoveUntil(context, HomePage.id, (route) => false);
+      } else {
+        print("error-->" + "error al crear usuario");
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(Locales.string(context, "Error al crear usuario"))));
       }
     } on FirebaseAuthException catch (ex) {
       switch (ex.code) {
@@ -959,7 +962,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                         if (signUpNext == true) {
                           if (agree == true) {
                             if (_formKey.currentState!.validate()) {
-                              registerUser();
+                              registerUser(context);
                             }
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Debe aceptar los terminos y condiciones")));

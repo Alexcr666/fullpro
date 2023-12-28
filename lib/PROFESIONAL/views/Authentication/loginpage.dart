@@ -121,7 +121,7 @@ class _LoginPageState extends State<LoginPageProfesional> {
                   style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.bold),
                 ),
                 SizedBox(
-                  height: 70,
+                  height: 40,
                 ),
 
                 //    EMAIL ADDRESS ( TEXT FIELD )

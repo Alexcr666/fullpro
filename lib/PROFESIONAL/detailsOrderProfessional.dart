@@ -19,6 +19,9 @@ import 'package:flutter_geofire/flutter_geofire.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 
 
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+
+
 import 'package:flutter_svg/flutter_svg.dart';
 
 
@@ -102,10 +105,10 @@ import 'package:collection/collection.dart';
 
 class DetailsOrderProfessionalPage extends StatefulWidget {
 
-  const DetailsOrderProfessionalPage({Key? key}) : super(key: key);
+  DetailsOrderProfessionalPage({Key? key, required this.dataList}) : super(key: key);
 
 
-  static const String id = 'CartPage';
+  DataSnapshot dataList;
 
 
   @override
@@ -436,6 +439,9 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
     super.initState();
 
 
+    print("dataorden: " + widget.dataList.value.toString());
+
+
     //startGeofireListener();
 
 
@@ -581,6 +587,7 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
 
                   dataListObjectGeneral = dataListObject;
 
+
                   setState(() {});
 
                 });
@@ -611,7 +618,7 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
 
                         ),
 
-                        title: Text(dataList.child("nameProfessional").value.toString()),
+                        title: Text(widget.dataList.child("nameProfessional").value.toString()),
 
                       );
 
@@ -927,7 +934,7 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
                                       //    final f = new DateFormat('yyyy-MM-dd');
 
 
-                                      dataListObjectGeneral!.ref.update({'date': hourService}).then((value) {
+                                      widget.dataList.ref.update({'date': hourService}).then((value) {
 
                                         Navigator.pop(context);
 
@@ -987,11 +994,7 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
 
                         Text(
 
-                          /* hourService.toString()*/ dataListObjectGeneral == null
-
-                              ? ""
-
-                              : dataListObjectGeneral!.child("date").value.toString(),
+                          widget.dataList.child("date").value.toString(),
 
                           style: TextStyle(
 
@@ -1056,6 +1059,69 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
   //
 
 
+  Widget imageEvidencia() {
+
+    return Container(
+
+        margin: EdgeInsets.only(left: 10),
+
+        child: ClipRRect(
+
+            borderRadius: BorderRadius.circular(15),
+
+            child: Container(color: Colors.grey.withOpacity(0.4), width: 110, height: 110, child: /*Image.network("src")*/ SizedBox())));
+
+  }
+
+
+  Widget itemMoney(String title, String value) {
+
+    return Row(
+      children: [
+        Container(
+
+            margin: EdgeInsets.only(left: 20),
+
+            child: Text(
+
+              title.toString(),
+
+              style: TextStyle(
+
+                fontWeight: FontWeight.bold,
+
+                fontSize: 16,
+
+                color: secondryColor,
+
+              ),
+
+            )),
+        Expanded(child: SizedBox()),
+        Container(
+
+            margin: EdgeInsets.only(left: 20),
+
+            child: Text(
+              value.toString(),
+
+              style: TextStyle(
+
+                fontWeight: FontWeight.bold,
+
+                fontSize: 16,
+
+                color: secondryColor,
+
+              ),
+
+            )),
+      ],
+    );
+
+  }
+
+
   Widget initWidget() {
 
     return Column(
@@ -1095,6 +1161,161 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
 
         fadeBottom(.6, pricingList()),
         fadeBottom(.6, probWidget()),*/
+        itemMoney("Costo del servicio", "00.000"),
+        itemMoney("Tarifa del servicio", "00.000"),
+        itemMoney("Costo del domicilio", "00.000"),
+
+        SizedBox(
+
+          height: 10,
+
+        ),
+
+
+        Container(
+
+            margin: EdgeInsets.only(left: 20),
+
+            child: Text(
+
+              "Evidencias".toString(),
+
+              style: TextStyle(
+
+                fontWeight: FontWeight.bold,
+
+                fontSize: 16,
+
+                color: secondryColor,
+
+              ),
+
+            )),
+
+
+        SizedBox(
+
+          height: 10,
+
+        ),
+
+
+        Container(
+
+            height: 120,
+
+            child: SingleChildScrollView(
+
+                scrollDirection: Axis.horizontal,
+
+                child: Row(
+
+                  children: [
+
+                    imageEvidencia(),
+
+                    imageEvidencia(),
+
+                    imageEvidencia(),
+
+                    imageEvidencia(),
+
+                  ],
+
+                ))),
+
+
+        SizedBox(
+
+          height: 10,
+
+        ),
+
+
+        Container(
+
+            margin: EdgeInsets.only(left: 20),
+
+            child: Text(
+
+              "Valoración".toString(),
+
+              style: TextStyle(
+
+                fontWeight: FontWeight.bold,
+
+                fontSize: 16,
+
+                color: secondryColor,
+
+              ),
+
+            )),
+
+
+        SizedBox(
+
+          height: 10,
+
+        ),
+
+
+        RatingBar.builder(
+
+          initialRating: widget.dataList.child("rating").value == null ? 0 : double.parse(widget.dataList.child("rating").value.toString()),
+
+          minRating: 1,
+
+          direction: Axis.horizontal,
+
+          allowHalfRating: true,
+
+          itemCount: 5,
+
+          itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+
+          itemBuilder: (context, _) => Icon(
+
+            Icons.star,
+
+            color: Colors.amber,
+
+          ),
+
+          onRatingUpdate: (rating) {
+
+            print(rating);
+
+
+            widget.dataList.ref.update({'rating': rating});
+
+          },
+
+        ),
+
+
+        /*RatingBarIndicator(
+
+            rating: 2.5,
+
+            itemCount: 5,
+
+            itemSize: 30.0,
+
+            itemBuilder: (context, _) => Icon(
+
+                  Icons.star_border_rounded,
+
+                  color: secondryColor,
+
+                )),*/
+
+
+        SizedBox(
+
+          height: 10,
+
+        ),
 
 
         Row(
@@ -1131,11 +1352,7 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
 
                 Text(
 
-                  /* currencyPos == 'left' ? '$currencySymbol' : '$ktotalprice'*/ dataListObjectGeneral == null
-
-                      ? "0"
-
-                      : dataListObjectGeneral!.child("price").value.toString(),
+                  widget.dataList.child("price").value.toString(),
 
                   style: TextStyle(
 
@@ -1167,13 +1384,9 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
 
                         context,
 
-                        stateOrder[dataListObjectGeneral == null ? 0 : int.parse(dataListObjectGeneral!.child("state").value.toString())],
+                        stateOrder[dataListObjectGeneral == null ? 0 : int.parse(widget.dataList.child("state").value.toString())],
 
-                        stateOrderColor[dataListObjectGeneral == null
-
-                            ? 0
-
-                            : int.parse(dataListObjectGeneral!.child("state").value.toString())], tap: () {
+                        stateOrderColor[int.parse(widget.dataList.child("state").value.toString())], tap: () {
 
                       showAlertDialog() {
 
@@ -1185,7 +1398,7 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
                           Navigator.pop(context);
 
 
-                          dataListObjectGeneral!.ref.update({'state': state}).then((value) {
+                          widget.dataList.ref.update({'state': state}).then((value) {
 
                             setState(() {});
 
@@ -1280,11 +1493,15 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
 
                     width: 200,
 
-                    child: AppWidget().buttonFormLine(context, "Cancelar", true, urlIcon: "images/icons/closeCircle.svg", tap: () {
+                    child: widget.dataList.child("state").value.toString() == "4"
 
-                      Navigator.pop(context);
+                        ? SizedBox()
 
-                    })),
+                        : AppWidget().buttonFormLine(context, "Cancelar", true, urlIcon: "images/icons/closeCircle.svg", tap: () {
+
+                            Navigator.pop(context);
+
+                          })),
 
               ],
 
@@ -2068,7 +2285,13 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
 
                   child: Text(
 
-                    dataListObjectGeneral == null ? "" : dataListObjectGeneral!.child("address").value.toString(),
+                    /*dataListObjectGeneral == null ? "" : dataListObjectGeneral!.child("address").value.toString()*/ widget.dataList
+
+                        .child("address")
+
+                        .value
+
+                        .toString(),
 
                     style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 16),
 

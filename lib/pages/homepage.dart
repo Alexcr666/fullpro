@@ -316,7 +316,15 @@ class _kHomePageState extends State<kHomePage> {
     //
     //
     locationPermision();
-    /*slideController = PageController();
+    /* Future.delayed(const Duration(milliseconds: 2000), () {
+      AppSharedPreference().getUser(context).then((value) {
+        UserPreferences.setUsername(value);
+        print("userhome: " + value.toString());
+        setState(() {});
+      });
+    });*/
+
+    /* slideController = PageController();
 
     //  Get Trending Services Slider
     if (hometrendingDataLoaded == false) {
@@ -336,7 +344,7 @@ class _kHomePageState extends State<kHomePage> {
         locationPermision();
         // MainController.checkNetwork(context);
       }),
-    );
+    );*/
 
     // Repeating Function
     timer = Timer.periodic(
@@ -347,9 +355,9 @@ class _kHomePageState extends State<kHomePage> {
         MainController.getUserInfo(context);
         MainController.getSettings();
       }),
-    );*/
+    );
 
-    servicesSearch(1);
+    // servicesSearch(1);
   }
 
   // Dispose
@@ -610,9 +618,14 @@ class _kHomePageState extends State<kHomePage> {
                 child: AppWidget().buttonShandowActive("Servicios", activeCategorie == 1 ? true : false, tap: () {
                   activeCategorie = 1;
 
-                  servicesSearch(1);
+                  //servicesSearch(1);
 
                   setState(() {});
+                  AppSharedPreference().getUser(context).then((value) {
+                    print("login: " + value.toString());
+                  }).catchError((onError) {
+                    print("error: " + onError.toString());
+                  });
                 })),
             // Flexible(child: AppWidget().buttonForm(context, "Servicios")),
             SizedBox(

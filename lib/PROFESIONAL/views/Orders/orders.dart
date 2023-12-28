@@ -353,7 +353,12 @@ class _MyOrdersState extends State<MyOrders> with TickerProviderStateMixin {
                     padding: const EdgeInsets.all(5),
                     child: GestureDetector(
                       onTap: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => DetailsOrderProfessionalPage()));
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => DetailsOrderProfessionalPage(
+                                      dataList: dataList,
+                                    )));
                       },
                       child: Container(
                         margin: EdgeInsets.only(left: 10, right: 10),
@@ -481,7 +486,7 @@ class _MyOrdersState extends State<MyOrders> with TickerProviderStateMixin {
                               Column(
                                 children: [
                                   Container(
-                                      width: 120,
+                                      width: 134,
                                       height: 40,
                                       child: AppWidget().buttonFormColor(
                                           context,
@@ -492,7 +497,7 @@ class _MyOrdersState extends State<MyOrders> with TickerProviderStateMixin {
                                     height: 10,
                                   ),
                                   Container(
-                                      width: 120,
+                                      width: 134,
                                       height: 40,
                                       child: AppWidget().buttonFormColor(context, "Cancelar", Colors.red, tap: () {
                                         dataList.ref.update({'state': 3}).then((value) {
@@ -665,6 +670,7 @@ class _MyOrdersState extends State<MyOrders> with TickerProviderStateMixin {
           SizedBox(
             height: 40,
           ),
+          AppWidget().back(context),
 
           Container(
               margin: EdgeInsets.only(left: 30),
@@ -765,7 +771,8 @@ class _MyOrdersState extends State<MyOrders> with TickerProviderStateMixin {
             height: 10,
           ),
 
-          Text("Resultados de :" + searchText.toString()),
+          Container(
+              margin: EdgeInsets.only(left: 20), alignment: Alignment.centerLeft, child: Text("Resultados de :" + searchText.toString())),
           SizedBox(
             height: 20,
           ),

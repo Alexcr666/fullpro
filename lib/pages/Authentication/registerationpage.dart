@@ -63,22 +63,27 @@ class _RegistrationPageState extends State<RegistrationPage> {
         DatabaseReference newUserRef = FirebaseDatabase.instance.ref().child('users/${User.uid}');
         // Prepare data to be saved on users table
         Map userMap = {
-          'fullname': fullNameController.text,
-          'email': emailController.text,
-          'phone': phoneController.text,
-          'date': FieldValue.serverTimestamp(),
+          'fullname': fullNameController.text.toString(),
+          'email': emailController.text.toString(),
+          'phone': phoneController.text.toString(),
+          'date': DateTime.now(),
           'state': 1,
         };
 
         UserPreferences.setUserPhone(phoneController.text);
         UserPreferences.setUsername(fullNameController.text);
 
-        newUserRef.set(userMap);
-
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const successUserPage()),
-        );
+        newUserRef.set(userMap).then((value) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const successUserPage()),
+          );
+        }).catchError((onError) {
+          print("erroruser: " + onError.toString());
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(Locales.string(context, "Error al crear usuario"))));
+        });
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(Locales.string(context, "Error al crear usuario"))));
       }
     } on FirebaseAuthException catch (ex) {
       switch (ex.code) {
@@ -106,7 +111,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: EdgeInsets.only(left: 20, right: 20),
             child: Column(
               children: <Widget>[
                 AppWidget().back(context),
@@ -160,7 +165,8 @@ class _RegistrationPageState extends State<RegistrationPage> {
                 //
                 // Full Name
 
-                AppWidget().textFieldForm(context, fullNameController, Locales.string(context, 'lbl_fullname')),
+                AppWidget().texfieldFormat(
+                    controller: fullNameController, title: Locales.string(context, 'lbl_fullname'), urlIcon: "images/icons/user.svg"),
                 /*  Padding(
                   padding: EdgeInsets.only(
                     right: 20,
@@ -196,7 +202,8 @@ class _RegistrationPageState extends State<RegistrationPage> {
                 //  Phone Number TEXT FIELD
                 //
 
-                AppWidget().textFieldForm(context, phoneController, Locales.string(context, 'lbl_phone_number')),
+                AppWidget().texfieldFormat(
+                    controller: phoneController, title: Locales.string(context, 'lbl_phone_number'), urlIcon: "images/icons/phone.svg"),
                 /*  Padding(
                   padding: EdgeInsets.only(
                     right: 20,
@@ -232,7 +239,8 @@ class _RegistrationPageState extends State<RegistrationPage> {
                 //  Email Address TEXT FIELD
                 //
 
-                AppWidget().textFieldForm(context, emailController, Locales.string(context, 'lbl_email')),
+                AppWidget().texfieldFormat(
+                    controller: emailController, title: Locales.string(context, 'lbl_email'), urlIcon: "images/icons/message.svg"),
                 /*  Padding(
                   padding: EdgeInsets.only(
                     right: 20,
@@ -267,7 +275,8 @@ class _RegistrationPageState extends State<RegistrationPage> {
                 //
                 //  Password
 
-                AppWidget().textFieldForm(context, passwordController, "Password"),
+                AppWidget().texfieldFormat(
+                    controller: passwordController, title: "Password", urlIcon: "images/icons/password.svg", password: true),
                 /*Padding(
                   padding: EdgeInsets.only(
                     right: 20,

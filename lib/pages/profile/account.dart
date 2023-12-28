@@ -20,6 +20,7 @@ import 'package:fullpro/pages/support/support.dart';
 import 'package:fullpro/utils/globalConstants.dart';
 import 'package:fullpro/styles/statics.dart' as Static;
 import 'package:fullpro/utils/userpreferences.dart';
+import 'package:fullpro/utils/utils.dart';
 import 'package:fullpro/widgets/DataLoadedProgress.dart';
 import 'package:fullpro/widgets/ProfileWidget.dart';
 import 'package:fullpro/widgets/widget.dart';
@@ -77,16 +78,17 @@ class _AccountState extends State<Account> with TickerProviderStateMixin {
     } else {*/
     final UserRef = FirebaseDatabase.instance.ref().child("users").child(userid!);
     UserRef.once().then((e) async {
-      final DataSnapshot = e.snapshot;
-      userDataProfile = e.snapshot;
-      setState(() {});
+      if (e.snapshot != null) {
+        final DataSnapshot = e.snapshot;
+        userDataProfile = e.snapshot;
+        setState(() {});
 
-      currentUserInfo = UserData.fromSnapshot(DataSnapshot);
-      _dateController.text = userDataProfile.child("date").value.toString();
-      _emailController.text = userDataProfile.child("email").value.toString();
+        currentUserInfo = UserData.fromSnapshot(DataSnapshot);
+        _dateController.text = AppUtils().noNull(userDataProfile.child("date").value.toString());
+        _emailController.text = AppUtils().noNull(userDataProfile.child("email").value.toString());
 
-      _nameController.text = userDataProfile.child("fullname").value.toString();
-
+        _nameController.text = AppUtils().noNull(userDataProfile.child("fullname").value.toString());
+      }
       /*  if (mounted) {
         setState(() {
           if (UserPreferences.getUsername() == null) {
@@ -534,39 +536,42 @@ class _AccountState extends State<Account> with TickerProviderStateMixin {
                                 ),
                                 activeAjustCount
                                     ? SizedBox()
-                                    : Column(
-                                        children: [
-                                          itemOptionProfile("Eliminar cuenta", "images/icons/profileCircle.svg", tap: () {
-                                            Navigator.push(context, MaterialPageRoute(builder: (context) => const DeleteAccountPage()));
-                                          }),
-                                          itemOptionProfile("Fecha", "", subtitle: userDataProfile.child("date").value.toString(), tap: () {
-                                            //    Navigator.push(context, MaterialPageRoute(builder: (context) => const PortafolioPage()));
-                                          }),
-                                          itemOptionProfile("Usuario", "", subtitle: userDataProfile.child("name").value.toString()),
-                                          itemOptionProfile("Estado del usuario", "",
-                                              subtitle: stateOrderUser[int.parse(userDataProfile.child("state").value.toString())]),
-                                          SizedBox(
-                                            height: 30,
-                                          ),
-                                          itemOptionProfile("Cambiar contraseña", "", subtitle: "", tap: () {
-                                            Navigator.push(context, MaterialPageRoute(builder: (context) => ChangePasswordScreen()));
-                                            //   Navigator.push(context, MaterialPageRoute(builder: (context) => ProfileProfesionalPage()));
-                                          }),
-                                          itemOptionProfile("Suspender cuenta", "", subtitle: "", tap: () {
-                                            Navigator.push(context, MaterialPageRoute(builder: (context) => const DeleteAccountPage()));
-                                            //   Navigator.push(context, MaterialPageRoute(builder: (context) => ProfileProfesionalPage()));
-                                          }),
-                                          SizedBox(
-                                            height: 10,
-                                          ),
-                                          /*  itemOptionProfile("Archivar cuenta", "", subtitle: "", tap: () {
+                                    : userDataProfile != null
+                                        ? SizedBox()
+                                        : Column(
+                                            children: [
+                                              itemOptionProfile("Eliminar cuenta", "images/icons/profileCircle.svg", tap: () {
+                                                Navigator.push(context, MaterialPageRoute(builder: (context) => const DeleteAccountPage()));
+                                              }),
+                                              itemOptionProfile("Fecha", "", subtitle: userDataProfile.child("date").value.toString(),
+                                                  tap: () {
+                                                //    Navigator.push(context, MaterialPageRoute(builder: (context) => const PortafolioPage()));
+                                              }),
+                                              itemOptionProfile("Usuario", "", subtitle: userDataProfile.child("name").value.toString()),
+                                              itemOptionProfile("Estado del usuario", "",
+                                                  subtitle: stateOrderUser[int.parse(userDataProfile.child("state").value.toString())]),
+                                              SizedBox(
+                                                height: 30,
+                                              ),
+                                              itemOptionProfile("Cambiar contraseña", "", subtitle: "", tap: () {
+                                                Navigator.push(context, MaterialPageRoute(builder: (context) => ChangePasswordScreen()));
+                                                //   Navigator.push(context, MaterialPageRoute(builder: (context) => ProfileProfesionalPage()));
+                                              }),
+                                              itemOptionProfile("Suspender cuenta", "", subtitle: "", tap: () {
+                                                Navigator.push(context, MaterialPageRoute(builder: (context) => const DeleteAccountPage()));
+                                                //   Navigator.push(context, MaterialPageRoute(builder: (context) => ProfileProfesionalPage()));
+                                              }),
+                                              SizedBox(
+                                                height: 10,
+                                              ),
+                                              /*  itemOptionProfile("Archivar cuenta", "", subtitle: "", tap: () {
                                             Navigator.push(context, MaterialPageRoute(builder: (context) => const DeleteAccountPage()));
                                           }),*/
-                                          SizedBox(
-                                            height: 30,
+                                              SizedBox(
+                                                height: 30,
+                                              ),
+                                            ],
                                           ),
-                                        ],
-                                      ),
                               ],
                             ),
                       SizedBox(

@@ -1,5 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'dart:math';
+
 import 'package:calender_picker/extra/color.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -61,7 +63,14 @@ class _LoginPageState extends State<LoginPage> {
           final dataSnapshot = event.snapshot;
           if (dataSnapshot.value != null) {
             UserPreferences.setUserEmail(emailController.text);
-            Navigator.pushNamedAndRemoveUntil(context, kHomePage.id, (route) => false);
+            UserPreferences.setUsername(emailController.text).then((value) {
+              print("userpref" + UserPreferences.getUsername().toString());
+
+              AppSharedPreference().setUser(context, emailController.text);
+              Navigator.pushNamedAndRemoveUntil(context, kHomePage.id, (route) => false);
+              // UserPreferences.init();
+            });
+            //kkk
           }
         });
       }

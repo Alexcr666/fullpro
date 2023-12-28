@@ -134,7 +134,8 @@ class _OrdersPageState extends State<OrdersPage> with TickerProviderStateMixin {
   }
 
   Future<DatabaseEvent> getFilterState() {
-    Future<DatabaseEvent> data = FirebaseDatabase.instance.ref().child("ordens").child("state").equalTo(positionFilter).once();
+    Future<DatabaseEvent> data =
+        FirebaseDatabase.instance.ref().child("ordens").orderByChild("state").equalTo(positionFilter.toString()).limitToFirst(10).once();
 
     return data;
   }
