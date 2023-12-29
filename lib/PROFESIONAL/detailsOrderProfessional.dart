@@ -804,7 +804,8 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
 
             ),
 
-            Padding(
+
+            /*  Padding(
 
               padding: const EdgeInsets.symmetric(vertical: 10),
 
@@ -869,7 +870,8 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
 
               ),
 
-            ),
+            ),*/
+
 
             Container(
 
@@ -1076,13 +1078,15 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
 
   Widget itemMoney(String title, String value) {
 
-    return Row(
-      children: [
-        Container(
+    return Container(
 
-            margin: EdgeInsets.only(left: 20),
+        margin: EdgeInsets.only(left: 20, right: 20, top: 10),
 
-            child: Text(
+        child: Row(
+
+          children: [
+
+            Text(
 
               title.toString(),
 
@@ -1096,28 +1100,49 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
 
               ),
 
-            )),
-        Expanded(child: SizedBox()),
-        Container(
+            ),
 
-            margin: EdgeInsets.only(left: 20),
+            Expanded(child: SizedBox()),
 
-            child: Text(
-              value.toString(),
+            Container(
 
-              style: TextStyle(
+                margin: EdgeInsets.only(left: 20),
 
-                fontWeight: FontWeight.bold,
+                child: Text(
 
-                fontSize: 16,
+                  value.toString(),
 
-                color: secondryColor,
+                  style: TextStyle(
 
-              ),
+                    fontWeight: FontWeight.bold,
 
-            )),
-      ],
-    );
+                    fontSize: 16,
+
+                    color: secondryColor,
+
+                  ),
+
+                )),
+
+          ],
+
+        ));
+
+  }
+
+
+  getTotalPay() {
+
+    int total = int.parse(widget.dataList.child("price").value.toString());
+
+
+    total += (int.parse(widget.dataList.child("price").value.toString()) / 20).round();
+
+
+    total += (int.parse(widget.dataList.child("price").value.toString()) / 10).round();
+
+
+    return total;
 
   }
 
@@ -1161,13 +1186,48 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
 
         fadeBottom(.6, pricingList()),
         fadeBottom(.6, probWidget()),*/
-        itemMoney("Costo del servicio", "00.000"),
-        itemMoney("Tarifa del servicio", "00.000"),
-        itemMoney("Costo del domicilio", "00.000"),
+
+
+        Container(
+
+            margin: EdgeInsets.only(left: 10),
+
+            child: Text(
+
+              "Resumen",
+
+              style: TextStyle(
+
+                fontWeight: FontWeight.bold,
+
+                fontSize: 16,
+
+                color: secondryColor,
+
+              ),
+
+            )),
+
 
         SizedBox(
 
           height: 10,
+
+        ),
+
+
+        itemMoney("Costo del servicio", widget.dataList.child("price").value.toString()),
+
+
+        itemMoney("Tarifa del servicio", (int.parse(widget.dataList.child("price").value.toString()) / 20).round().toString()),
+
+
+        itemMoney("Costo del domicilio", (int.parse(widget.dataList.child("price").value.toString()) / 10).round().toString()),
+
+
+        SizedBox(
+
+          height: 20,
 
         ),
 
@@ -1232,66 +1292,83 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
         ),
 
 
-        Container(
+        widget.dataList.child("state").value.toString() != "3" /*|| widget.dataList.child("state").value.toString() != "4"*/
 
-            margin: EdgeInsets.only(left: 20),
 
-            child: Text(
+            ? SizedBox()
 
-              "Valoración".toString(),
+            : Column(
 
-              style: TextStyle(
+                crossAxisAlignment: CrossAxisAlignment.start,
 
-                fontWeight: FontWeight.bold,
+                children: [
 
-                fontSize: 16,
+                  Container(
 
-                color: secondryColor,
+                      margin: EdgeInsets.only(left: 20),
+
+                      child: Text(
+
+                        "Valoración".toString(),
+
+                        style: TextStyle(
+
+                          fontWeight: FontWeight.bold,
+
+                          fontSize: 16,
+
+                          color: secondryColor,
+
+                        ),
+
+                      )),
+
+                  SizedBox(
+
+                    height: 10,
+
+                  ),
+
+                  RatingBar.builder(
+
+                    initialRating:
+
+                        widget.dataList.child("rating").value == null ? 0 : double.parse(widget.dataList.child("rating").value.toString()),
+
+                    minRating: 1,
+
+                    direction: Axis.horizontal,
+
+                    allowHalfRating: true,
+
+                    itemCount: 5,
+
+                    itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+
+                    itemBuilder: (context, _) => Icon(
+
+                      Icons.star,
+
+                      size: 23,
+
+                      color: secondryColor,
+
+                    ),
+
+                    onRatingUpdate: (rating) {
+
+                      print(rating);
+
+
+                      widget.dataList.ref.update({'rating': rating});
+
+                    },
+
+                  ),
+
+                ],
 
               ),
-
-            )),
-
-
-        SizedBox(
-
-          height: 10,
-
-        ),
-
-
-        RatingBar.builder(
-
-          initialRating: widget.dataList.child("rating").value == null ? 0 : double.parse(widget.dataList.child("rating").value.toString()),
-
-          minRating: 1,
-
-          direction: Axis.horizontal,
-
-          allowHalfRating: true,
-
-          itemCount: 5,
-
-          itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
-
-          itemBuilder: (context, _) => Icon(
-
-            Icons.star,
-
-            color: Colors.amber,
-
-          ),
-
-          onRatingUpdate: (rating) {
-
-            print(rating);
-
-
-            widget.dataList.ref.update({'rating': rating});
-
-          },
-
-        ),
 
 
         /*RatingBarIndicator(
@@ -1352,7 +1429,7 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
 
                 Text(
 
-                  widget.dataList.child("price").value.toString(),
+                  getTotalPay().toString(),
 
                   style: TextStyle(
 
@@ -1400,10 +1477,8 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
 
                           widget.dataList.ref.update({'state': state}).then((value) {
 
-                            setState(() {});
-
-
                             AppWidget().itemMessage("Actualizado", context);
+                            setState(() {});
 
                           }).catchError((onError) {
 

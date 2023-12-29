@@ -1,5 +1,6 @@
 // ignore_for_file: file_names
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:flutter_locales/flutter_locales.dart';
@@ -119,15 +120,18 @@ class _BottomNavState extends State<BottomNav> {
                     //    Loader.page(context, const Account());
 //kkk
 
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => ProfileProfesionalPage()));
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ProfileProfesionalPage(id: FirebaseAuth.instance.currentUser!.uid.toString())));
                   },
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       // Icon(FeatherIcons.user, color: Colors.black),
                       SvgPicture.asset(
-                        "images/icons/bottom5.svg",
-                        width: 30,
+                        "images/icons/user.svg",
+                        width: 25,
                         color: Colors.white,
                       ),
                       /* const SizedBox(height: 3),

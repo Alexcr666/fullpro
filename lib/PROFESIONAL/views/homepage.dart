@@ -530,26 +530,26 @@ class _HomePageState extends State<HomePage> {
         ),*/
 
         // Body
-        body: SingleChildScrollView(
-          physics: const AlwaysScrollableScrollPhysics(),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              //   TOP CONTAINER
-              //   topContainer(context),
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            //   TOP CONTAINER
+            //   topContainer(context),
 
-              const SizedBox(height: 40),
+            const SizedBox(height: 40),
 
-              //   Counts CONTAINER
-              countsContainer(ordersCountLoaded, totalOrders, earningsCountLoaded, getUserEarning!, context),
+            //   Counts CONTAINER
 
-              const SizedBox(height: 30),
+            // SolicitudList(),
+            Expanded(child: pageOrdensWidget(1)),
+            // countsContainer(ordersCountLoaded, totalOrders, earningsCountLoaded, getUserEarning!, context),
 
-              // Bounus CONTAINER
-              overviewContainer(context, totalOrders, ordersCountLoaded, earningsCountLoaded, getUserEarning),
-            ],
-          ),
+            const SizedBox(height: 30),
+
+            // Bounus CONTAINER
+            //  overviewContainer(context, totalOrders, ordersCountLoaded, earningsCountLoaded, getUserEarning),
+          ],
         ),
       ),
     );
@@ -606,7 +606,93 @@ Widget topContainer(context) {
 
 // Orders && Eanings Counts Container
 Widget countsContainer(bool ordersCountLoaded, int? totalOrders, bool earningsCountLoaded, String getUserEarning, context) {
-  return Padding(
+  return Container(
+    width: double.infinity,
+    margin: EdgeInsets.only(left: 30, right: 30),
+    height: 120,
+    decoration: ordersCountLoaded == true
+        ? BoxDecoration(borderRadius: BorderRadius.circular(12), color: secondryColor
+            //     image: const DecorationImage(
+            // image: AssetImage("images/box_bg.png"),
+            //  fit: BoxFit.cover,
+            //   ),
+            )
+        : BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            color: Colors.white,
+          ),
+    child: MaterialButton(
+      elevation: 0.0,
+      hoverElevation: 0.0,
+      focusElevation: 0.0,
+      highlightElevation: 0.0,
+      color: Colors.transparent,
+      minWidth: 15,
+      height: 15,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
+      onPressed: () {
+        Navigator.push(context, MaterialPageRoute(builder: (context) => SolicitudList()));
+        //  Loader.page(context, const MyOrders());
+      },
+      child: SizedBox(
+        width: MediaQuery.of(context).size.width * .4,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ordersCountLoaded == true
+                ? Text(
+                    '$totalOrders ${Locales.string(context, 'lbl_orders')}',
+                    style: const TextStyle(
+                      fontSize: 18,
+                      color: Colors.white,
+                    ),
+                  )
+                : Column(
+                    children: [
+                      Container(
+                        height: 15,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5),
+                          color: Colors.grey.shade200,
+                        ),
+                      ),
+                      const SizedBox(height: 5),
+                      Container(
+                        height: 15,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5),
+                          color: Colors.grey.shade200,
+                        ),
+                      ),
+                    ],
+                  ),
+            const SizedBox(height: 5),
+            ordersCountLoaded == true
+                ? Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        Locales.string(context, 'lbl_view_all'),
+                        style: const TextStyle(
+                          fontSize: 18,
+                          color: Colors.white,
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      const Icon(Icons.arrow_forward, color: Colors.white),
+                    ],
+                  )
+                : const SizedBox(),
+          ],
+        ),
+      ),
+    ),
+  );
+  /*Padding(
     padding: const EdgeInsets.symmetric(
       horizontal: 24,
     ),
@@ -619,89 +705,7 @@ Widget countsContainer(bool ordersCountLoaded, int? totalOrders, bool earningsCo
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Container(
-            decoration: ordersCountLoaded == true
-                ? BoxDecoration(borderRadius: BorderRadius.circular(12), color: secondryColor
-                    //     image: const DecorationImage(
-                    // image: AssetImage("images/box_bg.png"),
-                    //  fit: BoxFit.cover,
-                    //   ),
-                    )
-                : BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    color: Colors.white,
-                  ),
-            child: MaterialButton(
-              elevation: 0.0,
-              hoverElevation: 0.0,
-              focusElevation: 0.0,
-              highlightElevation: 0.0,
-              color: Colors.transparent,
-              minWidth: 15,
-              height: 15,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => SolicitudList()));
-                //  Loader.page(context, const MyOrders());
-              },
-              child: SizedBox(
-                width: MediaQuery.of(context).size.width * .4,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ordersCountLoaded == true
-                        ? Text(
-                            '$totalOrders ${Locales.string(context, 'lbl_orders')}',
-                            style: const TextStyle(
-                              fontSize: 18,
-                              color: Colors.white,
-                            ),
-                          )
-                        : Column(
-                            children: [
-                              Container(
-                                height: 15,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(5),
-                                  color: Colors.grey.shade200,
-                                ),
-                              ),
-                              const SizedBox(height: 5),
-                              Container(
-                                height: 15,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(5),
-                                  color: Colors.grey.shade200,
-                                ),
-                              ),
-                            ],
-                          ),
-                    const SizedBox(height: 5),
-                    ordersCountLoaded == true
-                        ? Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                Locales.string(context, 'lbl_view_all'),
-                                style: const TextStyle(
-                                  fontSize: 18,
-                                  color: Colors.white,
-                                ),
-                              ),
-                              const SizedBox(width: 10),
-                              const Icon(Icons.arrow_forward, color: Colors.white),
-                            ],
-                          )
-                        : const SizedBox(),
-                  ],
-                ),
-              ),
-            ),
-          ),
+         
           /*    Expanded(child: Container()),
           Container(
             decoration: earningsCountLoaded == true
@@ -796,7 +800,7 @@ Widget countsContainer(bool ordersCountLoaded, int? totalOrders, bool earningsCo
         ],
       ),
     ),
-  );
+  );*/
 }
 
 // Overview Container

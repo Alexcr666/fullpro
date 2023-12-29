@@ -1,5 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'dart:developer';
+
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -37,7 +39,7 @@ class _LoginPageState extends State<LoginPageProfesional> {
 
   set errorMessage(String errorMessage) {}
 
-  void login() async {
+  void login(BuildContext context) async {
     try {
       final User = (await _auth.signInWithEmailAndPassword(
         email: emailController.text,
@@ -54,27 +56,55 @@ class _LoginPageState extends State<LoginPageProfesional> {
       );
 
       if (User != null) {
-        DatabaseReference UserRef = FirebaseDatabase.instance.ref().child('users/${User.uid}');
+        DatabaseReference UserRef = FirebaseDatabase.instance.ref().child('partners/' + FirebaseAuth.instance.currentUser!.uid.toString());
 
         UserRef.once().then((event) {
           final dataSnapshot = event.snapshot;
+
           if (dataSnapshot.value != null) {
-            UserPreferences.setUserEmail(emailController.text);
-            Navigator.pushNamedAndRemoveUntil(context, HomePage.id, (route) => false);
+            if (event.snapshot.child("state").value != null) {
+              if (int.parse(event.snapshot.child("state").value.toString()) == 1) {
+                UserPreferences.setUserEmail(emailController.text);
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const HomePage()),
+                );
+              } else {
+                int state = int.parse(event.snapshot.child("state").value.toString());
+                if (state == 0) {
+                  AppWidget().itemMessage("Usuario Pendiente", context);
+                }
+                if (state == 2) {
+                  AppWidget().itemMessage("Usuario bloqueado", context);
+                }
+                if (state == 3) {
+                  AppWidget().itemMessage("Suspendido", context);
+                }
+                AppWidget().itemMessage("Suspendido", context);
+              }
+            } else {
+              AppWidget().itemMessage("Error al iniciar sessión1", context);
+            }
+          } else {
+            AppWidget().itemMessage("Error al iniciar sessión1", context);
           }
         });
         // UserPreferences.setUserEmail(emailController.text);
         // Navigator.pushNamedAndRemoveUntil(context, HomePage.id, (route) => false);
+      } else {
+        log("error al iniciar sessión");
+        AppWidget().itemMessage("Error al iniciar sessión2", context);
       }
     } on FirebaseAuthException catch (ex) {
       switch (ex.code) {
         case "wrong-password":
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(Locales.string(context, 'error_incorrect_email_or_password'))));
+          AppWidget().itemMessage("Error al iniciar sessión3", context);
           break;
         case "user-not-found":
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(Locales.string(context, 'error_email_does_not_match_record'))));
+          AppWidget().itemMessage("Error al iniciar sessión4", context);
           break;
         default:
+          AppWidget().itemMessage("Error al iniciar sessión5", context);
           print(ex.code);
       }
     }
@@ -260,7 +290,7 @@ class _LoginPageState extends State<LoginPageProfesional> {
                           return;
                         }
 
-                        login();
+                        login(context);
                       },
                       style: ButtonStyle(
                         foregroundColor: MaterialStateProperty.all<Color>(Colors.white),

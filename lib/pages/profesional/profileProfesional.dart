@@ -9,6 +9,7 @@ import 'dart:math';
 
 import 'package:cached_network_image/cached_network_image.dart';
 
+
 import 'package:connectivity_plus/connectivity_plus.dart';
 
 
@@ -22,6 +23,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 
 import 'package:firebase_database/firebase_database.dart';
+
 
 import 'package:flutter/cupertino.dart';
 
@@ -85,7 +87,7 @@ import '../styles/statics.dart' as Static;
 
 class ProfileProfesionalPage extends StatefulWidget {
 
-  ProfileProfesionalPage({Key? key, this.id}) : super(key: key);
+  ProfileProfesionalPage({Key? key, required this.id}) : super(key: key);
 
 
   String? id;
@@ -153,6 +155,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
 
   TextEditingController professionController = TextEditingController();
 
+
   String imageUser = "";
 
 
@@ -163,7 +166,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
 
     return FutureBuilder(
 
-        future: FirebaseDatabase.instance.ref().child('ordens').once(),
+        future: FirebaseDatabase.instance.ref().child('ordens').orderByChild("professional").equalTo(widget.id.toString()).once(),
 
         builder: (BuildContext context, AsyncSnapshot snapshot) {
 
@@ -181,81 +184,88 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
             //return Text(dataListObject!.child("name").value.toString());
 
 
-            return Container(
+            return response.snapshot.children.toList().length == 0
 
-                width: double.infinity,
+                ? AppWidget().noResult()
 
-                height: 110,
+                : Container(
 
-                child: ListView.builder(
+                    width: double.infinity,
 
-                    padding: EdgeInsets.only(left: 10.0),
+                    height: 110,
 
-                    itemCount: response.snapshot.children.toList().length,
+                    child: ListView.builder(
 
-                    scrollDirection: Axis.horizontal,
+                        padding: EdgeInsets.only(left: 10.0),
 
-                    //  physics: NeverScrollableScrollPhysics(),
+                        itemCount: response.snapshot.children.toList().length,
 
-                    shrinkWrap: true,
-
-                    itemBuilder: (BuildContext context, int i) {
-
-                      DataSnapshot dataList = response.snapshot.children.toList()[i];
+                        scrollDirection: Axis.horizontal,
 
 
-                      return /*dataList.child("user").value.toString() == "LapnDojkb8QGfSOioTXLkiPAiNt2"
+                        //  physics: NeverScrollableScrollPhysics(),
+
+
+                        shrinkWrap: true,
+
+                        itemBuilder: (BuildContext context, int i) {
+
+                          DataSnapshot dataList = response.snapshot.children.toList()[i];
+
+
+                          return /*dataList.child("user").value.toString() == "LapnDojkb8QGfSOioTXLkiPAiNt2"
 
                       ? SizedBox()
 
                       :*/
 
-                          Row(
 
-                        children: [
+                              Row(
 
-                          Container(
+                            children: [
 
-                              decoration: AppWidget().boxShandowGreyRectangule(),
+                              Container(
 
-                              padding: EdgeInsets.only(left: 30, right: 20, top: 15, bottom: 15),
+                                  decoration: AppWidget().boxShandowGreyRectangule(),
 
-                              child: Row(
+                                  padding: EdgeInsets.only(left: 30, right: 20, top: 15, bottom: 15),
 
-                                children: [
-
-                                  Column(
-
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                  child: Row(
 
                                     children: [
 
-                                      Text(
+                                      Column(
 
-                                        dataList.child("name").value.toString(),
+                                        crossAxisAlignment: CrossAxisAlignment.start,
 
-                                        style: TextStyle(color: Colors.black, fontSize: 17, fontWeight: FontWeight.bold),
+                                        children: [
 
-                                      ),
+                                          Text(
 
-                                      Text(
+                                            dataList.child("name").value.toString(),
 
-                                        dataList.child("price").value.toString(),
+                                            style: TextStyle(color: Colors.black, fontSize: 17, fontWeight: FontWeight.bold),
 
-                                        style: TextStyle(color: Colors.black, fontSize: 23, fontWeight: FontWeight.bold),
+                                          ),
 
-                                      ),
+                                          Text(
 
-                                      Text(
+                                            dataList.child("price").value.toString(),
 
-                                        dataList.child("description").value.toString(),
+                                            style: TextStyle(color: Colors.black, fontSize: 23, fontWeight: FontWeight.bold),
 
-                                        style: TextStyle(color: Colors.grey, fontSize: 13, fontWeight: FontWeight.bold),
+                                          ),
 
-                                      ),
+                                          Text(
+
+                                            dataList.child("description").value.toString(),
+
+                                            style: TextStyle(color: Colors.grey, fontSize: 13, fontWeight: FontWeight.bold),
+
+                                          ),
 
 
-                                      /*  Text(
+                                          /*  Text(
 
                                     "+8,956",
 
@@ -263,51 +273,51 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
 
                                   ),*/
 
+                                        ],
+
+                                      ),
+
+                                      SizedBox(
+
+                                        width: 25,
+
+                                      ),
+
+                                      Container(
+
+                                        width: 55,
+
+                                        height: 55,
+
+                                        padding: EdgeInsets.all(10),
+
+                                        child: SvgPicture.asset(
+
+                                          "images/icons/calendar.svg",
+
+                                          color: Colors.white,
+
+                                        ),
+
+                                        color: secondryColor,
+
+                                      ),
+
+                                      SizedBox(
+
+                                        width: 20,
+
+                                      ),
+
                                     ],
 
-                                  ),
+                                  ))
 
-                                  SizedBox(
+                            ],
 
-                                    width: 25,
+                          );
 
-                                  ),
-
-                                  Container(
-
-                                    width: 55,
-
-                                    height: 55,
-
-                                    padding: EdgeInsets.all(10),
-
-                                    child: SvgPicture.asset(
-
-                                      "images/icons/calendar.svg",
-
-                                      color: Colors.white,
-
-                                    ),
-
-                                    color: secondryColor,
-
-                                  ),
-
-                                  SizedBox(
-
-                                    width: 20,
-
-                                  ),
-
-                                ],
-
-                              ))
-
-                        ],
-
-                      );
-
-                    }));
+                        }));
 
           }
 
@@ -325,8 +335,10 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
   Widget pageOrdensHistory() {
 
     return FutureBuilder(
+        //   kkk
 
-        future: FirebaseDatabase.instance.ref().child('ordens').once(),
+
+        future: FirebaseDatabase.instance.ref().child('ordens').orderByChild("professional").equalTo(widget.id.toString()).once(),
 
         builder: (BuildContext context, AsyncSnapshot snapshot) {
 
@@ -346,9 +358,12 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
 
             return Container(
 
+
                 // width: double.infinity,
 
+
                 //height: 110,
+
 
                 child: ListView.builder(
 
@@ -356,7 +371,9 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
 
                     itemCount: response.snapshot.children.toList().length,
 
+
                     // scrollDirection: Axis.horizontal,
+
 
                     physics: NeverScrollableScrollPhysics(),
 
@@ -524,7 +541,9 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
 
                         return Container(
 
+
                             // decoration: AppWidget().borderColor(),
+
 
                             width: 170,
 
@@ -538,6 +557,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
 
 
 //(i / 2).toString().contains(".5")
+
 
                       return Row(
 
@@ -777,7 +797,13 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
 
             Container(
 
-                margin: EdgeInsets.only(left: 110, right: 110), child: AppWidget().buttonFormLine(context, "Solicitar", false, tap: () {})),
+                margin: EdgeInsets.only(left: 110, right: 110),
+
+                child: AppWidget().buttonFormLine(
+
+                    context, FirebaseAuth.instance.currentUser!.uid.toString() == widget.id ? "Editar perfil" : "Solicitar", false,
+
+                    tap: () {})),
 
             SizedBox(
 
@@ -1065,6 +1091,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
 
   }
 
+
 /*
   Widget itemHistory() {
     return Container(
@@ -1164,6 +1191,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
 
       ),
 
+
       /*  Row(
         children: [
           Expanded(child: SizedBox()),
@@ -1215,6 +1243,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
       SizedBox(
         height: 20,
       ),*/
+
 
       Row(
 
@@ -1278,51 +1307,63 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
 
       ),
 
-      SizedBox(
+      Container(
 
-        height: 20,
+          margin: EdgeInsets.only(left: 20, right: 20),
 
-      ),
+          child: Column(
 
-      AppWidget().texfieldFormat(controller: nameController, title: "Nombre Completo"),
+            children: [
 
-      SizedBox(
+              SizedBox(
 
-        height: 10,
+                height: 20,
 
-      ),
+              ),
 
-      AppWidget().texfieldFormat(controller: dateController, title: "Fecha"),
+              AppWidget().texfieldFormat(controller: nameController, title: "Nombre Completo"),
 
-      SizedBox(
+              SizedBox(
 
-        height: 10,
+                height: 10,
 
-      ),
+              ),
 
-      AppWidget().texfieldFormat(controller: emailController, title: "Correo electronico"),
+              AppWidget().texfieldFormat(controller: dateController, title: "Fecha"),
 
-      SizedBox(
+              SizedBox(
 
-        height: 10,
+                height: 10,
 
-      ),
+              ),
 
-      AppWidget().texfieldFormat(controller: phoneController, title: "Celular"),
+              AppWidget().texfieldFormat(controller: emailController, title: "Correo electronico"),
 
-      SizedBox(
+              SizedBox(
 
-        height: 10,
+                height: 10,
 
-      ),
+              ),
 
-      AppWidget().texfieldFormat(controller: professionController, title: "Profesión"),
+              AppWidget().texfieldFormat(controller: phoneController, title: "Celular"),
 
-      SizedBox(
+              SizedBox(
 
-        height: 10,
+                height: 10,
 
-      ),
+              ),
+
+              AppWidget().texfieldFormat(controller: professionController, title: "Profesión"),
+
+              SizedBox(
+
+                height: 10,
+
+              ),
+
+            ],
+
+          )),
 
       Container(
 
@@ -1966,6 +2007,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
 
         pageOrdensHistory(),
 
+
         /*  Row(
           children: [
             SizedBox(
@@ -2132,7 +2174,9 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
 
         phoneController.text = dataSnapshot.child("phone").value.toString();
 
+
         imageUser = dataSnapshot.child("photo").value.toString();
+
 
         setState(() {});
 
@@ -2162,7 +2206,9 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
 
     super.initState();
 
+
     getProfile(widget.id.toString());
+
 
     /*if (widget.id != null) {
       getProfile(widget.id.toString());
@@ -2179,7 +2225,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
 
         initialData: 1,
 
-        future: FirebaseDatabase.instance.ref().child('portafolio').child("alex").once(),
+        future: FirebaseDatabase.instance.ref().child('portafolio').child(widget.id.toString()).once(),
 
         builder: (BuildContext context, AsyncSnapshot snapshot) {
 
@@ -2288,7 +2334,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
 
                                       Text(
 
-                                        "Reparación",
+                                        dataList.child("category").value.toString(),
 
                                         style: TextStyle(color: secondryColor, fontSize: 12, fontWeight: FontWeight.bold),
 
@@ -2296,7 +2342,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
 
                                       Text(
 
-                                        "Casas",
+                                        dataList.child("name").value.toString(),
 
                                         style: TextStyle(color: secondryColor, fontSize: 11),
 

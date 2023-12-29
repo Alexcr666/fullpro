@@ -37,10 +37,10 @@ class RegistrationPage extends StatefulWidget {
   State<RegistrationPage> createState() => _RegistrationPageState();
 }
 
-TextEditingController _searchHome = TextEditingController();
 GlobalKey<AutoCompleteTextFieldState<String>> key = GlobalKey();
 
 class _RegistrationPageState extends State<RegistrationPage> {
+  TextEditingController _searchHome = TextEditingController();
   final FirebaseAuth _auth = FirebaseAuth.instance;
   bool agree = false;
   List<File> fileLicense = [];
@@ -108,7 +108,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
               'earnings': 0,
               'profesion': _searchHome.text,
               //'city': '',
-              //  'state': '',
+              'state': '0',
               'country': country.text,
               'state': state.text,
               'city': city.text,
@@ -234,29 +234,30 @@ class _RegistrationPageState extends State<RegistrationPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SimpleAutoCompleteTextField(
-              key: key,
-              decoration: InputDecoration(
-                // errorText: "Ingresar servicio valido",
-                contentPadding: EdgeInsets.only(top: 17, bottom: 17, left: 15),
-                enabledBorder:
-                    OutlineInputBorder(borderSide: BorderSide(color: secondryColor, width: 1.0), borderRadius: BorderRadius.circular(11)),
-                errorBorder:
-                    OutlineInputBorder(borderSide: BorderSide(color: secondryColor, width: 1.0), borderRadius: BorderRadius.circular(10)),
-                border:
-                    OutlineInputBorder(borderSide: BorderSide(color: secondryColor, width: 1.0), borderRadius: BorderRadius.circular(10)),
-                labelText: "Profesión",
-                labelStyle: TextStyle(fontSize: 12.0, color: Colors.black),
-              ),
-              controller: _searchHome,
-              suggestions: suggestions,
-              //   textChanged: (text) => currentText = text,
-              clearOnSubmit: true,
-              textSubmitted: (text) => setState(() {
-                _searchHome.text = text;
+                key: key,
+                decoration: InputDecoration(
+                  // errorText: "Ingresar servicio valido",
+                  contentPadding: EdgeInsets.only(top: 17, bottom: 17, left: 15),
+                  enabledBorder:
+                      OutlineInputBorder(borderSide: BorderSide(color: secondryColor, width: 1.0), borderRadius: BorderRadius.circular(11)),
+                  errorBorder:
+                      OutlineInputBorder(borderSide: BorderSide(color: secondryColor, width: 1.0), borderRadius: BorderRadius.circular(10)),
+                  border:
+                      OutlineInputBorder(borderSide: BorderSide(color: secondryColor, width: 1.0), borderRadius: BorderRadius.circular(10)),
+                  labelText: "Profesión",
+                  labelStyle: TextStyle(fontSize: 12.0, color: Colors.black),
+                ),
+                controller: _searchHome,
+                suggestions: suggestions,
+                //   textChanged: (text) => currentText = text,
+                clearOnSubmit: true,
+                textSubmitted: (text) {
+                  _searchHome.text = text;
+                }
                 // setState(() {});
                 // added.add(text);
-              }),
-            ),
+
+                ),
             //   AppWidget().texfieldFormat(title: "Profesión", controller: professionController),
             /*   Row(
           children: [

@@ -1,3 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
+
+
 import 'package:firebase_database/firebase_database.dart';
 
 
@@ -59,7 +62,7 @@ class _PortafolioPageState extends State<PortafolioPage> {
         // initialData: 1,
 
 
-        future: FirebaseDatabase.instance.ref().child('portafolio').once(),
+        future: FirebaseDatabase.instance.ref().child('portafolio').child(FirebaseAuth.instance.currentUser!.uid.toString()).once(),
 
         builder: (BuildContext context, AsyncSnapshot snapshot) {
 
@@ -74,287 +77,201 @@ class _PortafolioPageState extends State<PortafolioPage> {
 
                   ? Text("Cargando")
 
-                  : ListView.builder(
+                  : response.snapshot.children.length == 0
 
-                      itemCount: response.snapshot.children.length,
+                      ? AppWidget().noResult()
 
-                      shrinkWrap: true,
+                      : ListView.builder(
 
-                      itemBuilder: (BuildContext context, int index) {
+                          itemCount: response.snapshot.children.length,
 
-                        DataSnapshot dataList = response.snapshot.children.toList()[index];
+                          shrinkWrap: true,
 
+                          itemBuilder: (BuildContext context, int index) {
 
-                        return GestureDetector(
+                            DataSnapshot dataList = response.snapshot.children.toList()[index];
 
-                            onTap: () {
-
+                            execute() {
                               showModalBottomSheet(
-
                                   context: context,
-
                                   builder: (context) {
-
                                     return Column(
-
                                       mainAxisSize: MainAxisSize.min,
-
                                       children: <Widget>[
-
                                         ListTile(
-
                                           title: new Text('Eliminar'),
-
                                           onTap: () {
-
                                             dataList.ref.remove().then((value) {
-
                                               AppWidget().itemMessage("Eliminado", context);
 
-
                                               setState(() {});
-
                                             });
 
-
                                             Navigator.pop(context);
-
                                           },
-
                                         ),
-
                                         ListTile(
-
                                           title: new Text('Actualizar'),
-
                                           onTap: () {
-
                                             Navigator.pop(context);
-
 
                                             Navigator.push(
-
                                                 context,
-
                                                 MaterialPageRoute(
-
                                                     builder: (context) => NewPortafolioPage(
-
                                                           idEdit: dataList.key.toString(),
-
                                                         )));
-
                                           },
-
                                         ),
-
                                         ListTile(
-
                                           title: new Text('Cancelar'),
-
                                           onTap: () {
-
                                             Navigator.pop(context);
-
                                           },
-
                                         ),
-
                                       ],
-
                                     );
-
                                   });
 
-                            },
+                            }
 
-                            child: Container(
 
-                                decoration: AppWidget().boxShandowGrey(),
+                            return GestureDetector(
 
-                                margin: EdgeInsets.only(top: 10),
+                                onTap: () {
 
-                                padding: EdgeInsets.only(top: 20, right: 20, bottom: 20),
+                                  execute();
 
-                                child: Row(
+                                },
 
-                                  children: [
+                                child: Container(
 
-                                    SizedBox(
+                                    decoration: AppWidget().boxShandowGrey(),
 
-                                      width: 10,
+                                    margin: EdgeInsets.only(top: 10),
 
-                                    ),
+                                    padding: EdgeInsets.only(top: 20, right: 20, bottom: 20),
 
-                                    ClipRRect(
+                                    child: Row(
 
-                                      borderRadius: BorderRadius.circular(15),
+                                      children: [
 
-                                      child: Image.network(
+                                        SizedBox(
 
-                                        dataList.child("foto").value.toString(),
+                                          width: 10,
 
-                                        errorBuilder: (BuildContext? context, Object? exception, StackTrace? stackTrace) {
+                                        ),
 
-                                          return Container(
+                                        ClipRRect(
+
+                                          borderRadius: BorderRadius.circular(15),
+
+                                          child: Image.network(
+
+                                            dataList.child("foto").value.toString(),
+
+                                            errorBuilder: (BuildContext? context, Object? exception, StackTrace? stackTrace) {
+
+                                              return Container(
+
+                                                width: 70,
+
+                                                height: 70,
+
+                                                color: Colors.grey.withOpacity(0.3),
+
+                                              );
+
+                                            },
 
                                             width: 70,
 
                                             height: 70,
 
-                                            color: Colors.grey.withOpacity(0.3),
+                                            fit: BoxFit.cover,
 
-                                          );
+                                          ),
 
-                                        },
+                                        ),
 
-                                        width: 70,
+                                        SizedBox(
 
-                                        height: 70,
+                                          width: 10,
 
-                                        fit: BoxFit.cover,
+                                        ),
 
-                                      ),
+                                        Container(
 
-                                    ),
+                                            width: 160,
 
-                                    SizedBox(
+                                            child: Column(
 
-                                      width: 10,
-
-                                    ),
-
-                                    Container(
-
-                                        width: 220,
-
-                                        child: Column(
-
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-
-                                          children: [
-
-                                            Row(
-
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              crossAxisAlignment: CrossAxisAlignment.start,
 
                                               children: [
 
-                                                Flexible(
+                                                Row(
 
-                                                    child: Column(
-
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
 
                                                   children: [
 
-                                                    Text(
+                                                    Flexible(
 
-                                                      dataList.child("name").value.toString(),
+                                                        child: Column(
 
-                                                      textAlign: TextAlign.center,
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
 
-                                                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: secondryColor),
+                                                      children: [
 
-                                                    ),
+                                                        Text(
 
-                                                    Text(
+                                                          dataList.child("name").value.toString(),
 
-                                                      dataList.child("type").value.toString(),
+                                                          textAlign: TextAlign.center,
 
-                                                      textAlign: TextAlign.center,
+                                                          style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: secondryColor),
 
-                                                      style: TextStyle(fontSize: 10, color: secondryColor),
+                                                        ),
 
-                                                    ),
+                                                        Text(
+
+                                                          dataList.child("category").value.toString(),
+
+                                                          textAlign: TextAlign.center,
+
+                                                          style: TextStyle(fontSize: 10, color: secondryColor),
+
+                                                        ),
+
+                                                      ],
+
+                                                    )),
+
+
+                                                    // Expanded(child: SizedBox()),
 
                                                   ],
 
-                                                )),
-
-
-                                                // Expanded(child: SizedBox()),
-
-                                              ],
-
-                                            ),
-
-                                            Row(
-
-                                              children: [
-
-                                                Icon(
-
-                                                  Icons.star_border_rounded,
-
-                                                  color: secondryColor,
-
-                                                  size: 20,
-
-                                                ),
-
-                                                Icon(
-
-                                                  Icons.star_border_rounded,
-
-                                                  color: secondryColor,
-
-                                                  size: 20,
-
-                                                ),
-
-                                                Icon(
-
-                                                  Icons.star_border_rounded,
-
-                                                  color: secondryColor,
-
-                                                  size: 20,
-
-                                                ),
-
-                                                Icon(
-
-                                                  Icons.star_border_rounded,
-
-                                                  color: secondryColor,
-
-                                                  size: 20,
-
-                                                ),
-
-                                                Icon(
-
-                                                  Icons.star_border_rounded,
-
-                                                  color: secondryColor,
-
-                                                  size: 20,
-
                                                 ),
 
                                               ],
 
-                                            )
+                                            )),
 
-                                          ],
+                                        MaterialButton(
 
-                                        )),
+                                            height: 30,
+
+                                            shape: CircleBorder(),
+
+                                            color: Colors.grey.withOpacity(0.1),
+
+                                            onPressed: () {
+                                              execute();
 
 
-                                    /*  MaterialButton(
-
-                                    height: 30,
-
-                                    shape: CircleBorder(),
-
-                                    color: Colors.grey.withOpacity(0.5),
-
-                                    onPressed: () {
-
-                                     
-
-                                      /*  dataList.ref.remove().then((value) {
+                                              /*  dataList.ref.remove().then((value) {
 
                                         AppWidget().itemMessage("Eliminado", context);
 
@@ -362,19 +279,19 @@ class _PortafolioPageState extends State<PortafolioPage> {
 
                                       });*/
 
-                                    },
+                                            },
 
-                                    child: Icon(
+                                            child: Icon(
 
-                                      Icons.more_vert_rounded,
+                                              Icons.more_vert_rounded,
 
-                                    ))*/
+                                            ))
 
-                                  ],
+                                      ],
 
-                                )));
+                                    )));
 
-                      });
+                          });
 
             } else {
 

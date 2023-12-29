@@ -1,222 +1,35 @@
 {
   "project_info": {
-    "project_number": "889714115966",
-    "firebase_url": "https://bank-todo-default-rtdb.firebaseio.com",
-    "project_id": "bank-todo",
-    "storage_bucket": "bank-todo.appspot.com"
+    "project_number": "712445507283",
+    "firebase_url": "https://hospital-23671.firebaseio.com",
+    "project_id": "hospital-23671",
+    "storage_bucket": "hospital-23671.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:889714115966:android:eb2a4c1175bdfd6c091f2f",
+        "mobilesdk_app_id": "1:712445507283:android:e77858da7fdb0377634626",
         "android_client_info": {
           "package_name": "com.app.fullpro"
         }
       },
       "oauth_client": [
         {
-          "client_id": "889714115966-7ongt2j310s6ri43g11o9a6ut49bqmih.apps.googleusercontent.com",
+          "client_id": "712445507283-e883uf4pdui3svdvrr8kh0f174m43p47.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDpgQg16ylxfoL2kVaA3fYq2UZDDKjfJg4"
+          "current_key": "AIzaSyAYG2GjpYpY-er2QVq7QHUXT-_9O-15YYA"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "889714115966-7ongt2j310s6ri43g11o9a6ut49bqmih.apps.googleusercontent.com",
+              "client_id": "712445507283-e883uf4pdui3svdvrr8kh0f174m43p47.apps.googleusercontent.com",
               "client_type": 3
-            },
-            {
-              "client_id": "889714115966-3cutqqfl7aaucbq3s136j7es041g7qdq.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.example.bankTodo"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:889714115966:android:a7afd32f25a6eb20091f2f",
-        "android_client_info": {
-          "package_name": "com.deligenceTech.hookup4u"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "889714115966-7ongt2j310s6ri43g11o9a6ut49bqmih.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyDpgQg16ylxfoL2kVaA3fYq2UZDDKjfJg4"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "889714115966-7ongt2j310s6ri43g11o9a6ut49bqmih.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "889714115966-3cutqqfl7aaucbq3s136j7es041g7qdq.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.example.bankTodo"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:889714115966:android:ad23b358510ca5ee091f2f",
-        "android_client_info": {
-          "package_name": "com.elgindy.ecommerce_app"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "889714115966-7ongt2j310s6ri43g11o9a6ut49bqmih.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyDpgQg16ylxfoL2kVaA3fYq2UZDDKjfJg4"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "889714115966-7ongt2j310s6ri43g11o9a6ut49bqmih.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "889714115966-3cutqqfl7aaucbq3s136j7es041g7qdq.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.example.bankTodo"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:889714115966:android:ec0459e6bf95994e091f2f",
-        "android_client_info": {
-          "package_name": "com.example.bank_todo"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "889714115966-7ongt2j310s6ri43g11o9a6ut49bqmih.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyDpgQg16ylxfoL2kVaA3fYq2UZDDKjfJg4"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "889714115966-7ongt2j310s6ri43g11o9a6ut49bqmih.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "889714115966-3cutqqfl7aaucbq3s136j7es041g7qdq.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.example.bankTodo"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:889714115966:android:2a5a1ac2d62696c1091f2f",
-        "android_client_info": {
-          "package_name": "com.example.facebook_login"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "889714115966-7ongt2j310s6ri43g11o9a6ut49bqmih.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyDpgQg16ylxfoL2kVaA3fYq2UZDDKjfJg4"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "889714115966-7ongt2j310s6ri43g11o9a6ut49bqmih.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "889714115966-3cutqqfl7aaucbq3s136j7es041g7qdq.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.example.bankTodo"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:889714115966:android:a5dbbe31f65a837b091f2f",
-        "android_client_info": {
-          "package_name": "com.example.food_app"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "889714115966-7ongt2j310s6ri43g11o9a6ut49bqmih.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyDpgQg16ylxfoL2kVaA3fYq2UZDDKjfJg4"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "889714115966-7ongt2j310s6ri43g11o9a6ut49bqmih.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "889714115966-3cutqqfl7aaucbq3s136j7es041g7qdq.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.example.bankTodo"
-              }
             }
           ]
         }

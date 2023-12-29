@@ -67,12 +67,22 @@ class AppWidget {
 
       children: [
 
-        Text(
+        SizedBox(
+          height: 20,
+        ),
 
-          "No hay resultados",
-
-          style: TextStyle(color: secondryColor, fontSize: 20),
-
+        Row(
+          children: [
+            Expanded(child: SizedBox()),
+            Text(
+              "No hay resultados",
+              style: TextStyle(color: secondryColor, fontSize: 20),
+            ),
+            Expanded(child: SizedBox()),
+          ],
+        ),
+        SizedBox(
+          height: 20,
         ),
 
       ],
