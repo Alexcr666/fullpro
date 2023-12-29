@@ -39,6 +39,13 @@ import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
 
 class AppWidget {
 
+  Widget circleProfile(String url) {
+
+    return ClipRRect(borderRadius: BorderRadius.circular(15), child: Container(width: 100, height: 100, child: Image.network(url)));
+
+  }
+
+
   getFileSize(int bytes, int decimals) {
 
     //  var file = File(filepath);
@@ -68,21 +75,35 @@ class AppWidget {
       children: [
 
         SizedBox(
+
           height: 20,
+
         ),
 
         Row(
+
           children: [
+
             Expanded(child: SizedBox()),
+
             Text(
+
               "No hay resultados",
+
               style: TextStyle(color: secondryColor, fontSize: 20),
+
             ),
+
             Expanded(child: SizedBox()),
+
           ],
+
         ),
+
         SizedBox(
+
           height: 20,
+
         ),
 
       ],

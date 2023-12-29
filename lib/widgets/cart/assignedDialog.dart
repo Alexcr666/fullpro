@@ -50,7 +50,11 @@ class _AssignedDialogState extends State<AssignedDialog> {
                     ),
                   ),
                   onPressed: () {
-                    Loader.PagewithHome(context, const OrdersPage());
+                    Loader.page(
+                        context,
+                        MyOrdersProfile(
+                          tabIndicator: 1,
+                        ));
                   },
                   child: Padding(
                     padding: const EdgeInsets.symmetric(

@@ -1,3 +1,6 @@
+import 'dart:developer';
+
+
 import 'dart:io';
 
 
@@ -5,6 +8,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 
 import 'package:firebase_database/firebase_database.dart';
+
 
 import 'package:firebase_storage/firebase_storage.dart';
 
@@ -70,6 +74,7 @@ import 'package:fullpro/widgets/ProfileWidget.dart';
 
 
 import 'package:fullpro/widgets/widget.dart';
+
 
 import 'package:image_picker/image_picker.dart';
 
@@ -537,6 +542,67 @@ class _AccountProfessionalState extends State<AccountProfessional> with TickerPr
   }
 
 
+  clickPhoto() async {
+
+    ImagePicker imagePicker = ImagePicker();
+
+
+    var image = await imagePicker.pickImage(source: ImageSource.gallery);
+
+
+    FirebaseAuth user = FirebaseAuth.instance;
+
+
+    int timestamp = new DateTime.now().millisecondsSinceEpoch;
+
+
+    Reference storageReference =
+
+        FirebaseStorage.instance.ref().child('partners/' + user.currentUser!.uid.toString() + timestamp.toString() + '.jpg');
+
+
+    UploadTask uploadTask = storageReference.putFile(File(image!.path));
+
+
+    await uploadTask.then((p0) async {
+
+      String fileUrl = await storageReference.getDownloadURL();
+
+
+      log("urlfile: " + fileUrl.toString());
+
+
+      // userProfileData.child("photo")
+
+
+      userProfileData.ref.update({'photo': fileUrl}).then((value) {
+
+        //  Navigator.pop(context);
+
+
+        setState(() {});
+
+
+        AppWidget().itemMessage("Foto actualizada", context);
+
+      }).catchError((onError) {
+
+        AppWidget().itemMessage("Error al actualizar foto", context);
+
+      });
+
+
+      //   _sendImage(messageText: 'Photo', imageUrl: fileUrl);
+
+    }).catchError((onError) {
+
+      print("error: " + onError.toString());
+
+    });
+
+  }
+
+
   @override
 
   Widget build(BuildContext context) {
@@ -602,31 +668,30 @@ class _AccountProfessionalState extends State<AccountProfessional> with TickerPr
                     const SizedBox(height: 30),
 
                     AppWidget().back(context),
+
                     GestureDetector(
+
                         onTap: () async {
-                          ImagePicker imagePicker = ImagePicker();
 
-                          var image = await imagePicker.pickImage(source: ImageSource.gallery);
-                          FirebaseAuth user = FirebaseAuth.instance;
+                          clickPhoto();
 
-                          int timestamp = new DateTime.now().millisecondsSinceEpoch;
-
-                          Reference storageReference = FirebaseStorage.instance
-                              .ref()
-                              .child('partners/' + user.currentUser!.uid.toString() + timestamp.toString() + '.jpg');
-
-                          UploadTask uploadTask = storageReference.putFile(File(image!.path));
-
-                          await uploadTask.then((p0) async {
-                            String fileUrl = await storageReference.getDownloadURL();
-
-                            _sendImage(messageText: 'Photo', imageUrl: fileUrl);
-                          });
                         },
-                        child: ProfileWidget(
-                          imagePath: 'images/user_icon.png',
-                          onClicked: () async {},
-                        )),
+
+                        child: userProfileData.child("photo").value == null
+
+                            ? AppWidget().circleProfile(userProfileData.child("photo").value.toString())
+
+                            : ProfileWidget(
+
+                                imagePath: 'images/user_icon.png',
+
+                                onClicked: () async {
+
+                                  clickPhoto();
+
+                                },
+
+                              )),
 
                     SizedBox(
 

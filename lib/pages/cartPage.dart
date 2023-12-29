@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +8,7 @@ import 'package:flutter_geofire/flutter_geofire.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
+import 'package:fullpro/pages/homepage.dart';
 import 'package:fullpro/widgets/widget.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
@@ -33,8 +35,8 @@ import 'package:fullpro/widgets/calender/timerSlider.dart';
 import 'package:collection/collection.dart';
 
 class CartPage extends StatefulWidget {
-  const CartPage({Key? key}) : super(key: key);
-  static const String id = 'CartPage';
+  CartPage({Key? key, required this.id}) : super(key: key);
+  String id;
 
   @override
   _CartPageState createState() => _CartPageState();
@@ -42,6 +44,7 @@ class CartPage extends StatefulWidget {
 
 class _CartPageState extends State<CartPage> {
   String hourService = "";
+  late DataSnapshot cartData;
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   DateTime dateTime = DateTime.now();
   final Completer<GoogleMapController> _controller = Completer<GoogleMapController>();
@@ -198,6 +201,16 @@ class _CartPageState extends State<CartPage> {
 
     //  startGeofireListener();
 
+    Query historyRef = FirebaseDatabase.instance.ref().child('ordens').child(widget!.id);
+
+    historyRef.once().then((e) async {
+      final snapshot = e.snapshot;
+      if (snapshot.value != null) {
+        dataListObjectGeneral = snapshot;
+        setState(() {});
+      }
+    });
+
     // Get Time & Date
     DateTime now = DateTime.now();
     String formattedDate = '${DateFormat.MMMd().format(now)}, ${DateFormat.y().format(now)}';
@@ -249,7 +262,7 @@ class _CartPageState extends State<CartPage> {
     zoom: 14.4746,
   );
 
-  Widget pageOrdens() {
+  /* Widget pageOrdens() {
     return FutureBuilder(
         future: FirebaseDatabase.instance.ref().child('ordens').once(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -261,7 +274,7 @@ class _CartPageState extends State<CartPage> {
             for (var i = 0; i < response.snapshot.children.toList().length; i++) {
               DataSnapshot dataList = response.snapshot.children.toList()[i];
 
-              if (dataList.child("user").value.toString() == "LapnDojkb8QGfSOioTXLkiPAiNt2") {
+              if (dataList.child("user").value.toString() == dataListObjectGeneral!.child("professional").value.toString()) {
                 DataSnapshot dataListObject = dataList;
                 dataListObjectGeneral = dataListObject;
 
@@ -288,6 +301,47 @@ class _CartPageState extends State<CartPage> {
             return SizedBox();
           }
         });
+  }*/
+
+  Widget itemMoney(String title, String value) {
+    return Container(
+        margin: EdgeInsets.only(left: 20, right: 20, top: 10),
+        child: Row(
+          children: [
+            Text(
+              title.toString(),
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+                color: secondryColor,
+              ),
+            ),
+            Expanded(child: SizedBox()),
+            Container(
+                margin: EdgeInsets.only(left: 20),
+                child: Text(
+                  value.toString(),
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                    color: secondryColor,
+                  ),
+                )),
+          ],
+        ));
+  }
+
+  getTotalPay() {
+    int total = 0;
+    if (dataListObjectGeneral != null) {
+      total = int.parse(dataListObjectGeneral!.child("price").value.toString());
+
+      total += (int.parse(dataListObjectGeneral!.child("price").value.toString()) / 20).round();
+
+      total += (int.parse(dataListObjectGeneral!.child("price").value.toString()) / 10).round();
+    }
+
+    return total;
   }
 
   @override
@@ -380,7 +434,7 @@ class _CartPageState extends State<CartPage> {
             SizedBox(
               height: 20,
             ),
-            Padding(
+            /*   Padding(
               padding: const EdgeInsets.symmetric(vertical: 10),
               child: ListTile(
                 title: Text(
@@ -413,7 +467,7 @@ class _CartPageState extends State<CartPage> {
                   value: showMe,
                 ),
               ),
-            ),
+            ),*/
             Container(
               margin: EdgeInsets.only(left: 20, right: 20),
               width: double.infinity,
@@ -443,6 +497,11 @@ class _CartPageState extends State<CartPage> {
                                             //    final f = new DateFormat('yyyy-MM-dd');
 
                                             hourService = DateFormat('hh:mm:ss').format(val).toString();
+                                            dataListObjectGeneral!.ref.update({'date': hourService.toString()}).then((value) {
+                                              setState(() {});
+                                              AppWidget().itemMessage("Actualizado", context);
+                                            });
+
                                             //  dateSelected = val.toString();
                                           });
                                         }),
@@ -468,9 +527,10 @@ class _CartPageState extends State<CartPage> {
                         ),
                         Expanded(child: SizedBox()),
                         Text(
-                          /* hourService.toString()*/ dataListObjectGeneral == null
+                          /* hourService.toString()*/ /*dataListObjectGeneral == null
                               ? ""
-                              : dataListObjectGeneral!.child("date").value.toString(),
+                              :*/
+                          dataListObjectGeneral!.child("date").value.toString(),
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 16,
@@ -491,9 +551,26 @@ class _CartPageState extends State<CartPage> {
             SizedBox(
               height: 15,
             ),
-            pageOrdens(),
+            ListTile(
+              leading: CircleAvatar(
+                backgroundColor: Colors.grey.withOpacity(0.3),
+                radius: 30,
+              ),
+              title: Text(dataListObjectGeneral!.child("professionalName").value == null
+                  ? "No disponible"
+                  : dataListObjectGeneral!.child("professionalName").value.toString()),
+            ),
             SizedBox(
               height: 15,
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            itemMoney("Costo del servicio", dataListObjectGeneral!.child("price").value.toString()),
+            itemMoney("Tarifa del servicio", (int.parse(dataListObjectGeneral!.child("price").value.toString()) / 20).round().toString()),
+            itemMoney("Costo del domicilio", (int.parse(dataListObjectGeneral!.child("price").value.toString()) / 10).round().toString()),
+            SizedBox(
+              height: 20,
             ),
             cartItemsList.isEmpty
                 ? Center(
@@ -575,7 +652,7 @@ class _CartPageState extends State<CartPage> {
                 Text(
                   /* currencyPos == 'left' ? '$currencySymbol' : '$ktotalprice'*/ dataListObjectGeneral == null
                       ? "0"
-                      : dataListObjectGeneral!.child("price").value.toString(),
+                      : getTotalPay().toString(),
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 22,
@@ -590,31 +667,13 @@ class _CartPageState extends State<CartPage> {
                 Container(
                     width: 200,
                     child: AppWidget().buttonFormLine(context, "Solicitar", false, urlIcon: "images/icons/userDone.svg", tap: () {
-                      if (_probController.text.isEmpty || _probController.text == '') {
-                        problmValidate = Locales.string(context, "error_can_not_be_empty");
-                      } else {
-                        void _initMarkers() {
-                          final UserRef = FirebaseDatabase.instance.ref().child("ordens").once().then((value) {
-                            DatabaseEvent response = value;
+                      dataListObjectGeneral!.ref.update({'state': 1}).then((value) {
+                        // setState(() {});
 
-                            for (var i = 0; i < response.snapshot.children.length; i++) {
-                              DataSnapshot dataList = response.snapshot.children.toList()[i];
-                              dataList.ref.update({'state': 1}).then((value) {
-                                Navigator.pop(context);
-                                AppWidget().itemMessage("Pedido carrito", context);
-                              });
-                            }
-                            setState(() {});
-                          });
-                        }
-                        // dataListObjectGeneral.ref().update({'state': 1});
+                        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_) => kHomePage()), (route) => false);
 
-                        _initMarkers();
-
-                        //   CartController.createRequest(context, _probController.text);
-                        // availablePartners = FireController.nearbyPartnerList;
-                        // findPartner();
-                      }
+                        AppWidget().itemMessage("Orden creada", context);
+                      });
                     })),
                 SizedBox(
                   height: 5,
@@ -622,7 +681,10 @@ class _CartPageState extends State<CartPage> {
                 Container(
                     width: 200,
                     child: AppWidget().buttonFormLine(context, "Cancelar", true, urlIcon: "images/icons/closeCircle.svg", tap: () {
-                      Navigator.pop(context);
+                      dataListObjectGeneral!.ref.remove().then((value) {
+                        Navigator.pop(context);
+                        AppWidget().itemMessage("Cancelado", context);
+                      });
                     })),
               ],
             )
@@ -1014,14 +1076,17 @@ class _CartPageState extends State<CartPage> {
               children: [
                 Expanded(
                   child: Text(
-                    '${UserPreferences.getAddressStatus() != 'current' || UserPreferences.getAddressStatus() != 'manual' ? UserPreferences.getAddressStatus() == 'current' ? UserPreferences.getUserLocation() : UserPreferences.getManualLocation() : Locales.string(context, 'lbl_add_manual_address')}',
+                    /*'${UserPreferences.getAddressStatus() != 'current' || UserPreferences.getAddressStatus() != 'manual' ? UserPreferences.getAddressStatus() == 'current' ? UserPreferences.getUserLocation() : UserPreferences.getManualLocation() : Locales.string(context, 'lbl_add_manual_address')}'*/
+                    dataListObjectGeneral!.child("address").value == null
+                        ? "Ingresa una ubicación"
+                        : dataListObjectGeneral!.child("address").value.toString(),
                     style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 16),
                   ),
                 ),
                 const SizedBox(width: 5),
                 GestureDetector(
                     onTap: () {
-                      Loader.page(context, const Addresses());
+                      Loader.page(context, Addresses(dataListObjectGeneral: dataListObjectGeneral));
                     },
                     child: Text(
                       'Cambiar',

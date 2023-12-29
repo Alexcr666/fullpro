@@ -67,7 +67,7 @@ class _BottomNavState extends State<BottomNav> {
                   onPressed: () {
                     Loader.page(
                         context,
-                        MyOrdersProfessional(
+                        MyOrders(
                           tabIndicator: 3,
                         ));
                   },

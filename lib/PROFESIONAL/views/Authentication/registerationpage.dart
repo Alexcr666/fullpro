@@ -7,6 +7,7 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -74,6 +75,35 @@ class _RegistrationPageState extends State<RegistrationPage> {
   var cityController = TextEditingController();
 
   var stateController = TextEditingController();
+  late DatabaseReference nameRef;
+
+  late DatabaseReference userRef;
+
+  Future uploadFile(String title, int position) async {
+    int timestamp = new DateTime.now().millisecondsSinceEpoch;
+    List<String> urlFile = [fileLicense[0].path, fileBackgroundCheck[0].path, fileRegistroLegal[0].path];
+
+    Reference storageReference = FirebaseStorage.instance.ref().child("filesdoc/" + urlFile[position]);
+
+    UploadTask uploadTask = storageReference.putFile(File(fileLicense[0].path));
+    UploadTask uploadTask2 = storageReference.putFile(File(fileBackgroundCheck[0].path));
+    UploadTask uploadTask3 = storageReference.putFile(File(fileRegistroLegal[0].path));
+
+    TaskSnapshot p0;
+    if (position == 0) {
+      p0 = await uploadTask;
+    }
+    if (position == 1) {
+      p0 = await uploadTask2;
+    }
+    if (position == 2) {
+      p0 = await uploadTask3;
+    }
+
+    String fileUrl = await storageReference.getDownloadURL();
+
+    await userRef.ref.update({title: fileUrl});
+  }
 
   void registerUser(BuildContext context) async {
     try {
@@ -125,8 +155,8 @@ class _RegistrationPageState extends State<RegistrationPage> {
         UserPreferences.setUserPhone(phoneController.text);
         UserPreferences.setUsername(fullNameController.text);
 
-        DatabaseReference nameRef = FirebaseDatabase.instance.ref().child('partners/${User.uid}').child('fullname');
-
+        nameRef = FirebaseDatabase.instance.ref().child('partners/${User.uid}').child('fullname');
+        userRef = FirebaseDatabase.instance.ref().child('partners/${User.uid}');
         nameRef.once().then((e) async {
           final snapshot = e.snapshot;
           if (snapshot.exists) {
@@ -142,10 +172,17 @@ class _RegistrationPageState extends State<RegistrationPage> {
               ),
             );*/
 
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => const HomePage()),
-            );
+            uploadFile("license", 0).then((value) {
+              uploadFile("background", 1).then((value) {
+                uploadFile("legal", 2).then((value) {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => const HomePage()),
+                  );
+                });
+              });
+            });
+
             /*   Navigator.pushReplacement(
               context,
               MaterialPageRoute(

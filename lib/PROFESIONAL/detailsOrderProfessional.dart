@@ -610,6 +610,23 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
 
                       return ListTile(
 
+                        onTap: () {
+
+                          widget.dataList.ref.update({'address': widget.dataList.child("nameProfessional").value.toString()}).then((value) {
+
+                            Navigator.pop(context);
+
+
+                            AppWidget().itemMessage("Dirección actualizada", context);
+
+                          }).catchError((onError) {
+
+                            AppWidget().itemMessage("Error actulizar dirección", context);
+
+                          });
+
+                        },
+
                         leading: CircleAvatar(
 
                           backgroundColor: Colors.grey.withOpacity(0.3),
@@ -682,6 +699,13 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
 
           children: [
 
+            SizedBox(
+
+              height: 20,
+
+            ),
+
+            AppWidget().back(context),
             SizedBox(
 
               height: 20,
@@ -1038,7 +1062,19 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
 
             ),
 
-            pageOrdens(),
+            ListTile(
+
+              leading: CircleAvatar(
+
+                backgroundColor: Colors.grey.withOpacity(0.3),
+
+                radius: 30,
+
+              ),
+
+              title: Text(widget.dataList.child("professionalName").value.toString()),
+
+            ),
 
             SizedBox(
 
@@ -1413,7 +1449,7 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
 
                 Text(
 
-                  "Total a pagar".toString(),
+                  "Total servicio",
 
                   style: TextStyle(
 
@@ -1477,8 +1513,10 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
 
                           widget.dataList.ref.update({'state': state}).then((value) {
 
-                            AppWidget().itemMessage("Actualizado", context);
                             setState(() {});
+
+
+                            AppWidget().itemMessage("Actualizado", context);
 
                           }).catchError((onError) {
 
@@ -2362,11 +2400,15 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
 
                     /*dataListObjectGeneral == null ? "" : dataListObjectGeneral!.child("address").value.toString()*/ widget.dataList
 
-                        .child("address")
+                                .child("address")
 
-                        .value
+                                .value ==
 
-                        .toString(),
+                            null
+
+                        ? "No disponible"
+
+                        : widget.dataList.child("address").value.toString(),
 
                     style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 16),
 

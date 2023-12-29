@@ -631,7 +631,12 @@ class CartController {
                             ),
                           ),
                           onPressed: () {
-                            Loader.PagewithHome(context, const OrdersPage());
+                            Loader.page(
+                                context,
+                                MyOrdersProfile(
+                                  tabIndicator: 1,
+                                ));
+                            //Loader.PagewithHome(context, const OrdersPage());
                           },
                           child: Padding(
                             padding: const EdgeInsets.symmetric(

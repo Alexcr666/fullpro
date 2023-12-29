@@ -70,7 +70,7 @@ timerSnackbar({
           splashColor: Colors.white,
           onTap: () {
             ScaffoldMessenger.of(context).hideCurrentSnackBar();
-            Loader.page(context, CartPage());
+            //  Loader.page(context, CartPage());
             isExecute = !isExecute;
             return;
           },

@@ -21,8 +21,9 @@ import 'dart:async';
 import 'package:string_similarity/string_similarity.dart';
 
 class Addresses extends StatefulWidget {
-  const Addresses({Key? key}) : super(key: key);
+  Addresses({Key? key, required this.dataListObjectGeneral}) : super(key: key);
   static const String id = 'Addresses';
+  DataSnapshot? dataListObjectGeneral;
 
   @override
   _AddressesState createState() => _AddressesState();
@@ -106,9 +107,11 @@ class _AddressesState extends State<Addresses> {
   openDialog(bool edit, {DataSnapshot? dataList}) {
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
-    country.text = dataList!.child("country").value.toString();
-    state.text = dataList!.child("state").value.toString();
-    city.text = dataList!.child("city").value.toString();
+    if (dataList != null) {
+      country.text = dataList!.child("country").value.toString();
+      state.text = dataList!.child("state").value.toString();
+      city.text = dataList!.child("city").value.toString();
+    }
 
     showDialog(
         context: context,
@@ -133,7 +136,7 @@ class _AddressesState extends State<Addresses> {
                     Padding(
                       padding: const EdgeInsets.only(top: 20),
                       child: Text(
-                        "Agregar dirección" + edit.toString(),
+                        "Agregar dirección",
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                         ),
@@ -179,6 +182,7 @@ class _AddressesState extends State<Addresses> {
 
                               newUserRef.set(userMap).then((value) {
                                 Navigator.pop(context);
+                                setState(() {});
 
                                 AppWidget().itemMessage("Guardado", context);
                               }).catchError((onError) {
@@ -187,7 +191,18 @@ class _AddressesState extends State<Addresses> {
                             }
 
                             if (_formKey.currentState!.validate()) {
-                              savedData();
+                              if (edit == true) {
+                                String placeName = '${street.text}, ${city.text}, ${state.text}, ${country.text}';
+
+                                dataList!.ref.update({'name': placeName}).then((value) {
+                                  Navigator.pop(context);
+                                  setState(() {});
+
+                                  AppWidget().itemMessage("Guardado", context);
+                                });
+                              } else {
+                                savedData();
+                              }
                             }
                           }),
 
@@ -254,7 +269,12 @@ class _AddressesState extends State<Addresses> {
 
   Widget pageAddress() {
     return FutureBuilder(
-        future: FirebaseDatabase.instance.ref().child('address').once(),
+        future: FirebaseDatabase.instance
+            .ref()
+            .child('address')
+            //  .orderByChild("user")
+            //.equalTo(FirebaseAuth.instance.currentUser!.uid.toString())
+            .once(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (snapshot.hasData) {
             DatabaseEvent response = snapshot.data;
@@ -274,65 +294,78 @@ class _AddressesState extends State<Addresses> {
                   DataSnapshot dataList = response.snapshot.children.toList()[i];
 
                   Widget itemAddress() {
-                    return Row(
-                      children: [
-                        SvgPicture.asset(
-                          "images/icons/iconLocation.svg",
-                          width: 50,
-                          height: 50,
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Flexible(
-                            child: Text(
-                          dataList.child("name").value.toString(),
-                          style: TextStyle(color: secondryColor, fontSize: 16, fontWeight: FontWeight.bold),
-                        )),
-                        GestureDetector(
-                          onTap: () {
-                            showModalBottomSheet(
-                                context: context,
-                                builder: (context) {
-                                  return Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: <Widget>[
-                                      ListTile(
-                                        title: new Text('Eliminar'),
-                                        onTap: () {
-                                          dataList.ref.remove().then((value) {
-                                            AppWidget().itemMessage("Eliminado", context);
+                    return Container(
+                        margin: EdgeInsets.only(top: 20),
+                        child: Row(
+                          children: [
+                            SvgPicture.asset(
+                              "images/icons/iconLocation.svg",
+                              width: 50,
+                              height: 50,
+                            ),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            GestureDetector(
+                                onTap: () {
+                                  widget.dataListObjectGeneral!.ref
+                                      .update({'address': dataList.child("name").value.toString()}).then((value) {
+                                    Navigator.pop(context);
 
-                                            setState(() {});
-                                          });
+                                    AppWidget().itemMessage("Dirección actualizada", context);
+                                  }).catchError((onError) {
+                                    AppWidget().itemMessage("Error actulizar dirección", context);
+                                  });
+                                },
+                                child: Flexible(
+                                    child: Text(
+                                  dataList.child("name").value.toString(),
+                                  style: TextStyle(color: secondryColor, fontSize: 16, fontWeight: FontWeight.bold),
+                                ))),
+                            GestureDetector(
+                              onTap: () {
+                                showModalBottomSheet(
+                                    context: context,
+                                    builder: (context) {
+                                      return Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: <Widget>[
+                                          ListTile(
+                                            title: new Text('Eliminar'),
+                                            onTap: () {
+                                              dataList.ref.remove().then((value) {
+                                                AppWidget().itemMessage("Eliminado", context);
 
-                                          Navigator.pop(context);
-                                        },
-                                      ),
-                                      ListTile(
-                                        title: new Text('Actualizar'),
-                                        onTap: () {
-                                          Navigator.pop(context);
-                                          openDialog(true, dataList: dataList);
-                                        },
-                                      ),
-                                      ListTile(
-                                        title: new Text('Cancelar'),
-                                        onTap: () {
-                                          Navigator.pop(context);
-                                        },
-                                      ),
-                                    ],
-                                  );
-                                });
-                          },
-                          child: Icon(
-                            Icons.more_vert_sharp,
-                            color: secondryColor,
-                          ),
-                        )
-                      ],
-                    );
+                                                setState(() {});
+                                              });
+
+                                              Navigator.pop(context);
+                                            },
+                                          ),
+                                          ListTile(
+                                            title: new Text('Actualizar'),
+                                            onTap: () {
+                                              Navigator.pop(context);
+                                              openDialog(true, dataList: dataList);
+                                            },
+                                          ),
+                                          ListTile(
+                                            title: new Text('Cancelar'),
+                                            onTap: () {
+                                              Navigator.pop(context);
+                                            },
+                                          ),
+                                        ],
+                                      );
+                                    });
+                              },
+                              child: Icon(
+                                Icons.more_vert_sharp,
+                                color: secondryColor,
+                              ),
+                            )
+                          ],
+                        ));
                   }
 
                   return searchTextController.text.isEmpty

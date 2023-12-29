@@ -38,7 +38,7 @@ class _CartBottomButtonState extends State<CartBottomButton> {
               padding: const EdgeInsets.all(0),
               onPressed: () {
                 //
-                Loader.PagewithHome(context, const CartPage());
+                //  Loader.PagewithHome(context, const CartPage());
               },
               child: SizedBox(
                 height: cartbottomsheetHeight - 10,

@@ -332,7 +332,13 @@ class _ProfileOptionsProfessionalPageState extends State<ProfileOptionsProfessio
 
                       itemProfile("images/icons/profile1.svg", "Datos de perfil", tap: () {
 
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => const Account()));
+                        Navigator.push(
+
+                            context,
+
+                            MaterialPageRoute(
+
+                                builder: (context) => ProfileProfesionalPage(id: FirebaseAuth.instance.currentUser!.uid.toString())));
 
                       }),
 
@@ -352,7 +358,7 @@ class _ProfileOptionsProfessionalPageState extends State<ProfileOptionsProfessio
 
                             MaterialPageRoute(
 
-                                builder: (context) => MyOrdersProfessional(
+                                builder: (context) => MyOrders(
 
                                       tabIndicator: 3,
 

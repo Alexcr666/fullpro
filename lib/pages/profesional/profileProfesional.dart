@@ -25,6 +25,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 
 
+import 'package:firebase_storage/firebase_storage.dart';
+
+
 import 'package:flutter/cupertino.dart';
 
 
@@ -79,6 +82,9 @@ import 'package:fullpro/utils/countryStateCity/AddressPickerRow.dart';
 import 'package:fullpro/widgets/widget.dart';
 
 
+import 'package:image_picker/image_picker.dart';
+
+
 import '../../styles/styles.dart';
 
 
@@ -104,6 +110,9 @@ String nameProfesional = "";
 
 
 int stateIndicator = 0;
+
+
+late DataSnapshot _userDataProfile;
 
 
 class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
@@ -335,6 +344,8 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
   Widget pageOrdensHistory() {
 
     return FutureBuilder(
+
+
         //   kkk
 
 
@@ -1181,6 +1192,38 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
   }
 
 
+  uploadFile(String doc) async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles();
+
+    if (result != null) {
+      // fileBackgroundCheck.add(File(result.files.single.path!));
+
+      int timestamp = new DateTime.now().millisecondsSinceEpoch;
+
+      Reference storageReference = FirebaseStorage.instance.ref().child("filesdoc/" + timestamp.toString() + ".jpg");
+
+      UploadTask uploadTask = storageReference.putFile(File(result.files.single.path!));
+
+      await uploadTask.then((p0) async {
+        String fileUrl = await storageReference.getDownloadURL();
+
+        _userDataProfile.ref.update({doc: fileUrl}).then((value) {
+          setState(() {});
+
+          AppWidget().itemMessage("Archivo subido", context);
+        });
+      });
+
+      backgroundCheck = false;
+    } else {
+      // User canceled the picker
+    }
+
+    setState(() {});
+
+  }
+
+
   Widget stateIndicator4() {
 
     return Column(children: [
@@ -1307,6 +1350,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
 
       ),
 
+
       Container(
 
           margin: EdgeInsets.only(left: 20, right: 20),
@@ -1365,6 +1409,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
 
           )),
 
+
       Container(
 
           margin: EdgeInsets.only(left: 20, right: 20),
@@ -1381,13 +1426,26 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
 
           )),
 
-      Text("Licencias"),
+
+      SizedBox(
+
+        height: 10,
+
+      ),
+
+
+      Container(margin: EdgeInsets.only(left: 20), alignment: Alignment.centerLeft, child: Text("Licencias")),
+
 
       SizedBox(
 
         height: 5,
 
       ),
+
+
+      // _userDataProfile.child("licence") == null
+
 
       fileLicense.length == 0
 
@@ -1525,6 +1583,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
 
       ),
 
+
       Container(
 
           margin: EdgeInsets.only(left: 20, right: 20),
@@ -1536,8 +1595,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
               GestureDetector(
 
                   onTap: () async {
-
-                    FilePickerResult? result = await FilePicker.platform.pickFiles();
+                    /*   FilePickerResult? result = await FilePicker.platform.pickFiles();
 
 
                     if (result != null) {
@@ -1554,7 +1612,8 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
 
                       // User canceled the picker
 
-                    }
+                    }*/
+                    uploadFile("license");
 
                   },
 
@@ -1592,9 +1651,11 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
 
               ),
 
-              Text("Background check"),
+              Text(_userDataProfile.child("background").value.toString()),
 
-              fileBackgroundCheck.length == 0
+              Container(margin: EdgeInsets.only(left: 3), alignment: Alignment.centerLeft, child: Text("Background check")),
+
+              _userDataProfile.child("background").value != null
 
                   ? SizedBox()
 
@@ -1606,7 +1667,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
 
                           padding: EdgeInsets.only(left: 10.0),
 
-                          itemCount: fileBackgroundCheck.length,
+                          itemCount: 1,
 
                           scrollDirection: Axis.horizontal,
 
@@ -1650,10 +1711,11 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
 
                                       onTap: () {
 
-                                        fileBackgroundCheck.removeAt(0);
+                                        _userDataProfile.ref.child("license").remove().then((value) {
 
+                                          setState(() {});
 
-                                        setState(() {});
+                                        });
 
                                       },
 
@@ -1724,25 +1786,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
               GestureDetector(
 
                   onTap: () async {
-
-                    FilePickerResult? result = await FilePicker.platform.pickFiles();
-
-
-                    if (result != null) {
-
-                      fileBackgroundCheck.add(File(result.files.single.path!));
-
-
-                      backgroundCheck = false;
-
-                    } else {
-
-                      // User canceled the picker
-
-                    }
-
-
-                    setState(() {});
+                    uploadFile("background");
 
                   },
 
@@ -1780,7 +1824,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
 
               ),
 
-              Text("Registro legal w9"),
+              Container(margin: EdgeInsets.only(left: 3), alignment: Alignment.centerLeft, child: Text("Registro legal w9")),
 
               fileRegistroLegal.length == 0
 
@@ -1912,8 +1956,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
               GestureDetector(
 
                   onTap: () async {
-
-                    FilePickerResult? result = await FilePicker.platform.pickFiles();
+                    /* FilePickerResult? result = await FilePicker.platform.pickFiles();
 
 
                     if (result != null) {
@@ -1930,7 +1973,8 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                     }
 
 
-                    setState(() {});
+                    setState(() {});*/
+                    uploadFile("mvp");
 
                   },
 
@@ -2053,6 +2097,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
     String? userid = currentFirebaseUser?.uid;
 
 
+/*
     if (UserPreferences.getUsername() != null && UserPreferences.getUserPhone() != null) {
 
       nameController.text = UserPreferences.getUsername() ?? '';
@@ -2060,90 +2105,42 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
 
       phoneController.text = UserPreferences.getUserPhone() ?? '';
 
-    } else {
-
-      final userRef = FirebaseDatabase.instance.ref().child("partners").child(userid!);
+    } else {*/
 
 
-      userRef.once().then((e) async {
-
-        final _datasnapshot = e.snapshot;
+    final userRef = FirebaseDatabase.instance.ref().child("partners").child(userid!);
 
 
-        if (_datasnapshot.value != null) {
+    userRef.once().then((e) async {
 
-          currentPartnerInfo = Partner.fromSnapshot(_datasnapshot);
-
-
-          if (mounted) {
-
-            var connectivityResults = await Connectivity().checkConnectivity();
+      final _datasnapshot = e.snapshot;
 
 
-            if (connectivityResults != ConnectivityResult.mobile && connectivityResults != ConnectivityResult.wifi) {
+      if (_datasnapshot.value != null) {
 
-              //
-
-
-              ScaffoldMessenger.of(context).showSnackBar(
-
-                SnackBar(
-
-                  content: Text(
-
-                    Locales.string(context, 'error_no_internet'),
-
-                  ),
-
-                ),
-
-              );
-
-            } else {
-
-              setState(() {
-
-                if (UserPreferences.getUsername() == null) {
-
-                  nameProfesional = currentPartnerInfo!.fullName.toString();
+        _userDataProfile = _datasnapshot;
 
 
-                  setState(() {});
+        professionController.text = _datasnapshot.child("profesion").value.toString();
 
 
-                  nameController.text = currentPartnerInfo!.fullName.toString();
+        country.text = _datasnapshot.child("country").value.toString();
 
 
-                  emailController.text = currentPartnerInfo!.email.toString();
-
-                } else {
-
-                  nameController.text = UserPreferences.getUsername() ?? '';
-
-                }
+        state.text = _datasnapshot.child("state").value.toString();
 
 
-                if (UserPreferences.getUserPhone() == null) {
+        country.text = _datasnapshot.child("country").value.toString();
 
-                  phoneController.text = currentPartnerInfo!.phone.toString();
 
-                } else {
+        city.text = _datasnapshot.child("city").value.toString();
 
-                  phoneController.text = UserPreferences.getUserPhone() ?? '';
+      }
 
-                }
+    });
 
-              });
 
-            }
-
-          }
-
-        }
-
-      });
-
-    }
+    // }
 
   }
 
@@ -2156,6 +2153,9 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
     UserRef.once().then((e) async {
 
       final dataSnapshot = e.snapshot;
+
+
+      _userDataProfile = e.snapshot;
 
 
       if (dataSnapshot.child("fullname").value != null) {
@@ -2176,6 +2176,21 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
 
 
         imageUser = dataSnapshot.child("photo").value.toString();
+
+
+        professionController.text = dataSnapshot.child("profesion").value.toString();
+
+
+        country.text = dataSnapshot.child("country").value.toString();
+
+
+        state.text = dataSnapshot.child("state").value.toString();
+
+
+        country.text = dataSnapshot.child("country").value.toString();
+
+
+        city.text = dataSnapshot.child("city").value.toString();
 
 
         setState(() {});

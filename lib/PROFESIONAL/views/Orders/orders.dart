@@ -24,8 +24,8 @@ import 'package:fullpro/styles/statics.dart' as appcolors;
 import 'package:fullpro/styles/statics.dart';
 import 'package:fullpro/widgets/widget.dart';
 
-class MyOrdersProfessional extends StatefulWidget {
-  MyOrdersProfessional({Key? key, required this.tabIndicator}) : super(key: key);
+class MyOrders extends StatefulWidget {
+  MyOrders({Key? key, required this.tabIndicator}) : super(key: key);
 
   int tabIndicator = 0;
 
@@ -33,7 +33,7 @@ class MyOrdersProfessional extends StatefulWidget {
   _MyOrdersState createState() => _MyOrdersState();
 }
 
-class _MyOrdersState extends State<MyOrdersProfessional> with TickerProviderStateMixin {
+class _MyOrdersState extends State<MyOrders> with TickerProviderStateMixin {
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   var refreshKey = GlobalKey<RefreshIndicatorState>();
   late TabController _tabController;
@@ -62,10 +62,7 @@ class _MyOrdersState extends State<MyOrdersProfessional> with TickerProviderStat
     }
 
     // Repeating Function
-    timer = Timer.periodic(
-      repeatTime,
-      (Timer t) => setState(() {}),
-    );
+
     if (widget.tabIndicator == 1) {
       userCheck = true;
     }
@@ -78,6 +75,10 @@ class _MyOrdersState extends State<MyOrdersProfessional> with TickerProviderStat
     Timer.run(() {
       setState(() {});
     });
+    timer = Timer.periodic(
+      repeatTime,
+      (Timer t) => setState(() {}),
+    );
 
     // userCheck = !userCheck;
     //           profesionalCheck = false;

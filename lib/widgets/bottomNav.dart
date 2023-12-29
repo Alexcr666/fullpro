@@ -387,7 +387,11 @@ class _BottomNavState extends State<BottomNav> {
                   shape: CircleBorder(),
                   onPressed: () {
                     //
-                    Loader.page(context, OrdersPage());
+                    Loader.page(
+                        context,
+                        MyOrdersProfile(
+                          tabIndicator: 1,
+                        ));
                   },
                   child: SvgPicture.asset(
                     "images/icons/bottom2.svg",

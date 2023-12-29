@@ -25,10 +25,11 @@ import 'package:fullpro/widgets/DataLoadedProgress.dart';
 import 'package:fullpro/widgets/cartBottomButton.dart';
 
 class subServicePage extends StatefulWidget {
-  subServicePage({Key? key, this.idPage, this.title, this.price, this.description}) : super(key: key);
+  subServicePage({Key? key, this.idPage, this.title, this.price, this.description, this.urlImage}) : super(key: key);
   String? idPage;
   String? title;
   String? price;
+  String? urlImage;
   String? description;
 
   @override
@@ -94,8 +95,7 @@ class _subServicePageState extends State<subServicePage> {
   }
 
   Future<DatabaseEvent> getQuerySubService() {
-    Future<DatabaseEvent> data =
-        FirebaseDatabase.instance.ref().child('partners').orderByChild("professionalId").equalTo(widget.idPage.toString()).once();
+    Future<DatabaseEvent> data = FirebaseDatabase.instance.ref().child('partners').orderByChild("profesion").equalTo(widget.title).once();
     /* if (search.text.isNotEmpty) {
 
       data = FirebaseDatabase.instance
@@ -204,7 +204,7 @@ class _subServicePageState extends State<subServicePage> {
                                                                         ClipRRect(
                                                                           borderRadius: BorderRadius.circular(25),
                                                                           child: Image.network(
-                                                                            "",
+                                                                            widget.urlImage.toString(),
                                                                             errorBuilder: (BuildContext? context, Object? exception,
                                                                                 StackTrace? stackTrace) {
                                                                               return Container(
@@ -319,8 +319,7 @@ class _subServicePageState extends State<subServicePage> {
                                                                                 Flexible(
                                                                                     child: AppWidget().buttonFormLine(
                                                                                         context, "Solicitar", false, tap: () {
-                                                                                  Navigator.push(context,
-                                                                                      MaterialPageRoute(builder: (context) => CartPage()));
+                                                                                  Navigator.pop(context);
                                                                                   savedData() {
                                                                                     DatabaseReference newUserRef = FirebaseDatabase.instance
                                                                                         .ref()
@@ -330,13 +329,24 @@ class _subServicePageState extends State<subServicePage> {
                                                                                     // Prepare data to be saved on users table
 
                                                                                     Map userMap = {
-                                                                                      'name': "tecno",
+                                                                                      'name': widget.title,
+                                                                                      'rating': 0,
+                                                                                      'professionalName':
+                                                                                          dataList.child("fullname").value.toString(),
                                                                                       'professional': dataList.key.toString(),
                                                                                       'user': currentFirebaseUser!.uid.toString(),
+                                                                                      'date': "10:30",
                                                                                       'state': 0,
+                                                                                      'price': 1000
                                                                                     };
 
                                                                                     newUserRef.set(userMap).then((value) {
+                                                                                      Navigator.push(
+                                                                                          context,
+                                                                                          MaterialPageRoute(
+                                                                                              builder: (context) => CartPage(
+                                                                                                    id: newUserRef.key.toString(),
+                                                                                                  )));
                                                                                       //  Navigator.pop(contextAlert);
 
                                                                                       //  AppWidget().itemMessage("Guardado", context);
@@ -667,6 +677,7 @@ class _subServicePageState extends State<subServicePage> {
                 SizedBox(
                   height: 10,
                 ),
+                Text(widget.title.toString()),
                 inspeccion ? SizedBox() : Expanded(child: pageProfessional())
                 /* Expanded(
                         child: catDataLoaded == true
