@@ -107,8 +107,10 @@ class _RegistrationPageState extends State<RegistrationPage> {
               'history': "0",
               'earnings': 0,
               'profesion': _searchHome.text,
+              'date': DateFormat('yyyy-MM-dd').format(DateTime.now()).toString(),
+
               //'city': '',
-              'state': '0',
+              'stateUser': '0',
               'country': country.text,
               'state': state.text,
               'city': city.text,
@@ -648,6 +650,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                 },
                 child: AppWidget().texfieldFormat(
                     title: "Fecha de nacimiento", controller: dateController, urlIcon: "images/icons/calendar.svg", enabled: true)),
+
             SizedBox(
               height: 10,
             ),

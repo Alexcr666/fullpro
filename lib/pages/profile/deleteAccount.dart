@@ -1,3 +1,6 @@
+import 'package:firebase_database/firebase_database.dart';
+
+
 import 'package:flutter/material.dart';
 
 
@@ -13,6 +16,9 @@ import 'package:fullpro/config.dart';
 import 'package:fullpro/controller/loader.dart';
 
 
+import 'package:fullpro/pages/Authentication/loginpage.dart';
+
+
 import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
 
 
@@ -24,7 +30,10 @@ import 'package:fullpro/widgets/widget.dart';
 
 class DeleteAccountPage extends StatefulWidget {
 
-  const DeleteAccountPage({Key? key}) : super(key: key);
+  DeleteAccountPage({Key? key, required this.userProfileData}) : super(key: key);
+
+
+  DataSnapshot userProfileData;
 
 
   //static const String id = 'TermsPage';
@@ -38,6 +47,89 @@ class DeleteAccountPage extends StatefulWidget {
 
 
 class _DeleteAccountPageState extends State<DeleteAccountPage> {
+
+  optionsEnabled(String title, {Function? tap, Function? tap2}) {
+
+    showModalBottomSheet(
+
+        context: context,
+
+        builder: (context) {
+
+          return Column(
+
+            mainAxisSize: MainAxisSize.min,
+
+            children: <Widget>[
+
+              SizedBox(
+
+                height: 20,
+
+              ),
+
+              Container(
+
+                  margin: EdgeInsets.only(left: 20, right: 20),
+
+                  child: Text(
+
+                    title,
+
+                    style: TextStyle(fontWeight: FontWeight.bold),
+
+                  )),
+
+              SizedBox(
+
+                height: 20,
+
+              ),
+
+              SizedBox(
+
+                height: 20,
+
+              ),
+
+              ListTile(
+
+                title: new Text('Eliminar'),
+
+                onTap: () {
+
+                  Navigator.pop(context);
+
+
+                  tap;
+
+                },
+
+              ),
+
+              ListTile(
+
+                title: new Text('Cancelar'),
+
+                onTap: () {
+
+                  Navigator.pop(context);
+
+
+                  tap2;
+
+                },
+
+              ),
+
+            ],
+
+          );
+
+        });
+
+  }
+
 
   Widget item1(String url, String title, String subtitle) {
 
@@ -300,9 +392,25 @@ class _DeleteAccountPageState extends State<DeleteAccountPage> {
                   //   margin: EdgeInsets.only(left: 70, right: 70),
 
 
-                  child: AppWidget().buttonForm(context, "Desactivar la cuenta", tap: () {
+                  child: AppWidget().buttonForm(context, "Eliminar cuenta", tap: () {
 
-                Loader.PagewithHome(context, kHomePage());
+                optionsEnabled("Estas seguro que quieres eliminar tu cuenta de forma definitiva", tap: () {
+
+                  widget.userProfileData.ref.update({'state': 4}).then((value) {
+
+                    //  Navigator.pop(context);
+
+                    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_) => LoginPage()), (route) => false);
+
+
+                    AppWidget().itemMessage("Cuenta eliminada", context);
+
+                  }).catchError((onError) {});
+
+                }, tap2: () {});
+
+
+                //  Loader.PagewithHome(context, kHomePage());
 
               })),
 
@@ -310,81 +418,11 @@ class _DeleteAccountPageState extends State<DeleteAccountPage> {
               const SizedBox(height: 30),
 
 
-              GestureDetector(
+              /* GestureDetector(
 
                   onTap: () {
 
-                    showModalBottomSheet(
-
-                        context: context,
-
-                        builder: (context) {
-
-                          return Column(
-
-                            mainAxisSize: MainAxisSize.min,
-
-                            children: <Widget>[
-
-                              SizedBox(
-
-                                height: 20,
-
-                              ),
-
-                              Container(
-
-                                  margin: EdgeInsets.only(left: 20, right: 20),
-
-                                  child: Text(
-
-                                    "Estas seguro que quieres eliminar tu cuenta de forma definitiva",
-
-                                    style: TextStyle(fontWeight: FontWeight.bold),
-
-                                  )),
-
-                              SizedBox(
-
-                                height: 20,
-
-                              ),
-
-                              SizedBox(
-
-                                height: 20,
-
-                              ),
-
-                              ListTile(
-
-                                title: new Text('Eliminar'),
-
-                                onTap: () {
-
-                                  Navigator.pop(context);
-
-                                },
-
-                              ),
-
-                              ListTile(
-
-                                title: new Text('Cancelar'),
-
-                                onTap: () {
-
-                                  Navigator.pop(context);
-
-                                },
-
-                              ),
-
-                            ],
-
-                          );
-
-                        });
+                    optionsEnabled("Estas seguro que quieres eliminar tu cuenta de forma definitiva", tap: () {}, tap2: () {});
 
                   },
 
@@ -402,7 +440,7 @@ class _DeleteAccountPageState extends State<DeleteAccountPage> {
 
                     ),
 
-                  )),
+                  )),*/
 
             ],
 

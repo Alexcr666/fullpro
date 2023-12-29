@@ -325,7 +325,10 @@ class _ProfileOptionsPageState extends State<ProfileOptionsPage> {
                       }),
 
 
-                      itemProfile("images/icons/profile2.svg", "Centro de ayuda"),
+                      itemProfile("images/icons/profile2.svg", "Centro de ayuda", tap: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => SupportAppPage()));
+
+                      }),
 
 
                       itemProfile("images/icons/profile3.svg", "Historial de pedidos"),

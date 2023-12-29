@@ -66,7 +66,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
           'fullname': fullNameController.text.toString(),
           'email': emailController.text.toString(),
           'phone': phoneController.text.toString(),
-          'date': DateTime.now(),
+          //'date': DateTime.now(),
           'state': 1,
         };
 

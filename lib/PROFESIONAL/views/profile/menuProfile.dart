@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 
+
 import 'package:flutter/material.dart';
 
 
@@ -10,6 +11,15 @@ import 'package:flutter_locales/flutter_locales.dart';
 
 
 import 'package:flutter_svg/flutter_svg.dart';
+
+
+import 'package:fullpro/PROFESIONAL/views/Orders/orders.dart';
+
+
+import 'package:fullpro/PROFESIONAL/views/support/listSupport.dart';
+
+
+import 'package:fullpro/PROFESIONAL/views/support/supportUser.dart';
 
 
 import 'package:fullpro/config.dart';
@@ -64,6 +74,7 @@ import 'package:fullpro/utils/globalConstants.dart';
 
 
 import 'package:fullpro/utils/userpreferences.dart';
+
 
 import 'package:fullpro/utils/utils.dart';
 
@@ -326,10 +337,28 @@ class _ProfileOptionsProfessionalPageState extends State<ProfileOptionsProfessio
                       }),
 
 
-                      itemProfile("images/icons/profile2.svg", "Centro de ayuda"),
+                      itemProfile("images/icons/profile2.svg", "Centro de ayuda", tap: () {
+
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => ListSupportProfessionalPage()));
+
+                      }),
 
 
-                      itemProfile("images/icons/profile3.svg", "Historial de pedidos"),
+                      itemProfile("images/icons/profile3.svg", "Historial de pedidos", tap: () {
+
+                        Navigator.push(
+
+                            context,
+
+                            MaterialPageRoute(
+
+                                builder: (context) => MyOrdersProfessional(
+
+                                      tabIndicator: 3,
+
+                                    )));
+
+                      }),
 
 
                       itemProfile("images/icons/profile4.svg", "Metodos de pago", tap: () {
@@ -405,8 +434,11 @@ class _ProfileOptionsProfessionalPageState extends State<ProfileOptionsProfessio
 
 
                           Navigator.push(
+
                               context,
+
                               MaterialPageRoute(
+
                                   builder: (context) => ProfileProfesionalPage(id: FirebaseAuth.instance.currentUser!.uid.toString())));
 
 
@@ -576,7 +608,7 @@ class _ProfileOptionsProfessionalPageState extends State<ProfileOptionsProfessio
 
                         onCLicked: () {
 
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => const SupportAppPage()));
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => const ListSupportProfessionalPage()));
 
 
                           //  Navigator.pop(context);

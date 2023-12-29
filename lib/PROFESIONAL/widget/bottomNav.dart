@@ -65,7 +65,11 @@ class _BottomNavState extends State<BottomNav> {
                   height: 50,
                   shape: const CircleBorder(),
                   onPressed: () {
-                    Loader.page(context, const MyOrders());
+                    Loader.page(
+                        context,
+                        MyOrdersProfessional(
+                          tabIndicator: 3,
+                        ));
                   },
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,

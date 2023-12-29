@@ -63,14 +63,14 @@ class _LoginPageState extends State<LoginPageProfesional> {
 
           if (dataSnapshot.value != null) {
             if (event.snapshot.child("state").value != null) {
-              if (int.parse(event.snapshot.child("state").value.toString()) == 1) {
+              if (int.parse(event.snapshot.child("stateUser").value.toString()) == 1) {
                 UserPreferences.setUserEmail(emailController.text);
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(builder: (context) => const HomePage()),
                 );
               } else {
-                int state = int.parse(event.snapshot.child("state").value.toString());
+                int state = int.parse(event.snapshot.child("stateUser").value.toString());
                 if (state == 0) {
                   AppWidget().itemMessage("Usuario Pendiente", context);
                 }

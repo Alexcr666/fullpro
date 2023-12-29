@@ -528,8 +528,6 @@ class _AccountState extends State<Account> with TickerProviderStateMixin {
                                 itemOptionProfileOptions("Ajuste de cuenta", "images/icons/profileCircle.svg", onTap: () {
                                   activeAjustCount = !activeAjustCount;
                                   setState(() {});
-
-                                  //Navigator.push(context, MaterialPageRoute(builder: (context) => const DeleteAccountPage()));
                                 }),
                                 SizedBox(
                                   height: 20,
@@ -541,7 +539,12 @@ class _AccountState extends State<Account> with TickerProviderStateMixin {
                                         : Column(
                                             children: [
                                               itemOptionProfile("Eliminar cuenta", "images/icons/profileCircle.svg", tap: () {
-                                                Navigator.push(context, MaterialPageRoute(builder: (context) => const DeleteAccountPage()));
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) => DeleteAccountPage(
+                                                              userProfileData: userDataProfile,
+                                                            )));
                                               }),
                                               itemOptionProfile("Fecha", "", subtitle: userDataProfile.child("date").value.toString(),
                                                   tap: () {
@@ -557,10 +560,10 @@ class _AccountState extends State<Account> with TickerProviderStateMixin {
                                                 Navigator.push(context, MaterialPageRoute(builder: (context) => ChangePasswordScreen()));
                                                 //   Navigator.push(context, MaterialPageRoute(builder: (context) => ProfileProfesionalPage()));
                                               }),
-                                              itemOptionProfile("Suspender cuenta", "", subtitle: "", tap: () {
+                                              /*  itemOptionProfile("Suspender cuenta", "", subtitle: "", tap: () {
                                                 Navigator.push(context, MaterialPageRoute(builder: (context) => const DeleteAccountPage()));
                                                 //   Navigator.push(context, MaterialPageRoute(builder: (context) => ProfileProfesionalPage()));
-                                              }),
+                                              }),*/
                                               SizedBox(
                                                 height: 10,
                                               ),
@@ -580,7 +583,7 @@ class _AccountState extends State<Account> with TickerProviderStateMixin {
                       Row(
                         children: [
                           Expanded(child: SizedBox()),
-                          GestureDetector(
+                          /* GestureDetector(
                               onTap: () {},
                               child: Flexible(
                                   child: Row(
@@ -597,7 +600,7 @@ class _AccountState extends State<Account> with TickerProviderStateMixin {
                                     style: TextStyle(color: secondryColor, fontSize: 20),
                                   ),
                                 ],
-                              ))),
+                              ))),*/
                           Expanded(child: SizedBox()),
                           GestureDetector(
                               onTap: () {
