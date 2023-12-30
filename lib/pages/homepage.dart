@@ -50,8 +50,11 @@ class kHomePage extends StatefulWidget {
   _kHomePageState createState() => _kHomePageState();
 }
 
+late DataSnapshot userDataProfile;
+
+TextEditingController _searchHome = TextEditingController();
+
 class _kHomePageState extends State<kHomePage> {
-  TextEditingController _searchHome = TextEditingController();
   TextEditingController _searchHomeCategorie = TextEditingController();
   int activeCategorie = 0;
   GlobalKey<AutoCompleteTextFieldState<String>> key = GlobalKey();
@@ -309,6 +312,17 @@ class _kHomePageState extends State<kHomePage> {
   void initState() {
     super.initState();
 
+    DatabaseReference ref = FirebaseDatabase.instance.ref("users/" + FirebaseAuth.instance.currentUser!.uid.toString());
+
+// Get the Stream
+    Stream<DatabaseEvent> stream = ref.onValue;
+
+    stream.listen((DatabaseEvent event) {
+      // getData();
+      event.snapshot;
+      userDataProfile = event.snapshot;
+    });
+
     PushNotificationService pushNotificationService = PushNotificationService();
 
     pushNotificationService.initialize(context);
@@ -316,6 +330,7 @@ class _kHomePageState extends State<kHomePage> {
     //
     //
     locationPermision();
+
     /* Future.delayed(const Duration(milliseconds: 2000), () {
       AppSharedPreference().getUser(context).then((value) {
         UserPreferences.setUsername(value);
@@ -400,9 +415,18 @@ class _kHomePageState extends State<kHomePage> {
               Text(
                 "Hola " + '${UserPreferences.getUsername() ?? currentUserInfo?.fullName}',
                 style: const TextStyle(
-                  fontFamily: 'Roboto-Bold',
                   color: Colors.black,
+                  fontWeight: FontWeight.bold,
                   fontSize: 15,
+                ),
+              ),
+              Text(
+                userDataProfile.child("location").value == null
+                    ? "Seleccionar ubicación"
+                    : userDataProfile.child("location").value.toString(),
+                style: const TextStyle(
+                  color: Colors.black,
+                  fontSize: 12,
                 ),
               ),
             ],
@@ -486,15 +510,15 @@ class _kHomePageState extends State<kHomePage> {
   Widget pageProfessional() {
     return FutureBuilder(
         // initialData: 1,
-        future: FirebaseDatabase.instance.ref().child('partners').once(),
+        future: FirebaseDatabase.instance.ref().child('partners').orderByChild("profesion").equalTo(_searchHome.text).once(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           try {
             if (snapshot.hasData) {
               DatabaseEvent response = snapshot.data;
 
               return response == null
-                  ? Text("Cargando")
-                  : response.snapshot.children.length == 1
+                  ? AppWidget().loading()
+                  : response.snapshot.children.length == 0
                       ? AppWidget().noResult()
                       : ListView.builder(
                           itemCount: response.snapshot.children.length,
@@ -617,14 +641,14 @@ class _kHomePageState extends State<kHomePage> {
                 child: AppWidget().buttonShandowActive("Servicios", activeCategorie == 1 ? true : false, tap: () {
                   activeCategorie = 1;
 
-                  //servicesSearch(1);
+                  servicesSearch(1);
 
-                  setState(() {});
+                  /* setState(() {});
                   AppSharedPreference().getUser(context).then((value) {
                     print("login: " + value.toString());
                   }).catchError((onError) {
                     print("error: " + onError.toString());
-                  });
+                  });*/
                 })),
             // Flexible(child: AppWidget().buttonForm(context, "Servicios")),
             SizedBox(
@@ -677,31 +701,32 @@ class _kHomePageState extends State<kHomePage> {
                         })))*/
             Flexible(
               child: SimpleAutoCompleteTextField(
-                key: key,
-                decoration: InputDecoration(
-                  errorText: "Ingresar servicio valido",
-                  contentPadding: EdgeInsets.only(top: 17, bottom: 17, left: 15),
-                  enabledBorder:
-                      OutlineInputBorder(borderSide: BorderSide(color: secondryColor, width: 1.0), borderRadius: BorderRadius.circular(11)),
-                  errorBorder:
-                      OutlineInputBorder(borderSide: BorderSide(color: primaryColor, width: 1.0), borderRadius: BorderRadius.circular(10)),
-                  border:
-                      OutlineInputBorder(borderSide: BorderSide(color: primaryColor, width: 1.0), borderRadius: BorderRadius.circular(10)),
-                  labelText: "Buscar",
-                  labelStyle: TextStyle(fontSize: 12.0, color: Colors.black),
-                ),
-                controller: _searchHome,
-                suggestions: suggestions,
-                textChanged: (text) => currentText = text,
-                clearOnSubmit: true,
-                textSubmitted: (text) => setState(() {
-                  print("set: " + _searchHome.text.toString());
-                  _searchHome.text = text;
-                  _initMarkers();
-                  setState(() {});
+                  key: key,
+                  decoration: InputDecoration(
+                    errorText: "Ingresar servicio valido",
+                    contentPadding: EdgeInsets.only(top: 17, bottom: 17, left: 15),
+                    enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: secondryColor, width: 1.0), borderRadius: BorderRadius.circular(11)),
+                    errorBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: primaryColor, width: 1.0), borderRadius: BorderRadius.circular(10)),
+                    border: OutlineInputBorder(
+                        borderSide: BorderSide(color: primaryColor, width: 1.0), borderRadius: BorderRadius.circular(10)),
+                    labelText: "Buscar",
+                    labelStyle: TextStyle(fontSize: 12.0, color: Colors.black),
+                  ),
+                  controller: _searchHome,
+                  suggestions: suggestions,
+                  textChanged: (text) => currentText = text,
+                  clearOnSubmit: true,
+                  textSubmitted: (text) {
+                    print("set: " + _searchHome.text.toString());
+                    _searchHome.text = text;
+                    _initMarkers();
+                  }
+
                   // added.add(text);
-                }),
-              ),
+
+                  ),
             ),
             //  Container(width: 150, child: AppWidget().buttonShandow("Servicios")),
             //AppWidget().buttonForm(context, "Search"),
@@ -906,6 +931,7 @@ class _kHomePageState extends State<kHomePage> {
                       width: double.infinity,
                       height: 300,
                       child: AlignedGridView.count(
+                        //  physics: const NeverScrollableScrollPhysics(),
                         crossAxisCount: 3,
                         itemCount: response.snapshot.children.length,
                         mainAxisSpacing: 2,

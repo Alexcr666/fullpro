@@ -290,6 +290,13 @@ class _AccountState extends State<Account> with TickerProviderStateMixin {
         child: SingleChildScrollView(
           child: Column(
             children: [
+              SizedBox(
+                height: 10,
+              ),
+              AppWidget().back(context),
+              SizedBox(
+                height: 10,
+              ),
               GestureDetector(
                   onTap: () async {
                     ImagePicker imagePicker = ImagePicker();
@@ -323,10 +330,6 @@ class _AccountState extends State<Account> with TickerProviderStateMixin {
               Text(
                 '${UserPreferences.getUsername() ?? currentUserInfo?.fullName}',
                 style: TextStyle(color: secondryColor, fontSize: 22, fontWeight: FontWeight.bold),
-              ),
-              Text(
-                "Hola",
-                style: TextStyle(color: secondryColor, fontSize: 21),
               ),
               Container(
                 padding: const EdgeInsets.all(10),

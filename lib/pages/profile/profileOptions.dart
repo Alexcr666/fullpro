@@ -48,6 +48,8 @@ import 'package:fullpro/pages/profesional/profileProfesional.dart';
 
 import 'package:fullpro/pages/profile/account.dart';
 
+import 'package:fullpro/pages/profile/address/addressUser.dart';
+
 
 import 'package:fullpro/pages/profile/addresses.dart';
 
@@ -326,6 +328,7 @@ class _ProfileOptionsPageState extends State<ProfileOptionsPage> {
 
 
                       itemProfile("images/icons/profile2.svg", "Centro de ayuda", tap: () {
+
                         Navigator.push(context, MaterialPageRoute(builder: (context) => SupportAppPage()));
 
                       }),
@@ -458,6 +461,29 @@ class _ProfileOptionsPageState extends State<ProfileOptionsPage> {
 
 
                           Navigator.push(context, MaterialPageRoute(builder: (context) => Notifications()));
+
+
+                          //   Navigator.push(context, MaterialPageRoute(builder: (context) => const Addresses()));
+
+                        },
+
+                        icon: "images/icons/miprofile3.svg",
+
+                      ),
+
+                      const Divider(color: Colors.black12),
+
+
+                      ProfileButton(
+
+                        buttonName: /*Locales.string(context, 'lbl_address')*/ "Ubicaciones",
+
+                        onCLicked: () {
+
+                          //  Navigator.pop(context);
+
+
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => AddressesUser()));
 
 
                           //   Navigator.push(context, MaterialPageRoute(builder: (context) => const Addresses()));

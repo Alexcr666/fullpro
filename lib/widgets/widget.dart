@@ -4,6 +4,9 @@ import 'dart:io';
 import 'dart:math';
 
 
+import 'package:cached_network_image/cached_network_image.dart';
+
+
 import 'package:connectivity_plus/connectivity_plus.dart';
 
 
@@ -17,6 +20,7 @@ import 'package:flutter/widgets.dart';
 
 
 import 'package:flutter_svg/svg.dart';
+
 
 import 'package:fluttertoast/fluttertoast.dart';
 
@@ -49,17 +53,31 @@ class AppWidget {
 
         child: Container(
 
-            width: 70,
+          width: 70,
 
-            height: 70,
+          height: 70,
 
-            child: Image.network(
+          color: Colors.grey.withOpacity(0.4),
 
-              url,
+          child: CachedNetworkImage(
 
-              fit: BoxFit.cover,
+            imageUrl: url,
 
-            )));
+            fit: BoxFit.cover,
+
+            placeholder: (context, url) => new CircularProgressIndicator(),
+
+            errorWidget: (context, url, error) => new Icon(
+
+              Icons.error,
+
+              color: Colors.black.withOpacity(0.2),
+
+            ),
+
+          ),
+
+        ));
 
   }
 

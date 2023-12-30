@@ -203,7 +203,10 @@ class _RegistrationPageState extends State<RegistrationPage> {
                 //
 
                 AppWidget().texfieldFormat(
-                    controller: phoneController, title: Locales.string(context, 'lbl_phone_number'), urlIcon: "images/icons/phone.svg"),
+                    controller: phoneController,
+                    title: Locales.string(context, 'lbl_phone_number'),
+                    urlIcon: "images/icons/phone.svg",
+                    number: true),
                 /*  Padding(
                   padding: EdgeInsets.only(
                     right: 20,
