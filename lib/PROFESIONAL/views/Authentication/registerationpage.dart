@@ -134,6 +134,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
               'fullname': fullNameController.text,
               'phone': phoneController.text,
               'dateBirthay': dateController.text,
+              'email': emailController.text,
               'history': "0",
               'earnings': 0,
               'profesion': _searchHome.text,
@@ -177,8 +178,10 @@ class _RegistrationPageState extends State<RegistrationPage> {
                 uploadFile("legal", 2).then((value) {
                   Navigator.pushReplacement(
                     context,
-                    MaterialPageRoute(builder: (context) => const HomePage()),
+                    MaterialPageRoute(builder: (context) => const LoginPageProfesional()),
                   );
+
+                  AppWidget().itemMessage("Se ha enviado la solicitud,debes estar activo para poder ingresar", context);
                 });
               });
             });

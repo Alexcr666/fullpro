@@ -62,17 +62,22 @@ class _LoginPageState extends State<LoginPage> {
         UserRef.once().then((event) {
           final dataSnapshot = event.snapshot;
           if (dataSnapshot.value != null) {
-            UserPreferences.setUserEmail(emailController.text);
-            UserPreferences.setUsername(emailController.text).then((value) {
-              print("userpref" + UserPreferences.getUsername().toString());
-
+            if (dataSnapshot.child("state").value.toString() == "1") {
+              UserPreferences.setUserEmail(emailController.text);
               AppSharedPreference().setUser(context, emailController.text);
               Navigator.pushNamedAndRemoveUntil(context, kHomePage.id, (route) => false);
-              // UserPreferences.init();
-            });
+            } else {
+              AppWidget().itemMessage("Usuario bloqueado", context);
+            }
+
             //kkk
+          } else {
+            Navigator.pop(context);
+            AppWidget().itemMessage("Usuario rol professional", context);
           }
         });
+      } else {
+        AppWidget().itemMessage("Error al iniciar sesión", context);
       }
     } on FirebaseAuthException catch (ex) {
       switch (ex.code) {

@@ -390,7 +390,7 @@ class _BottomNavState extends State<BottomNav> {
                     Loader.page(
                         context,
                         MyOrdersProfile(
-                          tabIndicator: 1,
+                          tabIndicator: 3,
                         ));
                   },
                   child: SvgPicture.asset(

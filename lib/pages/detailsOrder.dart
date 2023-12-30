@@ -684,6 +684,8 @@ class _DetailsOrderPageState extends State<DetailsOrderPage> {
 
             ),
 
+            AppWidget().back(context),
+
             Row(
 
               children: [
@@ -1171,8 +1173,11 @@ class _DetailsOrderPageState extends State<DetailsOrderPage> {
                         context,
 
                         stateOrder[dataListObjectGeneral == null ? 0 : int.parse(dataListObjectGeneral!.child("state").value.toString())],
+
                         stateOrderColor[dataListObjectGeneral == null
+
                             ? 0
+
                             : int.parse(dataListObjectGeneral!.child("state").value.toString())], tap: () {
 
                       if (_probController.text.isEmpty || _probController.text == '') {

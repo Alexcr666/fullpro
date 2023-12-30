@@ -439,7 +439,29 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
     super.initState();
 
 
-    print("dataorden: " + widget.dataList.value.toString());
+    DatabaseReference ref = FirebaseDatabase.instance.ref("ordens/" + widget.dataList.key.toString());
+
+
+// Get the Stream
+
+
+    Stream<DatabaseEvent> stream = ref.onValue;
+
+
+// Subscribe to the stream!
+
+
+    stream.listen((DatabaseEvent event) {
+
+      widget.dataList = event.snapshot;
+
+
+      setState(() {});
+
+    });
+
+
+    //print("dataorden: " + widget.dataList.value.toString());
 
 
     //startGeofireListener();
@@ -695,141 +717,146 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
       ),*/
 
 
-        body: ListView(
+        body: widget.dataList == null
 
-          children: [
+            ? AppWidget().loading()
 
-            SizedBox(
+            : ListView(
 
-              height: 20,
+                children: [
 
-            ),
+                  SizedBox(
 
-            AppWidget().back(context),
-            SizedBox(
+                    height: 20,
 
-              height: 20,
+                  ),
 
-            ),
+                  AppWidget().back(context),
 
-            Row(
+                  SizedBox(
 
-              children: [
+                    height: 20,
 
-                SizedBox(
+                  ),
 
-                  width: 20,
+                  Row(
 
-                ),
+                    children: [
 
-                Text(
+                      SizedBox(
 
-                  "Resumen",
+                        width: 20,
 
-                  style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 26),
+                      ),
 
-                ),
+                      Text(
 
-                Expanded(child: SizedBox()),
+                        "Resumen",
 
-                Text(
+                        style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 26),
 
-                  dataListObjectGeneral == null ? "" : "#44",
+                      ),
 
-                  style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 26),
+                      Expanded(child: SizedBox()),
 
-                ),
+                      Text(
 
-                SizedBox(
+                        dataListObjectGeneral == null ? "" : "#44",
 
-                  width: 20,
+                        style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 26),
 
-                ),
+                      ),
 
-              ],
+                      SizedBox(
 
-            ),
+                        width: 20,
 
-            SizedBox(
+                      ),
 
-              height: 20,
+                    ],
 
-            ),
+                  ),
 
-            fadeBottom(.6, AddressWidget()),
+                  SizedBox(
 
-            SizedBox(
+                    height: 20,
 
-              height: 20,
+                  ),
 
-            ),
+                  fadeBottom(.6, AddressWidget()),
 
-            Row(
+                  SizedBox(
 
-              children: [
+                    height: 20,
 
-                SizedBox(
+                  ),
 
-                  width: 10,
+                  Row(
 
-                ),
+                    children: [
 
-                ClipRRect(
+                      SizedBox(
 
-                    borderRadius: BorderRadius.circular(15),
+                        width: 10,
 
-                    child: Container(
+                      ),
 
-                        width: 160,
+                      ClipRRect(
 
-                        height: 160,
+                          borderRadius: BorderRadius.circular(15),
 
-                        child: GoogleMap(
+                          child: Container(
 
-                          mapType: MapType.normal,
+                              width: 160,
 
-                          initialCameraPosition: _kGooglePlex,
+                              height: 160,
 
-                          onMapCreated: (GoogleMapController controller) {
+                              child: GoogleMap(
 
-                            _controller.complete(controller);
+                                mapType: MapType.normal,
 
-                          },
+                                initialCameraPosition: _kGooglePlex,
 
-                        ))),
+                                onMapCreated: (GoogleMapController controller) {
 
-                SizedBox(
+                                  _controller.complete(controller);
 
-                  width: 20,
+                                },
 
-                ),
+                              ))),
 
-                Flexible(
+                      SizedBox(
 
-                    child: AppWidget().texfieldFormat(
+                        width: 20,
 
-                  title: "Apt 501",
+                      ),
 
-                )),
+                      Flexible(
 
-                SizedBox(
+                          child: AppWidget().texfieldFormat(
 
-                  width: 20,
+                        title: "Apt 501",
 
-                ),
+                      )),
 
-              ],
+                      SizedBox(
 
-            ),
+                        width: 20,
 
-            SizedBox(
+                      ),
 
-              height: 20,
+                    ],
 
-            ),
+                  ),
 
+                  SizedBox(
 
-            /*  Padding(
+                    height: 20,
+
+                  ),
+
+
+                  /*  Padding(
 
               padding: const EdgeInsets.symmetric(vertical: 10),
 
@@ -897,196 +924,196 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
             ),*/
 
 
-            Container(
-
-              margin: EdgeInsets.only(left: 20, right: 20),
-
-              width: double.infinity,
-
-              height: 1,
-
-              color: secondryColor,
-
-            ),
-
-            SizedBox(
-
-              height: 15,
-
-            ),
-
-            GestureDetector(
-
-                onTap: () {
-
-                  void _showIOS_DatePicker(ctx) {
-
-                    showCupertinoModalPopup(
-
-                        context: ctx,
-
-                        builder: (_) => Container(
-
-                              height: 250,
-
-                              color: Color.fromARGB(255, 255, 255, 255),
-
-                              child: Column(
-
-                                children: [
-
-                                  Container(
-
-                                    height: 180,
-
-                                    child: CupertinoDatePicker(
-
-                                        mode: CupertinoDatePickerMode.time,
-
-                                        initialDateTime: DateTime.now(),
-
-                                        onDateTimeChanged: (val) {
-
-                                          hourService = DateFormat('hh:mm:ss').format(val).toString();
-
-                                        }),
-
-                                  ),
-
-                                  AppWidget().buttonForm(context, "Guardar", tap: () {
-
-                                    setState(() {
-
-                                      //    final f = new DateFormat('yyyy-MM-dd');
-
-
-                                      widget.dataList.ref.update({'date': hourService}).then((value) {
-
-                                        Navigator.pop(context);
-
-
-                                        setState(() {});
-
-
-                                        AppWidget().itemMessage("Pedido carrito", context);
-
-                                      });
-
-
-                                      //  dateSelected = val.toString();
-
-                                    });
-
-                                  }),
-
-                                ],
-
-                              ),
-
-                            ));
-
-                  }
-
-
-                  _showIOS_DatePicker(context);
-
-                },
-
-                child: Container(
+                  Container(
 
                     margin: EdgeInsets.only(left: 20, right: 20),
 
-                    child: Row(
+                    width: double.infinity,
 
-                      children: [
+                    height: 1,
 
-                        Text(
+                    color: secondryColor,
 
-                          "Hora de servicio".toString(),
+                  ),
 
-                          style: TextStyle(
+                  SizedBox(
 
-                            fontWeight: FontWeight.bold,
+                    height: 15,
 
-                            fontSize: 16,
+                  ),
 
-                            color: secondryColor,
+                  GestureDetector(
 
-                          ),
+                      onTap: () {
 
-                        ),
+                        void _showIOS_DatePicker(ctx) {
 
-                        Expanded(child: SizedBox()),
+                          showCupertinoModalPopup(
 
-                        Text(
+                              context: ctx,
 
-                          widget.dataList.child("date").value.toString(),
+                              builder: (_) => Container(
 
-                          style: TextStyle(
+                                    height: 250,
 
-                            fontWeight: FontWeight.bold,
+                                    color: Color.fromARGB(255, 255, 255, 255),
 
-                            fontSize: 16,
+                                    child: Column(
 
-                            color: secondryColor,
+                                      children: [
 
-                          ),
+                                        Container(
 
-                        )
+                                          height: 180,
 
-                      ],
+                                          child: CupertinoDatePicker(
 
-                    ))),
+                                              mode: CupertinoDatePickerMode.time,
 
-            SizedBox(
+                                              initialDateTime: DateTime.now(),
 
-              height: 15,
+                                              onDateTimeChanged: (val) {
 
-            ),
+                                                hourService = DateFormat('hh:mm:ss').format(val).toString();
 
-            Container(
+                                              }),
 
-              margin: EdgeInsets.only(left: 20, right: 20),
+                                        ),
 
-              width: double.infinity,
+                                        AppWidget().buttonForm(context, "Guardar", tap: () {
 
-              height: 1,
+                                          setState(() {
 
-              color: secondryColor,
+                                            //    final f = new DateFormat('yyyy-MM-dd');
 
-            ),
 
-            SizedBox(
+                                            widget.dataList.ref.update({'date': hourService}).then((value) {
 
-              height: 15,
+                                              Navigator.pop(context);
 
-            ),
 
-            ListTile(
+                                              setState(() {});
 
-              leading: CircleAvatar(
 
-                backgroundColor: Colors.grey.withOpacity(0.3),
+                                              AppWidget().itemMessage("Pedido carrito", context);
 
-                radius: 30,
+                                            });
 
-              ),
 
-              title: Text(widget.dataList.child("professionalName").value.toString()),
+                                            //  dateSelected = val.toString();
 
-            ),
+                                          });
 
-            SizedBox(
+                                        }),
 
-              height: 15,
+                                      ],
 
-            ),
+                                    ),
 
-            initWidget(),
+                                  ));
 
-          ],
+                        }
 
-        ));
+
+                        _showIOS_DatePicker(context);
+
+                      },
+
+                      child: Container(
+
+                          margin: EdgeInsets.only(left: 20, right: 20),
+
+                          child: Row(
+
+                            children: [
+
+                              Text(
+
+                                "Hora de servicio".toString(),
+
+                                style: TextStyle(
+
+                                  fontWeight: FontWeight.bold,
+
+                                  fontSize: 16,
+
+                                  color: secondryColor,
+
+                                ),
+
+                              ),
+
+                              Expanded(child: SizedBox()),
+
+                              Text(
+
+                                widget.dataList.child("date").value.toString(),
+
+                                style: TextStyle(
+
+                                  fontWeight: FontWeight.bold,
+
+                                  fontSize: 16,
+
+                                  color: secondryColor,
+
+                                ),
+
+                              )
+
+                            ],
+
+                          ))),
+
+                  SizedBox(
+
+                    height: 15,
+
+                  ),
+
+                  Container(
+
+                    margin: EdgeInsets.only(left: 20, right: 20),
+
+                    width: double.infinity,
+
+                    height: 1,
+
+                    color: secondryColor,
+
+                  ),
+
+                  SizedBox(
+
+                    height: 15,
+
+                  ),
+
+                  ListTile(
+
+                    leading: CircleAvatar(
+
+                      backgroundColor: Colors.grey.withOpacity(0.3),
+
+                      radius: 30,
+
+                    ),
+
+                    title: Text(widget.dataList.child("professionalName").value.toString()),
+
+                  ),
+
+                  SizedBox(
+
+                    height: 15,
+
+                  ),
+
+                  initWidget(),
+
+                ],
+
+              ));
 
   }
 
@@ -1169,13 +1196,20 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
 
   getTotalPay() {
 
-    int total = int.parse(widget.dataList.child("price").value.toString());
+    int total = 0;
 
 
-    total += (int.parse(widget.dataList.child("price").value.toString()) / 20).round();
+    try {
+
+      total = int.parse(widget.dataList.child("price").value.toString());
 
 
-    total += (int.parse(widget.dataList.child("price").value.toString()) / 10).round();
+      total += (int.parse(widget.dataList.child("price").value.toString()) / 20).round();
+
+
+      total += (int.parse(widget.dataList.child("price").value.toString()) / 10).round();
+
+    } catch (e) {}
 
 
     return total;
@@ -1493,11 +1527,7 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
 
                     width: 220,
 
-                    child: AppWidget().buttonFormColor(
-
-                        context,
-
-                        stateOrder[dataListObjectGeneral == null ? 0 : int.parse(widget.dataList.child("state").value.toString())],
+                    child: AppWidget().buttonFormColor(context, stateOrder[int.parse(widget.dataList.child("state").value.toString())],
 
                         stateOrderColor[int.parse(widget.dataList.child("state").value.toString())], tap: () {
 
@@ -1592,7 +1622,11 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
                       }
 
 
-                      showAlertDialog();
+                      if (widget.dataList.child("state").value.toString() != "3") {
+
+                        showAlertDialog();
+
+                      }
 
                     })),
 
@@ -1606,7 +1640,7 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
 
                     width: 200,
 
-                    child: widget.dataList.child("state").value.toString() == "4"
+                    child: getCancelButton() == false
 
                         ? SizedBox()
 
@@ -1646,6 +1680,23 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
       ],
 
     );
+
+  }
+
+
+  getCancelButton() {
+
+    bool state = true;
+
+
+    if (widget.dataList.child("state").value.toString() == "4" || widget.dataList.child("state").value.toString() == "3") {
+
+      state = false;
+
+    }
+
+
+    return state;
 
   }
 

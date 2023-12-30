@@ -18,6 +18,8 @@ import 'package:flutter/widgets.dart';
 
 import 'package:flutter_svg/svg.dart';
 
+import 'package:fluttertoast/fluttertoast.dart';
+
 
 import 'package:fullpro/PROFESIONAL/views/Authentication/loginpage.dart';
 
@@ -41,7 +43,62 @@ class AppWidget {
 
   Widget circleProfile(String url) {
 
-    return ClipRRect(borderRadius: BorderRadius.circular(15), child: Container(width: 100, height: 100, child: Image.network(url)));
+    return ClipRRect(
+
+        borderRadius: BorderRadius.circular(50),
+
+        child: Container(
+
+            width: 70,
+
+            height: 70,
+
+            child: Image.network(
+
+              url,
+
+              fit: BoxFit.cover,
+
+            )));
+
+  }
+
+
+  Widget loading() {
+
+    return Column(
+
+      children: [
+
+        SizedBox(
+
+          height: 20,
+
+        ),
+
+        Row(
+
+          children: [
+
+            Expanded(child: SizedBox()),
+
+            Container(height: 34, width: 34, child: CircularProgressIndicator()),
+
+            Expanded(child: SizedBox()),
+
+          ],
+
+        ),
+
+        SizedBox(
+
+          height: 20,
+
+        ),
+
+      ],
+
+    );
 
   }
 
@@ -184,7 +241,21 @@ class AppWidget {
 
   itemMessage(String title, BuildContext context) {
 
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(title)));
+    Fluttertoast.showToast(
+
+        msg: title,
+
+        toastLength: Toast.LENGTH_SHORT,
+
+        gravity: ToastGravity.CENTER,
+
+        timeInSecForIosWeb: 1,
+
+        backgroundColor: secondryColor,
+
+        textColor: Colors.white,
+
+        fontSize: 16.0);
 
   }
 

@@ -195,12 +195,7 @@ class _CartPageState extends State<CartPage> {
     });
   }
 
-  @override
-  void initState() {
-    super.initState();
-
-    //  startGeofireListener();
-
+  getData() {
     Query historyRef = FirebaseDatabase.instance.ref().child('ordens').child(widget!.id);
 
     historyRef.once().then((e) async {
@@ -210,6 +205,23 @@ class _CartPageState extends State<CartPage> {
         setState(() {});
       }
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getData();
+    DatabaseReference ref = FirebaseDatabase.instance.ref("ordens/" + widget.id);
+
+// Get the Stream
+    Stream<DatabaseEvent> stream = ref.onValue;
+
+// Subscribe to the stream!
+    stream.listen((DatabaseEvent event) {
+      getData();
+    });
+
+    //  startGeofireListener();
 
     // Get Time & Date
     DateTime now = DateTime.now();
@@ -373,68 +385,70 @@ class _CartPageState extends State<CartPage> {
           icon: SvgPicture.asset('images/svg_icons/arrowLeft.svg'),
         ),
       ),*/
-        body: ListView(
-          children: [
-            SizedBox(
-              height: 20,
-            ),
-            Row(
-              children: [
-                SizedBox(
-                  width: 20,
-                ),
-                Text(
-                  "Resumen",
-                  style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 26),
-                ),
-                Expanded(child: SizedBox()),
-                SvgPicture.asset(
-                  "assets/icons/edit.svg",
-                  width: 30,
-                  height: 30,
-                ),
-              ],
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            fadeBottom(.6, AddressWidget()),
-            SizedBox(
-              height: 20,
-            ),
-            Row(
-              children: [
-                SizedBox(
-                  width: 10,
-                ),
-                ClipRRect(
-                    borderRadius: BorderRadius.circular(15),
-                    child: Container(
-                        width: 160,
-                        height: 160,
-                        child: GoogleMap(
-                          mapType: MapType.normal,
-                          initialCameraPosition: _kGooglePlex,
-                          onMapCreated: (GoogleMapController controller) {
-                            _controller.complete(controller);
-                          },
-                        ))),
-                SizedBox(
-                  width: 20,
-                ),
-                Flexible(
-                    child: AppWidget().texfieldFormat(
-                  title: "Apt 501",
-                )),
-                SizedBox(
-                  width: 20,
-                ),
-              ],
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            /*   Padding(
+        body: dataListObjectGeneral == null
+            ? AppWidget().noResult()
+            : ListView(
+                children: [
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Row(
+                    children: [
+                      SizedBox(
+                        width: 20,
+                      ),
+                      Text(
+                        "Resumen",
+                        style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 26),
+                      ),
+                      Expanded(child: SizedBox()),
+                      SvgPicture.asset(
+                        "assets/icons/edit.svg",
+                        width: 30,
+                        height: 30,
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  fadeBottom(.6, AddressWidget()),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Row(
+                    children: [
+                      SizedBox(
+                        width: 10,
+                      ),
+                      ClipRRect(
+                          borderRadius: BorderRadius.circular(15),
+                          child: Container(
+                              width: 160,
+                              height: 160,
+                              child: GoogleMap(
+                                mapType: MapType.normal,
+                                initialCameraPosition: _kGooglePlex,
+                                onMapCreated: (GoogleMapController controller) {
+                                  _controller.complete(controller);
+                                },
+                              ))),
+                      SizedBox(
+                        width: 20,
+                      ),
+                      Flexible(
+                          child: AppWidget().texfieldFormat(
+                        title: "Apt 501",
+                      )),
+                      SizedBox(
+                        width: 20,
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  /*   Padding(
               padding: const EdgeInsets.symmetric(vertical: 10),
               child: ListTile(
                 title: Text(
@@ -468,139 +482,144 @@ class _CartPageState extends State<CartPage> {
                 ),
               ),
             ),*/
-            Container(
-              margin: EdgeInsets.only(left: 20, right: 20),
-              width: double.infinity,
-              height: 1,
-              color: secondryColor,
-            ),
-            SizedBox(
-              height: 15,
-            ),
-            GestureDetector(
-                onTap: () {
-                  void _showIOS_DatePicker(ctx) {
-                    showCupertinoModalPopup(
-                        context: ctx,
-                        builder: (_) => Container(
-                              height: 190,
-                              color: Color.fromARGB(255, 255, 255, 255),
-                              child: Column(
-                                children: [
-                                  Container(
-                                    height: 180,
-                                    child: CupertinoDatePicker(
-                                        mode: CupertinoDatePickerMode.time,
-                                        initialDateTime: DateTime.now(),
-                                        onDateTimeChanged: (val) {
-                                          setState(() {
-                                            //    final f = new DateFormat('yyyy-MM-dd');
-
-                                            hourService = DateFormat('hh:mm:ss').format(val).toString();
-                                            dataListObjectGeneral!.ref.update({'date': hourService.toString()}).then((value) {
-                                              setState(() {});
-                                              AppWidget().itemMessage("Actualizado", context);
-                                            });
-
-                                            //  dateSelected = val.toString();
-                                          });
-                                        }),
-                                  ),
-                                ],
-                              ),
-                            ));
-                  }
-
-                  _showIOS_DatePicker(context);
-                },
-                child: Container(
+                  Container(
                     margin: EdgeInsets.only(left: 20, right: 20),
-                    child: Row(
-                      children: [
-                        Text(
-                          "Hora de servicio".toString(),
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                            color: secondryColor,
-                          ),
-                        ),
-                        Expanded(child: SizedBox()),
-                        Text(
-                          /* hourService.toString()*/ /*dataListObjectGeneral == null
+                    width: double.infinity,
+                    height: 1,
+                    color: secondryColor,
+                  ),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  GestureDetector(
+                      onTap: () {
+                        void _showIOS_DatePicker(ctx) {
+                          showCupertinoModalPopup(
+                              context: ctx,
+                              builder: (_) => Container(
+                                    height: 190,
+                                    color: Color.fromARGB(255, 255, 255, 255),
+                                    child: Column(
+                                      children: [
+                                        Container(
+                                          height: 180,
+                                          child: CupertinoDatePicker(
+                                              mode: CupertinoDatePickerMode.time,
+                                              initialDateTime: DateTime.now(),
+                                              onDateTimeChanged: (val) {
+                                                setState(() {
+                                                  //    final f = new DateFormat('yyyy-MM-dd');
+
+                                                  hourService = DateFormat('hh:mm:ss').format(val).toString();
+                                                  dataListObjectGeneral!.ref.update({'date': hourService.toString()}).then((value) {
+                                                    setState(() {});
+                                                    getData();
+                                                    AppWidget().itemMessage("Actualizado", context);
+                                                  });
+
+                                                  //  dateSelected = val.toString();
+                                                });
+                                              }),
+                                        ),
+                                      ],
+                                    ),
+                                  ));
+                        }
+
+                        _showIOS_DatePicker(context);
+                      },
+                      child: Container(
+                          margin: EdgeInsets.only(left: 20, right: 20),
+                          child: Row(
+                            children: [
+                              Text(
+                                "Hora de servicio".toString(),
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                  color: secondryColor,
+                                ),
+                              ),
+                              Expanded(child: SizedBox()),
+                              Text(
+                                /* hourService.toString()*/ /*dataListObjectGeneral == null
                               ? ""
                               :*/
-                          dataListObjectGeneral!.child("date").value.toString(),
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                            color: secondryColor,
+                                dataListObjectGeneral!.child("date").value == null
+                                    ? "No disponible"
+                                    : dataListObjectGeneral!.child("date").value.toString(),
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                  color: secondryColor,
+                                ),
+                              )
+                            ],
+                          ))),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(left: 20, right: 20),
+                    width: double.infinity,
+                    height: 1,
+                    color: secondryColor,
+                  ),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  ListTile(
+                    leading: CircleAvatar(
+                      backgroundColor: Colors.grey.withOpacity(0.3),
+                      radius: 30,
+                    ),
+                    title: Text(dataListObjectGeneral!.child("professionalName").value == null
+                        ? "No disponible"
+                        : dataListObjectGeneral!.child("professionalName").value.toString()),
+                  ),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  itemMoney("Costo del servicio", dataListObjectGeneral!.child("price").value.toString()),
+                  itemMoney(
+                      "Tarifa del servicio", (int.parse(dataListObjectGeneral!.child("price").value.toString()) / 20).round().toString()),
+                  itemMoney(
+                      "Costo del domicilio", (int.parse(dataListObjectGeneral!.child("price").value.toString()) / 10).round().toString()),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  cartItemsList.isEmpty
+                      ? Center(
+                          child: SafeArea(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 13,
+                                vertical: 0,
+                              ),
+                              child: SingleChildScrollView(
+                                physics: const AlwaysScrollableScrollPhysics(),
+                                child: initWidget(),
+                              ),
+                            ),
                           ),
                         )
-                      ],
-                    ))),
-            SizedBox(
-              height: 15,
-            ),
-            Container(
-              margin: EdgeInsets.only(left: 20, right: 20),
-              width: double.infinity,
-              height: 1,
-              color: secondryColor,
-            ),
-            SizedBox(
-              height: 15,
-            ),
-            ListTile(
-              leading: CircleAvatar(
-                backgroundColor: Colors.grey.withOpacity(0.3),
-                radius: 30,
-              ),
-              title: Text(dataListObjectGeneral!.child("professionalName").value == null
-                  ? "No disponible"
-                  : dataListObjectGeneral!.child("professionalName").value.toString()),
-            ),
-            SizedBox(
-              height: 15,
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            itemMoney("Costo del servicio", dataListObjectGeneral!.child("price").value.toString()),
-            itemMoney("Tarifa del servicio", (int.parse(dataListObjectGeneral!.child("price").value.toString()) / 20).round().toString()),
-            itemMoney("Costo del domicilio", (int.parse(dataListObjectGeneral!.child("price").value.toString()) / 10).round().toString()),
-            SizedBox(
-              height: 20,
-            ),
-            cartItemsList.isEmpty
-                ? Center(
-                    child: SafeArea(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 13,
-                          vertical: 0,
+                      : SafeArea(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 13,
+                              vertical: 0,
+                            ),
+                            child: Container(
+                              //   physics: const AlwaysScrollableScrollPhysics(),
+                              child: initWidget(),
+                            ),
+                          ),
                         ),
-                        child: SingleChildScrollView(
-                          physics: const AlwaysScrollableScrollPhysics(),
-                          child: initWidget(),
-                        ),
-                      ),
-                    ),
-                  )
-                : SafeArea(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 13,
-                        vertical: 0,
-                      ),
-                      child: Container(
-                        //   physics: const AlwaysScrollableScrollPhysics(),
-                        child: initWidget(),
-                      ),
-                    ),
-                  ),
-          ],
-        ));
+                ],
+              ));
   }
 
   //  Initialization
@@ -650,7 +669,7 @@ class _CartPageState extends State<CartPage> {
                   ),
                 ),
                 Text(
-                  /* currencyPos == 'left' ? '$currencySymbol' : '$ktotalprice'*/ dataListObjectGeneral == null
+                  /* currencyPos == 'left' ? '$currencySymbol' : '$ktotalprice'*/ dataListObjectGeneral!.child("price").value == null
                       ? "0"
                       : getTotalPay().toString(),
                   style: TextStyle(

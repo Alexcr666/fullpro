@@ -195,7 +195,7 @@ Widget pageOrdensWidget(int state) {
 
                                         child: Text(
 
-                                          dataList.child("name").value.toString(),
+                                          dataList.child("name").value == null ? "No disponible" : dataList.child("name").value.toString(),
 
                                           overflow: TextOverflow.ellipsis,
 
@@ -256,8 +256,9 @@ Widget pageOrdensWidget(int state) {
                                           ),
 
                                           Text(
-
-                                            dataList.child("nameProfessional").value.toString(),
+                                            dataList.child("nameProfessional").value == null
+                                                ? "Sin asignar"
+                                                : dataList.child("nameProfessional").value.toString(),
 
                                             style: TextStyle(
 
@@ -395,7 +396,7 @@ Widget pageOrdensWidget(int state) {
         // }
 
 
-        return Text("hola");
+        return AppWidget().loading();
 
       });
 

@@ -514,17 +514,14 @@ class _kHomePageState extends State<kHomePage> {
                                                 )));
                                   },
                                   child: Container(
-                                    margin: EdgeInsets.only(left: 20, right: 20, top: 10),
+                                    margin: EdgeInsets.only(top: 10),
                                     decoration: AppWidget().boxShandowGreyRectangule(),
                                     child: Row(
                                       children: [
                                         SizedBox(
                                           width: 10,
                                         ),
-                                        CircleAvatar(
-                                          backgroundColor: Colors.grey.withOpacity(0.3),
-                                          radius: 40,
-                                        ),
+                                        AppWidget().circleProfile(dataList.child("photo").value.toString()),
                                         SizedBox(
                                           width: 10,
                                         ),

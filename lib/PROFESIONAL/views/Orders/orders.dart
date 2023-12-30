@@ -431,7 +431,7 @@ class _MyOrdersState extends State<MyOrders> with TickerProviderStateMixin {
                                   SizedBox(
                                     //  width: MediaQuery.of(context).size.width * .6,
                                     child: Text(
-                                      dataList.child("name").value.toString(),
+                                      dataList.child("name").value == null ? "No disponible" : dataList.child("name").value.toString(),
                                       overflow: TextOverflow.ellipsis,
                                       style: TextStyle(
                                         color: secondryColor,
@@ -462,7 +462,9 @@ class _MyOrdersState extends State<MyOrders> with TickerProviderStateMixin {
                                         width: 5,
                                       ),
                                       Text(
-                                        dataList.child("nameProfessional").value.toString(),
+                                        dataList.child("nameProfessional").value == null
+                                            ? "Sin Asignar"
+                                            : dataList.child("nameProfessional").value.toString(),
                                         style: TextStyle(
                                           color: secondryColor,
                                           fontWeight: FontWeight.bold,
@@ -631,7 +633,7 @@ class _MyOrdersState extends State<MyOrders> with TickerProviderStateMixin {
 
           // }
 
-          return Text("hola");
+          return AppWidget().loading();
         });
   }
 

@@ -151,7 +151,7 @@ class _AccountProfessionalState extends State<AccountProfessional> with TickerPr
   }
 
 
-  late DataSnapshot userProfileData;
+  DataSnapshot? userProfileData = null;
 
 
   void getUserInfo() async {
@@ -182,7 +182,7 @@ class _AccountProfessionalState extends State<AccountProfessional> with TickerPr
 
       _currentSliderValue =
 
-          userProfileData.child("radius").value == null ? 3.0 : double.parse(userProfileData.child("radius").value.toString());
+          userProfileData!.child("radius").value == null ? 3.0 : double.parse(userProfileData!.child("radius").value.toString());
 
 
       final DataSnapshot = e.snapshot;
@@ -575,7 +575,7 @@ class _AccountProfessionalState extends State<AccountProfessional> with TickerPr
       // userProfileData.child("photo")
 
 
-      userProfileData.ref.update({'photo': fileUrl}).then((value) {
+      userProfileData!.ref.update({'photo': fileUrl}).then((value) {
 
         //  Navigator.pop(context);
 
@@ -677,9 +677,9 @@ class _AccountProfessionalState extends State<AccountProfessional> with TickerPr
 
                         },
 
-                        child: userProfileData.child("photo").value == null
+                        child: userProfileData!.child("photo").value != null
 
-                            ? AppWidget().circleProfile(userProfileData.child("photo").value.toString())
+                            ? AppWidget().circleProfile(userProfileData!.child("photo").value.toString())
 
                             : ProfileWidget(
 
@@ -701,7 +701,7 @@ class _AccountProfessionalState extends State<AccountProfessional> with TickerPr
 
                     Text(
 
-                      userProfileData == null ? "" : userProfileData.child("fullname").value.toString(),
+                      userProfileData == null ? "" : userProfileData!.child("fullname").value.toString(),
 
                       style: TextStyle(color: secondryColor, fontSize: 22, fontWeight: FontWeight.bold),
 
@@ -839,7 +839,7 @@ class _AccountProfessionalState extends State<AccountProfessional> with TickerPr
                                             _currentSliderValue = value;
 
 
-                                            userProfileData.ref.update({'radius': value}).then((value) {
+                                            userProfileData!.ref.update({'radius': value}).then((value) {
 
                                               //  Navigator.pop(context);
 
@@ -928,7 +928,7 @@ class _AccountProfessionalState extends State<AccountProfessional> with TickerPr
 
                                                 itemOptionProfile("Fecha", "",
 
-                                                    subtitle: userProfileData.child("dateBirthay").value.toString(), tap: () {
+                                                    subtitle: userProfileData!.child("dateBirthay").value.toString(), tap: () {
 
                                                   //    Navigator.push(context, MaterialPageRoute(builder: (context) => const PortafolioPage()));
 
@@ -958,7 +958,7 @@ class _AccountProfessionalState extends State<AccountProfessional> with TickerPr
 
                                                 itemOptionProfile("Usuario", "",
 
-                                                    subtitle: userProfileData.child("fullname").value.toString()),
+                                                    subtitle: userProfileData!.child("fullname").value.toString()),
 
                                                 SizedBox(
 
@@ -984,11 +984,11 @@ class _AccountProfessionalState extends State<AccountProfessional> with TickerPr
 
                                                 itemOptionProfile("Estado del usuario", "",
 
-                                                    subtitle: stateOrderUser[userProfileData.child("stateUser").value == null
+                                                    subtitle: stateOrderUser[userProfileData!.child("stateUser").value == null
 
                                                         ? 0
 
-                                                        : int.parse(userProfileData.child("stateUser").value.toString())]),
+                                                        : int.parse(userProfileData!.child("stateUser").value.toString())]),
 
                                                 SizedBox(
 

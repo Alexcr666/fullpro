@@ -137,7 +137,7 @@ class _subServicePageState extends State<subServicePage> {
                                         context,
                                         MaterialPageRoute(
                                             builder: (context) => ProfileProfesionalPage(
-                                                  id: dataList.child("professionalId").value.toString(),
+                                                  id: dataList.key.toString(),
                                                 )));
                                   },
                                   child: Container(
@@ -148,10 +148,7 @@ class _subServicePageState extends State<subServicePage> {
                                         SizedBox(
                                           width: 10,
                                         ),
-                                        CircleAvatar(
-                                          backgroundColor: Colors.grey.withOpacity(0.3),
-                                          radius: 40,
-                                        ),
+                                        AppWidget().circleProfile(dataList.child("photo").value.toString()),
                                         SizedBox(
                                           width: 10,
                                         ),
@@ -677,7 +674,7 @@ class _subServicePageState extends State<subServicePage> {
                 SizedBox(
                   height: 10,
                 ),
-                Text(widget.title.toString()),
+                // Text(widget.title.toString()),
                 inspeccion ? SizedBox() : Expanded(child: pageProfessional())
                 /* Expanded(
                         child: catDataLoaded == true

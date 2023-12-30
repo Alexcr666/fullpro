@@ -86,7 +86,7 @@ class _LoginPageState extends State<LoginPageProfesional> {
               AppWidget().itemMessage("Error al iniciar sessión1", context);
             }
           } else {
-            AppWidget().itemMessage("Error al iniciar sessión1", context);
+            AppWidget().itemMessage("Usuario rol cliente", context);
           }
         });
         // UserPreferences.setUserEmail(emailController.text);
@@ -318,7 +318,7 @@ class _LoginPageState extends State<LoginPageProfesional> {
                 ),
                 //
                 //
-                SizedBox(
+                /* SizedBox(
                   height: 50.0,
                   width: double.infinity,
                   child: TextButton(
@@ -331,7 +331,9 @@ class _LoginPageState extends State<LoginPageProfesional> {
                     },
                     child: Text(Locales.string(context, 'lbl_dont_have_account_signup_here')),
                   ),
-                ),
+                ),*/
+
+                AppWidget().redSocial(context, false),
                 //
                 //
                 /*   Padding(

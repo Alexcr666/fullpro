@@ -201,7 +201,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
 
                     width: double.infinity,
 
-                    height: 110,
+                    height: 120,
 
                     child: ListView.builder(
 
@@ -229,52 +229,62 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                       :*/
 
 
-                              Row(
-
-                            children: [
-
                               Container(
 
-                                  decoration: AppWidget().boxShandowGreyRectangule(),
-
-                                  padding: EdgeInsets.only(left: 30, right: 20, top: 15, bottom: 15),
+                                  margin: EdgeInsets.only(left: 10),
 
                                   child: Row(
 
                                     children: [
 
-                                      Column(
+                                      Container(
 
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                          height: 110,
 
-                                        children: [
+                                          decoration: AppWidget().boxShandowGreyRectangule(),
 
-                                          Text(
+                                          padding: EdgeInsets.only(left: 30, right: 20, top: 15, bottom: 15),
 
-                                            dataList.child("name").value.toString(),
+                                          child: Row(
 
-                                            style: TextStyle(color: Colors.black, fontSize: 17, fontWeight: FontWeight.bold),
+                                            children: [
 
-                                          ),
+                                              Column(
 
-                                          Text(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
 
-                                            dataList.child("price").value.toString(),
+                                                children: [
 
-                                            style: TextStyle(color: Colors.black, fontSize: 23, fontWeight: FontWeight.bold),
+                                                  Text(
 
-                                          ),
+                                                    dataList.child("name").value.toString(),
 
-                                          Text(
+                                                    style: TextStyle(color: Colors.black, fontSize: 17, fontWeight: FontWeight.bold),
 
-                                            dataList.child("description").value.toString(),
+                                                  ),
 
-                                            style: TextStyle(color: Colors.grey, fontSize: 13, fontWeight: FontWeight.bold),
+                                                  Text(
 
-                                          ),
+                                                    dataList.child("price").value.toString(),
+
+                                                    style: TextStyle(color: Colors.black, fontSize: 23, fontWeight: FontWeight.bold),
+
+                                                  ),
+
+                                                  Text(
+
+                                                    dataList.child("description").value == null
+
+                                                        ? "No disponible"
+
+                                                        : dataList.child("description").value.toString(),
+
+                                                    style: TextStyle(color: Colors.grey, fontSize: 13, fontWeight: FontWeight.bold),
+
+                                                  ),
 
 
-                                          /*  Text(
+                                                  /*  Text(
 
                                     "+8,956",
 
@@ -282,49 +292,49 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
 
                                   ),*/
 
-                                        ],
+                                                ],
 
-                                      ),
+                                              ),
 
-                                      SizedBox(
+                                              SizedBox(
 
-                                        width: 25,
+                                                width: 25,
 
-                                      ),
+                                              ),
 
-                                      Container(
+                                              Container(
 
-                                        width: 55,
+                                                width: 55,
 
-                                        height: 55,
+                                                height: 55,
 
-                                        padding: EdgeInsets.all(10),
+                                                padding: EdgeInsets.all(10),
 
-                                        child: SvgPicture.asset(
+                                                child: SvgPicture.asset(
 
-                                          "images/icons/calendar.svg",
+                                                  "images/icons/calendar.svg",
 
-                                          color: Colors.white,
+                                                  color: Colors.white,
 
-                                        ),
+                                                ),
 
-                                        color: secondryColor,
+                                                color: secondryColor,
 
-                                      ),
+                                              ),
 
-                                      SizedBox(
+                                              SizedBox(
 
-                                        width: 20,
+                                                width: 20,
 
-                                      ),
+                                              ),
+
+                                            ],
+
+                                          ))
 
                                     ],
 
-                                  ))
-
-                            ],
-
-                          );
+                                  ));
 
                         }));
 
@@ -334,7 +344,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
           // }
 
 
-          return Text("hola");
+          return AppWidget().loading();
 
         });
 
@@ -495,13 +505,17 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
 
                                   ),
 
-                                  Text(
+                                  Flexible(
+
+                                      child: Text(
 
                                     dataList.child("address").value.toString(),
 
+                                    maxLines: 1,
+
                                     style: TextStyle(color: secondryColor, fontSize: 12),
 
-                                  ),
+                                  )),
 
                                 ],
 
@@ -594,7 +608,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
 
                               CircleAvatar(
 
-                                backgroundColor: Colors.grey.withOpacity(0.5),
+                                backgroundColor: Colors.grey.withOpacity(0.3),
 
                               ),
 
@@ -604,7 +618,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
 
                                 width: 1,
 
-                                color: Colors.black,
+                                color: Colors.black.withOpacity(0.2),
 
                               ),
 
@@ -632,7 +646,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
           // }
 
 
-          return Text("hola");
+          return AppWidget().loading();
 
         });
 
@@ -658,11 +672,11 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
               DatabaseEvent response = snapshot.data;
 
 
-              return response == null ? Text("Cargando") : SizedBox();
+              return response == null ? AppWidget().loading() : SizedBox();
 
             } else {
 
-              return Text("Cargando");
+              return AppWidget().loading();
 
             }
 
@@ -671,7 +685,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
 
           } catch (e) {
 
-            return Text("Cargando");
+            return AppWidget().loading();
 
           }
 
@@ -754,9 +768,15 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
 
                                       radius: 20,
 
+                                      color: Colors.grey.withOpacity(0.3),
+
                                     ),
 
-                                    errorWidget: (context, url, error) => Icon(Icons.error),
+                                    errorWidget: (context, url, error) => Container(
+
+                                      color: Colors.grey.withOpacity(0.4),
+
+                                    ),
 
                                   ),
 
@@ -958,7 +978,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
 
               return response == null
 
-                  ? Text("Cargando")
+                  ? AppWidget().loading()
 
                   : ListView.builder(
 
@@ -1085,7 +1105,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
 
             } else {
 
-              return Text("Cargando");
+              return AppWidget().loading();
 
             }
 
@@ -1094,7 +1114,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
 
           } catch (e) {
 
-            return Text("Cargando");
+            return AppWidget().loading();
 
           }
 
@@ -1193,31 +1213,49 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
 
 
   uploadFile(String doc) async {
+
     FilePickerResult? result = await FilePicker.platform.pickFiles();
 
+
     if (result != null) {
+
       // fileBackgroundCheck.add(File(result.files.single.path!));
+
 
       int timestamp = new DateTime.now().millisecondsSinceEpoch;
 
+
       Reference storageReference = FirebaseStorage.instance.ref().child("filesdoc/" + timestamp.toString() + ".jpg");
+
 
       UploadTask uploadTask = storageReference.putFile(File(result.files.single.path!));
 
+
       await uploadTask.then((p0) async {
+
         String fileUrl = await storageReference.getDownloadURL();
 
+
         _userDataProfile.ref.update({doc: fileUrl}).then((value) {
+
           setState(() {});
 
+
           AppWidget().itemMessage("Archivo subido", context);
+
         });
+
       });
 
+
       backgroundCheck = false;
+
     } else {
+
       // User canceled the picker
+
     }
+
 
     setState(() {});
 
@@ -1595,6 +1633,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
               GestureDetector(
 
                   onTap: () async {
+
                     /*   FilePickerResult? result = await FilePicker.platform.pickFiles();
 
 
@@ -1613,6 +1652,8 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                       // User canceled the picker
 
                     }*/
+
+
                     uploadFile("license");
 
                   },
@@ -1650,8 +1691,6 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                 height: 10,
 
               ),
-
-              Text(_userDataProfile.child("background").value.toString()),
 
               Container(margin: EdgeInsets.only(left: 3), alignment: Alignment.centerLeft, child: Text("Background check")),
 
@@ -1786,6 +1825,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
               GestureDetector(
 
                   onTap: () async {
+
                     uploadFile("background");
 
                   },
@@ -1956,6 +1996,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
               GestureDetector(
 
                   onTap: () async {
+
                     /* FilePickerResult? result = await FilePicker.platform.pickFiles();
 
 
@@ -1974,6 +2015,8 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
 
 
                     setState(() {});*/
+
+
                     uploadFile("mvp");
 
                   },
@@ -2256,7 +2299,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
 
               return response == null
 
-                  ? Text("Cargando")
+                  ? AppWidget().loading()
 
                   : response.snapshot.children.toList().length == 0
 

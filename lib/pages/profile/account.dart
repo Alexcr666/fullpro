@@ -582,7 +582,6 @@ class _AccountState extends State<Account> with TickerProviderStateMixin {
                       ),
                       Row(
                         children: [
-                          Expanded(child: SizedBox()),
                           /* GestureDetector(
                               onTap: () {},
                               child: Flexible(
@@ -608,7 +607,14 @@ class _AccountState extends State<Account> with TickerProviderStateMixin {
                                 //
                                 //updateProfile();
 
-                                userDataProfile.ref.update({'radio': int.parse(_currentSliderValue.round().toString())});
+                                userDataProfile.ref.update({
+                                  'radio': int.parse(_currentSliderValue.round().toString()),
+                                  "name": _nameController.text.toString(),
+                                  "dateUser": _dateController.text,
+                                  "email": _emailController.text
+                                }).then((value) {
+                                  AppWidget().itemMessage("Guardado", context);
+                                });
 
                                 //  }
                               },

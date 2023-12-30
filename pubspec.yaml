@@ -113,6 +113,7 @@ dependencies:
 
   flutter_stripe: ^9.0.0+1
   assets_audio_player: ^3.0.4+3
+  fluttertoast: ^8.2.4
 
 dependency_overrides:
   flutter:

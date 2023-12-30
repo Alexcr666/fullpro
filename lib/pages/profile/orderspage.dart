@@ -367,7 +367,7 @@ class _MyOrdersState extends State<MyOrdersProfile> with TickerProviderStateMixi
                     physics: NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
                     itemBuilder: (BuildContext context, int i) {
-                      DataSnapshot dataList = response.snapshot.children.toList()[i];
+                      DataSnapshot dataList = response.snapshot.children.toList().reversed.toList()[i];
 
                       return /*dataList.child("user").value.toString() == "LapnDojkb8QGfSOioTXLkiPAiNt2"
 
@@ -375,41 +375,43 @@ class _MyOrdersState extends State<MyOrdersProfile> with TickerProviderStateMixi
 
                       :*/
 
-                          Padding(
-                        padding: const EdgeInsets.all(5),
-                        child: GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => DetailsOrderProfessionalPage(
-                                          dataList: dataList,
-                                        )));
-                          },
-                          child: Container(
-                            margin: EdgeInsets.only(left: 10, right: 10),
-                            width: double.infinity,
-                            decoration: AppWidget().boxShandowGrey(),
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 5,
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 10,
-                                vertical: 10,
-                              ),
-                              child: Row(
-                                children: [
-                                  CircleAvatar(
-                                    backgroundColor: Colors.grey.withOpacity(0.4),
-                                    radius: 30,
-                                  ),
-                                  // Image Row
-                                  //    Row(
-                                  //    crossAxisAlignment: CrossAxisAlignment.center,
-                                  //  children: [
-                                  /* Column(
+                          positionFilter.toString() != dataList.child("state").value.toString()
+                              ? SizedBox()
+                              : Padding(
+                                  padding: const EdgeInsets.all(5),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) => DetailsOrderProfessionalPage(
+                                                    dataList: dataList,
+                                                  )));
+                                    },
+                                    child: Container(
+                                      margin: EdgeInsets.only(left: 10, right: 10),
+                                      width: double.infinity,
+                                      decoration: AppWidget().boxShandowGrey(),
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 8,
+                                        vertical: 5,
+                                      ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 10,
+                                          vertical: 10,
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            CircleAvatar(
+                                              backgroundColor: Colors.grey.withOpacity(0.4),
+                                              radius: 30,
+                                            ),
+                                            // Image Row
+                                            //    Row(
+                                            //    crossAxisAlignment: CrossAxisAlignment.center,
+                                            //  children: [
+                                            /* Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
@@ -432,107 +434,110 @@ class _MyOrdersState extends State<MyOrdersProfile> with TickerProviderStateMixi
                         ),
                       ],
                     ),*/
-                                  const SizedBox(width: 10),
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      SizedBox(
-                                        //  width: MediaQuery.of(context).size.width * .6,
-                                        child: Text(
-                                          dataList.child("name").value.toString(),
-                                          overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(
-                                            color: secondryColor,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 13,
-                                          ),
-                                        ),
-                                      ),
-                                      RatingBarIndicator(
-                                          rating: 2.5,
-                                          itemCount: 5,
-                                          itemSize: 18.0,
-                                          itemBuilder: (context, _) => Icon(
-                                                Icons.star,
-                                                color: secondryColor,
-                                              )),
-                                      SizedBox(
-                                        height: 5,
-                                      ),
-                                      Row(
-                                        children: [
-                                          SvgPicture.asset(
-                                            "images/icons/userCircle.svg",
-                                            color: secondryColor,
-                                            height: 17,
-                                          ),
-                                          SizedBox(
-                                            width: 5,
-                                          ),
-                                          Text(
-                                            dataList.child("nameProfessional").value.toString(),
-                                            style: TextStyle(
-                                              color: secondryColor,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 12,
+                                            const SizedBox(width: 10),
+                                            Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                SizedBox(
+                                                  //  width: MediaQuery.of(context).size.width * .6,
+                                                  child: Text(
+                                                    dataList.child("name").value.toString(),
+                                                    overflow: TextOverflow.ellipsis,
+                                                    style: TextStyle(
+                                                      color: secondryColor,
+                                                      fontWeight: FontWeight.bold,
+                                                      fontSize: 13,
+                                                    ),
+                                                  ),
+                                                ),
+                                                RatingBarIndicator(
+                                                    rating: 2.5,
+                                                    itemCount: 5,
+                                                    itemSize: 18.0,
+                                                    itemBuilder: (context, _) => Icon(
+                                                          Icons.star,
+                                                          color: secondryColor,
+                                                        )),
+                                                SizedBox(
+                                                  height: 5,
+                                                ),
+                                                Row(
+                                                  children: [
+                                                    SvgPicture.asset(
+                                                      "images/icons/userCircle.svg",
+                                                      color: secondryColor,
+                                                      height: 17,
+                                                    ),
+                                                    SizedBox(
+                                                      width: 5,
+                                                    ),
+                                                    Text(
+                                                      dataList.child("nameProfessional").value.toString(),
+                                                      style: TextStyle(
+                                                        color: secondryColor,
+                                                        fontWeight: FontWeight.bold,
+                                                        fontSize: 12,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                SizedBox(
+                                                  height: 5,
+                                                ),
+                                                Row(
+                                                  children: [
+                                                    SvgPicture.asset(
+                                                      "images/icons/calendar.svg",
+                                                      color: secondryColor,
+                                                      height: 17,
+                                                    ),
+                                                    SizedBox(
+                                                      width: 5,
+                                                    ),
+                                                    Text(
+                                                      dataList.child("date").value.toString(),
+                                                      style: TextStyle(
+                                                        color: secondryColor,
+                                                        //fontWeight: FontWeight.bold,
+                                                        fontSize: 14,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                )
+                                              ],
                                             ),
-                                          ),
-                                        ],
-                                      ),
-                                      SizedBox(
-                                        height: 5,
-                                      ),
-                                      Row(
-                                        children: [
-                                          SvgPicture.asset(
-                                            "images/icons/calendar.svg",
-                                            color: secondryColor,
-                                            height: 17,
-                                          ),
-                                          SizedBox(
-                                            width: 5,
-                                          ),
-                                          Text(
-                                            dataList.child("date").value.toString(),
-                                            style: TextStyle(
-                                              color: secondryColor,
-                                              //fontWeight: FontWeight.bold,
-                                              fontSize: 14,
-                                            ),
-                                          ),
-                                        ],
-                                      )
-                                    ],
-                                  ),
-                                  /* SizedBox(
+                                            /* SizedBox(
                                 width: 10,
                               ),*/
-                                  Expanded(child: SizedBox()),
+                                            Expanded(child: SizedBox()),
 
-                                  Column(
-                                    children: [
-                                      Container(
-                                          width: 134,
-                                          height: 40,
-                                          child: AppWidget().buttonFormColor(
-                                              context,
-                                              stateOrder[int.parse(dataList!.child("state").value.toString())],
-                                              stateOrderColor[int.parse(dataList!.child("state").value.toString())],
-                                              tap: () {})),
-                                      SizedBox(
-                                        height: 10,
-                                      ),
-                                      Container(
-                                          width: 134,
-                                          height: 40,
-                                          child: AppWidget().buttonFormColor(context, "Cancelar", Colors.red, tap: () {
-                                            dataList.ref.update({'state': 3}).then((value) {
-                                              AppWidget().itemMessage("Actualizado", context);
-                                            });
-                                          })),
-                                    ],
-                                  )
-                                  /*Text(
+                                            Column(
+                                              children: [
+                                                // Text(dataList!.child("state").value.toString()),
+                                                Container(
+                                                    width: 134,
+                                                    height: 40,
+                                                    child: AppWidget().buttonFormColor(
+                                                        context,
+                                                        stateOrder[int.parse(dataList!.child("state").value.toString())],
+                                                        stateOrderColor[int.parse(dataList!.child("state").value.toString())],
+                                                        tap: () {})),
+                                                SizedBox(
+                                                  height: 10,
+                                                ),
+                                                int.parse(dataList!.child("state").value.toString()) == 3
+                                                    ? SizedBox()
+                                                    : Container(
+                                                        width: 134,
+                                                        height: 40,
+                                                        child: AppWidget().buttonFormColor(context, "Cancelar", Colors.red, tap: () {
+                                                          dataList.ref.update({'state': 3}).then((value) {
+                                                            AppWidget().itemMessage("Actualizado", context);
+                                                          });
+                                                        })),
+                                              ],
+                                            )
+                                            /*Text(
                   MainController.capitalize(kServices.status!),
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
@@ -544,12 +549,12 @@ class _MyOrdersState extends State<MyOrdersProfile> with TickerProviderStateMixi
                         : Colors.green,
                   ),
                 ),*/
-                                  //   ],
-                                  //  ),
-                                  // const SizedBox(height: 10),
+                                            //   ],
+                                            //  ),
+                                            // const SizedBox(height: 10),
 
-                                  // Booking Row
-                                  /*   Row(
+                                            // Booking Row
+                                            /*   Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -575,7 +580,7 @@ class _MyOrdersState extends State<MyOrdersProfile> with TickerProviderStateMixi
                     ),
                   ],
                 ),*/
-                                  /* const SizedBox(height: 5),
+                                            /* const SizedBox(height: 5),
 
                 // Order Numer Row
                 Row(
@@ -604,7 +609,7 @@ class _MyOrdersState extends State<MyOrdersProfile> with TickerProviderStateMixi
                 ),
                 const SizedBox(height: 5),
                 // Status Row*/
-                                  /*   Row(
+                                            /*   Row(
                   children: [
                     Text(
                       Locales.string(context, "lbl_status"),
@@ -628,18 +633,18 @@ class _MyOrdersState extends State<MyOrdersProfile> with TickerProviderStateMixi
                     ),
                   ],
                 ),*/
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      );
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                );
                     });
           }
 
           // }
 
-          return Text("hola");
+          return AppWidget().loading();
         });
   }
 
@@ -811,9 +816,9 @@ class _MyOrdersState extends State<MyOrdersProfile> with TickerProviderStateMixi
                     children: [
                       Container(
                           width: 110,
-                          child: AppWidget().buttonShandow("Pendiente",
-                              color: positionFilter != 0 ? Colors.grey.withOpacity(0.2) : redButton, colorText: Colors.white, tap: () {
-                            positionFilter = 0;
+                          child: AppWidget().buttonShandow("En curso",
+                              color: positionFilter != 1 ? Colors.grey.withOpacity(0.2) : redButton, colorText: Colors.white, tap: () {
+                            positionFilter = 1;
                             setState(() {});
                           })),
                       SizedBox(
@@ -821,7 +826,7 @@ class _MyOrdersState extends State<MyOrdersProfile> with TickerProviderStateMixi
                       ),
                       Container(
                           width: 110,
-                          child: AppWidget().buttonShandow("En curso",
+                          child: AppWidget().buttonShandow("En proceso",
                               color: positionFilter != 2 ? Colors.grey.withOpacity(0.2) : yellowButton, colorText: Colors.white, tap: () {
                             positionFilter = 2;
                             setState(() {});
