@@ -52,9 +52,8 @@ class kHomePage extends StatefulWidget {
 
 late DataSnapshot userDataProfile;
 
-TextEditingController _searchHome = TextEditingController();
-
 class _kHomePageState extends State<kHomePage> {
+  TextEditingController _searchHome = TextEditingController();
   TextEditingController _searchHomeCategorie = TextEditingController();
   int activeCategorie = 0;
   GlobalKey<AutoCompleteTextFieldState<String>> key = GlobalKey();
@@ -80,13 +79,13 @@ class _kHomePageState extends State<kHomePage> {
         DataSnapshot dataList = response.snapshot.children.toList()[i];
 
         //  if (dataList.child("professional").value.toString() == _searchHome.text.toString()) {
-        if (dataList.child("latitud").value != null && dataList.child("longitude").value != null) {
+        if (dataList.child("latitude").value != null && dataList.child("longitude").value != null) {
           MarkerId markerId = new MarkerId(dataList.key.toString());
           _marker.add(
             new Marker(
               markerId: markerId,
               position: LatLng(
-                  double.parse(dataList.child("latitud").value.toString()), double.parse(dataList.child("longitude").value.toString())),
+                  double.parse(dataList.child("latitude").value.toString()), double.parse(dataList.child("longitude").value.toString())),
               onTap: () {
                 // Handle on marker tap
               },
@@ -321,6 +320,16 @@ class _kHomePageState extends State<kHomePage> {
       // getData();
       event.snapshot;
       userDataProfile = event.snapshot;
+      _controller.future.then((value) {
+        value.animateCamera(CameraUpdate.newCameraPosition(
+          CameraPosition(
+            bearing: 0,
+            target: LatLng(double.parse(userDataProfile.child("latitud").value.toString()),
+                double.parse(userDataProfile.child("longitude").value.toString())),
+            zoom: 14.0,
+          ),
+        ));
+      });
     });
 
     PushNotificationService pushNotificationService = PushNotificationService();
@@ -527,6 +536,17 @@ class _kHomePageState extends State<kHomePage> {
                           itemBuilder: (BuildContext context, int index) {
                             DataSnapshot dataList = response.snapshot.children.toList()[index];
                             //  Widget itemList() {
+
+                            getDistance() async {
+                              var _distanceInMeters = await Geolocator.distanceBetween(
+                                double.parse(dataList.child("latitude").value.toString()),
+                                double.parse(dataList.child("longitude").value.toString()),
+                                double.parse(userDataProfile.child("latitud").value.toString()),
+                                double.parse(userDataProfile.child("longitude").value.toString()),
+                              );
+                              return _distanceInMeters.toString();
+                            }
+
                             Widget itemProfile() {
                               return GestureDetector(
                                   onTap: () {
@@ -564,14 +584,33 @@ class _kHomePageState extends State<kHomePage> {
                                               "Opiniones clientes",
                                               style: TextStyle(color: Colors.black, fontSize: 10),
                                             ),
-                                            RatingBarIndicator(
-                                                rating: 2.5,
-                                                itemCount: 5,
-                                                itemSize: 16.0,
-                                                itemBuilder: (context, _) => Icon(
-                                                      Icons.star,
-                                                      color: secondryColor,
-                                                    )),
+                                            Row(
+                                              children: [
+                                                RatingBarIndicator(
+                                                    rating: 2.5,
+                                                    itemCount: 5,
+                                                    itemSize: 16.0,
+                                                    itemBuilder: (context, _) => Icon(
+                                                          Icons.star,
+                                                          color: secondryColor,
+                                                        )),
+                                                Expanded(child: SizedBox()),
+                                                FutureBuilder(
+                                                    // initialData: 1,
+                                                    future: getDistance(),
+                                                    builder: (BuildContext context, AsyncSnapshot snapshot) {
+                                                      if (snapshot.hasData) {
+                                                        return Text(
+                                                            (double.parse(snapshot.data.toString()).round() / 1000).toString() + " Km");
+                                                      } else {
+                                                        return SizedBox();
+                                                      }
+                                                    }),
+                                                SizedBox(
+                                                  width: 10,
+                                                ),
+                                              ],
+                                            ),
                                             SizedBox(
                                               height: 5,
                                             ),
@@ -589,34 +628,33 @@ class _kHomePageState extends State<kHomePage> {
                               /* */
                             }
 
-                            return /* dataList.child("primary").value != true ? SizedBox() :*/ itemProfile();
+                            return /* dataList.child("primary").value != true ? SizedBox() :*/
 
-                            //  return Text(dataList.child("professional").value.toString() + "   " + _searchHome.text.toString());
-
-                            /*         if (dataList.child("professional").value.toString() == _searchHome.text.toString() &&
-                            dataList.child("primary").value == true) {
-                          return itemProfile();
-                        } else {
-                          return SizedBox();
-                        }*/
-
-                            /*  if (_searchInspections.text.isEmpty == false) {
-                          if (_searchInspections.text.contains(dataList.child("fullname").value.toString())) {
-                            return itemList();
-                          } else {
-                            return SizedBox();
-                          }
-                        } else {*/
-
-                            //  }
+                                dataList.child("latitude").value == null
+                                    ? SizedBox()
+                                    : FutureBuilder(
+                                        // initialData: 1,
+                                        future: getDistance(),
+                                        builder: (BuildContext context, AsyncSnapshot snapshot) {
+                                          if (snapshot.hasData) {
+                                            int porcent = (double.parse(snapshot.data.toString()).round() / 1000).round();
+                                            if (porcent <= int.parse(userDataProfile.child("radio").value.toString())) {
+                                              return itemProfile();
+                                            } else {
+                                              return Text(porcent.toString());
+                                            }
+                                          } else {
+                                            return SizedBox();
+                                          }
+                                        });
                           });
             } else {
-              return Text("Cargando");
+              return AppWidget().loading();
             }
 
             ;
           } catch (e) {
-            return Text("Cargando");
+            return AppWidget().loading();
           }
         });
   }
