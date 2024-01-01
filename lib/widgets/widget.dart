@@ -60,6 +60,8 @@ class AppWidget {
           color: Colors.grey.withOpacity(0.4),
 
           child: CachedNetworkImage(
+            width: 70,
+            height: 70,
 
             imageUrl: url,
 

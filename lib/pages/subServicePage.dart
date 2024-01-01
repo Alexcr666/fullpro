@@ -8,6 +8,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
 import 'package:fullpro/pages/cartPage.dart';
+import 'package:fullpro/pages/homepage.dart';
 import 'package:fullpro/pages/profesional/profileProfesional.dart';
 import 'package:fullpro/widgets/widget.dart';
 import 'package:intl/intl.dart';
@@ -318,11 +319,14 @@ class _subServicePageState extends State<subServicePage> {
                                                                                     child: AppWidget().buttonFormLine(
                                                                                         context, "Solicitar", false, tap: () {
                                                                                   Navigator.pop(context);
+
                                                                                   savedData() {
                                                                                     DatabaseReference newUserRef = FirebaseDatabase.instance
                                                                                         .ref()
                                                                                         .child('ordens')
                                                                                         .push();
+                                                                                    userDataProfile.ref
+                                                                                        .update({"cart": newUserRef.key.toString()});
 
                                                                                     // Prepare data to be saved on users table
 
@@ -334,7 +338,6 @@ class _subServicePageState extends State<subServicePage> {
                                                                                           dataList.child("fullname").value.toString(),
                                                                                       'professional': dataList.key.toString(),
                                                                                       'user': currentFirebaseUser!.uid.toString(),
-                                                                                      'date': "10:30",
                                                                                       'state': 0,
                                                                                       'price': 1000
                                                                                     };
@@ -359,7 +362,12 @@ class _subServicePageState extends State<subServicePage> {
                                                                                     });
                                                                                   }
 
-                                                                                  savedData();
+                                                                                  if (userDataProfile.child("cart").value == null) {
+                                                                                    savedData();
+                                                                                  } else {
+                                                                                    AppWidget()
+                                                                                        .itemMessage("Ya hay una orden activa", context);
+                                                                                  }
                                                                                 })),
                                                                               ],
                                                                             )),

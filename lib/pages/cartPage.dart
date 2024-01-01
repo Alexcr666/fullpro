@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:flutter_geofire/flutter_geofire.dart';
 import 'package:flutter_locales/flutter_locales.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
 import 'package:fullpro/pages/homepage.dart';
@@ -45,6 +46,7 @@ class CartPage extends StatefulWidget {
 class _CartPageState extends State<CartPage> {
   String hourService = "";
   late DataSnapshot cartData;
+  Set<Marker> _marker = <Marker>{};
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   DateTime dateTime = DateTime.now();
   final Completer<GoogleMapController> _controller = Completer<GoogleMapController>();
@@ -53,6 +55,8 @@ class _CartPageState extends State<CartPage> {
   int days = 10;
   Timer? timer;
   late final _probController = TextEditingController();
+
+  late final _descriptionLocationController = TextEditingController();
   String problmValidate = '';
 
   DataSnapshot? dataListObjectGeneral;
@@ -202,6 +206,19 @@ class _CartPageState extends State<CartPage> {
       final snapshot = e.snapshot;
       if (snapshot.value != null) {
         dataListObjectGeneral = snapshot;
+
+        MarkerId markerId = MarkerId(dataListObjectGeneral!.key.toString());
+        _marker.add(
+          new Marker(
+            markerId: markerId,
+            position: LatLng(double.parse(dataListObjectGeneral!.child("latitude").value.toString()),
+                double.parse(dataListObjectGeneral!.child("longitude").value.toString())),
+            onTap: () {
+              // Handle on marker tap
+            },
+            icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
+          ),
+        );
         setState(() {});
       }
     });
@@ -231,7 +248,7 @@ class _CartPageState extends State<CartPage> {
           'latitude': DataSnapshot.child("latitud").value.toString(),
           'longitude': DataSnapshot.child("longitude").value.toString()
         }).then((value) {
-          AppWidget().itemMessage("Actualizado", context);
+          // AppWidget().itemMessage("Actualizado", context);
         });
       }
     });
@@ -308,46 +325,33 @@ class _CartPageState extends State<CartPage> {
     zoom: 14.4746,
   );
 
-  /* Widget pageOrdens() {
+  Widget getUserProfesional() {
     return FutureBuilder(
-        future: FirebaseDatabase.instance.ref().child('ordens').once(),
+        future:
+            FirebaseDatabase.instance.ref().child('partners').child(dataListObjectGeneral!.child("professional").value.toString()).once(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (snapshot.hasData) {
             DatabaseEvent response = snapshot.data;
 
-            DataSnapshot? dataListObject = null;
-
-            for (var i = 0; i < response.snapshot.children.toList().length; i++) {
-              DataSnapshot dataList = response.snapshot.children.toList()[i];
-
-              if (dataList.child("user").value.toString() == dataListObjectGeneral!.child("professional").value.toString()) {
-                DataSnapshot dataListObject = dataList;
-                dataListObjectGeneral = dataListObject;
-
-                //return Text(dataListObject!.child("name").value.toString());
-
-                return ListView.builder(
-                    padding: EdgeInsets.only(left: 10.0),
-                    itemCount: 1,
-                    physics: NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    itemBuilder: (BuildContext context, int index) {
-                      return ListTile(
-                        leading: CircleAvatar(
-                          backgroundColor: Colors.grey.withOpacity(0.3),
-                          radius: 30,
-                        ),
-                        title: Text(dataList.child("nameProfessional").value.toString()),
-                      );
-                    });
-              }
-            }
-            return Text("hola");
+            return ListTile(
+              leading: AppWidget().circleProfile(response.snapshot.child("photo").value.toString()),
+              title: Text(response.snapshot.child("fullname").value.toString()),
+              subtitle: RatingBarIndicator(
+                  rating: response.snapshot.child("rating").value == null
+                      ? 0
+                      : double.parse(response.snapshot.child("rating").value.toString()),
+                  itemCount: 5,
+                  itemSize: 16.0,
+                  itemBuilder: (context, _) => Icon(
+                        Icons.star,
+                        color: secondryColor,
+                      )),
+            );
           } else {
             return SizedBox();
           }
         });
-  }*/
+  }
 
   Widget itemMoney(String title, String value) {
     return Container(
@@ -426,6 +430,10 @@ class _CartPageState extends State<CartPage> {
                   SizedBox(
                     height: 20,
                   ),
+                  AppWidget().back(context),
+                  SizedBox(
+                    height: 20,
+                  ),
                   Row(
                     children: [
                       SizedBox(
@@ -461,6 +469,7 @@ class _CartPageState extends State<CartPage> {
                               width: 160,
                               height: 160,
                               child: GoogleMap(
+                                markers: _marker,
                                 mapType: MapType.normal,
                                 initialCameraPosition: _kGooglePlex,
                                 onMapCreated: (GoogleMapController controller) {
@@ -472,8 +481,12 @@ class _CartPageState extends State<CartPage> {
                       ),
                       Flexible(
                           child: AppWidget().texfieldFormat(
-                        title: "Apt 501",
-                      )),
+                              controller: _descriptionLocationController,
+                              title: "Apt 501",
+                              execute: () {
+                                dataListObjectGeneral!.ref
+                                    .update({'descriptionLocation': _descriptionLocationController.text.toString()}).then((value) {});
+                              })),
                       SizedBox(
                         width: 20,
                       ),
@@ -516,6 +529,7 @@ class _CartPageState extends State<CartPage> {
                 ),
               ),
             ),*/
+
                   Container(
                     margin: EdgeInsets.only(left: 20, right: 20),
                     width: double.infinity,
@@ -538,17 +552,17 @@ class _CartPageState extends State<CartPage> {
                                         Container(
                                           height: 180,
                                           child: CupertinoDatePicker(
-                                              mode: CupertinoDatePickerMode.time,
+                                              mode: CupertinoDatePickerMode.date,
                                               initialDateTime: DateTime.now(),
                                               onDateTimeChanged: (val) {
                                                 setState(() {
-                                                  //    final f = new DateFormat('yyyy-MM-dd');
+                                                  final f = new DateFormat('yyyy-MM-dd');
 
-                                                  hourService = DateFormat('hh:mm:ss').format(val).toString();
-                                                  dataListObjectGeneral!.ref.update({'date': hourService.toString()}).then((value) {
-                                                    setState(() {});
-                                                    getData();
-                                                    AppWidget().itemMessage("Actualizado", context);
+                                                  //  hourService = DateFormat('hh:mm:ss').format(val).toString();
+                                                  dataListObjectGeneral!.ref.update({'date': f.format(val).toString()}).then((value) {
+                                                    //  setState(() {});
+                                                    //   getData();
+                                                    // AppWidget().itemMessage("Actualizado", context);
                                                   });
 
                                                   //  dateSelected = val.toString();
@@ -567,7 +581,7 @@ class _CartPageState extends State<CartPage> {
                           child: Row(
                             children: [
                               Text(
-                                "Hora de servicio".toString(),
+                                "Fecha de servicio".toString(),
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 16,
@@ -602,7 +616,85 @@ class _CartPageState extends State<CartPage> {
                   SizedBox(
                     height: 15,
                   ),
-                  ListTile(
+                  GestureDetector(
+                      onTap: () {
+                        void _showIOS_DatePicker(ctx) {
+                          showCupertinoModalPopup(
+                              context: ctx,
+                              builder: (_) => Container(
+                                    height: 190,
+                                    color: Color.fromARGB(255, 255, 255, 255),
+                                    child: Column(
+                                      children: [
+                                        Container(
+                                          height: 180,
+                                          child: CupertinoDatePicker(
+                                              mode: CupertinoDatePickerMode.time,
+                                              initialDateTime: DateTime.now(),
+                                              onDateTimeChanged: (val) {
+                                                setState(() {
+                                                  //    final f = new DateFormat('yyyy-MM-dd');
+
+                                                  hourService = DateFormat('hh:mm:ss').format(val).toString();
+                                                  dataListObjectGeneral!.ref.update({'time': hourService.toString()}).then((value) {
+                                                    //  setState(() {});
+                                                    //getData();
+                                                    // AppWidget().itemMessage("Actualizado", context);
+                                                  });
+
+                                                  //  dateSelected = val.toString();
+                                                });
+                                              }),
+                                        ),
+                                      ],
+                                    ),
+                                  ));
+                        }
+
+                        _showIOS_DatePicker(context);
+                      },
+                      child: Container(
+                          margin: EdgeInsets.only(left: 20, right: 20),
+                          child: Row(
+                            children: [
+                              Text(
+                                "Hora de servicio".toString(),
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                  color: secondryColor,
+                                ),
+                              ),
+                              Expanded(child: SizedBox()),
+                              Text(
+                                /* hourService.toString()*/ /*dataListObjectGeneral == null
+                              ? ""
+                              :*/
+                                dataListObjectGeneral!.child("time").value == null
+                                    ? "No disponible"
+                                    : dataListObjectGeneral!.child("time").value.toString(),
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                  color: secondryColor,
+                                ),
+                              )
+                            ],
+                          ))),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(left: 20, right: 20),
+                    width: double.infinity,
+                    height: 1,
+                    color: secondryColor,
+                  ),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  getUserProfesional(),
+                  /*  ListTile(
                     leading: CircleAvatar(
                       backgroundColor: Colors.grey.withOpacity(0.3),
                       radius: 30,
@@ -610,7 +702,7 @@ class _CartPageState extends State<CartPage> {
                     title: Text(dataListObjectGeneral!.child("professionalName").value == null
                         ? "No disponible"
                         : dataListObjectGeneral!.child("professionalName").value.toString()),
-                  ),
+                  ),*/
                   SizedBox(
                     height: 15,
                   ),
@@ -722,6 +814,7 @@ class _CartPageState extends State<CartPage> {
                     child: AppWidget().buttonFormLine(context, "Solicitar", false, urlIcon: "images/icons/userDone.svg", tap: () {
                       dataListObjectGeneral!.ref.update({'state': 1}).then((value) {
                         // setState(() {});
+                        userDataProfile.ref.child("cart").remove();
 
                         Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_) => kHomePage()), (route) => false);
 

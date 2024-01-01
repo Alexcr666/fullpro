@@ -42,6 +42,8 @@ import 'package:fullpro/widgets/ProfileButtonWithBottomSheet.dart';
 import 'package:fullpro/widgets/bottomNav.dart';
 import 'package:page_indicator/page_indicator.dart';
 
+late DataSnapshot userDataProfile;
+
 class kHomePage extends StatefulWidget {
   kHomePage({Key? key}) : super(key: key);
   static const String id = 'kHomePage';
@@ -49,8 +51,6 @@ class kHomePage extends StatefulWidget {
   @override
   _kHomePageState createState() => _kHomePageState();
 }
-
-late DataSnapshot userDataProfile;
 
 class _kHomePageState extends State<kHomePage> {
   TextEditingController _searchHome = TextEditingController();
@@ -457,18 +457,23 @@ class _kHomePageState extends State<kHomePage> {
                   height: 60,
                   color: Colors.transparent,
                   onPressed: () {
+                    if (userDataProfile.child("cart").value != null) {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => CartPage(
+                                    id: userDataProfile.child("cart").value.toString(),
+                                  )));
+                    }
                     // Loader.page(context, const CartPage());
                   },
                   shape: const CircleBorder(),
-                  child: UserPreferences.getcartStatus() == 'full' || cartStatus == 'full'
-                      ? SvgPicture.asset(
-                          "images/icons/cart.svg",
-                          width: 35,
-                        )
-                      : SvgPicture.asset(
-                          "images/icons/cart.svg",
-                          width: 35,
-                        )),
+                  child: Opacity(
+                      opacity: userDataProfile.child("cart").value != null ? 1 : 0.4,
+                      child: SvgPicture.asset(
+                        "images/icons/cart.svg",
+                        width: 35,
+                      ))),
             ),
           ],
           backgroundColor: Static.dashboardBG,
