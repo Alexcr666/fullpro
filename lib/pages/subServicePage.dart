@@ -110,7 +110,7 @@ class _subServicePageState extends State<subServicePage> {
     return data;
   }
 
-  Widget pageProfessional() {
+  Widget pageProfessional(bool inspections) {
     return FutureBuilder(
         //  initialData: 1,
         future: getQuerySubService(),
@@ -178,7 +178,10 @@ class _subServicePageState extends State<subServicePage> {
                                                                 insetPadding: EdgeInsets.all(0),
                                                                 contentPadding: EdgeInsets.all(0),
                                                                 content: Container(
-                                                                    color: Colors.white,
+                                                                    decoration: BoxDecoration(
+                                                                      borderRadius: BorderRadius.circular(10),
+                                                                      color: Colors.white,
+                                                                    ),
                                                                     child: Column(
                                                                       mainAxisSize: MainAxisSize.min,
                                                                       children: [
@@ -245,14 +248,14 @@ class _subServicePageState extends State<subServicePage> {
                                                                                     SizedBox(
                                                                                       height: 10,
                                                                                     ),
-                                                                                    RatingBarIndicator(
+                                                                                    /* RatingBarIndicator(
                                                                                         rating: 2.5,
                                                                                         itemCount: 5,
                                                                                         itemSize: 30.0,
                                                                                         itemBuilder: (context, _) => Icon(
                                                                                               Icons.star_border_rounded,
                                                                                               color: secondryColor,
-                                                                                            )),
+                                                                                            )),*/
                                                                                     SizedBox(
                                                                                       height: 10,
                                                                                     ),
@@ -286,13 +289,11 @@ class _subServicePageState extends State<subServicePage> {
                                                                             ),
                                                                           ],
                                                                         ),
-                                                                        SizedBox(
-                                                                          height: 20,
-                                                                        ),
                                                                         Container(
+                                                                            alignment: Alignment.centerLeft,
                                                                             margin: EdgeInsets.only(left: 20, right: 20),
                                                                             child: Text(
-                                                                              widget.description ?? "",
+                                                                              widget.description ?? "No hay descripción",
                                                                               style: TextStyle(
                                                                                   color: secondryColor,
                                                                                   fontWeight: FontWeight.bold,
@@ -328,6 +329,7 @@ class _subServicePageState extends State<subServicePage> {
                                                                                     Map userMap = {
                                                                                       'name': widget.title,
                                                                                       'rating': 0,
+                                                                                      'inspections': inspections,
                                                                                       'professionalName':
                                                                                           dataList.child("fullname").value.toString(),
                                                                                       'professional': dataList.key.toString(),
@@ -675,68 +677,8 @@ class _subServicePageState extends State<subServicePage> {
                   height: 10,
                 ),
                 // Text(widget.title.toString()),
-                inspeccion ? SizedBox() : Expanded(child: pageProfessional())
-                /* Expanded(
-                        child: catDataLoaded == true
-                            ? categoryServicesList.isNotEmpty || catListLoaded == true
-                                ? categoryServicesList.isNotEmpty
-                                    ? fadeTop(
-                                        0.3,
-                                        ListView.separated(
-                                          separatorBuilder: (BuildContext context, int index) => const SizedBox(),
-                                          itemCount: categoryServicesList.length,
-                                          itemBuilder: (context, index) {
-                                            return ServicesComponent(
-                                              kServices: categoryServicesList[index],
-                                            );
-                                          },
-                                        ),
-                                      )
-                                    : Center(
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(20),
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.center,
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            children: [
-                                              Image.asset(
-                                                'images/no_order.png',
-                                                width: MediaQuery.of(context).size.width * .5,
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      )
-                                : Center(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(20),
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: [
-                                          Image.asset(
-                                            'images/no_order.png',
-                                            width: MediaQuery.of(context).size.width * .5,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  )
-                            : Container(
-                                color: Static.dashboardCard,
-                                child: Center(
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(20),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: const [
-                                        DataLoadedProgress(),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              )),*/
+
+                Expanded(child: pageProfessional(inspeccion))
               ],
             )),
       ),

@@ -72,7 +72,8 @@ class _kHomePageState extends State<kHomePage> {
   void _initMarkers() {
     _marker.clear();
 
-    final UserRef = FirebaseDatabase.instance.ref().child("partners").once().then((value) {
+    final UserRef =
+        FirebaseDatabase.instance.ref().child("partners").orderByChild("profesion").equalTo(_searchHome.text).once().then((value) {
       DatabaseEvent response = value;
 
       for (var i = 0; i < response.snapshot.children.length; i++) {

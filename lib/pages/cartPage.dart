@@ -207,10 +207,44 @@ class _CartPageState extends State<CartPage> {
     });
   }
 
+  void getUserInfo(context) async {
+    currentFirebaseUser = FirebaseAuth.instance.currentUser;
+    String? userid = currentFirebaseUser?.uid;
+
+    final UserRef = FirebaseDatabase.instance.ref().child("users").child(userid!);
+    UserRef.once().then((e) async {
+      final DataSnapshot = e.snapshot;
+
+      if (DataSnapshot != null) {
+        _controller.future.then((value) {
+          value.animateCamera(CameraUpdate.newCameraPosition(
+            CameraPosition(
+              bearing: 0,
+              target: LatLng(double.parse(userDataProfile.child("latitud").value.toString()),
+                  double.parse(userDataProfile.child("longitude").value.toString())),
+              zoom: 14.0,
+            ),
+          ));
+        });
+        dataListObjectGeneral!.ref.update({
+          'address': DataSnapshot.child("location").value.toString(),
+          'latitude': DataSnapshot.child("latitud").value.toString(),
+          'longitude': DataSnapshot.child("longitude").value.toString()
+        }).then((value) {
+          AppWidget().itemMessage("Actualizado", context);
+        });
+      }
+    });
+  }
+
   @override
   void initState() {
     super.initState();
     getData();
+    Future.delayed(const Duration(milliseconds: 700), () {
+      getUserInfo(context);
+    });
+
     DatabaseReference ref = FirebaseDatabase.instance.ref("ordens/" + widget.id);
 
 // Get the Stream
