@@ -234,14 +234,16 @@ class _CartPageState extends State<CartPage> {
 
       if (DataSnapshot != null) {
         _controller.future.then((value) {
-          value.animateCamera(CameraUpdate.newCameraPosition(
-            CameraPosition(
-              bearing: 0,
-              target: LatLng(double.parse(userDataProfile.child("latitud").value.toString()),
-                  double.parse(userDataProfile.child("longitude").value.toString())),
-              zoom: 14.0,
-            ),
-          ));
+          if (userDataProfile != null) {
+            value.animateCamera(CameraUpdate.newCameraPosition(
+              CameraPosition(
+                bearing: 0,
+                target: LatLng(double.parse(userDataProfile!.child("latitud").value.toString()),
+                    double.parse(userDataProfile!.child("longitude").value.toString())),
+                zoom: 14.0,
+              ),
+            ));
+          }
         });
         dataListObjectGeneral!.ref.update({
           'address': DataSnapshot.child("location").value.toString(),
@@ -814,7 +816,7 @@ class _CartPageState extends State<CartPage> {
                     child: AppWidget().buttonFormLine(context, "Solicitar", false, urlIcon: "images/icons/userDone.svg", tap: () {
                       dataListObjectGeneral!.ref.update({'state': 1}).then((value) {
                         // setState(() {});
-                        userDataProfile.ref.child("cart").remove();
+                        userDataProfile!.ref.child("cart").remove();
 
                         Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_) => kHomePage()), (route) => false);
 
@@ -827,9 +829,11 @@ class _CartPageState extends State<CartPage> {
                 Container(
                     width: 200,
                     child: AppWidget().buttonFormLine(context, "Cancelar", true, urlIcon: "images/icons/closeCircle.svg", tap: () {
-                      dataListObjectGeneral!.ref.remove().then((value) {
-                        Navigator.pop(context);
-                        AppWidget().itemMessage("Cancelado", context);
+                      Navigator.pop(context);
+                      AppWidget().optionsEnabled("Seguro quiere cancelar", context, tap2: () {}, tap: () {
+                        dataListObjectGeneral!.ref.remove().then((value) {
+                          //     Navigator.pop(context);
+                        });
                       });
                     })),
               ],

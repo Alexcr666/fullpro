@@ -42,7 +42,7 @@ import 'package:fullpro/widgets/ProfileButtonWithBottomSheet.dart';
 import 'package:fullpro/widgets/bottomNav.dart';
 import 'package:page_indicator/page_indicator.dart';
 
-late DataSnapshot userDataProfile;
+DataSnapshot? userDataProfile;
 
 class kHomePage extends StatefulWidget {
   kHomePage({Key? key}) : super(key: key);
@@ -322,14 +322,16 @@ class _kHomePageState extends State<kHomePage> {
       event.snapshot;
       userDataProfile = event.snapshot;
       _controller.future.then((value) {
-        value.animateCamera(CameraUpdate.newCameraPosition(
-          CameraPosition(
-            bearing: 0,
-            target: LatLng(double.parse(userDataProfile.child("latitud").value.toString()),
-                double.parse(userDataProfile.child("longitude").value.toString())),
-            zoom: 14.0,
-          ),
-        ));
+        if (userDataProfile != null) {
+          value.animateCamera(CameraUpdate.newCameraPosition(
+            CameraPosition(
+              bearing: 0,
+              target: LatLng(double.parse(userDataProfile!.child("latitud").value.toString()),
+                  double.parse(userDataProfile!.child("longitude").value.toString())),
+              zoom: 14.0,
+            ),
+          ));
+        }
       });
     });
 
@@ -431,9 +433,11 @@ class _kHomePageState extends State<kHomePage> {
                 ),
               ),
               Text(
-                userDataProfile.child("location").value == null
-                    ? "Seleccionar ubicación"
-                    : userDataProfile.child("location").value.toString(),
+                userDataProfile == null
+                    ? "Selecciona ubicación"
+                    : userDataProfile!.child("location").value == null
+                        ? "Seleccionar ubicación"
+                        : userDataProfile!.child("location").value.toString(),
                 style: const TextStyle(
                   color: Colors.black,
                   fontSize: 12,
@@ -457,19 +461,23 @@ class _kHomePageState extends State<kHomePage> {
                   height: 60,
                   color: Colors.transparent,
                   onPressed: () {
-                    if (userDataProfile.child("cart").value != null) {
+                    if (userDataProfile!.child("cart").value != null) {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
                               builder: (context) => CartPage(
-                                    id: userDataProfile.child("cart").value.toString(),
+                                    id: userDataProfile!.child("cart").value.toString(),
                                   )));
                     }
                     // Loader.page(context, const CartPage());
                   },
                   shape: const CircleBorder(),
                   child: Opacity(
-                      opacity: userDataProfile.child("cart").value != null ? 1 : 0.4,
+                      opacity: userDataProfile == null
+                          ? 1
+                          : userDataProfile!.child("cart").value != null
+                              ? 1
+                              : 0.4,
                       child: SvgPicture.asset(
                         "images/icons/cart.svg",
                         width: 35,
@@ -544,12 +552,16 @@ class _kHomePageState extends State<kHomePage> {
                             //  Widget itemList() {
 
                             getDistance() async {
-                              var _distanceInMeters = await Geolocator.distanceBetween(
-                                double.parse(dataList.child("latitude").value.toString()),
-                                double.parse(dataList.child("longitude").value.toString()),
-                                double.parse(userDataProfile.child("latitud").value.toString()),
-                                double.parse(userDataProfile.child("longitude").value.toString()),
-                              );
+                              var _distanceInMeters;
+
+                              if (userDataProfile != null) {
+                                _distanceInMeters = await Geolocator.distanceBetween(
+                                  double.parse(dataList.child("latitude").value.toString()),
+                                  double.parse(dataList.child("longitude").value.toString()),
+                                  double.parse(userDataProfile!.child("latitud").value.toString()),
+                                  double.parse(userDataProfile!.child("longitude").value.toString()),
+                                );
+                              }
                               return _distanceInMeters.toString();
                             }
 
@@ -644,7 +656,7 @@ class _kHomePageState extends State<kHomePage> {
                                         builder: (BuildContext context, AsyncSnapshot snapshot) {
                                           if (snapshot.hasData) {
                                             int porcent = (double.parse(snapshot.data.toString()).round() / 1000).round();
-                                            if (porcent <= int.parse(userDataProfile.child("radio").value.toString())) {
+                                            if (porcent <= int.parse(userDataProfile!.child("radio").value.toString())) {
                                               return itemProfile();
                                             } else {
                                               return Text(porcent.toString());
@@ -1102,7 +1114,7 @@ class _kHomePageState extends State<kHomePage> {
                   Svg
             ],
           ),*/
-          AppWidget().titleAdd("Categorias", tap: () {}),
+          AppWidget().title("Categorias", tap: () {}),
           SizedBox(
             height: 20,
           ),

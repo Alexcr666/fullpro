@@ -37,6 +37,51 @@ class subServicePage extends StatefulWidget {
   _subServicePageState createState() => _subServicePageState();
 }
 
+createOrdens(BuildContext context, {String? name, String? inspections, String? profesionalName, String? profesional, int? price}) {
+  savedData() {
+    DatabaseReference newUserRef = FirebaseDatabase.instance.ref().child('ordens').push();
+    userDataProfile!.ref.update({"cart": newUserRef.key.toString()});
+
+    // Prepare data to be saved on users table
+
+    Map userMap = {
+      'name': name,
+      'rating': 0,
+      'inspections': inspections,
+      'professionalName': profesional,
+      'professional': profesional,
+      'user': currentFirebaseUser!.uid.toString(),
+      'state': 0,
+      'price': 1000
+    };
+
+    newUserRef.set(userMap).then((value) {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => CartPage(
+                    id: newUserRef.key.toString(),
+                  )));
+      //  Navigator.pop(contextAlert);
+
+      //  AppWidget().itemMessage("Guardado", context);
+
+      /*Navigator.push(
+                                                                                          context,
+                                                                                          MaterialPageRoute(
+                                                                                              builder: (context) => CartPage()));*/
+    }).catchError((onError) {
+      AppWidget().itemMessage("Guardado", context);
+    });
+  }
+
+  if (userDataProfile!.child("cart").value == null) {
+    savedData();
+  } else {
+    AppWidget().itemMessage("Ya hay una orden activa", context);
+  }
+}
+
 class _subServicePageState extends State<subServicePage> {
   TextEditingController search = TextEditingController();
 
@@ -320,54 +365,13 @@ class _subServicePageState extends State<subServicePage> {
                                                                                         context, "Solicitar", false, tap: () {
                                                                                   Navigator.pop(context);
 
-                                                                                  savedData() {
-                                                                                    DatabaseReference newUserRef = FirebaseDatabase.instance
-                                                                                        .ref()
-                                                                                        .child('ordens')
-                                                                                        .push();
-                                                                                    userDataProfile.ref
-                                                                                        .update({"cart": newUserRef.key.toString()});
-
-                                                                                    // Prepare data to be saved on users table
-
-                                                                                    Map userMap = {
-                                                                                      'name': widget.title,
-                                                                                      'rating': 0,
-                                                                                      'inspections': inspections,
-                                                                                      'professionalName':
+                                                                                  createOrdens(context,
+                                                                                      name: widget.title,
+                                                                                      inspections: "si",
+                                                                                      profesionalName:
                                                                                           dataList.child("fullname").value.toString(),
-                                                                                      'professional': dataList.key.toString(),
-                                                                                      'user': currentFirebaseUser!.uid.toString(),
-                                                                                      'state': 0,
-                                                                                      'price': 1000
-                                                                                    };
-
-                                                                                    newUserRef.set(userMap).then((value) {
-                                                                                      Navigator.push(
-                                                                                          context,
-                                                                                          MaterialPageRoute(
-                                                                                              builder: (context) => CartPage(
-                                                                                                    id: newUserRef.key.toString(),
-                                                                                                  )));
-                                                                                      //  Navigator.pop(contextAlert);
-
-                                                                                      //  AppWidget().itemMessage("Guardado", context);
-
-                                                                                      /*Navigator.push(
-                                                                                          context,
-                                                                                          MaterialPageRoute(
-                                                                                              builder: (context) => CartPage()));*/
-                                                                                    }).catchError((onError) {
-                                                                                      AppWidget().itemMessage("Guardado", context);
-                                                                                    });
-                                                                                  }
-
-                                                                                  if (userDataProfile.child("cart").value == null) {
-                                                                                    savedData();
-                                                                                  } else {
-                                                                                    AppWidget()
-                                                                                        .itemMessage("Ya hay una orden activa", context);
-                                                                                  }
+                                                                                      profesional: dataList.key.toString(),
+                                                                                      price: 1000);
                                                                                 })),
                                                                               ],
                                                                             )),
@@ -408,7 +412,9 @@ class _subServicePageState extends State<subServicePage> {
                                               style: TextStyle(color: Colors.black, fontSize: 10),
                                             ),
                                             RatingBarIndicator(
-                                                rating: 2.5,
+                                                rating: dataList.child("rating").value == null
+                                                    ? 0
+                                                    : double.parse(dataList.child("rating").value.toString()),
                                                 itemCount: 5,
                                                 itemSize: 16.0,
                                                 itemBuilder: (context, _) => Icon(
@@ -531,7 +537,11 @@ class _subServicePageState extends State<subServicePage> {
             child: Column(
               children: [
                 SizedBox(
-                  height: 30,
+                  height: 20,
+                ),
+                AppWidget().back(context),
+                SizedBox(
+                  height: 20,
                 ),
                 Row(
                   children: [
