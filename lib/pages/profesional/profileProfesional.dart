@@ -5,6 +5,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 
@@ -43,6 +44,10 @@ import 'package:fullpro/PROFESIONAL/widget/widget.dart';
 import 'package:fullpro/config.dart';
 
 import 'package:fullpro/controller/loader.dart';
+import 'package:fullpro/pages/INTEGRATION/Chat/Matches.dart';
+import 'package:fullpro/pages/INTEGRATION/Chat/chatPage.dart';
+import 'package:fullpro/pages/INTEGRATION/Chat/home_screen.dart';
+import 'package:fullpro/pages/INTEGRATION/models/user_model.dart';
 
 import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
 
@@ -52,10 +57,13 @@ import 'package:fullpro/pages/subServicePage.dart';
 import 'package:fullpro/styles/statics.dart';
 
 import 'package:fullpro/utils/countryStateCity/AddressPickerRow.dart';
+import 'package:fullpro/widgets/bottomNav.dart';
 
 import 'package:fullpro/widgets/widget.dart';
 
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../styles/styles.dart';
 
@@ -361,13 +369,13 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                           .child(dataList!.child("user").value.toString())
                                           .once(),
                                       builder: (BuildContext context, AsyncSnapshot snapshot) {
-                                        DatabaseEvent response = snapshot.data;
-                                        /* if (snapshot.hasData) {
-            DatabaseEvent response = snapshot.data;
-          }else{
-            
-          }*/
-                                        return AppWidget().circleProfile(response.snapshot.child("photo").value.toString(), size: 40);
+                                        late DatabaseEvent response;
+                                        if (snapshot.hasData) {
+                                          response = snapshot.data;
+                                        }
+                                        return snapshot.hasData != true
+                                            ? AppWidget().loading()
+                                            : AppWidget().circleProfile(response.snapshot.child("photo").value.toString(), size: 40);
                                       }),
                               (i + 1) == response.snapshot.children.toList().length
                                   ? Container(
@@ -488,21 +496,137 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                         ))),
               ],
             ),
-            Container(
-                margin: EdgeInsets.only(left: 110, right: 110),
-                child: AppWidget().buttonFormLine(
-                    context, FirebaseAuth.instance.currentUser!.uid.toString() == widget.id ? "Editar perfil" : "Solicitar", false,
-                    tap: () {
-                  if (FirebaseAuth.instance.currentUser!.uid.toString() == widget.id) {
-                  } else {
-                    createOrdens(context,
-                        name: "Tecnp",
-                        inspections: "si",
-                        profesionalName: nameProfesional,
-                        profesional: userDataProfile!.key.toString(),
-                        price: 1000);
-                  }
-                })),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Flexible(
+                    child: Container(
+                        width: 160,
+                        child: AppWidget().buttonFormLine(
+                            context, FirebaseAuth.instance.currentUser!.uid.toString() == widget.id ? "Editar perfil" : "Solicitar", false,
+                            tap: () {
+                          if (FirebaseAuth.instance.currentUser!.uid.toString() == widget.id) {
+                          } else {
+                            createOrdens(context,
+                                name: "Tecnp",
+                                inspections: "si",
+                                profesionalName: nameProfesional,
+                                profesional: userDataProfile!.key.toString(),
+                                price: 1000);
+                          }
+                        }))),
+                SizedBox(
+                  width: 10,
+                ),
+                GestureDetector(
+                    onTap: () {
+                      /* CollectionReference users = FirebaseFirestore.instance
+                      .collection('Users')
+                      .doc("Mkoc6GZaIWMf6yO2mDAHlZucj9V2" /*FirebaseAuth.instance.currentUser!.uid.toString()*/)
+                      .collection("Matches");
+
+                  Future<void> addUser() {
+                    // Call the user's CollectionReference to add a new user
+                    return users.add({
+                      'Matches': userDataProfile!.key.toString(), // John Doe
+                      'isRead': true,
+                      'userName': "alex c",
+                      // Stokes and Sons
+                      'name': userDataProfile!.child("fullname").value.toString() // 42
+                    }).then((value) {
+                      AppWidget().itemMessage("Creado", context);
+                    }).catchError((error) {
+                      AppWidget().itemMessage("Error al crear", context);
+                    });*/
+
+                      //CollectionReference users = FirebaseFirestore.instance.collection('Users');
+
+                      addMatches() {
+                        DocumentReference usersValidate2 = FirebaseFirestore.instance
+                            .collection('Users')
+                            .doc(FirebaseAuth.instance.currentUser!.uid.toString())
+                            .collection("Matches")
+                            .doc(_userDataProfile!.key.toString());
+
+                        addMatch() {
+                          usersValidate2.set({
+                            'Matches': _userDataProfile!.key.toString(), // John Doe
+                            'UserName': _userDataProfile!.child("fullname").value.toString(),
+                            'userId': _userDataProfile!.key.toString(),
+                          }).then((value) {
+                            AppWidget().itemMessage("Creado", context);
+
+                            Future.delayed(const Duration(milliseconds: 1200), () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => HomeScreen(currentUser!, matches, newmatches)),
+                              );
+                            });
+                          }).catchError((error) {
+                            AppWidget().itemMessage("Error al crear", context);
+                          });
+                        }
+
+                        usersValidate2.get().then((value) {
+                          if (value.exists == false) {
+                            addMatch();
+                          } else {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => HomeScreen(currentUser!, matches, newmatches)),
+                            );
+                          }
+                        });
+                      }
+
+                      DocumentReference usersValidate =
+                          FirebaseFirestore.instance.collection('Users').doc(_userDataProfile!.key.toString());
+
+                      addUser() {
+                        usersValidate.get().then((value) {
+                          if (value.exists) {
+                            addMatches();
+                          } else {
+                            usersValidate.set({
+                              'Matches': _userDataProfile!.key.toString(), // John Doe
+
+                              'UserName': _userDataProfile!.child("fullname").value.toString(),
+                              'userId': _userDataProfile!.key.toString(),
+                            }).then((value) {
+                              AppWidget().itemMessage("Creado", context);
+                              addMatches();
+                            }).catchError((error) {
+                              AppWidget().itemMessage("Error al crear", context);
+                            });
+                          }
+                        });
+
+                        // Call the user's CollectionReference to add a new user
+                        /* return users.add({
+                          'Matches': userDataProfile!.key.toString(), // John Doe
+                          //  'isRead': true,
+                          'UserName': userDataProfile!.child("fullname").value.toString(),
+                          'userId': userDataProfile!.key.toString(),
+                          // Stokes and Sons
+                          // 'name': userDataProfile!.child("fullname").value.toString() // 42
+                        }).then((value) {
+                          AppWidget().itemMessage("Creado", context);
+                        }).catchError((error) {
+                          AppWidget().itemMessage("Error al crear", context);
+                        });*/
+                      }
+
+                      addUser();
+                      //  kkk
+                    },
+                    child: Icon(
+                      Icons.message,
+                      size: 40,
+                      color: secondryColor,
+                    )),
+              ],
+            ),
             SizedBox(
               height: 20,
             ),
@@ -573,6 +697,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
         : ListView.builder(
             itemCount: dataListObjectOrdens!.length,
             shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
             itemBuilder: (BuildContext context, int index) {
               DataSnapshot dataList = dataListObjectOrdens!.toList()[index];
 
@@ -583,10 +708,6 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                   children: [
                     SizedBox(
                       width: 10,
-                    ),
-                    CircleAvatar(
-                      backgroundColor: Colors.grey.withOpacity(0.3),
-                      radius: 30,
                     ),
                     SizedBox(
                       width: 10,
@@ -604,40 +725,55 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                 future:
                                     FirebaseDatabase.instance.ref().child('users').child(dataList!.child("user").value.toString()).once(),
                                 builder: (BuildContext context, AsyncSnapshot snapshot) {
-                                  DatabaseEvent response = snapshot.data;
-                                  /* if (snapshot.hasData) {
-            DatabaseEvent response = snapshot.data;
-          }else{
-            
-          }*/
-                                  return Text(
-                                    dataList.child("fullname").value == null
-                                        ? "No disponible"
-                                        : dataList.child("fullname").value.toString(),
-                                    style: TextStyle(color: secondryColor, fontSize: 17, fontWeight: FontWeight.bold),
-                                  );
+                                  late DatabaseEvent response;
+                                  if (snapshot.hasData) {
+                                    response = snapshot.data;
+                                  } else {}
+                                  return snapshot.hasData == false
+                                      ? AppWidget().loading()
+                                      : Row(
+                                          children: [
+                                            Flexible(
+                                                child:
+                                                    AppWidget().circleProfile(response.snapshot.child("photo").value.toString(), size: 50)),
+                                            SizedBox(
+                                              width: 20,
+                                            ),
+                                            Flexible(
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    response.snapshot.child("fullname").value == null
+                                                        ? "No disponible"
+                                                        : response.snapshot.child("fullname").value.toString(),
+                                                    style: TextStyle(color: secondryColor, fontSize: 17, fontWeight: FontWeight.bold),
+                                                  ),
+                                                  RatingBarIndicator(
+                                                      rating: response.snapshot.child("rating").value == null
+                                                          ? 0
+                                                          : double.parse(response.snapshot.child("rating").value.toString()),
+                                                      itemCount: 5,
+                                                      itemSize: 16.0,
+                                                      itemBuilder: (context, _) => Icon(
+                                                            Icons.star,
+                                                            color: secondryColor,
+                                                          )),
+                                                ],
+                                              ),
+                                            )
+                                          ],
+                                        );
                                 }),
-                        Text(
-                          "Opiniones clientes",
-                          style: TextStyle(color: Colors.black, fontSize: 10),
-                        ),
-                        RatingBarIndicator(
-                            rating: dataList.child("rating").value == null ? 0 : double.parse(dataList.child("rating").value.toString()),
-                            itemCount: 5,
-                            itemSize: 16.0,
-                            itemBuilder: (context, _) => Icon(
-                                  Icons.star,
-                                  color: secondryColor,
-                                )),
                         SizedBox(
                           height: 5,
                         ),
-                        Container(
+                        /*Container(
                             margin: EdgeInsets.only(left: 10, right: 10),
                             child: Text(
                               dataList.child("comment").value == null ? "" : dataList.child("comment").value.toString(),
                               style: TextStyle(fontSize: 10),
-                            )),
+                            )),*/
                         SizedBox(
                           height: 14,
                         ),
@@ -860,23 +996,63 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
               SizedBox(
                 height: 20,
               ),
-              AppWidget().texfieldFormat(controller: nameController, title: "Nombre Completo"),
+              AppWidget().texfieldFormat(controller: nameController, title: "Nombre Completo", enabled: true),
               SizedBox(
                 height: 10,
               ),
-              AppWidget().texfieldFormat(controller: dateController, title: "Fecha"),
+              GestureDetector(
+                  onTap: () {
+                    void _showIOS_DatePicker(ctx) {
+                      showCupertinoModalPopup(
+                          context: ctx,
+                          builder: (_) => Container(
+                                height: 190,
+                                color: Color.fromARGB(255, 255, 255, 255),
+                                child: Column(
+                                  children: [
+                                    Container(
+                                      height: 180,
+                                      child: CupertinoDatePicker(
+                                          mode: CupertinoDatePickerMode.date,
+                                          initialDateTime: DateTime.now(),
+                                          onDateTimeChanged: (val) {
+                                            setState(() {
+                                              final f = new DateFormat('yyyy-MM-dd');
+
+                                              dateController.text = f.format(val);
+                                              //  dateSelected = val.toString();
+                                            });
+                                          }),
+                                    ),
+                                  ],
+                                ),
+                              ));
+                    }
+
+                    _showIOS_DatePicker(context);
+                  },
+                  child: AppWidget().texfieldFormat(title: "Fecha de nacimiento", controller: dateController, enabled: true)),
               SizedBox(
                 height: 10,
               ),
-              AppWidget().texfieldFormat(controller: emailController, title: "Correo electronico"),
+              AppWidget().texfieldFormat(
+                  controller: emailController,
+                  title: "Correo electronico",
+                  enabled: FirebaseAuth.instance.currentUser!.uid == widget.id ? false : true),
               SizedBox(
                 height: 10,
               ),
-              AppWidget().texfieldFormat(controller: phoneController, title: "Celular"),
+              AppWidget().texfieldFormat(
+                  controller: phoneController,
+                  title: "Celular",
+                  enabled: FirebaseAuth.instance.currentUser!.uid == widget.id ? false : true),
               SizedBox(
                 height: 10,
               ),
-              AppWidget().texfieldFormat(controller: professionController, title: "Profesión"),
+              AppWidget().texfieldFormat(
+                  controller: professionController,
+                  title: "Profesión",
+                  enabled: FirebaseAuth.instance.currentUser!.uid == widget.id ? false : true),
               SizedBox(
                 height: 10,
               ),
@@ -904,7 +1080,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
 
       // _userDataProfile.child("licence") == null
 
-      _userDataProfile.child("license") == null
+      _userDataProfile.child("license").value == null
           ? SizedBox()
           : Container(
               height: 40,
@@ -933,7 +1109,11 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                           ),
                           GestureDetector(
                               onTap: () {
-                                fileLicense.removeAt(0);
+                                _userDataProfile.ref.child("license").remove().then((value) {
+                                  setState(() {});
+                                }).catchError((onError) {
+                                  print("error: " + onError.toString());
+                                });
 
                                 setState(() {});
                               },
@@ -1052,7 +1232,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                   ),
                                   GestureDetector(
                                       onTap: () {
-                                        _userDataProfile.ref.child("license").remove().then((value) {
+                                        _userDataProfile.ref.child("background").remove().then((value) {
                                           setState(() {});
                                         });
                                       },
@@ -1110,13 +1290,13 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                 height: 10,
               ),
               Container(margin: EdgeInsets.only(left: 3), alignment: Alignment.centerLeft, child: Text("Registro legal w9")),
-              _userDataProfile.child("background") == null
+              _userDataProfile.child("legal").value == null
                   ? SizedBox()
                   : Container(
                       height: 40,
                       child: ListView.builder(
                           padding: EdgeInsets.only(left: 10.0),
-                          itemCount: fileRegistroLegal.length,
+                          itemCount: 1,
                           scrollDirection: Axis.horizontal,
                           shrinkWrap: true,
                           itemBuilder: (BuildContext context, int index) {
@@ -1139,9 +1319,9 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                   ),
                                   GestureDetector(
                                       onTap: () {
-                                        fileRegistroLegal.removeAt(0);
-
-                                        setState(() {});
+                                        _userDataProfile.ref.child("legal").remove().then((value) {
+                                          setState(() {});
+                                        });
                                       },
                                       child: SvgPicture.asset(
                                         "images/icons/closeFile.svg",
@@ -1168,6 +1348,14 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                   SizedBox(
                                     width: 15,
                                   ),
+                                  GestureDetector(
+                                      onTap: () async {
+                                        final Uri url = Uri.parse(_userDataProfile.child("legal").value.toString());
+                                        if (!await launchUrl(url)) {
+                                          throw Exception('Could not launch _url');
+                                        }
+                                      },
+                                      child: Icon(Icons.remove_red_eye)),
                                 ],
                               ),
                             );
@@ -1196,7 +1384,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
 
                     setState(() {});*/
 
-                    uploadFile("mvp");
+                    uploadFile("legal");
                   },
                   child: DottedBorder(
                     color: registroCheck ? Colors.red : Colors.grey,
@@ -1331,7 +1519,8 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
 
         nameController.text = dataSnapshot.child("fullname").value.toString();
 
-        emailController.text = dataSnapshot.child("fullname").value.toString();
+        emailController.text = dataSnapshot.child("email").value.toString();
+        dateController.text = dataSnapshot.child("dateBirthay").value.toString();
 
         phoneController.text = dataSnapshot.child("phone").value.toString();
 
@@ -1366,7 +1555,13 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
 
     super.initState();
 
-    getProfile(widget.id.toString());
+    DatabaseReference ref = FirebaseDatabase.instance.ref("partners/" + widget.id.toString());
+
+    Stream<DatabaseEvent> stream = ref.onValue;
+
+    stream.listen((DatabaseEvent event) {
+      getProfile(widget.id.toString());
+    });
 
     /*if (widget.id != null) {
       getProfile(widget.id.toString());

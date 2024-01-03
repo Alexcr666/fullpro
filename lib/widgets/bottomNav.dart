@@ -9,6 +9,7 @@ import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fullpro/controller/loader.dart';
 import 'package:fullpro/pages/INTEGRATION/Chat/home_screen.dart';
+import 'package:fullpro/pages/INTEGRATION/Chat/recent_chats.dart';
 import 'package:fullpro/pages/INTEGRATION/maps/maps.dart';
 import 'package:fullpro/pages/INTEGRATION/notification.dart';
 import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
@@ -32,13 +33,13 @@ class BottomNav extends StatefulWidget {
   State<BottomNav> createState() => _BottomNavState();
 }
 
+List<userD.User> matches = [];
+List<userD.User> newmatches = [];
+
 class _BottomNavState extends State<BottomNav> {
   //late FirebaseMessaging _firebaseMessaging;
   CollectionReference docRef = FirebaseFirestore.instance.collection('Users');
   FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-
-  List<userD.User> matches = [];
-  List<userD.User> newmatches = [];
 
   List<userD.User> users = [];
 
@@ -104,26 +105,26 @@ class _BottomNavState extends State<BottomNav> {
   _getMatches() async {
     User user = await _firebaseAuth.currentUser!;
     return FirebaseFirestore.instance
-        .collection('/Users/Mkoc6GZaIWMf6yO2mDAHlZucj9V2/Matches')
+        .collection('/Users/' + user.uid + '/Matches')
 
         // .collection('/Users/${user.uid}/Matches')
-        .orderBy('timestamp', descending: true)
+        //.orderBy('timestamp', descending: true)
         .snapshots()
         .listen((ondata) {
       log("data: " + ondata.toString());
       matches.clear();
-      newmatches.clear();
+      //   newmatches.clear();
       if (ondata.docs.length > 0) {
         ondata.docs.forEach((f) async {
           await docRef.doc(f.data()['Matches']).get().then((DocumentSnapshot doc) {
             if (doc.exists) {
               userD.User tempuser = userD.User.fromDocument(doc);
-              tempuser.distanceBW = calculateDistance(currentUser!.coordinates!['latitude'], currentUser!.coordinates!['longitude'],
+              /* tempuser.distanceBW = calculateDistance(currentUser!.coordinates!['latitude'], currentUser!.coordinates!['longitude'],
                       tempuser.coordinates!['latitude'], tempuser.coordinates!['longitude'])
-                  .round();
+                  .round();*/
 
               matches.add(tempuser);
-              newmatches.add(tempuser);
+              //  newmatches.add(tempuser);
               if (mounted) setState(() {});
             }
           });
@@ -131,7 +132,7 @@ class _BottomNavState extends State<BottomNav> {
       }
     });
   }
-
+/*
   Future getUserList() async {
     List checkedUser = [];
 
@@ -169,7 +170,7 @@ class _BottomNavState extends State<BottomNav> {
         if (mounted) setState(() {});
       });
     });
-  }
+  }*/
 
   getLikedByList() {
     docRef.doc(currentUser!.id).collection("LikedBy").snapshots().listen((data) async {
@@ -299,15 +300,16 @@ class _BottomNavState extends State<BottomNav> {
   _getCurrentUser() async {
     User? user = await _firebaseAuth.currentUser;
 
-    docRef.doc(/*"${user!.uid}"*/ "Mkoc6GZaIWMf6yO2mDAHlZucj9V2").snapshots().listen((data) async {
+    docRef.doc(/*"${user!.uid}"*/ user!.uid.toString()).snapshots().listen((data) async {
       currentUser = userD.User.fromDocument(data);
       print('----------------$currentUser');
       if (mounted) setState(() {});
       users.clear();
       userRemoved.clear();
-      getUserList();
-      getLikedByList();
-      configurePushNotification(currentUser!);
+      // _getMatches();
+      // getUserList();
+      //  getLikedByList();
+      //configurePushNotification(currentUser!);
       /* if (!isPuchased) {
         _getSwipedcount();
       }*/
@@ -364,7 +366,7 @@ class _BottomNavState extends State<BottomNav> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 MaterialButton(
-                  height: 50,
+                  height: 40,
                   //  shape: CircleBorder(),
                   onPressed: () {
                     //
@@ -383,7 +385,7 @@ class _BottomNavState extends State<BottomNav> {
                 //
                 //
                 MaterialButton(
-                  height: 50,
+                  height: 40,
                   shape: CircleBorder(),
                   onPressed: () {
                     //
@@ -402,7 +404,7 @@ class _BottomNavState extends State<BottomNav> {
                 //
                 //
                 MaterialButton(
-                  height: 50,
+                  height: 40,
                   shape: CircleBorder(),
                   onPressed: () {
                     //
@@ -430,7 +432,23 @@ class _BottomNavState extends State<BottomNav> {
 
                 //
                 //
-
+                MaterialButton(
+                  height: 40,
+                  shape: CircleBorder(),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => HomeScreen(currentUser!, matches, newmatches)),
+                    );
+                    //
+                    // Loader.page(context, SupportPage());
+                  },
+                  child: SvgPicture.asset(
+                    "images/icons/message.svg",
+                    width: 30,
+                    color: Colors.white,
+                  ),
+                ),
                 MaterialButton(
                   height: 50,
                   shape: CircleBorder(),
