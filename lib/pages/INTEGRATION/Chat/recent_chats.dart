@@ -55,6 +55,7 @@ class RecentChats extends StatelessWidget {
                                   chatId: chatId(currentUser, index),
                                   sender: currentUser,
                                   second: index,
+                                  photo: "",
                                 ),
                               ),
                             ),
@@ -81,7 +82,7 @@ class RecentChats extends StatelessWidget {
 
                                   return Container(
                                     margin: EdgeInsets.only(top: 5.0, bottom: 5.0, right: 20.0),
-                                    padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+                                    //  padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
                                     decoration: BoxDecoration(
                                       /*color: snapshot.data!.docs[0]['sender_id'] != currentUser.id && !snapshot.data!.docs[0]['isRead']
 

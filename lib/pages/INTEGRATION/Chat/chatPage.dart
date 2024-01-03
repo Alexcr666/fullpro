@@ -5,6 +5,7 @@ import 'dart:math';
 import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 import 'package:firebase_storage/firebase_storage.dart';
 
@@ -23,6 +24,7 @@ import 'package:fullpro/pages/INTEGRATION/models/user_model.dart';
 import 'package:fullpro/pages/INTEGRATION/reportUser.dart';
 
 import 'package:fullpro/styles/styles.dart';
+import 'package:fullpro/widgets/widget.dart';
 
 import 'package:image_picker/image_picker.dart';
 
@@ -44,10 +46,11 @@ class ChatPage extends StatefulWidget {
   final User sender;
 
   final String chatId;
+  String? photo;
 
   final User second;
 
-  ChatPage({required this.sender, required this.chatId, required this.second});
+  ChatPage({required this.sender, required this.chatId, required this.second, this.photo});
 
   @override
   _ChatPageState createState() => _ChatPageState();
@@ -661,7 +664,7 @@ class _ChatPageState extends State<ChatPage> {
               ]),*/
 
             body: Container(
-              margin: EdgeInsets.only(top: 140),
+              margin: EdgeInsets.only(top: 90),
               child: GestureDetector(
                 onTap: () => FocusScope.of(context).unfocus(),
                 child: Scaffold(
@@ -727,12 +730,19 @@ class _ChatPageState extends State<ChatPage> {
             child: Align(
                 alignment: Alignment.topCenter,
                 child: Container(
-                    margin: EdgeInsets.only(top: 40),
-                    child: CircleAvatar(
-                      child: Image.asset("images/user.png"),
-                      radius: 60,
-                      backgroundColor: Colors.grey,
-                    )))),
+                  margin: EdgeInsets.only(top: 20),
+                  child: FutureBuilder(
+                      future: FirebaseDatabase.instance.ref().child('partners').child(widget.second.id.toString()).once(),
+                      builder: (BuildContext context, AsyncSnapshot snapshot) {
+                        if (snapshot.hasData) {
+                          DatabaseEvent response = snapshot.data;
+
+                          return AppWidget().circleProfile(response.snapshot.child("photo").value.toString(), size: 100);
+                        } else {
+                          return SizedBox();
+                        }
+                      }),
+                ))),
       ],
     );
   }

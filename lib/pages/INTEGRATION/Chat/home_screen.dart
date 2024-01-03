@@ -59,9 +59,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 SizedBox(
                   height: 40,
                 ),
-                Container(margin: EdgeInsets.only(top: 40), child: AppWidget().back(context)),
                 Container(
-                  margin: EdgeInsets.only(top: 120),
                   height: MediaQuery.of(context).size.height,
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.only(topLeft: Radius.circular(50), topRight: Radius.circular(50)), color: Colors.white),
@@ -76,6 +74,13 @@ class _HomeScreenState extends State<HomeScreen> {
                             widget.newmatches.toString(),
                             style: TextStyle(color: Colors.black),
                           ),*/
+                          SizedBox(
+                            height: 40,
+                          ),
+                          AppWidget().back(context),
+                          SizedBox(
+                            height: 20,
+                          ),
                           Matches(widget.currentUser, widget.newmatches),
                           Divider(),
                           Padding(
@@ -97,7 +102,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                 ),
-                Positioned.fill(
+                /* Positioned.fill(
                     child: Align(
                         alignment: Alignment.topCenter,
                         child: Container(
@@ -106,7 +111,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               child: Image.asset("images/user.png"),
                               radius: 70,
                               backgroundColor: Colors.grey,
-                            )))),
+                            )))),*/
               ],
             )));
   }

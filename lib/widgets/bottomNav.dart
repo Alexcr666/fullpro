@@ -113,7 +113,7 @@ class _BottomNavState extends State<BottomNav> {
         .listen((ondata) {
       log("data: " + ondata.toString());
       matches.clear();
-      //   newmatches.clear();
+      newmatches.clear();
       if (ondata.docs.length > 0) {
         ondata.docs.forEach((f) async {
           await docRef.doc(f.data()['Matches']).get().then((DocumentSnapshot doc) {
@@ -124,7 +124,7 @@ class _BottomNavState extends State<BottomNav> {
                   .round();*/
 
               matches.add(tempuser);
-              //  newmatches.add(tempuser);
+              newmatches.add(tempuser);
               if (mounted) setState(() {});
             }
           });
@@ -365,12 +365,11 @@ class _BottomNavState extends State<BottomNav> {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                MaterialButton(
+                Container(
                   height: 40,
+                  width: 40,
                   //  shape: CircleBorder(),
-                  onPressed: () {
-                    //
-                  },
+
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -384,88 +383,74 @@ class _BottomNavState extends State<BottomNav> {
                 ),
                 //
                 //
-                MaterialButton(
-                  height: 40,
-                  shape: CircleBorder(),
-                  onPressed: () {
-                    //
-                    Loader.page(
+                GestureDetector(
+                    onTap: () {
+                      Loader.page(
+                          context,
+                          MyOrdersProfile(
+                            tabIndicator: 3,
+                          ));
+                    },
+                    child: Container(
+                      height: 40,
+                      padding: EdgeInsets.all(0),
+                      child: SvgPicture.asset(
+                        "images/icons/bottom2.svg",
+                        width: 30,
+                        color: Colors.white,
+                      ),
+                    )),
+                //
+                //
+                GestureDetector(
+                    onTap: () {
+                      Navigator.push(
                         context,
-                        MyOrdersProfile(
-                          tabIndicator: 3,
-                        ));
-                  },
-                  child: SvgPicture.asset(
-                    "images/icons/bottom2.svg",
-                    width: 30,
-                    color: Colors.white,
-                  ),
-                ),
-                //
-                //
-                MaterialButton(
-                  height: 40,
-                  shape: CircleBorder(),
-                  onPressed: () {
-                    //
-
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => ProfileOptionsPage()),
-                    );
-                    /*  Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => Notifications()),
-                    );*/
-                    /*   Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => MapSample()),
-                    );*/
-                    // Loader.page(context, Account());
-                  },
-                  child: SvgPicture.asset(
-                    "images/icons/bottom3.svg",
-                    width: 30,
-                    color: Colors.white,
-                  ),
-                ),
+                        MaterialPageRoute(builder: (context) => ProfileOptionsPage()),
+                      );
+                    },
+                    child: Container(
+                      height: 40,
+                      child: SvgPicture.asset(
+                        "images/icons/bottom3.svg",
+                        width: 30,
+                        color: Colors.white,
+                      ),
+                    )),
 
                 //
                 //
-                MaterialButton(
-                  height: 40,
-                  shape: CircleBorder(),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => HomeScreen(currentUser!, matches, newmatches)),
-                    );
-                    //
-                    // Loader.page(context, SupportPage());
-                  },
-                  child: SvgPicture.asset(
-                    "images/icons/message.svg",
-                    width: 30,
-                    color: Colors.white,
-                  ),
-                ),
-                MaterialButton(
-                  height: 50,
-                  shape: CircleBorder(),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => HomeScreen(currentUser!, matches, newmatches)),
-                    );
-                    //
-                    // Loader.page(context, SupportPage());
-                  },
-                  child: SvgPicture.asset(
-                    "images/icons/user.svg",
-                    width: 30,
-                    color: Colors.white,
-                  ),
-                ),
+                GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => HomeScreen(currentUser!, matches, newmatches)),
+                      );
+                    },
+                    child: Container(
+                      height: 40,
+                      padding: EdgeInsets.all(0),
+                      child: SvgPicture.asset(
+                        "images/icons/message.svg",
+                        width: 30,
+                        color: Colors.white,
+                      ),
+                    )),
+                GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => HomeScreen(currentUser!, matches, newmatches)),
+                      );
+                    },
+                    child: Container(
+                      height: 50,
+                      child: SvgPicture.asset(
+                        "images/icons/user.svg",
+                        width: 30,
+                        color: Colors.white,
+                      ),
+                    )),
                 /* MaterialButton(
                   height: 50,
                   shape: CircleBorder(),
