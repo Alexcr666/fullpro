@@ -558,11 +558,15 @@ class _kHomePageState extends State<kHomePage> {
                                 _distanceInMeters = await Geolocator.distanceBetween(
                                   double.parse(dataList.child("latitude").value.toString()),
                                   double.parse(dataList.child("longitude").value.toString()),
-                                  double.parse(userDataProfile!.child("latitud").value.toString()),
-                                  double.parse(userDataProfile!.child("longitude").value.toString()),
+                                  userDataProfile!.child("latitud").value == null
+                                      ? double.parse(dataList.child("latitude").value.toString())
+                                      : double.parse(userDataProfile!.child("latitud").value.toString()),
+                                  userDataProfile!.child("latitud").value == null
+                                      ? double.parse(dataList.child("longitude").value.toString())
+                                      : double.parse(userDataProfile!.child("longitude").value.toString()),
                                 );
                               }
-                              return _distanceInMeters.toString();
+                              return _distanceInMeters ?? "0";
                             }
 
                             Widget itemProfile() {
@@ -618,8 +622,9 @@ class _kHomePageState extends State<kHomePage> {
                                                     future: getDistance(),
                                                     builder: (BuildContext context, AsyncSnapshot snapshot) {
                                                       if (snapshot.hasData) {
-                                                        return Text(
-                                                            (double.parse(snapshot.data.toString()).round() / 1000).toString() + " Km");
+                                                        return Text(snapshot.data.toString() == "0"
+                                                            ? "no"
+                                                            : (double.parse(snapshot.data.toString()).round() / 1000).toString() + " Km");
                                                       } else {
                                                         return SizedBox();
                                                       }
@@ -655,14 +660,18 @@ class _kHomePageState extends State<kHomePage> {
                                         future: getDistance(),
                                         builder: (BuildContext context, AsyncSnapshot snapshot) {
                                           if (snapshot.hasData) {
-                                            int porcent = (double.parse(snapshot.data.toString()).round() / 1000).round();
-                                            if (porcent <= int.parse(userDataProfile!.child("radio").value.toString())) {
+                                            try {
+                                              int porcent = (double.parse(snapshot.data.toString()).round() / 1000).round();
+                                              if (porcent <= int.parse(userDataProfile!.child("radio").value.toString())) {
+                                                return itemProfile();
+                                              } else {
+                                                return Text(porcent.toString());
+                                              }
+                                            } catch (e) {
                                               return itemProfile();
-                                            } else {
-                                              return Text(porcent.toString());
                                             }
                                           } else {
-                                            return SizedBox();
+                                            return AppWidget().loading();
                                           }
                                         });
                           });
@@ -777,7 +786,10 @@ class _kHomePageState extends State<kHomePage> {
                   textSubmitted: (text) {
                     print("set: " + _searchHome.text.toString());
                     _searchHome.text = text;
+
                     _initMarkers();
+
+                    setState(() {});
                   }
 
                   // added.add(text);

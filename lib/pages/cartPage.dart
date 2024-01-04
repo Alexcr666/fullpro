@@ -10,6 +10,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
 import 'package:fullpro/pages/homepage.dart';
+import 'package:fullpro/pages/profile/address/addressUser.dart';
 import 'package:fullpro/widgets/widget.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
@@ -206,6 +207,16 @@ class _CartPageState extends State<CartPage> {
       final snapshot = e.snapshot;
       if (snapshot.value != null) {
         dataListObjectGeneral = snapshot;
+
+        DatabaseReference ref = FirebaseDatabase.instance.ref("users/" + dataListObjectGeneral!.child("user").value.toString());
+
+// Get the Stream
+        Stream<DatabaseEvent> stream = ref.onValue;
+
+// Subscribe to the stream!
+        stream.listen((DatabaseEvent event) {
+          getUserInfo(context);
+        });
 
         MarkerId markerId = MarkerId(dataListObjectGeneral!.key.toString());
         _marker.add(
@@ -1236,7 +1247,8 @@ class _CartPageState extends State<CartPage> {
                 const SizedBox(width: 5),
                 GestureDetector(
                     onTap: () {
-                      Loader.page(context, Addresses(dataListObjectGeneral: dataListObjectGeneral));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => AddressesUser()));
+                      //  Loader.page(context, Addresses(dataListObjectGeneral: dataListObjectGeneral));
                     },
                     child: Text(
                       'Cambiar',
