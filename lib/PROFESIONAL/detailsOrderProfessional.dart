@@ -94,7 +94,7 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
   Timer? timer;
 
   late final _probController = TextEditingController();
-
+  late final _descriptionCommentController = TextEditingController();
   String problmValidate = '';
 
   DataSnapshot? dataListObjectGeneral;
@@ -445,6 +445,7 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
       final snapshot = e.snapshot;
       if (snapshot.value != null) {
         dataListObjectGeneral = snapshot;
+        dataListObjectGeneral!.child("comment").value.toString();
 
         MarkerId markerId = MarkerId(dataListObjectGeneral!.key.toString());
         _marker.add(
@@ -475,30 +476,32 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
   }
 
   Widget getUserUser() {
-    return FutureBuilder(
-        future: FirebaseDatabase.instance.ref().child('users').child(dataListObjectGeneral!.child("user").value.toString()).once(),
-        builder: (BuildContext context, AsyncSnapshot snapshot) {
-          if (snapshot.hasData) {
-            DatabaseEvent response = snapshot.data;
+    return dataListObjectGeneral!.child("user").value == null
+        ? AppWidget().loading()
+        : FutureBuilder(
+            future: FirebaseDatabase.instance.ref().child('users').child(dataListObjectGeneral!.child("user").value.toString()).once(),
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              if (snapshot.hasData) {
+                DatabaseEvent response = snapshot.data;
 
-            return ListTile(
-              leading: AppWidget().circleProfile(response.snapshot.child("photo").value.toString()),
-              title: Text(response.snapshot.child("fullname").value.toString()),
-              subtitle: RatingBarIndicator(
-                  rating: response.snapshot.child("rating").value == null
-                      ? 0
-                      : double.parse(response.snapshot.child("rating").value.toString()),
-                  itemCount: 5,
-                  itemSize: 16.0,
-                  itemBuilder: (context, _) => Icon(
-                        Icons.star,
-                        color: secondryColor,
-                      )),
-            );
-          } else {
-            return SizedBox();
-          }
-        });
+                return ListTile(
+                  leading: AppWidget().circleProfile(response.snapshot.child("photo").value.toString()),
+                  title: Text(response.snapshot.child("fullname").value.toString()),
+                  subtitle: RatingBarIndicator(
+                      rating: response.snapshot.child("rating").value == null
+                          ? 0
+                          : double.parse(response.snapshot.child("rating").value.toString()),
+                      itemCount: 5,
+                      itemSize: 16.0,
+                      itemBuilder: (context, _) => Icon(
+                            Icons.star,
+                            color: secondryColor,
+                          )),
+                );
+              } else {
+                return SizedBox();
+              }
+            });
   }
 
   @override
@@ -986,7 +989,21 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
                         widget.dataList.ref.update({'rating': rating});
                       },
                     ),
-                    AppWidget().texfieldFormat(title: "Comentario"),
+                    Row(
+                      children: [
+                        Flexible(
+                          child: AppWidget().texfieldFormat(title: "Comentario", controller: _descriptionCommentController),
+                        ),
+                        Container(
+                            width: 110,
+                            height: 60,
+                            child: AppWidget().buttonFormColor(context, "Enviar", secondryColor, tap: () {
+                              widget.dataList.ref.update({'comment': _descriptionCommentController.text}).then((value) {
+                                AppWidget().itemMessage("Actualizado", context);
+                              });
+                            })),
+                      ],
+                    ),
                   ],
                 )),
 

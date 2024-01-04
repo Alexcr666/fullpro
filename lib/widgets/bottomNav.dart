@@ -438,10 +438,9 @@ class _BottomNavState extends State<BottomNav> {
                     )),
                 GestureDetector(
                     onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => HomeScreen(currentUser!, matches, newmatches)),
-                      );
+                      //
+
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => const Account()));
                     },
                     child: Container(
                       height: 50,

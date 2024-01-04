@@ -1,7 +1,10 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:flutter_locales/flutter_locales.dart';
@@ -25,6 +28,7 @@ import 'package:fullpro/widgets/DataLoadedProgress.dart';
 import 'package:fullpro/widgets/ProfileWidget.dart';
 import 'package:fullpro/widgets/widget.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 
 class Account extends StatefulWidget {
   const Account({Key? key}) : super(key: key);
@@ -84,7 +88,7 @@ class _AccountState extends State<Account> with TickerProviderStateMixin {
         setState(() {});
 
         currentUserInfo = UserData.fromSnapshot(DataSnapshot);
-        _dateController.text = AppUtils().noNull(userDataProfile.child("date").value.toString());
+        _dateController.text = AppUtils().noNull(userDataProfile.child("dateUser").value.toString());
         _emailController.text = AppUtils().noNull(userDataProfile.child("email").value.toString());
 
         _nameController.text = AppUtils().noNull(userDataProfile.child("fullname").value.toString());
@@ -299,26 +303,67 @@ class _AccountState extends State<Account> with TickerProviderStateMixin {
               ),
               GestureDetector(
                   onTap: () async {
+                    /* ImagePicker imagePicker = ImagePicker();
+
+                    var image = await imagePicker.pickImage(source: ImageSource.gallery);
+                    imagePickerFile = File(image!.path);
+                    setState(() {});*/
+                    //kkk
+
                     ImagePicker imagePicker = ImagePicker();
 
                     var image = await imagePicker.pickImage(source: ImageSource.gallery);
                     imagePickerFile = File(image!.path);
-                    setState(() {});
+                    FirebaseAuth user = FirebaseAuth.instance;
+
+                    AppWidget().itemMessage("Subiendo..", context);
+
+                    int timestamp = new DateTime.now().millisecondsSinceEpoch;
+
+                    Reference storageReference =
+                        FirebaseStorage.instance.ref().child('user/' + user.currentUser!.uid.toString() + timestamp.toString() + '.jpg');
+
+                    UploadTask uploadTask = storageReference.putFile(File(image!.path));
+
+                    await uploadTask.then((p0) async {
+                      String fileUrl = await storageReference.getDownloadURL();
+
+                      log("urlfile: " + fileUrl.toString());
+
+                      // userProfileData.child("photo")
+
+                      userDataProfile.ref.update({'photo': fileUrl}).then((value) {
+                        //  Navigator.pop(context);
+
+                        setState(() {});
+
+                        AppWidget().itemMessage("Foto actualizada", context);
+                        getUserInfo();
+                      }).catchError((onError) {
+                        AppWidget().itemMessage("Error al actualizar foto", context);
+                      });
+
+                      //   _sendImage(messageText: 'Photo', imageUrl: fileUrl);
+                    }).catchError((onError) {
+                      print("error: " + onError.toString());
+                    });
                   },
-                  child: imagePickerFile != null
-                      ? ClipRRect(
-                          borderRadius: BorderRadius.circular(100),
-                          child: Image.file(
-                            imagePickerFile!,
-                            fit: BoxFit.cover,
-                            width: 130,
-                            height: 130,
-                          ),
-                        )
-                      : SvgPicture.asset(
-                          "images/icons/profileCircle.svg",
-                          width: 130,
-                        )),
+                  child: userDataProfile.child("photo").value == null
+                      ? AppWidget().circleProfile(userDataProfile.child("photo").value.toString(), size: 120)
+                      : imagePickerFile != null
+                          ? ClipRRect(
+                              borderRadius: BorderRadius.circular(100),
+                              child: Image.file(
+                                imagePickerFile!,
+                                fit: BoxFit.cover,
+                                width: 130,
+                                height: 130,
+                              ),
+                            )
+                          : SvgPicture.asset(
+                              "images/icons/profileCircle.svg",
+                              width: 130,
+                            )),
               /* const SizedBox(height: 30),
               ProfileWidget(
                 imagePath: 'images/user_icon.png',
@@ -426,8 +471,42 @@ class _AccountState extends State<Account> with TickerProviderStateMixin {
                                 AppWidget().texfieldFormat(
                                     title: "Nombre completo", urlIcon: "images/icons/user.svg", controller: _nameController),
                                 const SizedBox(height: 10),
-                                AppWidget().texfieldFormat(
-                                    title: "Fecha de nacimiento", urlIcon: "images/icons/calendar.svg", controller: _dateController),
+                                GestureDetector(
+                                    onTap: () {
+                                      void _showIOS_DatePicker(ctx) {
+                                        showCupertinoModalPopup(
+                                            context: ctx,
+                                            builder: (_) => Container(
+                                                  height: 190,
+                                                  color: Color.fromARGB(255, 255, 255, 255),
+                                                  child: Column(
+                                                    children: [
+                                                      Container(
+                                                        height: 180,
+                                                        child: CupertinoDatePicker(
+                                                            mode: CupertinoDatePickerMode.date,
+                                                            initialDateTime: DateTime.now(),
+                                                            onDateTimeChanged: (val) {
+                                                              setState(() {
+                                                                final f = new DateFormat('yyyy-MM-dd');
+
+                                                                _dateController.text = f.format(val);
+                                                                //  dateSelected = val.toString();
+                                                              });
+                                                            }),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ));
+                                      }
+
+                                      _showIOS_DatePicker(context);
+                                    },
+                                    child: AppWidget().texfieldFormat(
+                                        title: "Fecha de nacimiento",
+                                        urlIcon: "images/icons/calendar.svg",
+                                        controller: _dateController,
+                                        enabled: true)),
                                 const SizedBox(height: 10),
                                 AppWidget().texfieldFormat(
                                     title: "Correo electronico", urlIcon: "images/icons/message.svg", controller: _emailController),
@@ -612,7 +691,7 @@ class _AccountState extends State<Account> with TickerProviderStateMixin {
 
                                 userDataProfile.ref.update({
                                   'radio': int.parse(_currentSliderValue.round().toString()),
-                                  "name": _nameController.text.toString(),
+                                  "fullname": _nameController.text.toString(),
                                   "dateUser": _dateController.text,
                                   "email": _emailController.text
                                 }).then((value) {

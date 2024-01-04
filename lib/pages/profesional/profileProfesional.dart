@@ -699,7 +699,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
             shrinkWrap: true,
             physics: NeverScrollableScrollPhysics(),
             itemBuilder: (BuildContext context, int index) {
-              DataSnapshot dataList = dataListObjectOrdens!.toList()[index];
+              DataSnapshot dataList = dataListObjectOrdens!.toList().reversed.toList()[index];
 
               return Container(
                 margin: EdgeInsets.only(left: 20, right: 20, top: 10),
@@ -1075,7 +1075,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
       Container(margin: EdgeInsets.only(left: 20), alignment: Alignment.centerLeft, child: Text("Licencias")),
 
       SizedBox(
-        height: 5,
+        height: 10,
       ),
 
       // _userDataProfile.child("licence") == null
@@ -1162,9 +1162,11 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
           margin: EdgeInsets.only(left: 20, right: 20),
           child: Column(
             children: [
-              GestureDetector(
-                  onTap: () async {
-                    /*   FilePickerResult? result = await FilePicker.platform.pickFiles();
+              FirebaseAuth.instance.currentUser!.uid != widget.id
+                  ? SizedBox()
+                  : GestureDetector(
+                      onTap: () async {
+                        /*   FilePickerResult? result = await FilePicker.platform.pickFiles();
 
 
                     if (result != null) {
@@ -1183,26 +1185,29 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
 
                     }*/
 
-                    uploadFile("license");
-                  },
-                  child: DottedBorder(
-                    color: licenceCheck ? Colors.red : Colors.grey,
-                    borderType: BorderType.RRect,
-                    radius: Radius.circular(12),
-                    padding: EdgeInsets.all(6),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.all(Radius.circular(12)),
-                      child: Container(
-                        height: 40,
-                        width: double.infinity,
-                        child: Center(child: Text("Drag & Drop your files or Mobile")),
-                      ),
-                    ),
-                  )),
+                        uploadFile("license");
+                      },
+                      child: DottedBorder(
+                        color: licenceCheck ? Colors.red : Colors.grey,
+                        borderType: BorderType.RRect,
+                        radius: Radius.circular(12),
+                        padding: EdgeInsets.all(6),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.all(Radius.circular(12)),
+                          child: Container(
+                            height: 40,
+                            width: double.infinity,
+                            child: Center(child: Text("Drag & Drop your files or Mobile")),
+                          ),
+                        ),
+                      )),
               SizedBox(
                 height: 10,
               ),
               Container(margin: EdgeInsets.only(left: 3), alignment: Alignment.centerLeft, child: Text("Background check")),
+              SizedBox(
+                height: 10,
+              ),
               _userDataProfile.child("background").value == null
                   ? SizedBox()
                   : Container(
@@ -1268,30 +1273,39 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
               SizedBox(
                 height: 5,
               ),
-              GestureDetector(
-                  onTap: () async {
-                    uploadFile("background");
-                  },
-                  child: DottedBorder(
-                    color: backgroundCheck ? Colors.red : Colors.grey,
-                    borderType: BorderType.RRect,
-                    radius: Radius.circular(12),
-                    padding: EdgeInsets.all(6),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.all(Radius.circular(12)),
-                      child: Container(
-                        height: 40,
-                        width: double.infinity,
-                        child: Center(child: Text("Drag & Drop your files or Mobile")),
-                      ),
-                    ),
-                  )),
+              FirebaseAuth.instance.currentUser!.uid != widget.id
+                  ? SizedBox(
+                      height: 10,
+                    )
+                  : GestureDetector(
+                      onTap: () async {
+                        uploadFile("background");
+                      },
+                      child: DottedBorder(
+                        color: backgroundCheck ? Colors.red : Colors.grey,
+                        borderType: BorderType.RRect,
+                        radius: Radius.circular(12),
+                        padding: EdgeInsets.all(6),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.all(Radius.circular(12)),
+                          child: Container(
+                            height: 40,
+                            width: double.infinity,
+                            child: Center(child: Text("Drag & Drop your files or Mobile")),
+                          ),
+                        ),
+                      )),
               SizedBox(
                 height: 10,
               ),
               Container(margin: EdgeInsets.only(left: 3), alignment: Alignment.centerLeft, child: Text("Registro legal w9")),
+              SizedBox(
+                height: 10,
+              ),
               _userDataProfile.child("legal").value == null
-                  ? SizedBox()
+                  ? SizedBox(
+                      height: 10,
+                    )
                   : Container(
                       height: 40,
                       child: ListView.builder(
@@ -1363,9 +1377,13 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
               SizedBox(
                 height: 5,
               ),
-              GestureDetector(
-                  onTap: () async {
-                    /* FilePickerResult? result = await FilePicker.platform.pickFiles();
+              FirebaseAuth.instance.currentUser!.uid != widget.id
+                  ? SizedBox(
+                      height: 10,
+                    )
+                  : GestureDetector(
+                      onTap: () async {
+                        /* FilePickerResult? result = await FilePicker.platform.pickFiles();
 
 
                     if (result != null) {
@@ -1384,22 +1402,22 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
 
                     setState(() {});*/
 
-                    uploadFile("legal");
-                  },
-                  child: DottedBorder(
-                    color: registroCheck ? Colors.red : Colors.grey,
-                    borderType: BorderType.RRect,
-                    radius: Radius.circular(12),
-                    padding: EdgeInsets.all(6),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.all(Radius.circular(12)),
-                      child: Container(
-                        height: 40,
-                        width: double.infinity,
-                        child: Center(child: Text("Drag & Drop your files or Mobile")),
-                      ),
-                    ),
-                  )),
+                        uploadFile("legal");
+                      },
+                      child: DottedBorder(
+                        color: registroCheck ? Colors.red : Colors.grey,
+                        borderType: BorderType.RRect,
+                        radius: Radius.circular(12),
+                        padding: EdgeInsets.all(6),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.all(Radius.circular(12)),
+                          child: Container(
+                            height: 40,
+                            width: double.infinity,
+                            child: Center(child: Text("Drag & Drop your files or Mobile")),
+                          ),
+                        ),
+                      )),
             ],
           )),
 

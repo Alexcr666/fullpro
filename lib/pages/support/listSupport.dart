@@ -75,7 +75,7 @@ class _ListSupportPageState extends State<ListSupportPage> {
                                             Navigator.pop(context);
                                           },
                                         ),
-                                        ListTile(
+                                        /*ListTile(
                                           title: new Text('Actualizar'),
                                           onTap: () {
                                             Navigator.pop(context);
@@ -87,7 +87,7 @@ class _ListSupportPageState extends State<ListSupportPage> {
                                                           data: dataList,
                                                         )));
                                           },
-                                        ),
+                                        ),*/
                                         ListTile(
                                           title: new Text('Cancelar'),
                                           onTap: () {
@@ -144,9 +144,11 @@ class _ListSupportPageState extends State<ListSupportPage> {
                                                       style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: secondryColor),
                                                     ),
                                                     Text(
-                                                      dataList.child("type").value.toString(),
+                                                      dataList.child("date").value == null
+                                                          ? "No disponible"
+                                                          : dataList.child("date").value.toString(),
                                                       textAlign: TextAlign.center,
-                                                      style: TextStyle(fontSize: 10, color: secondryColor),
+                                                      style: TextStyle(fontSize: 12, color: secondryColor),
                                                     ),
                                                   ],
                                                 )),

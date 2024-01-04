@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
 import 'package:fullpro/styles/statics.dart' as Static;
 
 class ProgressDialog extends StatelessWidget {
@@ -24,14 +25,14 @@ class ProgressDialog extends StatelessWidget {
                 width: 5,
               ),
               CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(Static.secondaryColor),
+                valueColor: AlwaysStoppedAnimation<Color>(secondryColor),
               ),
               SizedBox(
                 width: 25.0,
               ),
               Text(
                 '$status',
-                style: TextStyle(fontSize: 15),
+                style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: secondryColor),
               ),
             ],
           ),

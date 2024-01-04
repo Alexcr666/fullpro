@@ -10,6 +10,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
 import 'package:fullpro/pages/homepage.dart';
+import 'package:fullpro/pages/profesional/profileProfesional.dart';
 import 'package:fullpro/pages/profile/address/addressUser.dart';
 import 'package:fullpro/widgets/widget.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -347,6 +348,14 @@ class _CartPageState extends State<CartPage> {
             DatabaseEvent response = snapshot.data;
 
             return ListTile(
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ProfileProfesionalPage(
+                              id: response.snapshot.key.toString(),
+                            )));
+              },
               leading: AppWidget().circleProfile(response.snapshot.child("photo").value.toString()),
               title: Text(response.snapshot.child("fullname").value.toString()),
               subtitle: RatingBarIndicator(
