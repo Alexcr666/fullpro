@@ -192,12 +192,12 @@ class _ListSupportPageState extends State<ListSupportPage> {
                                 )));
                       });
             } else {
-              return Text("Cargando");
+              return AppWidget().loading();
             }
 
             ;
           } catch (e) {
-            return Text("Cargando");
+            return AppWidget().loading();
           }
         });
   }

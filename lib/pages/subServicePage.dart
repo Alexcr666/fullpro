@@ -40,7 +40,6 @@ class subServicePage extends StatefulWidget {
 createOrdens(BuildContext context, {String? name, String? inspections, String? profesionalName, String? profesional, int? price}) {
   savedData() {
     DatabaseReference newUserRef = FirebaseDatabase.instance.ref().child('ordens').push();
-    userDataProfile!.ref.update({"cart": newUserRef.key.toString()});
 
     // Prepare data to be saved on users table
 
@@ -56,12 +55,15 @@ createOrdens(BuildContext context, {String? name, String? inspections, String? p
     };
 
     newUserRef.set(userMap).then((value) {
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => CartPage(
-                    id: newUserRef.key.toString(),
-                  )));
+      userDataProfile!.ref.update({"cart": newUserRef.key.toString()}).then((value) {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => CartPage(
+                      id: newUserRef.key.toString(),
+                    )));
+      });
+
       //  Navigator.pop(contextAlert);
 
       //  AppWidget().itemMessage("Guardado", context);
@@ -319,7 +321,9 @@ class _subServicePageState extends State<subServicePage> {
                                                                                       fontSize: 16),
                                                                                 ),
                                                                                 Text(
-                                                                                  "1.000",
+                                                                                  dataList.child("price").value == null
+                                                                                      ? "0"
+                                                                                      : dataList.child("price").value.toString(),
                                                                                   style: TextStyle(
                                                                                       color: Colors.black,
                                                                                       fontWeight: FontWeight.bold,
@@ -446,12 +450,12 @@ class _subServicePageState extends State<subServicePage> {
                             }
                           });
             } else {
-              return Text("Cargando");
+              return AppWidget().loading();
             }
 
             ;
           } catch (e) {
-            return Text("Cargando");
+            return AppWidget().loading();
           }
         });
   }

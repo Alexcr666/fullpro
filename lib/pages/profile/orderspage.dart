@@ -241,12 +241,12 @@ class _MyOrdersState extends State<MyOrdersProfile> with TickerProviderStateMixi
                         }
                       });
             } else {
-              return Text("Cargando");
+              return AppWidget().loading();
             }
 
             ;
           } catch (e) {
-            return Text("Cargando");
+            return AppWidget().loading();
           }
         });
   }
@@ -331,12 +331,26 @@ class _MyOrdersState extends State<MyOrdersProfile> with TickerProviderStateMixi
                         }
                       });
             } else {
-              return Text("Cargando");
+              return AppWidget().loading();
             }
 
             ;
           } catch (e) {
-            return Text("Cargando");
+            return AppWidget().loading();
+          }
+        });
+  }
+
+  Widget getUserUserPhoto(String id) {
+    return FutureBuilder(
+        future: FirebaseDatabase.instance.ref().child('users').child(id).once(),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          if (snapshot.hasData) {
+            DatabaseEvent response = snapshot.data;
+
+            return AppWidget().circleProfile(response.snapshot.child("photo").value.toString());
+          } else {
+            return SizedBox();
           }
         });
   }
@@ -368,6 +382,15 @@ class _MyOrdersState extends State<MyOrdersProfile> with TickerProviderStateMixi
                     shrinkWrap: true,
                     itemBuilder: (BuildContext context, int i) {
                       DataSnapshot dataList = response.snapshot.children.toList().reversed.toList()[i];
+
+                      getVisibleCancel() {
+                        if (int.parse(dataList!.child("state").value.toString()) == 3 ||
+                            int.parse(dataList!.child("state").value.toString()) == 4) {
+                          return true;
+                        } else {
+                          return false;
+                        }
+                      }
 
                       return /*dataList.child("user").value.toString() == "LapnDojkb8QGfSOioTXLkiPAiNt2"
 
@@ -403,10 +426,8 @@ class _MyOrdersState extends State<MyOrdersProfile> with TickerProviderStateMixi
                                         ),
                                         child: Row(
                                           children: [
-                                            CircleAvatar(
-                                              backgroundColor: Colors.grey.withOpacity(0.4),
-                                              radius: 30,
-                                            ),
+                                            // AppWidget().circleProfile("", size: 50),
+                                            getUserUserPhoto(dataList.child("user").value.toString()),
                                             // Image Row
                                             //    Row(
                                             //    crossAxisAlignment: CrossAxisAlignment.center,
@@ -451,7 +472,9 @@ class _MyOrdersState extends State<MyOrdersProfile> with TickerProviderStateMixi
                                                   ),
                                                 ),
                                                 RatingBarIndicator(
-                                                    rating: 2.5,
+                                                    rating: dataList.child("rating").value == null
+                                                        ? 0
+                                                        : double.parse(dataList.child("rating").value.toString()),
                                                     itemCount: 5,
                                                     itemSize: 18.0,
                                                     itemBuilder: (context, _) => Icon(
@@ -472,7 +495,9 @@ class _MyOrdersState extends State<MyOrdersProfile> with TickerProviderStateMixi
                                                       width: 5,
                                                     ),
                                                     Text(
-                                                      dataList.child("nameProfessional").value.toString(),
+                                                      dataList.child("nameProfessional").value == null
+                                                          ? "No disponible"
+                                                          : dataList.child("nameProfessional").value.toString(),
                                                       style: TextStyle(
                                                         color: secondryColor,
                                                         fontWeight: FontWeight.bold,
@@ -525,7 +550,7 @@ class _MyOrdersState extends State<MyOrdersProfile> with TickerProviderStateMixi
                                                 SizedBox(
                                                   height: 10,
                                                 ),
-                                                int.parse(dataList!.child("state").value.toString()) == 3
+                                                getVisibleCancel()
                                                     ? SizedBox()
                                                     : Container(
                                                         width: 134,
@@ -812,37 +837,52 @@ class _MyOrdersState extends State<MyOrdersProfile> with TickerProviderStateMixi
               ? SizedBox()
               : Container(
                   margin: EdgeInsets.only(left: 20, right: 20),
-                  child: Row(
-                    children: [
-                      Container(
-                          width: 110,
-                          child: AppWidget().buttonShandow("En curso",
-                              color: positionFilter != 1 ? Colors.grey.withOpacity(0.2) : redButton, colorText: Colors.white, tap: () {
-                            positionFilter = 1;
-                            setState(() {});
-                          })),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Container(
-                          width: 110,
-                          child: AppWidget().buttonShandow("En proceso",
-                              color: positionFilter != 2 ? Colors.grey.withOpacity(0.2) : yellowButton, colorText: Colors.white, tap: () {
-                            positionFilter = 2;
-                            setState(() {});
-                          })),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Container(
-                          width: 110,
-                          child: AppWidget().buttonShandow("Terminado",
-                              color: positionFilter != 3 ? Colors.grey.withOpacity(0.2) : greenButton, colorText: Colors.white, tap: () {
-                            positionFilter = 3;
-                            setState(() {});
-                          })),
-                    ],
-                  )),
+                  child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: [
+                          Container(
+                              width: 110,
+                              child: AppWidget().buttonShandow("Pendiente",
+                                  color: positionFilter != 1 ? Colors.grey.withOpacity(0.2) : stateOrderColor[1],
+                                  colorText: Colors.white, tap: () {
+                                positionFilter = 1;
+                                setState(() {});
+                              })),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Container(
+                              width: 110,
+                              child: AppWidget().buttonShandow("En proceso",
+                                  color: positionFilter != 2 ? Colors.grey.withOpacity(0.2) : yellowButton,
+                                  colorText: Colors.white, tap: () {
+                                positionFilter = 2;
+                                setState(() {});
+                              })),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Container(
+                              width: 110,
+                              child: AppWidget().buttonShandow("Terminado",
+                                  color: positionFilter != 3 ? Colors.grey.withOpacity(0.2) : greenButton,
+                                  colorText: Colors.white, tap: () {
+                                positionFilter = 3;
+                                setState(() {});
+                              })),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Container(
+                              width: 110,
+                              child: AppWidget().buttonShandow("Cancelado",
+                                  color: positionFilter != 4 ? Colors.grey.withOpacity(0.2) : Colors.red, colorText: Colors.white, tap: () {
+                                positionFilter = 4;
+                                setState(() {});
+                              })),
+                        ],
+                      ))),
           SizedBox(
             height: 20,
           ),
@@ -985,12 +1025,12 @@ class _MyOrdersState extends State<MyOrdersProfile> with TickerProviderStateMixi
                         }
                       });
             } else {
-              return Text("Cargando");
+              return AppWidget().loading();
             }
 
             ;
           } catch (e) {
-            return Text("Cargando");
+            return AppWidget().loading();
           }
         });
   }

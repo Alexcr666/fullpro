@@ -129,7 +129,7 @@ class _ListSupportProfessionalPageState extends State<ListSupportProfessionalPag
                                         SizedBox(
                                           width: 10,
                                         ),
-                                        ClipRRect(
+                                        /* ClipRRect(
                                           borderRadius: BorderRadius.circular(15),
                                           child: Image.network(
                                             dataList.child("foto").value.toString(),
@@ -144,9 +144,9 @@ class _ListSupportProfessionalPageState extends State<ListSupportProfessionalPag
                                             height: 70,
                                             fit: BoxFit.cover,
                                           ),
-                                        ),
+                                        ),*/
                                         SizedBox(
-                                          width: 10,
+                                          width: 50,
                                         ),
                                         Container(
                                             width: 220,
@@ -166,7 +166,7 @@ class _ListSupportProfessionalPageState extends State<ListSupportProfessionalPag
                                                           style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: secondryColor),
                                                         ),
                                                         Text(
-                                                          dataList.child("type").value.toString(),
+                                                          dataList.child("date").value.toString(),
                                                           textAlign: TextAlign.center,
                                                           style: TextStyle(fontSize: 10, color: secondryColor),
                                                         ),
@@ -215,12 +215,12 @@ class _ListSupportProfessionalPageState extends State<ListSupportProfessionalPag
                                     )));
                           });
             } else {
-              return Text("Cargando");
+              return AppWidget().loading();
             }
 
             ;
           } catch (e) {
-            return Text("Cargando");
+            return AppWidget().loading();
           }
         });
   }

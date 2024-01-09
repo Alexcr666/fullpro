@@ -1,7 +1,10 @@
 import 'dart:async';
+import 'dart:developer';
+import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 import 'package:flutter/cupertino.dart';
 
@@ -24,6 +27,7 @@ import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
 import 'package:fullpro/widgets/widget.dart';
 
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:image_picker/image_picker.dart';
 
 import 'package:provider/provider.dart';
 
@@ -94,6 +98,8 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
   Timer? timer;
 
   late final _probController = TextEditingController();
+
+  late final _descriptionController = TextEditingController();
   late final _descriptionCommentController = TextEditingController();
   String problmValidate = '';
 
@@ -447,6 +453,9 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
         dataListObjectGeneral = snapshot;
         dataListObjectGeneral!.child("comment").value.toString();
 
+        _descriptionCommentController.text = dataListObjectGeneral!.child("comment").value.toString();
+        _descriptionController.text =
+            dataListObjectGeneral!.child("description").value == null ? "" : dataListObjectGeneral!.child("description").value.toString();
         MarkerId markerId = MarkerId(dataListObjectGeneral!.key.toString());
         _marker.add(
           new Marker(
@@ -534,78 +543,81 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
         ),
       ),*/
 
-        body: widget.dataList == null
-            ? AppWidget().loading()
-            : ListView(
-                children: [
-                  SizedBox(
-                    height: 20,
-                  ),
-                  AppWidget().back(context),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Row(
+        body: dataListObjectGeneral == null
+            ? Container(margin: EdgeInsets.only(top: 200), child: AppWidget().loading())
+            : widget.dataList == null
+                ? AppWidget().loading()
+                : ListView(
                     children: [
                       SizedBox(
-                        width: 20,
+                        height: 20,
                       ),
-                      Text(
-                        "Resumen",
-                        style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 26),
+                      AppWidget().back(context),
+                      SizedBox(
+                        height: 20,
                       ),
-                      Expanded(child: SizedBox()),
-                      /*   Text(
+                      Row(
+                        children: [
+                          SizedBox(
+                            width: 20,
+                          ),
+                          Text(
+                            "Resumen",
+                            style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 26),
+                          ),
+                          Expanded(child: SizedBox()),
+                          /*   Text(
                         dataListObjectGeneral == null ? "" : "#44",
                         style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 26),
                       ),*/
-                      SizedBox(
-                        width: 20,
+                          SizedBox(
+                            width: 20,
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  fadeBottom(.6, AddressWidget()),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Row(
-                    children: [
                       SizedBox(
-                        width: 10,
+                        height: 20,
                       ),
-                      ClipRRect(
-                          borderRadius: BorderRadius.circular(15),
-                          child: Container(
-                              width: 160,
-                              height: 160,
-                              child: GoogleMap(
-                                markers: _marker,
-                                mapType: MapType.normal,
-                                initialCameraPosition: _kGooglePlex,
-                                onMapCreated: (GoogleMapController controller) {
-                                  _controller.complete(controller);
-                                },
-                              ))),
+                      fadeBottom(.6, AddressWidget()),
                       SizedBox(
-                        width: 20,
+                        height: 20,
                       ),
-                      Flexible(
-                          child: AppWidget().texfieldFormat(
-                        title: "Apt 501",
-                      )),
+                      Row(
+                        children: [
+                          SizedBox(
+                            width: 10,
+                          ),
+                          ClipRRect(
+                              borderRadius: BorderRadius.circular(15),
+                              child: Container(
+                                  width: 160,
+                                  height: 160,
+                                  child: GoogleMap(
+                                    markers: _marker,
+                                    mapType: MapType.normal,
+                                    initialCameraPosition: _kGooglePlex,
+                                    onMapCreated: (GoogleMapController controller) {
+                                      _controller.complete(controller);
+                                    },
+                                  ))),
+                          SizedBox(
+                            width: 20,
+                          ),
+                          Flexible(
+                              child: AppWidget().texfieldFormat(
+                            title: "Apt 501",
+                            controller: _descriptionController,
+                          )),
+                          SizedBox(
+                            width: 20,
+                          ),
+                        ],
+                      ),
                       SizedBox(
-                        width: 20,
+                        height: 20,
                       ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
 
-                  /*  Padding(
+                      /*  Padding(
 
               padding: const EdgeInsets.symmetric(vertical: 10),
 
@@ -672,62 +684,99 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
 
             ),*/
 
-                  Container(
-                    margin: EdgeInsets.only(left: 20, right: 20),
-                    width: double.infinity,
-                    height: 1,
-                    color: secondryColor,
-                  ),
-                  SizedBox(
-                    height: 15,
-                  ),
-                  GestureDetector(
-                      onTap: () {
-                        void _showIOS_DatePicker(ctx) {
-                          showCupertinoModalPopup(
-                              context: ctx,
-                              builder: (_) => Container(
-                                    height: 250,
-                                    color: Color.fromARGB(255, 255, 255, 255),
-                                    child: Column(
-                                      children: [
-                                        Container(
-                                          height: 180,
-                                          child: CupertinoDatePicker(
-                                              mode: CupertinoDatePickerMode.time,
-                                              initialDateTime: DateTime.now(),
-                                              onDateTimeChanged: (val) {
-                                                hourService = DateFormat('hh:mm:ss').format(val).toString();
-                                              }),
+                      Container(
+                        margin: EdgeInsets.only(left: 20, right: 20),
+                        width: double.infinity,
+                        height: 1,
+                        color: secondryColor,
+                      ),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      GestureDetector(
+                          onTap: () {
+                            void _showIOS_DatePicker(ctx) {
+                              showCupertinoModalPopup(
+                                  context: ctx,
+                                  builder: (_) => Container(
+                                        height: 250,
+                                        color: Color.fromARGB(255, 255, 255, 255),
+                                        child: Column(
+                                          children: [
+                                            Container(
+                                              height: 180,
+                                              child: CupertinoDatePicker(
+                                                  mode: CupertinoDatePickerMode.time,
+                                                  initialDateTime: DateTime.now(),
+                                                  onDateTimeChanged: (val) {
+                                                    hourService = DateFormat('hh:mm:ss').format(val).toString();
+                                                  }),
+                                            ),
+                                            AppWidget().buttonForm(context, "Guardar", tap: () {
+                                              setState(() {
+                                                //    final f = new DateFormat('yyyy-MM-dd');
+
+                                                widget.dataList.ref.update({'time': hourService}).then((value) {
+                                                  Navigator.pop(context);
+
+                                                  setState(() {});
+
+                                                  AppWidget().itemMessage("Pedido carrito", context);
+                                                });
+
+                                                //  dateSelected = val.toString();
+                                              });
+                                            }),
+                                          ],
                                         ),
-                                        AppWidget().buttonForm(context, "Guardar", tap: () {
-                                          setState(() {
-                                            //    final f = new DateFormat('yyyy-MM-dd');
+                                      ));
+                            }
 
-                                            widget.dataList.ref.update({'time': hourService}).then((value) {
-                                              Navigator.pop(context);
-
-                                              setState(() {});
-
-                                              AppWidget().itemMessage("Pedido carrito", context);
-                                            });
-
-                                            //  dateSelected = val.toString();
-                                          });
-                                        }),
-                                      ],
+                            _showIOS_DatePicker(context);
+                          },
+                          child: Container(
+                              margin: EdgeInsets.only(left: 20, right: 20),
+                              child: Row(
+                                children: [
+                                  Text(
+                                    "Hora de servicio".toString(),
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                      color: secondryColor,
                                     ),
-                                  ));
-                        }
-
-                        _showIOS_DatePicker(context);
-                      },
-                      child: Container(
+                                  ),
+                                  Expanded(child: SizedBox()),
+                                  Text(
+                                    widget.dataList.child("time").value == null
+                                        ? "No disponible"
+                                        : widget.dataList.child("time").value.toString(),
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                      color: secondryColor,
+                                    ),
+                                  )
+                                ],
+                              ))),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(left: 20, right: 20),
+                        width: double.infinity,
+                        height: 1,
+                        color: secondryColor,
+                      ),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      Container(
                           margin: EdgeInsets.only(left: 20, right: 20),
                           child: Row(
                             children: [
                               Text(
-                                "Hora de servicio".toString(),
+                                "Fecha de servicio".toString(),
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 16,
@@ -736,9 +785,9 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
                               ),
                               Expanded(child: SizedBox()),
                               Text(
-                                widget.dataList.child("time").value == null
+                                widget.dataList.child("date").value == null
                                     ? "No disponible"
-                                    : widget.dataList.child("time").value.toString(),
+                                    : widget.dataList.child("date").value.toString(),
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 16,
@@ -746,71 +795,151 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
                                 ),
                               )
                             ],
-                          ))),
-                  SizedBox(
-                    height: 15,
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(left: 20, right: 20),
-                    width: double.infinity,
-                    height: 1,
-                    color: secondryColor,
-                  ),
-                  SizedBox(
-                    height: 15,
-                  ),
-                  Container(
-                      margin: EdgeInsets.only(left: 20, right: 20),
-                      child: Row(
-                        children: [
-                          Text(
-                            "Fecha de servicio".toString(),
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                              color: secondryColor,
-                            ),
-                          ),
-                          Expanded(child: SizedBox()),
-                          Text(
-                            widget.dataList.child("date").value == null ? "No disponible" : widget.dataList.child("date").value.toString(),
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                              color: secondryColor,
-                            ),
-                          )
-                        ],
-                      )),
-                  SizedBox(
-                    height: 15,
-                  ),
-                  /* ListTile(
+                          )),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(left: 20, right: 20),
+                        width: double.infinity,
+                        height: 1,
+                        color: secondryColor,
+                      ),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      Container(
+                          margin: EdgeInsets.only(left: 20, right: 20),
+                          child: Row(
+                            children: [
+                              Text(
+                                "Hora de servicio final".toString(),
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                  color: secondryColor,
+                                ),
+                              ),
+                              Expanded(child: SizedBox()),
+                              Text(
+                                widget.dataList.child("timeFinal").value == null
+                                    ? "No disponible"
+                                    : widget.dataList.child("timeFinal").value.toString(),
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                  color: secondryColor,
+                                ),
+                              )
+                            ],
+                          )),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(left: 20, right: 20),
+                        width: double.infinity,
+                        height: 1,
+                        color: secondryColor,
+                      ),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      Container(
+                          margin: EdgeInsets.only(left: 20, right: 20),
+                          child: Row(
+                            children: [
+                              Text(
+                                "Fecha de servicio final".toString(),
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                  color: secondryColor,
+                                ),
+                              ),
+                              Expanded(child: SizedBox()),
+                              Text(
+                                widget.dataList.child("dateFinal").value == null
+                                    ? "No disponible"
+                                    : widget.dataList.child("dateFinal").value.toString(),
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                  color: secondryColor,
+                                ),
+                              )
+                            ],
+                          )),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      /* ListTile(
                     leading: CircleAvatar(
                       backgroundColor: Colors.grey.withOpacity(0.3),
                       radius: 30,
                     ),
                     title: Text(widget.dataList.child("professionalName").value.toString()),
                   ),*/
-                  getUserUser(),
-                  SizedBox(
-                    height: 15,
-                  ),
-                  initWidget(),
-                ],
-              ));
+                      getUserUser(),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      initWidget(),
+                    ],
+                  ));
   }
 
   //  Initialization
 
   //
 
-  Widget imageEvidencia() {
-    return Container(
-        margin: EdgeInsets.only(left: 10),
-        child: ClipRRect(
-            borderRadius: BorderRadius.circular(15),
-            child: Container(color: Colors.grey.withOpacity(0.4), width: 110, height: 110, child: /*Image.network("src")*/ SizedBox())));
+  Widget imageEvidencia(int state) {
+    return GestureDetector(
+        onTap: () async {
+          ImagePicker imagePicker = ImagePicker();
+
+          var image = await imagePicker.pickImage(source: ImageSource.gallery);
+
+          FirebaseAuth user = FirebaseAuth.instance;
+
+          int timestamp = new DateTime.now().millisecondsSinceEpoch;
+
+          Reference storageReference =
+              FirebaseStorage.instance.ref().child('ordens/' + user.currentUser!.uid.toString() + timestamp.toString() + '.jpg');
+
+          UploadTask uploadTask = storageReference.putFile(File(image!.path));
+          AppWidget().itemMessage("Subiendo...", context);
+          await uploadTask.then((p0) async {
+            String fileUrl = await storageReference.getDownloadURL();
+
+            dataListObjectGeneral!.ref.update({'photo' + state.toString(): fileUrl}).then((value) {
+              setState(() {});
+
+              AppWidget().itemMessage("Foto actualizada", context);
+            }).catchError((onError) {
+              AppWidget().itemMessage("Error al actualizar foto", context);
+            });
+
+            //   _sendImage(messageText: 'Photo', imageUrl: fileUrl);
+          }).catchError((onError) {
+            print("error: " + onError.toString());
+          });
+        },
+        child: Container(
+            margin: EdgeInsets.only(left: 10),
+            child: ClipRRect(
+                borderRadius: BorderRadius.circular(15),
+                child: Container(
+                  color: Colors.grey.withOpacity(0.4),
+                  width: 110,
+                  height: 110,
+                  child: dataListObjectGeneral!.child('photo' + state.toString()).value == null
+                      ? SizedBox()
+                      : Image.network(
+                          dataListObjectGeneral!.child('photo' + state.toString()).value.toString(),
+                          fit: BoxFit.cover,
+                        ),
+                ))));
   }
 
   Widget itemMoney(String title, String value) {
@@ -913,7 +1042,7 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
           height: 20,
         ),
 
-        widget.dataList.child("professional").value.toString() == FirebaseAuth.instance.currentUser!.uid.toString()
+        widget.dataList.child("professional").value.toString() != FirebaseAuth.instance.currentUser!.uid.toString()
             ? SizedBox()
             : Column(
                 children: [
@@ -936,10 +1065,10 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
                           scrollDirection: Axis.horizontal,
                           child: Row(
                             children: [
-                              imageEvidencia(),
-                              imageEvidencia(),
-                              imageEvidencia(),
-                              imageEvidencia(),
+                              imageEvidencia(0),
+                              imageEvidencia(1),
+                              imageEvidencia(2),
+                              imageEvidencia(3),
                             ],
                           ))),
                 ],
@@ -1087,9 +1216,9 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  AppWidget().buttonFormColor(context, stateOrder[0], stateOrderColor[0], tap: () {
+                                  /* AppWidget().buttonFormColor(context, stateOrder[0], stateOrderColor[0], tap: () {
                                     changeState(0);
-                                  }),
+                                  }),*/
                                   AppWidget().buttonFormColor(context, stateOrder[1], stateOrderColor[1], tap: () {
                                     changeState(1);
                                   }),
@@ -1123,6 +1252,16 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
                         ? SizedBox()
                         : AppWidget().buttonFormLine(context, "Cancelar", true, urlIcon: "images/icons/closeCircle.svg", tap: () {
                             Navigator.pop(context);
+
+                            widget.dataList.ref.update({'state': 4}).then((value) {
+                              setState(() {});
+
+                              AppWidget().itemMessage("Actualizado", context);
+                            }).catchError((onError) {
+                              setState(() {});
+
+                              AppWidget().itemMessage("Actualizado", context);
+                            });
                           })),
               ],
             ),
@@ -1554,12 +1693,17 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
               children: [
                 Expanded(
                   child: Text(
+                    dataListObjectGeneral!.child("address").value == null
+                        ? "No disponible"
+                        : dataListObjectGeneral!.child("address").value.toString()
+                    /*
                     /*dataListObjectGeneral == null ? "" : dataListObjectGeneral!.child("address").value.toString()*/ widget.dataList
                                 .child("address")
                                 .value ==
                             null
                         ? "No disponible"
-                        : widget.dataList.child("address").value.toString(),
+                        : widget.dataList.child("address").value.toString()*/
+                    ,
                     style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 16),
                   ),
                 ),

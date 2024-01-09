@@ -236,6 +236,8 @@ class _CartPageState extends State<CartPage> {
     });
   }
 
+  late DataSnapshot userDataProfile;
+
   void getUserInfo(context) async {
     currentFirebaseUser = FirebaseAuth.instance.currentUser;
     String? userid = currentFirebaseUser?.uid;
@@ -243,6 +245,7 @@ class _CartPageState extends State<CartPage> {
     final UserRef = FirebaseDatabase.instance.ref().child("users").child(userid!);
     UserRef.once().then((e) async {
       final DataSnapshot = e.snapshot;
+      userDataProfile = e.snapshot;
 
       if (DataSnapshot != null) {
         _controller.future.then((value) {
@@ -735,7 +738,7 @@ class _CartPageState extends State<CartPage> {
                                                   final f = new DateFormat('yyyy-MM-dd');
 
                                                   //  hourService = DateFormat('hh:mm:ss').format(val).toString();
-                                                  dataListObjectGeneral!.ref.update({'dateFinish': f.format(val).toString()}).then((value) {
+                                                  dataListObjectGeneral!.ref.update({'dateFinal': f.format(val).toString()}).then((value) {
                                                     //  setState(() {});
                                                     //   getData();
                                                     // AppWidget().itemMessage("Actualizado", context);
@@ -769,9 +772,9 @@ class _CartPageState extends State<CartPage> {
                                 /* hourService.toString()*/ /*dataListObjectGeneral == null
                               ? ""
                               :*/
-                                dataListObjectGeneral!.child("dateFinish").value == null
+                                dataListObjectGeneral!.child("dateFinal").value == null
                                     ? "No disponible"
-                                    : dataListObjectGeneral!.child("dateFinish").value.toString(),
+                                    : dataListObjectGeneral!.child("dateFinal").value.toString(),
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 16,
@@ -812,7 +815,7 @@ class _CartPageState extends State<CartPage> {
                                                   //    final f = new DateFormat('yyyy-MM-dd');
 
                                                   hourService = DateFormat('hh:mm:ss').format(val).toString();
-                                                  dataListObjectGeneral!.ref.update({'timeFinish': hourService.toString()}).then((value) {
+                                                  dataListObjectGeneral!.ref.update({'timeFinal': hourService.toString()}).then((value) {
                                                     //  setState(() {});
                                                     //getData();
                                                     // AppWidget().itemMessage("Actualizado", context);
@@ -846,9 +849,9 @@ class _CartPageState extends State<CartPage> {
                                 /* hourService.toString()*/ /*dataListObjectGeneral == null
                               ? ""
                               :*/
-                                dataListObjectGeneral!.child("timeFinish").value == null
+                                dataListObjectGeneral!.child("timeFinal").value == null
                                     ? "No disponible"
-                                    : dataListObjectGeneral!.child("timeFinish").value.toString(),
+                                    : dataListObjectGeneral!.child("timeFinal").value.toString(),
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 16,
@@ -1004,12 +1007,15 @@ class _CartPageState extends State<CartPage> {
                     width: 200,
                     child: AppWidget().buttonFormLine(context, "Cancelar", true, urlIcon: "images/icons/closeCircle.svg", tap: () {
                       //  Navigator.pop(context);
+
                       AppWidget().optionsEnabled("Seguro quiere cancelar", context, tap2: () {}, tap: () {
-                        dataListObjectGeneral!.ref.remove().then((value) {
-                          Navigator.pop(context);
-                          Navigator.pop(context);
-                          AppWidget().itemMessage("Orden eliminada", context);
-                          //     Navigator.pop(context);
+                        userDataProfile.ref.child("cart").remove().then((value) {
+                          dataListObjectGeneral!.ref.remove().then((value) {
+                            Navigator.pop(context);
+                            Navigator.pop(context);
+                            AppWidget().itemMessage("Orden eliminada", context);
+                            //     Navigator.pop(context);
+                          });
                         });
                       });
                     })),

@@ -182,12 +182,12 @@ class _PayListPageState extends State<PayListPage> {
                             ));
                       });
             } else {
-              return Text("Cargando");
+              return AppWidget().loading();
             }
 
             ;
           } catch (e) {
-            return Text("Cargando");
+            return AppWidget().loading();
           }
         });
   }

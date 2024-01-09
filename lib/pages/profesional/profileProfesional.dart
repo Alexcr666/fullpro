@@ -117,6 +117,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
   TextEditingController phoneController = TextEditingController();
 
   TextEditingController professionController = TextEditingController();
+  TextEditingController priceController = TextEditingController();
 
   String imageUser = "";
 
@@ -216,11 +217,11 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                     ],
                                   ));
                         }));
+          } else {
+            // }
+
+            return AppWidget().loading();
           }
-
-          // }
-
-          return AppWidget().loading();
         });
   }
 
@@ -240,166 +241,173 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
 
             //return Text(dataListObject!.child("name").value.toString());
 
-            return response.snapshot.children == null
-                ? AppWidget().noResult()
-                : Container(
+            return response == null
+                ? AppWidget().loading()
+                : response.snapshot.children.toList().length == 0
+                    ? AppWidget().noResult()
+                    : Container(
 
-                    // width: double.infinity,
+                        // width: double.infinity,
 
-                    // height: 300,
-                    child: ListView.builder(
-                        padding: EdgeInsets.only(left: 10.0),
-                        itemCount: response.snapshot.children.toList().length,
+                        // height: 300,
+                        child: ListView.builder(
+                            padding: EdgeInsets.only(left: 10.0),
+                            itemCount: response.snapshot.children.toList().length,
 
-                        // scrollDirection: Axis.horizontal,
+                            // scrollDirection: Axis.horizontal,
 
-                        physics: NeverScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        itemBuilder: (BuildContext context, int i) {
-                          DataSnapshot dataList = response.snapshot.children.toList()[i];
+                            physics: NeverScrollableScrollPhysics(),
+                            shrinkWrap: true,
+                            itemBuilder: (BuildContext context, int i) {
+                              DataSnapshot dataList = response.snapshot.children.toList()[i];
 
-                          Widget itemHistory() {
-                            return Container(
-                              decoration: AppWidget().borderColor(),
-                              width: 170,
-                              padding: EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
-                              height: 105,
-                              child: Column(
-                                children: [
-                                  Row(
+                              Widget itemHistory() {
+                                return Container(
+                                  decoration: AppWidget().borderColor(),
+                                  width: 170,
+                                  padding: EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
+                                  height: 105,
+                                  child: Column(
                                     children: [
-                                      SvgPicture.asset(
-                                        "images/icons/support1.svg",
-                                        width: 15,
-                                        height: 15,
+                                      Row(
+                                        children: [
+                                          SvgPicture.asset(
+                                            "images/icons/support1.svg",
+                                            width: 15,
+                                            height: 15,
+                                          ),
+                                          SizedBox(
+                                            width: 10,
+                                          ),
+                                          Text(
+                                            dataList.child("name").value == null
+                                                ? "No disponible"
+                                                : dataList.child("name").value.toString(),
+                                            style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 14),
+                                          ),
+                                        ],
                                       ),
-                                      SizedBox(
-                                        width: 10,
+                                      Row(
+                                        children: [
+                                          SvgPicture.asset(
+                                            "images/icons/check.svg",
+                                            width: 11,
+                                            height: 11,
+                                          ),
+                                          SizedBox(
+                                            width: 10,
+                                          ),
+                                          Text(
+                                            "Trabajo realizado",
+                                            style: TextStyle(color: secondryColor, fontSize: 12),
+                                          ),
+                                        ],
                                       ),
-                                      Text(
-                                        dataList.child("name").value == null ? "No disponible" : dataList.child("name").value.toString(),
-                                        style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 14),
+                                      Row(
+                                        children: [
+                                          SvgPicture.asset(
+                                            "images/icons/globe.svg",
+                                            width: 15,
+                                            height: 15,
+                                          ),
+                                          SizedBox(
+                                            width: 10,
+                                          ),
+                                          Flexible(
+                                              child: Text(
+                                            dataList.child("address").value == null
+                                                ? "No disponible"
+                                                : dataList.child("address").value.toString(),
+                                            maxLines: 1,
+                                            style: TextStyle(color: secondryColor, fontSize: 12),
+                                          )),
+                                        ],
+                                      ),
+                                      Row(
+                                        children: [
+                                          SvgPicture.asset(
+                                            "images/icons/calendar.svg",
+                                            width: 15,
+                                            height: 15,
+                                          ),
+                                          SizedBox(
+                                            width: 15,
+                                          ),
+                                          Text(
+                                            dataList.child("price").value == null
+                                                ? "No disponible"
+                                                : dataList.child("price").value.toString(),
+                                            style: TextStyle(color: secondryColor, fontSize: 18, fontWeight: FontWeight.bold),
+                                          ),
+                                        ],
                                       ),
                                     ],
                                   ),
-                                  Row(
-                                    children: [
-                                      SvgPicture.asset(
-                                        "images/icons/check.svg",
-                                        width: 11,
-                                        height: 11,
-                                      ),
-                                      SizedBox(
-                                        width: 10,
-                                      ),
-                                      Text(
-                                        "Trabajo realizado",
-                                        style: TextStyle(color: secondryColor, fontSize: 12),
-                                      ),
-                                    ],
-                                  ),
-                                  Row(
-                                    children: [
-                                      SvgPicture.asset(
-                                        "images/icons/globe.svg",
-                                        width: 15,
-                                        height: 15,
-                                      ),
-                                      SizedBox(
-                                        width: 10,
-                                      ),
-                                      Flexible(
-                                          child: Text(
-                                        dataList.child("address").value == null
-                                            ? "No disponible"
-                                            : dataList.child("address").value.toString(),
-                                        maxLines: 1,
-                                        style: TextStyle(color: secondryColor, fontSize: 12),
-                                      )),
-                                    ],
-                                  ),
-                                  Row(
-                                    children: [
-                                      SvgPicture.asset(
-                                        "images/icons/calendar.svg",
-                                        width: 15,
-                                        height: 15,
-                                      ),
-                                      SizedBox(
-                                        width: 15,
-                                      ),
-                                      Text(
-                                        dataList.child("price").value == null ? "No disponible" : dataList.child("price").value.toString(),
-                                        style: TextStyle(color: secondryColor, fontSize: 18, fontWeight: FontWeight.bold),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            );
-                          }
+                                );
+                              }
 
-                          Widget itemSpacing() {
-                            return Container(
+                              Widget itemSpacing() {
+                                return Container(
 
-                                // decoration: AppWidget().borderColor(),
+                                    // decoration: AppWidget().borderColor(),
 
-                                width: 170,
-                                padding: EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
-                                height: 105,
-                                child: SizedBox());
-                          }
+                                    width: 170,
+                                    padding: EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
+                                    height: 105,
+                                    child: SizedBox());
+                              }
 
 //(i / 2).toString().contains(".5")
 
-                          return Row(
-                            children: [
-                              SizedBox(
-                                width: 7,
-                              ),
-                              (i / 2).toString().contains(".5") == false ? itemSpacing() : itemHistory(),
-                              SizedBox(
-                                width: 5,
-                              ),
-                              Column(
+                              return Row(
                                 children: [
-                                  dataList!.child("user").value == null
-                                      ? AppWidget().loading()
-                                      : FutureBuilder(
-                                          future: FirebaseDatabase.instance
-                                              .ref()
-                                              .child('users')
-                                              .child(dataList!.child("user").value.toString())
-                                              .once(),
-                                          builder: (BuildContext context, AsyncSnapshot snapshot) {
-                                            late DatabaseEvent response;
-                                            if (snapshot.hasData) {
-                                              response = snapshot.data;
-                                            }
-                                            return snapshot.hasData != true
-                                                ? AppWidget().loading()
-                                                : AppWidget().circleProfile(response.snapshot.child("photo").value.toString(), size: 40);
-                                          }),
-                                  (i + 1) == response.snapshot.children.toList().length
-                                      ? Container(
-                                          height: 100,
-                                          width: 1,
-                                          //   color: Colors.black.withOpacity(0.2),
-                                        )
-                                      : Container(
-                                          height: 100,
-                                          width: 1,
-                                          color: Colors.black.withOpacity(0.2),
-                                        ),
+                                  SizedBox(
+                                    width: 7,
+                                  ),
+                                  (i / 2).toString().contains(".5") == false ? itemSpacing() : itemHistory(),
+                                  SizedBox(
+                                    width: 5,
+                                  ),
+                                  Column(
+                                    children: [
+                                      dataList!.child("user").value == null
+                                          ? AppWidget().loading()
+                                          : FutureBuilder(
+                                              future: FirebaseDatabase.instance
+                                                  .ref()
+                                                  .child('users')
+                                                  .child(dataList!.child("user").value.toString())
+                                                  .once(),
+                                              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                                                late DatabaseEvent response;
+                                                if (snapshot.hasData) {
+                                                  response = snapshot.data;
+                                                }
+                                                return snapshot.hasData != true
+                                                    ? AppWidget().loading()
+                                                    : AppWidget()
+                                                        .circleProfile(response.snapshot.child("photo").value.toString(), size: 40);
+                                              }),
+                                      (i + 1) == response.snapshot.children.toList().length
+                                          ? Container(
+                                              height: 100,
+                                              width: 1,
+                                              //   color: Colors.black.withOpacity(0.2),
+                                            )
+                                          : Container(
+                                              height: 100,
+                                              width: 1,
+                                              color: Colors.black.withOpacity(0.2),
+                                            ),
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    width: 5,
+                                  ),
+                                  (i / 2).toString().contains(".5") == true ? itemSpacing() : itemHistory(),
                                 ],
-                              ),
-                              SizedBox(
-                                width: 5,
-                              ),
-                              (i / 2).toString().contains(".5") == true ? itemSpacing() : itemHistory(),
-                            ],
-                          );
-                        }));
+                              );
+                            }));
           } else {
             return AppWidget().loading();
           }
@@ -505,7 +513,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
               children: [
                 Flexible(
                     child: Container(
-                        width: 160,
+                        width: 170,
                         child: AppWidget().buttonFormLine(
                             context, FirebaseAuth.instance.currentUser!.uid.toString() == widget.id ? "Editar perfil" : "Solicitar", false,
                             tap: () {
@@ -697,95 +705,100 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
   Widget stateIndicator0() {
     return dataListObjectOrdens == null
         ? AppWidget().loading()
-        : ListView.builder(
-            itemCount: dataListObjectOrdens!.length,
-            shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
-            itemBuilder: (BuildContext context, int index) {
-              DataSnapshot dataList = dataListObjectOrdens!.toList().reversed.toList()[index];
+        : dataListObjectOrdens!.length == 0
+            ? AppWidget().noResult()
+            : ListView.builder(
+                itemCount: dataListObjectOrdens!.length,
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                itemBuilder: (BuildContext context, int index) {
+                  DataSnapshot dataList = dataListObjectOrdens!.toList().reversed.toList()[index];
 
-              return Container(
-                margin: EdgeInsets.only(left: 20, right: 20, top: 10),
-                decoration: AppWidget().boxShandowGreyRectangule(),
-                child: Row(
-                  children: [
-                    SizedBox(
-                      width: 10,
-                    ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Flexible(
-                        child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                  return Container(
+                    margin: EdgeInsets.only(left: 20, right: 20, top: 10),
+                    decoration: AppWidget().boxShandowGreyRectangule(),
+                    child: Row(
                       children: [
                         SizedBox(
-                          height: 14,
+                          width: 10,
                         ),
-                        dataList!.child("user").value == null
-                            ? SizedBox()
-                            : FutureBuilder(
-                                future:
-                                    FirebaseDatabase.instance.ref().child('users').child(dataList!.child("user").value.toString()).once(),
-                                builder: (BuildContext context, AsyncSnapshot snapshot) {
-                                  late DatabaseEvent response;
-                                  if (snapshot.hasData) {
-                                    response = snapshot.data;
-                                  } else {}
-                                  return snapshot.hasData == false
-                                      ? AppWidget().loading()
-                                      : Row(
-                                          children: [
-                                            Flexible(
-                                                child:
-                                                    AppWidget().circleProfile(response.snapshot.child("photo").value.toString(), size: 50)),
-                                            SizedBox(
-                                              width: 20,
-                                            ),
-                                            Flexible(
-                                              child: Column(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                children: [
-                                                  Text(
-                                                    response.snapshot.child("fullname").value == null
-                                                        ? "No disponible"
-                                                        : response.snapshot.child("fullname").value.toString(),
-                                                    style: TextStyle(color: secondryColor, fontSize: 17, fontWeight: FontWeight.bold),
-                                                  ),
-                                                  RatingBarIndicator(
-                                                      rating: response.snapshot.child("rating").value == null
-                                                          ? 0
-                                                          : double.parse(response.snapshot.child("rating").value.toString()),
-                                                      itemCount: 5,
-                                                      itemSize: 16.0,
-                                                      itemBuilder: (context, _) => Icon(
-                                                            Icons.star,
-                                                            color: secondryColor,
-                                                          )),
-                                                ],
-                                              ),
-                                            )
-                                          ],
-                                        );
-                                }),
                         SizedBox(
-                          height: 5,
+                          width: 10,
                         ),
-                        /*Container(
+                        Flexible(
+                            child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(
+                              height: 14,
+                            ),
+                            dataList!.child("user").value == null
+                                ? SizedBox()
+                                : FutureBuilder(
+                                    future: FirebaseDatabase.instance
+                                        .ref()
+                                        .child('users')
+                                        .child(dataList!.child("user").value.toString())
+                                        .once(),
+                                    builder: (BuildContext context, AsyncSnapshot snapshot) {
+                                      late DatabaseEvent response;
+                                      if (snapshot.hasData) {
+                                        response = snapshot.data;
+                                      } else {}
+                                      return snapshot.hasData == false
+                                          ? AppWidget().loading()
+                                          : Row(
+                                              children: [
+                                                Flexible(
+                                                    child: AppWidget()
+                                                        .circleProfile(response.snapshot.child("photo").value.toString(), size: 50)),
+                                                SizedBox(
+                                                  width: 20,
+                                                ),
+                                                Flexible(
+                                                  child: Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: [
+                                                      Text(
+                                                        response.snapshot.child("fullname").value == null
+                                                            ? "No disponible"
+                                                            : response.snapshot.child("fullname").value.toString(),
+                                                        style: TextStyle(color: secondryColor, fontSize: 17, fontWeight: FontWeight.bold),
+                                                      ),
+                                                      RatingBarIndicator(
+                                                          rating: response.snapshot.child("rating").value == null
+                                                              ? 0
+                                                              : double.parse(response.snapshot.child("rating").value.toString()),
+                                                          itemCount: 5,
+                                                          itemSize: 16.0,
+                                                          itemBuilder: (context, _) => Icon(
+                                                                Icons.star,
+                                                                color: secondryColor,
+                                                              )),
+                                                    ],
+                                                  ),
+                                                )
+                                              ],
+                                            );
+                                    }),
+                            SizedBox(
+                              height: 5,
+                            ),
+                            /*Container(
                             margin: EdgeInsets.only(left: 10, right: 10),
                             child: Text(
                               dataList.child("comment").value == null ? "" : dataList.child("comment").value.toString(),
                               style: TextStyle(fontSize: 10),
                             )),*/
-                        SizedBox(
-                          height: 14,
-                        ),
+                            SizedBox(
+                              height: 14,
+                            ),
+                          ],
+                        ))
                       ],
-                    ))
-                  ],
-                ),
-              );
-            });
+                    ),
+                  );
+                });
   }
 
 /*
@@ -999,7 +1012,10 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
               SizedBox(
                 height: 20,
               ),
-              AppWidget().texfieldFormat(controller: nameController, title: "Nombre Completo", enabled: true),
+              AppWidget().texfieldFormat(
+                  controller: nameController,
+                  title: "Nombre Completo",
+                  enabled: FirebaseAuth.instance.currentUser!.uid == widget.id ? false : true),
               SizedBox(
                 height: 10,
               ),
@@ -1075,6 +1091,16 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
         height: 10,
       ),
 
+      Container(
+          margin: EdgeInsets.only(left: 20, right: 20),
+          child: AppWidget().texfieldFormat(
+              controller: priceController,
+              title: "Precio",
+              enabled: FirebaseAuth.instance.currentUser!.uid == widget.id ? false : true,
+              number: true)),
+      SizedBox(
+        height: 10,
+      ),
       Container(margin: EdgeInsets.only(left: 20), alignment: Alignment.centerLeft, child: Text("Licencias")),
 
       SizedBox(
@@ -1444,6 +1470,27 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                           ),
                         ),
                       )),
+              SizedBox(
+                height: 30,
+              ),
+              AppWidget().buttonFormColor(context, "Guardar", secondryColor, tap: () {
+                userDataProfile!.ref.update({
+                  'fullname': nameController.text,
+                  'date': dateController.text,
+                  'email': emailController.text,
+                  'phone': phoneController.text,
+                  'state': state,
+                  'price': priceController.text,
+                  'country': country
+                }).then((value) {
+                  AppWidget().itemMessage("Información actualizada", context);
+                }).catchError((onError) {
+                  AppWidget().itemMessage("Error al actualizar foto", context);
+                });
+              }),
+              SizedBox(
+                height: 30,
+              ),
             ],
           )),
 
@@ -1532,6 +1579,8 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
 
       if (_datasnapshot.value != null) {
         _userDataProfile = _datasnapshot;
+
+        professionController.text = _datasnapshot.child("price").value.toString();
 
         professionController.text = _datasnapshot.child("profesion").value.toString();
 

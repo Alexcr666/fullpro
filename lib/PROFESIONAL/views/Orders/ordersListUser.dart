@@ -61,7 +61,7 @@ Widget pageOrdensWidget(int state) {
       future: FirebaseDatabase.instance
           .ref()
           .child('ordens')
-          .orderByChild("professiona")
+          .orderByChild("professional")
           .equalTo(FirebaseAuth.instance.currentUser!.uid.toString())
           .once(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -82,7 +82,7 @@ Widget pageOrdensWidget(int state) {
                   itemBuilder: (BuildContext context, int i) {
                     DataSnapshot dataList = response.snapshot.children.toList()[i];
 
-                    return int.parse(dataList!.child("state").value.toString()) == state
+                    return int.parse(dataList!.child("state").value.toString()) != state
                         ? SizedBox()
                         : Padding(
                             padding: const EdgeInsets.all(5),
@@ -440,12 +440,12 @@ class _SolicitudListState extends State<SolicitudList> with TickerProviderStateM
                         }
                       });
             } else {
-              return Text("Cargando");
+              return AppWidget().loading();
             }
 
             ;
           } catch (e) {
-            return Text("Cargando");
+            return AppWidget().loading();
           }
         });
   }
@@ -531,12 +531,12 @@ class _SolicitudListState extends State<SolicitudList> with TickerProviderStateM
                         }
                       });
             } else {
-              return Text("Cargando");
+              return AppWidget().loading();
             }
 
             ;
           } catch (e) {
-            return Text("Cargando");
+            return AppWidget().loading();
           }
         });
   }
@@ -776,12 +776,12 @@ class _SolicitudListState extends State<SolicitudList> with TickerProviderStateM
                         }
                       });
             } else {
-              return Text("Cargando");
+              return AppWidget().loading();
             }
 
             ;
           } catch (e) {
-            return Text("Cargando");
+            return AppWidget().loading();
           }
         });
   }

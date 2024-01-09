@@ -109,9 +109,9 @@ class AppWidget {
               ListTile(
                 title: new Text('Eliminar'),
                 onTap: () {
-                 // Navigator.pop(context);
+                  // Navigator.pop(context);
 
-                  tap;
+                  tap!();
                 },
               ),
               ListTile(
@@ -784,21 +784,7 @@ class AppWidget {
         width: double.infinity,
         child: ElevatedButton(
           onPressed: () async {
-            /* var connectivityResult = await (Connectivity().checkConnectivity());
-                        if (connectivityResult != ConnectivityResult.wifi && connectivityResult != ConnectivityResult.mobile) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                Locales.string(context, 'error_no_internet'),
-                              ),
-                            ),
-                          );
-                          return;
-                        }*/
-
             tap!();
-
-            //
           },
           style: ButtonStyle(
             foregroundColor: MaterialStateProperty.all<Color>(Colors.white),

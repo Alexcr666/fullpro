@@ -901,12 +901,12 @@ class _kHomePageState extends State<kHomePage> {
                 ),
               );
             } else {
-              return Text("Cargando");
+              return AppWidget().loading();
             }
 
             ;
           } catch (e) {
-            return Text("Cargando");
+            return AppWidget().loading();
           }
         });
 
@@ -1058,12 +1058,12 @@ class _kHomePageState extends State<kHomePage> {
                         },
                       ));
             } else {
-              return Text("Cargando");
+              return AppWidget().loading();
             }
 
             ;
           } catch (e) {
-            return Text("Cargando");
+            return AppWidget().loading();
           }
         });
   }
