@@ -704,6 +704,160 @@ class _CartPageState extends State<CartPage> {
                             ],
                           ))),
                   SizedBox(
+                    height: 20,
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(left: 20, right: 20),
+                    width: double.infinity,
+                    height: 1,
+                    color: secondryColor,
+                  ),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  GestureDetector(
+                      onTap: () {
+                        void _showIOS_DatePicker(ctx) {
+                          showCupertinoModalPopup(
+                              context: ctx,
+                              builder: (_) => Container(
+                                    height: 190,
+                                    color: Color.fromARGB(255, 255, 255, 255),
+                                    child: Column(
+                                      children: [
+                                        Container(
+                                          height: 180,
+                                          child: CupertinoDatePicker(
+                                              mode: CupertinoDatePickerMode.date,
+                                              initialDateTime: DateTime.now(),
+                                              onDateTimeChanged: (val) {
+                                                setState(() {
+                                                  final f = new DateFormat('yyyy-MM-dd');
+
+                                                  //  hourService = DateFormat('hh:mm:ss').format(val).toString();
+                                                  dataListObjectGeneral!.ref.update({'date': f.format(val).toString()}).then((value) {
+                                                    //  setState(() {});
+                                                    //   getData();
+                                                    // AppWidget().itemMessage("Actualizado", context);
+                                                  });
+
+                                                  //  dateSelected = val.toString();
+                                                });
+                                              }),
+                                        ),
+                                      ],
+                                    ),
+                                  ));
+                        }
+
+                        _showIOS_DatePicker(context);
+                      },
+                      child: Container(
+                          margin: EdgeInsets.only(left: 20, right: 20),
+                          child: Row(
+                            children: [
+                              Text(
+                                "Fecha de servicio final".toString(),
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                  color: secondryColor,
+                                ),
+                              ),
+                              Expanded(child: SizedBox()),
+                              Text(
+                                /* hourService.toString()*/ /*dataListObjectGeneral == null
+                              ? ""
+                              :*/
+                                dataListObjectGeneral!.child("date").value == null
+                                    ? "No disponible"
+                                    : dataListObjectGeneral!.child("date").value.toString(),
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                  color: secondryColor,
+                                ),
+                              )
+                            ],
+                          ))),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(left: 20, right: 20),
+                    width: double.infinity,
+                    height: 1,
+                    color: secondryColor,
+                  ),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  GestureDetector(
+                      onTap: () {
+                        void _showIOS_DatePicker(ctx) {
+                          showCupertinoModalPopup(
+                              context: ctx,
+                              builder: (_) => Container(
+                                    height: 190,
+                                    color: Color.fromARGB(255, 255, 255, 255),
+                                    child: Column(
+                                      children: [
+                                        Container(
+                                          height: 180,
+                                          child: CupertinoDatePicker(
+                                              mode: CupertinoDatePickerMode.time,
+                                              initialDateTime: DateTime.now(),
+                                              onDateTimeChanged: (val) {
+                                                setState(() {
+                                                  //    final f = new DateFormat('yyyy-MM-dd');
+
+                                                  hourService = DateFormat('hh:mm:ss').format(val).toString();
+                                                  dataListObjectGeneral!.ref.update({'time': hourService.toString()}).then((value) {
+                                                    //  setState(() {});
+                                                    //getData();
+                                                    // AppWidget().itemMessage("Actualizado", context);
+                                                  });
+
+                                                  //  dateSelected = val.toString();
+                                                });
+                                              }),
+                                        ),
+                                      ],
+                                    ),
+                                  ));
+                        }
+
+                        _showIOS_DatePicker(context);
+                      },
+                      child: Container(
+                          margin: EdgeInsets.only(left: 20, right: 20),
+                          child: Row(
+                            children: [
+                              Text(
+                                "Hora de servicio final".toString(),
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                  color: secondryColor,
+                                ),
+                              ),
+                              Expanded(child: SizedBox()),
+                              Text(
+                                /* hourService.toString()*/ /*dataListObjectGeneral == null
+                              ? ""
+                              :*/
+                                dataListObjectGeneral!.child("time").value == null
+                                    ? "No disponible"
+                                    : dataListObjectGeneral!.child("time").value.toString(),
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                  color: secondryColor,
+                                ),
+                              )
+                            ],
+                          ))),
+                  SizedBox(
                     height: 15,
                   ),
                   Container(
@@ -849,9 +1003,12 @@ class _CartPageState extends State<CartPage> {
                 Container(
                     width: 200,
                     child: AppWidget().buttonFormLine(context, "Cancelar", true, urlIcon: "images/icons/closeCircle.svg", tap: () {
-                      Navigator.pop(context);
+                      //  Navigator.pop(context);
                       AppWidget().optionsEnabled("Seguro quiere cancelar", context, tap2: () {}, tap: () {
                         dataListObjectGeneral!.ref.remove().then((value) {
+                          Navigator.pop(context);
+                          Navigator.pop(context);
+                          AppWidget().itemMessage("Orden eliminada", context);
                           //     Navigator.pop(context);
                         });
                       });

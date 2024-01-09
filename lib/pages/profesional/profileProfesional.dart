@@ -240,168 +240,171 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
 
             //return Text(dataListObject!.child("name").value.toString());
 
-            return Container(
+            return response.snapshot.children == null
+                ? AppWidget().noResult()
+                : Container(
 
-                // width: double.infinity,
+                    // width: double.infinity,
 
-                //height: 110,
+                    // height: 300,
+                    child: ListView.builder(
+                        padding: EdgeInsets.only(left: 10.0),
+                        itemCount: response.snapshot.children.toList().length,
 
-                child: ListView.builder(
-                    padding: EdgeInsets.only(left: 10.0),
-                    itemCount: response.snapshot.children.toList().length,
+                        // scrollDirection: Axis.horizontal,
 
-                    // scrollDirection: Axis.horizontal,
+                        physics: NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemBuilder: (BuildContext context, int i) {
+                          DataSnapshot dataList = response.snapshot.children.toList()[i];
 
-                    physics: NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    itemBuilder: (BuildContext context, int i) {
-                      DataSnapshot dataList = response.snapshot.children.toList()[i];
-
-                      Widget itemHistory() {
-                        return Container(
-                          decoration: AppWidget().borderColor(),
-                          width: 170,
-                          padding: EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
-                          height: 105,
-                          child: Column(
-                            children: [
-                              Row(
+                          Widget itemHistory() {
+                            return Container(
+                              decoration: AppWidget().borderColor(),
+                              width: 170,
+                              padding: EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
+                              height: 105,
+                              child: Column(
                                 children: [
-                                  SvgPicture.asset(
-                                    "images/icons/support1.svg",
-                                    width: 15,
-                                    height: 15,
+                                  Row(
+                                    children: [
+                                      SvgPicture.asset(
+                                        "images/icons/support1.svg",
+                                        width: 15,
+                                        height: 15,
+                                      ),
+                                      SizedBox(
+                                        width: 10,
+                                      ),
+                                      Text(
+                                        dataList.child("name").value == null ? "No disponible" : dataList.child("name").value.toString(),
+                                        style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 14),
+                                      ),
+                                    ],
                                   ),
-                                  SizedBox(
-                                    width: 10,
+                                  Row(
+                                    children: [
+                                      SvgPicture.asset(
+                                        "images/icons/check.svg",
+                                        width: 11,
+                                        height: 11,
+                                      ),
+                                      SizedBox(
+                                        width: 10,
+                                      ),
+                                      Text(
+                                        "Trabajo realizado",
+                                        style: TextStyle(color: secondryColor, fontSize: 12),
+                                      ),
+                                    ],
                                   ),
-                                  Text(
-                                    dataList.child("name").value == null ? "No disponible" : dataList.child("name").value.toString(),
-                                    style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 14),
+                                  Row(
+                                    children: [
+                                      SvgPicture.asset(
+                                        "images/icons/globe.svg",
+                                        width: 15,
+                                        height: 15,
+                                      ),
+                                      SizedBox(
+                                        width: 10,
+                                      ),
+                                      Flexible(
+                                          child: Text(
+                                        dataList.child("address").value == null
+                                            ? "No disponible"
+                                            : dataList.child("address").value.toString(),
+                                        maxLines: 1,
+                                        style: TextStyle(color: secondryColor, fontSize: 12),
+                                      )),
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      SvgPicture.asset(
+                                        "images/icons/calendar.svg",
+                                        width: 15,
+                                        height: 15,
+                                      ),
+                                      SizedBox(
+                                        width: 15,
+                                      ),
+                                      Text(
+                                        dataList.child("price").value == null ? "No disponible" : dataList.child("price").value.toString(),
+                                        style: TextStyle(color: secondryColor, fontSize: 18, fontWeight: FontWeight.bold),
+                                      ),
+                                    ],
                                   ),
                                 ],
                               ),
-                              Row(
-                                children: [
-                                  SvgPicture.asset(
-                                    "images/icons/check.svg",
-                                    width: 11,
-                                    height: 11,
-                                  ),
-                                  SizedBox(
-                                    width: 10,
-                                  ),
-                                  Text(
-                                    "Trabajo realizado",
-                                    style: TextStyle(color: secondryColor, fontSize: 12),
-                                  ),
-                                ],
-                              ),
-                              Row(
-                                children: [
-                                  SvgPicture.asset(
-                                    "images/icons/globe.svg",
-                                    width: 15,
-                                    height: 15,
-                                  ),
-                                  SizedBox(
-                                    width: 10,
-                                  ),
-                                  Flexible(
-                                      child: Text(
-                                    dataList.child("address").value == null ? "No disponible" : dataList.child("address").value.toString(),
-                                    maxLines: 1,
-                                    style: TextStyle(color: secondryColor, fontSize: 12),
-                                  )),
-                                ],
-                              ),
-                              Row(
-                                children: [
-                                  SvgPicture.asset(
-                                    "images/icons/calendar.svg",
-                                    width: 15,
-                                    height: 15,
-                                  ),
-                                  SizedBox(
-                                    width: 15,
-                                  ),
-                                  Text(
-                                    dataList.child("price").value == null ? "No disponible" : dataList.child("price").value.toString(),
-                                    style: TextStyle(color: secondryColor, fontSize: 18, fontWeight: FontWeight.bold),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        );
-                      }
+                            );
+                          }
 
-                      Widget itemSpacing() {
-                        return Container(
+                          Widget itemSpacing() {
+                            return Container(
 
-                            // decoration: AppWidget().borderColor(),
+                                // decoration: AppWidget().borderColor(),
 
-                            width: 170,
-                            padding: EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
-                            height: 105,
-                            child: SizedBox());
-                      }
+                                width: 170,
+                                padding: EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
+                                height: 105,
+                                child: SizedBox());
+                          }
 
 //(i / 2).toString().contains(".5")
 
-                      return Row(
-                        children: [
-                          SizedBox(
-                            width: 7,
-                          ),
-                          (i / 2).toString().contains(".5") == false ? itemSpacing() : itemHistory(),
-                          SizedBox(
-                            width: 5,
-                          ),
-                          Column(
+                          return Row(
                             children: [
-                              dataList!.child("user").value == null
-                                  ? SizedBox()
-                                  : FutureBuilder(
-                                      future: FirebaseDatabase.instance
-                                          .ref()
-                                          .child('users')
-                                          .child(dataList!.child("user").value.toString())
-                                          .once(),
-                                      builder: (BuildContext context, AsyncSnapshot snapshot) {
-                                        late DatabaseEvent response;
-                                        if (snapshot.hasData) {
-                                          response = snapshot.data;
-                                        }
-                                        return snapshot.hasData != true
-                                            ? AppWidget().loading()
-                                            : AppWidget().circleProfile(response.snapshot.child("photo").value.toString(), size: 40);
-                                      }),
-                              (i + 1) == response.snapshot.children.toList().length
-                                  ? Container(
-                                      height: 100,
-                                      width: 1,
-                                      //   color: Colors.black.withOpacity(0.2),
-                                    )
-                                  : Container(
-                                      height: 100,
-                                      width: 1,
-                                      color: Colors.black.withOpacity(0.2),
-                                    ),
+                              SizedBox(
+                                width: 7,
+                              ),
+                              (i / 2).toString().contains(".5") == false ? itemSpacing() : itemHistory(),
+                              SizedBox(
+                                width: 5,
+                              ),
+                              Column(
+                                children: [
+                                  dataList!.child("user").value == null
+                                      ? AppWidget().loading()
+                                      : FutureBuilder(
+                                          future: FirebaseDatabase.instance
+                                              .ref()
+                                              .child('users')
+                                              .child(dataList!.child("user").value.toString())
+                                              .once(),
+                                          builder: (BuildContext context, AsyncSnapshot snapshot) {
+                                            late DatabaseEvent response;
+                                            if (snapshot.hasData) {
+                                              response = snapshot.data;
+                                            }
+                                            return snapshot.hasData != true
+                                                ? AppWidget().loading()
+                                                : AppWidget().circleProfile(response.snapshot.child("photo").value.toString(), size: 40);
+                                          }),
+                                  (i + 1) == response.snapshot.children.toList().length
+                                      ? Container(
+                                          height: 100,
+                                          width: 1,
+                                          //   color: Colors.black.withOpacity(0.2),
+                                        )
+                                      : Container(
+                                          height: 100,
+                                          width: 1,
+                                          color: Colors.black.withOpacity(0.2),
+                                        ),
+                                ],
+                              ),
+                              SizedBox(
+                                width: 5,
+                              ),
+                              (i / 2).toString().contains(".5") == true ? itemSpacing() : itemHistory(),
                             ],
-                          ),
-                          SizedBox(
-                            width: 5,
-                          ),
-                          (i / 2).toString().contains(".5") == true ? itemSpacing() : itemHistory(),
-                        ],
-                      );
-                    }));
+                          );
+                        }));
+          } else {
+            return AppWidget().loading();
           }
 
           // }
-
-          return AppWidget().loading();
         });
   }
 
@@ -1081,7 +1084,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
       // _userDataProfile.child("licence") == null
 
       _userDataProfile.child("license").value == null
-          ? SizedBox()
+          ? AppWidget().noResult()
           : Container(
               height: 40,
               child: ListView.builder(
@@ -1142,6 +1145,17 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                           SizedBox(
                             width: 15,
                           ),
+                          GestureDetector(
+                              onTap: () async {
+                                final Uri url = Uri.parse(_userDataProfile.child("license").value.toString());
+                                if (!await launchUrl(url)) {
+                                  throw Exception('Could not launch _url');
+                                }
+                              },
+                              child: Icon(
+                                Icons.remove_red_eye,
+                                size: 30,
+                              )),
                         ],
                       ),
                     );
@@ -1209,7 +1223,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                 height: 10,
               ),
               _userDataProfile.child("background").value == null
-                  ? SizedBox()
+                  ? AppWidget().noResult()
                   : Container(
                       height: 40,
                       child: ListView.builder(
@@ -1266,6 +1280,17 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                   SizedBox(
                                     width: 15,
                                   ),
+                                  GestureDetector(
+                                      onTap: () async {
+                                        final Uri url = Uri.parse(_userDataProfile.child("background").value.toString());
+                                        if (!await launchUrl(url)) {
+                                          throw Exception('Could not launch _url');
+                                        }
+                                      },
+                                      child: Icon(
+                                        Icons.remove_red_eye,
+                                        size: 30,
+                                      )),
                                 ],
                               ),
                             );
@@ -1303,9 +1328,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                 height: 10,
               ),
               _userDataProfile.child("legal").value == null
-                  ? SizedBox(
-                      height: 10,
-                    )
+                  ? AppWidget().noResult()
                   : Container(
                       height: 40,
                       child: ListView.builder(
@@ -1369,7 +1392,10 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                           throw Exception('Could not launch _url');
                                         }
                                       },
-                                      child: Icon(Icons.remove_red_eye)),
+                                      child: Icon(
+                                        Icons.remove_red_eye,
+                                        size: 30,
+                                      )),
                                 ],
                               ),
                             );

@@ -333,7 +333,7 @@ class _LoginPageState extends State<LoginPageProfesional> {
                   ),
                 ),*/
 
-                AppWidget().redSocial(context, false),
+                AppWidget().redSocialProfessional(context, false),
                 //
                 //
                 /*   Padding(

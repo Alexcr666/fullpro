@@ -31,16 +31,16 @@ import 'package:fullpro/utils/countryStateCity/AddressPickerRow.dart';
 import 'package:fullpro/widgets/widget.dart';
 import 'package:intl/intl.dart';
 
-class RegistrationPage extends StatefulWidget {
+class RegistrationProfessionalPage extends StatefulWidget {
   static const String id = 'RegistrationPage';
 
   @override
-  State<RegistrationPage> createState() => _RegistrationPageState();
+  State<RegistrationProfessionalPage> createState() => _RegistrationProfessionalPageState();
 }
 
 GlobalKey<AutoCompleteTextFieldState<String>> key = GlobalKey();
 
-class _RegistrationPageState extends State<RegistrationPage> {
+class _RegistrationProfessionalPageState extends State<RegistrationProfessionalPage> {
   TextEditingController _searchHome = TextEditingController();
   final FirebaseAuth _auth = FirebaseAuth.instance;
   bool agree = false;

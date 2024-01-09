@@ -174,7 +174,11 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 //
 
-                Padding(
+                Container(
+                    margin: EdgeInsets.only(left: 19, right: 19),
+                    child: AppWidget().texfieldFormat(controller: passwordController, title: "Password", password: true)),
+
+                /*  Padding(
                   padding: EdgeInsets.only(
                     right: 20,
                     left: 20,
@@ -201,7 +205,7 @@ class _LoginPageState extends State<LoginPage> {
                       fontSize: 14,
                     ),
                   ),
-                ),
+                ),*/
                 //
                 SizedBox(
                   height: 20,

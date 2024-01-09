@@ -52,7 +52,7 @@ createOrdens(BuildContext context, {String? name, String? inspections, String? p
       'professional': profesional,
       'user': currentFirebaseUser!.uid.toString(),
       'state': 0,
-      'price': 1000
+      'price': price
     };
 
     newUserRef.set(userMap).then((value) {
@@ -166,7 +166,7 @@ class _subServicePageState extends State<subServicePage> {
               DatabaseEvent response = snapshot.data;
 
               return response == null
-                  ? Text("Cargando")
+                  ? AppWidget().loading()
                   : response.snapshot.children.length == 0
                       ? AppWidget().noResult()
                       : ListView.builder(
@@ -371,7 +371,8 @@ class _subServicePageState extends State<subServicePage> {
                                                                                       profesionalName:
                                                                                           dataList.child("fullname").value.toString(),
                                                                                       profesional: dataList.key.toString(),
-                                                                                      price: 1000);
+                                                                                      price: int.parse(
+                                                                                          dataList.child("price").value.toString()));
                                                                                 })),
                                                                               ],
                                                                             )),

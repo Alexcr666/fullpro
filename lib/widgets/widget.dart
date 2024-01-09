@@ -17,6 +17,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 import 'package:fullpro/PROFESIONAL/views/Authentication/loginpage.dart';
+import 'package:fullpro/PROFESIONAL/views/Authentication/registerationpage.dart';
 
 import 'package:fullpro/pages/Authentication/redsocial/google.dart';
 
@@ -29,6 +30,60 @@ import 'package:flutter_locales/flutter_locales.dart';
 import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
 
 class AppWidget {
+  redSocialProfessional(BuildContext context, bool active) {
+    return Column(
+      children: [
+        active
+            ? SizedBox()
+            : SizedBox(
+                height: 50.0,
+                width: double.infinity,
+                child: TextButton(
+                  onPressed: () async {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => RegistrationProfessionalPage()));
+
+                    //   Navigator.pushNamedAndRemoveUntil(context, RegistrationPage.id, (route) => false);
+                  },
+                  child: Text(
+                    "Create new account user",
+                    style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
+        SizedBox(
+          height: 10,
+        ),
+        Container(
+          width: double.infinity,
+          height: 1,
+          color: primaryColor,
+          margin: EdgeInsets.only(left: 35, right: 35),
+        ),
+        SizedBox(
+          height: 50.0,
+          width: double.infinity,
+          child: TextButton(
+            onPressed: () async {
+              Navigator.pushNamedAndRemoveUntil(context, RegistrationPage.id, (route) => false);
+            },
+            child: Text(
+              "Or continue with",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+          ),
+        ),
+        GestureDetector(
+            onTap: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => SignInDemo()));
+            },
+            child: Image.asset(
+              "images/redsocial1.png",
+              height: 45,
+            )),
+      ],
+    );
+  }
+
   optionsEnabled(String title, BuildContext context, {Function? tap, Function? tap2}) {
     showModalBottomSheet(
         context: context,
@@ -232,95 +287,99 @@ class AppWidget {
       bool? float}) {
     bool _passwordVisible = true;
 
-    return Container(
-        color: Colors.white,
+    return StatefulBuilder(builder: (context, setState) {
+      return Container(
+          color: Colors.white,
 
-        /*decoration: BoxDecoration(
+          /*decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(15),
           ),*/
 
-        // padding: EdgeInsets.symmetric(horizontal: 8),
+          // padding: EdgeInsets.symmetric(horizontal: 8),
 
-        /*  decoration: BoxDecoration(
+          /*  decoration: BoxDecoration(
             border: Border.all(color: Color(0xffE8E8E8)),
             borderRadius: BorderRadius.all(
               Radius.circular(10),
             ),
           ),*/
 
-        //    height: 34.sp,
+          //    height: 34.sp,
 
-        margin: EdgeInsets.only(top: 5),
-        child: TextFormField(
-          inputFormatters: number == null ? null : <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly],
-          enabled: enabled == true ? false : true,
-          controller: controller,
-          onChanged: (text) {
-            execute!();
-          },
-          obscureText: password != true ? false : _passwordVisible,
-          decoration: InputDecoration(
-            contentPadding: EdgeInsets.only(top: 17, bottom: 17, left: 15),
+          margin: EdgeInsets.only(top: 5),
+          child: TextFormField(
+            inputFormatters: number == null ? null : <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly],
+            enabled: enabled == true ? false : true,
+            controller: controller,
+            onChanged: (text) {
+              execute!();
+            },
+            obscureText: password != true ? false : _passwordVisible,
+            decoration: InputDecoration(
+              contentPadding: EdgeInsets.only(top: 17, bottom: 17, left: 15),
 
-            enabledBorder: OutlineInputBorder(
+              enabledBorder: OutlineInputBorder(
 
-                // width: 0.0 produces a thin "hairline" border
+                  // width: 0.0 produces a thin "hairline" border
 
-                borderSide: BorderSide(color: secondryColor, width: 1.0),
-                borderRadius: BorderRadius.circular(11)),
+                  borderSide: BorderSide(color: secondryColor, width: 1.0),
+                  borderRadius: BorderRadius.circular(11)),
 
-            border: OutlineInputBorder(borderSide: BorderSide(color: primaryColor, width: 1.0), borderRadius: BorderRadius.circular(10)),
+              border: OutlineInputBorder(borderSide: BorderSide(color: primaryColor, width: 1.0), borderRadius: BorderRadius.circular(10)),
 
-            //  contentPadding: const EdgeInsets.symmetric(vertical: 3.0, horizontal: 10.0),
+              //  contentPadding: const EdgeInsets.symmetric(vertical: 3.0, horizontal: 10.0),
 
-            labelText: title,
+              labelText: title,
 
-            fillColor: Colors.white,
+              fillColor: Colors.white,
 
-            errorStyle: TextStyle(height: 0.3),
+              errorStyle: TextStyle(height: 0.3),
 
-            prefixIconConstraints: BoxConstraints(maxHeight: 0),
+              prefixIconConstraints: BoxConstraints(maxHeight: 0),
 
-            filled: true,
+              filled: true,
 
-            labelStyle: TextStyle(color: secondryColor, fontSize: 14),
+              labelStyle: TextStyle(color: secondryColor, fontSize: 14),
 
-            //   border: InputBorder.none,
+              //   border: InputBorder.none,
 
-            /*  focusedBorder: OutlineInputBorder(
+              /*  focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10.0),
                 borderSide: BorderSide(
                   color: AppColors.green,
                 ),
               ),*/
 
-            suffixIcon: IconButton(
-              icon: urlIcon != null
-                  ? SvgPicture.asset(
-                      urlIcon.toString(),
-                      color: secondryColor,
-                      width: 25,
-                    )
-                  : Icon(
-                      // Based on passwordVisible state choose the icon
+              suffixIcon: IconButton(
+                icon: password == null
+                    ? SvgPicture.asset(
+                        urlIcon.toString(),
+                        color: secondryColor,
+                        width: 25,
+                      )
+                    : Icon(
+                        // Based on passwordVisible state choose the icon
 
-                      _passwordVisible == false ? Icons.remove_red_eye_outlined : Icons.visibility_off_outlined,
+                        _passwordVisible == false ? Icons.remove_red_eye_outlined : Icons.visibility_off_outlined,
 
-                      color: password != true ? Colors.transparent : Colors.grey,
-                    ),
-              onPressed: () {
-                // Update the state i.e. toogle the state of passwordVisible variable
+                        color: Colors.grey,
+                      ),
+                onPressed: () {
+                  _passwordVisible = !_passwordVisible;
+                  password = !password!;
+                  setState(() {});
+                  // Update the state i.e. toogle the state of passwordVisible variable
 
-                // setState(() {
+                  // setState(() {
 
-                // _passwordVisible = !_passwordVisible;
+                  // _passwordVisible = !_passwordVisible;
 
-                //});
-              },
-            ),
+                  //});
+                },
+              ),
 
-            /*  focusedErrorBorder: OutlineInputBorder(
+              /*  focusedErrorBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10.0),
                 borderSide: BorderSide(
                   color: Colors.red,
@@ -346,24 +405,25 @@ class AppWidget {
                   color: AppColors.greyTextField2,
                 ),
               ),*/
-          ),
-          validator: (val) {
-            if (noRequired == true) {
-              return null;
-            } else {
-              if (val!.length == 0) {
-                return "Campo obligatorio";
-              } else {
+            ),
+            validator: (val) {
+              if (noRequired == true) {
                 return null;
+              } else {
+                if (val!.length == 0) {
+                  return "Campo obligatorio";
+                } else {
+                  return null;
+                }
               }
-            }
-          },
-          keyboardType: float == true
-              ? TextInputType.numberWithOptions(decimal: true)
-              : number != null
-                  ? TextInputType.number
-                  : TextInputType.emailAddress,
-        ));
+            },
+            keyboardType: float == true
+                ? TextInputType.numberWithOptions(decimal: true)
+                : number != null
+                    ? TextInputType.number
+                    : TextInputType.emailAddress,
+          ));
+    });
   }
 
   boxShandowGrey() {

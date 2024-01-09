@@ -448,8 +448,8 @@ class _AddressesState extends State<AddressesUser> {
                             GestureDetector(
                                 onTap: () {
                                   userDataProfile.ref.update({
-                                    "latitud": "1000",
-                                    "longitude": "1000",
+                                    "latitud": double.parse(dataList.child("latitude").value.toString()),
+                                    "longitude": double.parse(dataList.child("longitude").value.toString()),
                                     "location": dataList.child("name").value.toString()
                                   }).then((value) {
                                     AppWidget().itemMessage("Ubicación cambiada", context);
