@@ -39,9 +39,9 @@ class RegistrationProfessionalPage extends StatefulWidget {
 }
 
 GlobalKey<AutoCompleteTextFieldState<String>> key = GlobalKey();
+TextEditingController _searchHome = TextEditingController();
 
 class _RegistrationProfessionalPageState extends State<RegistrationProfessionalPage> {
-  TextEditingController _searchHome = TextEditingController();
   final FirebaseAuth _auth = FirebaseAuth.instance;
   bool agree = false;
   List<File> fileLicense = [];
@@ -265,6 +265,7 @@ class _RegistrationProfessionalPageState extends State<RegistrationProfessionalP
   void initState() {
     super.initState();
     locationPermision();
+    servicesSearch(1);
   }
 
   final _formKey = GlobalKey<FormState>();

@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
@@ -260,7 +261,7 @@ class _MyOrdersState extends State<MyOrders> with TickerProviderStateMixin {
               DatabaseEvent response = snapshot.data;
 
               return response == null
-                  ? Text("Cargando")
+                  ? AppWidget().loading()
                   : ListView.builder(
                       itemCount: response.snapshot.children.length,
                       shrinkWrap: true,
@@ -276,10 +277,7 @@ class _MyOrdersState extends State<MyOrders> with TickerProviderStateMixin {
                                 SizedBox(
                                   width: 10,
                                 ),
-                                CircleAvatar(
-                                  backgroundColor: Colors.grey.withOpacity(0.3),
-                                  radius: 40,
-                                ),
+                                AppWidget().circleProfile(dataList.child("photo").value.toString(), size: 55),
                                 SizedBox(
                                   width: 10,
                                 ),
@@ -299,7 +297,9 @@ class _MyOrdersState extends State<MyOrders> with TickerProviderStateMixin {
                                       style: TextStyle(color: Colors.black, fontSize: 10),
                                     ),
                                     RatingBarIndicator(
-                                        rating: 2.5,
+                                        rating: dataList.child("rating").value == null
+                                            ? 0
+                                            : double.parse(dataList.child("rating").value.toString()),
                                         itemCount: 5,
                                         itemSize: 16.0,
                                         itemBuilder: (context, _) => Icon(
@@ -342,7 +342,12 @@ class _MyOrdersState extends State<MyOrders> with TickerProviderStateMixin {
 
   Widget pageOrdensWidget() {
     return FutureBuilder(
-        future: FirebaseDatabase.instance.ref().child('ordens').once(),
+        future: FirebaseDatabase.instance
+            .ref()
+            .child('ordens')
+            .orderByChild("professional")
+            .equalTo(FirebaseAuth.instance.currentUser!.uid.toString())
+            .once(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (snapshot.hasData) {
             DatabaseEvent response = snapshot.data;
@@ -353,55 +358,57 @@ class _MyOrdersState extends State<MyOrders> with TickerProviderStateMixin {
 
             //return Text(dataListObject!.child("name").value.toString());
 
-            return ListView.builder(
-                padding: EdgeInsets.only(left: 10.0),
-                itemCount: response.snapshot.children.toList().length,
-                physics: NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                itemBuilder: (BuildContext context, int i) {
-                  DataSnapshot dataList = response.snapshot.children.toList()[i];
+            return response.snapshot.children.toList().length == 0
+                ? AppWidget().noResult()
+                : ListView.builder(
+                    padding: EdgeInsets.only(left: 10.0),
+                    itemCount: response.snapshot.children.toList().length,
+                    physics: NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    itemBuilder: (BuildContext context, int i) {
+                      DataSnapshot dataList = response.snapshot.children.toList()[i];
 
-                  return /*dataList.child("user").value.toString() == "LapnDojkb8QGfSOioTXLkiPAiNt2"
+                      return /*dataList.child("user").value.toString() == "LapnDojkb8QGfSOioTXLkiPAiNt2"
 
                       ? SizedBox()
 
                       :*/
 
-                      Padding(
-                    padding: const EdgeInsets.all(5),
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => DetailsOrderProfessionalPage(
-                                      dataList: dataList,
-                                    )));
-                      },
-                      child: Container(
-                        margin: EdgeInsets.only(left: 10, right: 10),
-                        width: double.infinity,
-                        decoration: AppWidget().boxShandowGrey(),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 5,
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 10,
-                            vertical: 10,
-                          ),
-                          child: Row(
-                            children: [
-                              CircleAvatar(
-                                backgroundColor: Colors.grey.withOpacity(0.4),
-                                radius: 30,
+                          Padding(
+                        padding: const EdgeInsets.all(5),
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => DetailsOrderProfessionalPage(
+                                          dataList: dataList,
+                                        )));
+                          },
+                          child: Container(
+                            margin: EdgeInsets.only(left: 10, right: 10),
+                            width: double.infinity,
+                            decoration: AppWidget().boxShandowGrey(),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 5,
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 10,
                               ),
-                              // Image Row
-                              //    Row(
-                              //    crossAxisAlignment: CrossAxisAlignment.center,
-                              //  children: [
-                              /* Column(
+                              child: Row(
+                                children: [
+                                  CircleAvatar(
+                                    backgroundColor: Colors.grey.withOpacity(0.4),
+                                    radius: 30,
+                                  ),
+                                  // Image Row
+                                  //    Row(
+                                  //    crossAxisAlignment: CrossAxisAlignment.center,
+                                  //  children: [
+                                  /* Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
@@ -424,109 +431,109 @@ class _MyOrdersState extends State<MyOrders> with TickerProviderStateMixin {
                         ),
                       ],
                     ),*/
-                              const SizedBox(width: 10),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  SizedBox(
-                                    //  width: MediaQuery.of(context).size.width * .6,
-                                    child: Text(
-                                      dataList.child("name").value == null ? "No disponible" : dataList.child("name").value.toString(),
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(
-                                        color: secondryColor,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 13,
-                                      ),
-                                    ),
-                                  ),
-                                  RatingBarIndicator(
-                                      rating: 2.5,
-                                      itemCount: 5,
-                                      itemSize: 18.0,
-                                      itemBuilder: (context, _) => Icon(
-                                            Icons.star,
+                                  const SizedBox(width: 10),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      SizedBox(
+                                        //  width: MediaQuery.of(context).size.width * .6,
+                                        child: Text(
+                                          dataList.child("name").value == null ? "No disponible" : dataList.child("name").value.toString(),
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(
                                             color: secondryColor,
-                                          )),
-                                  SizedBox(
-                                    height: 5,
-                                  ),
-                                  Row(
-                                    children: [
-                                      SvgPicture.asset(
-                                        "images/icons/userCircle.svg",
-                                        color: secondryColor,
-                                        height: 17,
-                                      ),
-                                      SizedBox(
-                                        width: 5,
-                                      ),
-                                      Text(
-                                        dataList.child("nameProfessional").value == null
-                                            ? "Sin Asignar"
-                                            : dataList.child("nameProfessional").value.toString(),
-                                        style: TextStyle(
-                                          color: secondryColor,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 12,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 13,
+                                          ),
                                         ),
                                       ),
-                                    ],
-                                  ),
-                                  SizedBox(
-                                    height: 5,
-                                  ),
-                                  Row(
-                                    children: [
-                                      SvgPicture.asset(
-                                        "images/icons/calendar.svg",
-                                        color: secondryColor,
-                                        height: 17,
+                                      RatingBarIndicator(
+                                          rating: 2.5,
+                                          itemCount: 5,
+                                          itemSize: 18.0,
+                                          itemBuilder: (context, _) => Icon(
+                                                Icons.star,
+                                                color: secondryColor,
+                                              )),
+                                      SizedBox(
+                                        height: 5,
+                                      ),
+                                      Row(
+                                        children: [
+                                          SvgPicture.asset(
+                                            "images/icons/userCircle.svg",
+                                            color: secondryColor,
+                                            height: 17,
+                                          ),
+                                          SizedBox(
+                                            width: 5,
+                                          ),
+                                          Text(
+                                            dataList.child("nameProfessional").value == null
+                                                ? "Sin Asignar"
+                                                : dataList.child("nameProfessional").value.toString(),
+                                            style: TextStyle(
+                                              color: secondryColor,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 12,
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                       SizedBox(
-                                        width: 5,
+                                        height: 5,
                                       ),
-                                      Text(
-                                        dataList.child("date").value.toString(),
-                                        style: TextStyle(
-                                          color: secondryColor,
-                                          //fontWeight: FontWeight.bold,
-                                          fontSize: 14,
-                                        ),
-                                      ),
+                                      Row(
+                                        children: [
+                                          SvgPicture.asset(
+                                            "images/icons/calendar.svg",
+                                            color: secondryColor,
+                                            height: 17,
+                                          ),
+                                          SizedBox(
+                                            width: 5,
+                                          ),
+                                          Text(
+                                            dataList.child("date").value.toString(),
+                                            style: TextStyle(
+                                              color: secondryColor,
+                                              //fontWeight: FontWeight.bold,
+                                              fontSize: 14,
+                                            ),
+                                          ),
+                                        ],
+                                      )
                                     ],
-                                  )
-                                ],
-                              ),
-                              /* SizedBox(
+                                  ),
+                                  /* SizedBox(
                                 width: 10,
                               ),*/
-                              Expanded(child: SizedBox()),
+                                  Expanded(child: SizedBox()),
 
-                              Column(
-                                children: [
-                                  Container(
-                                      width: 134,
-                                      height: 40,
-                                      child: AppWidget().buttonFormColor(
-                                          context,
-                                          stateOrder[int.parse(dataList!.child("state").value.toString())],
-                                          stateOrderColor[int.parse(dataList!.child("state").value.toString())],
-                                          tap: () {})),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  Container(
-                                      width: 134,
-                                      height: 40,
-                                      child: AppWidget().buttonFormColor(context, "Cancelar", Colors.red, tap: () {
-                                        dataList.ref.update({'state': 3}).then((value) {
-                                          AppWidget().itemMessage("Actualizado", context);
-                                        });
-                                      })),
-                                ],
-                              )
-                              /*Text(
+                                  Column(
+                                    children: [
+                                      Container(
+                                          width: 134,
+                                          height: 40,
+                                          child: AppWidget().buttonFormColor(
+                                              context,
+                                              stateOrder[int.parse(dataList!.child("state").value.toString())],
+                                              stateOrderColor[int.parse(dataList!.child("state").value.toString())],
+                                              tap: () {})),
+                                      SizedBox(
+                                        height: 10,
+                                      ),
+                                      Container(
+                                          width: 134,
+                                          height: 40,
+                                          child: AppWidget().buttonFormColor(context, "Cancelar", Colors.red, tap: () {
+                                            dataList.ref.update({'state': 3}).then((value) {
+                                              AppWidget().itemMessage("Actualizado", context);
+                                            });
+                                          })),
+                                    ],
+                                  )
+                                  /*Text(
                   MainController.capitalize(kServices.status!),
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
@@ -538,12 +545,12 @@ class _MyOrdersState extends State<MyOrders> with TickerProviderStateMixin {
                         : Colors.green,
                   ),
                 ),*/
-                              //   ],
-                              //  ),
-                              // const SizedBox(height: 10),
+                                  //   ],
+                                  //  ),
+                                  // const SizedBox(height: 10),
 
-                              // Booking Row
-                              /*   Row(
+                                  // Booking Row
+                                  /*   Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -569,7 +576,7 @@ class _MyOrdersState extends State<MyOrders> with TickerProviderStateMixin {
                     ),
                   ],
                 ),*/
-                              /* const SizedBox(height: 5),
+                                  /* const SizedBox(height: 5),
 
                 // Order Numer Row
                 Row(
@@ -598,7 +605,7 @@ class _MyOrdersState extends State<MyOrders> with TickerProviderStateMixin {
                 ),
                 const SizedBox(height: 5),
                 // Status Row*/
-                              /*   Row(
+                                  /*   Row(
                   children: [
                     Text(
                       Locales.string(context, "lbl_status"),
@@ -622,13 +629,13 @@ class _MyOrdersState extends State<MyOrders> with TickerProviderStateMixin {
                     ),
                   ],
                 ),*/
-                            ],
+                                ],
+                              ),
+                            ),
                           ),
                         ),
-                      ),
-                    ),
-                  );
-                });
+                      );
+                    });
           }
 
           // }

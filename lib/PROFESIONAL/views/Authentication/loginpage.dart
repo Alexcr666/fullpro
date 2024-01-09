@@ -70,20 +70,24 @@ class _LoginPageState extends State<LoginPageProfesional> {
                   MaterialPageRoute(builder: (context) => const HomePage()),
                 );
               } else {
+                Navigator.pop(context);
                 int state = int.parse(event.snapshot.child("stateUser").value.toString());
                 if (state == 0) {
                   AppWidget().itemMessage("Usuario Pendiente", context);
+                } else {
+                  if (state == 2) {
+                    AppWidget().itemMessage("Usuario bloqueado", context);
+                  } else {
+                    if (state == 3) {
+                      AppWidget().itemMessage("Suspendido", context);
+                    } else {
+                      AppWidget().itemMessage("Suspendido", context);
+                    }
+                  }
                 }
-                if (state == 2) {
-                  AppWidget().itemMessage("Usuario bloqueado", context);
-                }
-                if (state == 3) {
-                  AppWidget().itemMessage("Suspendido", context);
-                }
-                AppWidget().itemMessage("Suspendido", context);
               }
             } else {
-              AppWidget().itemMessage("Error al iniciar sessión1", context);
+              AppWidget().itemMessage("Suspendido", context);
             }
           } else {
             AppWidget().itemMessage("Usuario rol cliente", context);
@@ -98,13 +102,13 @@ class _LoginPageState extends State<LoginPageProfesional> {
     } on FirebaseAuthException catch (ex) {
       switch (ex.code) {
         case "wrong-password":
-          AppWidget().itemMessage("Error al iniciar sessión3", context);
+          AppWidget().itemMessage("Contraseña incorrecta", context);
           break;
         case "user-not-found":
-          AppWidget().itemMessage("Error al iniciar sessión4", context);
+          AppWidget().itemMessage("Usuario no existe", context);
           break;
         default:
-          AppWidget().itemMessage("Error al iniciar sessión5", context);
+          AppWidget().itemMessage("Ha ocurrido un error", context);
           print(ex.code);
       }
     }

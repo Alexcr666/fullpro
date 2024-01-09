@@ -735,7 +735,7 @@ class _CartPageState extends State<CartPage> {
                                                   final f = new DateFormat('yyyy-MM-dd');
 
                                                   //  hourService = DateFormat('hh:mm:ss').format(val).toString();
-                                                  dataListObjectGeneral!.ref.update({'date': f.format(val).toString()}).then((value) {
+                                                  dataListObjectGeneral!.ref.update({'dateFinish': f.format(val).toString()}).then((value) {
                                                     //  setState(() {});
                                                     //   getData();
                                                     // AppWidget().itemMessage("Actualizado", context);
@@ -769,9 +769,9 @@ class _CartPageState extends State<CartPage> {
                                 /* hourService.toString()*/ /*dataListObjectGeneral == null
                               ? ""
                               :*/
-                                dataListObjectGeneral!.child("date").value == null
+                                dataListObjectGeneral!.child("dateFinish").value == null
                                     ? "No disponible"
-                                    : dataListObjectGeneral!.child("date").value.toString(),
+                                    : dataListObjectGeneral!.child("dateFinish").value.toString(),
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 16,
@@ -812,7 +812,7 @@ class _CartPageState extends State<CartPage> {
                                                   //    final f = new DateFormat('yyyy-MM-dd');
 
                                                   hourService = DateFormat('hh:mm:ss').format(val).toString();
-                                                  dataListObjectGeneral!.ref.update({'time': hourService.toString()}).then((value) {
+                                                  dataListObjectGeneral!.ref.update({'timeFinish': hourService.toString()}).then((value) {
                                                     //  setState(() {});
                                                     //getData();
                                                     // AppWidget().itemMessage("Actualizado", context);
@@ -846,9 +846,9 @@ class _CartPageState extends State<CartPage> {
                                 /* hourService.toString()*/ /*dataListObjectGeneral == null
                               ? ""
                               :*/
-                                dataListObjectGeneral!.child("time").value == null
+                                dataListObjectGeneral!.child("timeFinish").value == null
                                     ? "No disponible"
-                                    : dataListObjectGeneral!.child("time").value.toString(),
+                                    : dataListObjectGeneral!.child("timeFinish").value.toString(),
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 16,

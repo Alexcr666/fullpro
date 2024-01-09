@@ -109,7 +109,7 @@ class AppWidget {
               ListTile(
                 title: new Text('Eliminar'),
                 onTap: () {
-                  Navigator.pop(context);
+                 // Navigator.pop(context);
 
                   tap;
                 },
