@@ -713,8 +713,8 @@ class _DetailsOrderPageState extends State<DetailsOrderPage> {
                 ),
                 Text(
                   /* currencyPos == 'left' ? '$currencySymbol' : '$ktotalprice'*/ dataListObjectGeneral == null
-                      ? "0"
-                      : dataListObjectGeneral!.child("price").value.toString(),
+                      ? '\$' + "0"
+                      : '\$' + dataListObjectGeneral!.child("price").value.toString(),
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 22,

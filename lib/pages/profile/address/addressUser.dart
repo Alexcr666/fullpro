@@ -407,11 +407,8 @@ class _AddressesState extends State<AddressesUser> {
         future: FirebaseDatabase.instance
             .ref()
             .child('address')
-
-            //  .orderByChild("user")
-
-            //.equalTo(FirebaseAuth.instance.currentUser!.uid.toString())
-
+            .orderByChild("user")
+            .equalTo(FirebaseAuth.instance.currentUser!.uid.toString())
             .once(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (snapshot.hasData) {

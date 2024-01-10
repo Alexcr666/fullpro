@@ -322,8 +322,8 @@ class _subServicePageState extends State<subServicePage> {
                                                                                 ),
                                                                                 Text(
                                                                                   dataList.child("price").value == null
-                                                                                      ? "0"
-                                                                                      : dataList.child("price").value.toString(),
+                                                                                      ? '\$' + "0"
+                                                                                      : '\$' + dataList.child("price").value.toString(),
                                                                                   style: TextStyle(
                                                                                       color: Colors.black,
                                                                                       fontWeight: FontWeight.bold,
@@ -798,7 +798,7 @@ class _subServicePageState extends State<subServicePage> {
                                     style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 16),
                                   ),
                                   Text(
-                                    "00.000",
+                                    '\$' + "00.000",
                                     style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 16),
                                   ),
                                   SizedBox(

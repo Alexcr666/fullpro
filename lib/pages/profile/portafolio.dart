@@ -193,6 +193,19 @@ class _PortafolioPageState extends State<PortafolioPage> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    DatabaseReference ref = FirebaseDatabase.instance.ref("portafolio");
+
+// Get the Stream
+    Stream<DatabaseEvent> stream = ref.onValue;
+
+    stream.listen((DatabaseEvent event) {
+      setState(() {});
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,

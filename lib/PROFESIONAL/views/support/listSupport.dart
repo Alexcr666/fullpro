@@ -173,7 +173,9 @@ class _ListSupportProfessionalPageState extends State<ListSupportProfessionalPag
                                                       ],
                                                     )),
 
-                                                    Text(stateOrder[int.parse(dataList.child("state").value.toString())]),
+                                                    Text(dataList.child("response").value != null
+                                                        ? "Resuelto"
+                                                        : stateOrder[int.parse(dataList.child("state").value.toString())]),
 
                                                     // Expanded(child: SizedBox()),
                                                   ],
@@ -287,5 +289,18 @@ class _ListSupportProfessionalPageState extends State<ListSupportProfessionalPag
         ),
       ),
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    DatabaseReference ref = FirebaseDatabase.instance.ref("portafolio");
+
+// Get the Stream
+    Stream<DatabaseEvent> stream = ref.onValue;
+
+    stream.listen((DatabaseEvent event) {
+      setState(() {});
+    });
   }
 }

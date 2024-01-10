@@ -66,8 +66,9 @@ class _RegistrationPageState extends State<RegistrationPage> {
           'fullname': fullNameController.text.toString(),
           'email': emailController.text.toString(),
           'phone': phoneController.text.toString(),
+          //  'dateUser': "",
           //'date': DateTime.now(),
-          'state': 1,
+          'stateUser': 1,
         };
 
         UserPreferences.setUserPhone(phoneController.text);

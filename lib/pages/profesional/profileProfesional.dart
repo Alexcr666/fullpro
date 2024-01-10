@@ -84,6 +84,7 @@ int stateIndicator = 0;
 
 late DataSnapshot _userDataProfile;
 Iterable<DataSnapshot>? dataListObjectOrdens;
+TextEditingController priceController = TextEditingController();
 
 class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
   bool agree = false;
@@ -117,7 +118,6 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
   TextEditingController phoneController = TextEditingController();
 
   TextEditingController professionController = TextEditingController();
-  TextEditingController priceController = TextEditingController();
 
   String imageUser = "";
 
@@ -444,95 +444,98 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
     return Scaffold(
         appBar: appbarProfessional(context, true),
         backgroundColor: Colors.white,
-        body: ListView(
-          children: [
-            Stack(
-              children: [
-                Container(
-                  width: double.infinity,
-                  height: 130,
-                  decoration: gradientColor(),
-                ),
-                Container(
-                  width: double.infinity,
-                  height: 280,
-                ),
-                Positioned.fill(
-                    child: Align(
-                        alignment: Alignment.topCenter,
-                        child: Column(
-                          children: [
-                            SizedBox(
-                              height: 60,
-                            ),
-                            Container(
-                                height: 120,
-                                width: 120,
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(90),
-                                  child: CachedNetworkImage(
-                                    fit: BoxFit.cover,
-                                    imageUrl: imageUser ?? '',
-                                    useOldImageOnUrlChange: true,
-                                    placeholder: (context, url) => CupertinoActivityIndicator(
-                                      radius: 20,
-                                      color: Colors.grey.withOpacity(0.3),
-                                    ),
-                                    errorWidget: (context, url, error) => Container(
-                                      color: Colors.grey.withOpacity(0.4),
-                                    ),
+        body: _userDataProfile == null
+            ? AppWidget().loading()
+            : ListView(
+                children: [
+                  Stack(
+                    children: [
+                      Container(
+                        width: double.infinity,
+                        height: 130,
+                        decoration: gradientColor(),
+                      ),
+                      Container(
+                        width: double.infinity,
+                        height: 280,
+                      ),
+                      Positioned.fill(
+                          child: Align(
+                              alignment: Alignment.topCenter,
+                              child: Column(
+                                children: [
+                                  SizedBox(
+                                    height: 60,
                                   ),
-                                )),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Text(
-                              nameProfesional,
-                              style: TextStyle(color: secondryColor, fontSize: 18, fontWeight: FontWeight.bold),
-                            ),
-                            SizedBox(
-                              height: 5,
-                            ),
-                            RatingBarIndicator(
-                                rating: _userDataProfile.child("rating").value == null
-                                    ? 0
-                                    : double.parse(_userDataProfile.child("rating").value.toString()),
-                                itemCount: 5,
-                                itemSize: 30.0,
-                                itemBuilder: (context, _) => Icon(
-                                      Icons.star_border_rounded,
-                                      color: secondryColor,
-                                    )),
-                          ],
-                        ))),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Flexible(
-                    child: Container(
-                        width: 170,
-                        child: AppWidget().buttonFormLine(
-                            context, FirebaseAuth.instance.currentUser!.uid.toString() == widget.id ? "Editar perfil" : "Solicitar", false,
-                            tap: () {
-                          if (FirebaseAuth.instance.currentUser!.uid.toString() == widget.id) {
-                          } else {
-                            createOrdens(context,
-                                name: "Tecnp",
-                                inspections: "si",
-                                profesionalName: nameProfesional,
-                                profesional: userDataProfile!.key.toString(),
-                                price: 1000);
-                          }
-                        }))),
-                SizedBox(
-                  width: 10,
-                ),
-                GestureDetector(
-                    onTap: () {
-                      /* CollectionReference users = FirebaseFirestore.instance
+                                  Container(
+                                      height: 120,
+                                      width: 120,
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(90),
+                                        child: CachedNetworkImage(
+                                          fit: BoxFit.cover,
+                                          imageUrl: imageUser ?? '',
+                                          useOldImageOnUrlChange: true,
+                                          placeholder: (context, url) => CupertinoActivityIndicator(
+                                            radius: 20,
+                                            color: Colors.grey.withOpacity(0.3),
+                                          ),
+                                          errorWidget: (context, url, error) => Container(
+                                            color: Colors.grey.withOpacity(0.4),
+                                          ),
+                                        ),
+                                      )),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  Text(
+                                    nameProfesional,
+                                    style: TextStyle(color: secondryColor, fontSize: 18, fontWeight: FontWeight.bold),
+                                  ),
+                                  SizedBox(
+                                    height: 5,
+                                  ),
+                                  RatingBarIndicator(
+                                      rating: _userDataProfile.child("rating").value == null
+                                          ? 0
+                                          : double.parse(_userDataProfile.child("rating").value.toString()),
+                                      itemCount: 5,
+                                      itemSize: 30.0,
+                                      itemBuilder: (context, _) => Icon(
+                                            Icons.star_border_rounded,
+                                            color: secondryColor,
+                                          )),
+                                ],
+                              ))),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Flexible(
+                          child: Container(
+                              width: 170,
+                              child: AppWidget().buttonFormLine(
+                                  context,
+                                  FirebaseAuth.instance.currentUser!.uid.toString() == widget.id ? "Editar perfil" : "Solicitar",
+                                  false, tap: () {
+                                if (FirebaseAuth.instance.currentUser!.uid.toString() == widget.id) {
+                                } else {
+                                  createOrdens(context,
+                                      name: "Tecnp",
+                                      inspections: "si",
+                                      profesionalName: nameProfesional,
+                                      profesional: userDataProfile!.key.toString(),
+                                      price: 1000);
+                                }
+                              }))),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      GestureDetector(
+                          onTap: () {
+                            /* CollectionReference users = FirebaseFirestore.instance
                       .collection('Users')
                       .doc("Mkoc6GZaIWMf6yO2mDAHlZucj9V2" /*FirebaseAuth.instance.currentUser!.uid.toString()*/)
                       .collection("Matches");
@@ -551,70 +554,70 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                       AppWidget().itemMessage("Error al crear", context);
                     });*/
 
-                      //CollectionReference users = FirebaseFirestore.instance.collection('Users');
+                            //CollectionReference users = FirebaseFirestore.instance.collection('Users');
 
-                      addMatches() {
-                        DocumentReference usersValidate2 = FirebaseFirestore.instance
-                            .collection('Users')
-                            .doc(FirebaseAuth.instance.currentUser!.uid.toString())
-                            .collection("Matches")
-                            .doc(_userDataProfile!.key.toString());
+                            addMatches() {
+                              DocumentReference usersValidate2 = FirebaseFirestore.instance
+                                  .collection('Users')
+                                  .doc(FirebaseAuth.instance.currentUser!.uid.toString())
+                                  .collection("Matches")
+                                  .doc(_userDataProfile!.key.toString());
 
-                        addMatch() {
-                          usersValidate2.set({
-                            'Matches': _userDataProfile!.key.toString(), // John Doe
-                            'UserName': _userDataProfile!.child("fullname").value.toString(),
-                            'userId': _userDataProfile!.key.toString(),
-                          }).then((value) {
-                            AppWidget().itemMessage("Creado", context);
+                              addMatch() {
+                                usersValidate2.set({
+                                  'Matches': _userDataProfile!.key.toString(), // John Doe
+                                  'UserName': _userDataProfile!.child("fullname").value.toString(),
+                                  'userId': _userDataProfile!.key.toString(),
+                                }).then((value) {
+                                  AppWidget().itemMessage("Creado", context);
 
-                            Future.delayed(const Duration(milliseconds: 1200), () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => HomeScreen(currentUser!, matches, newmatches)),
-                              );
-                            });
-                          }).catchError((error) {
-                            AppWidget().itemMessage("Error al crear", context);
-                          });
-                        }
+                                  Future.delayed(const Duration(milliseconds: 1200), () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(builder: (context) => HomeScreen(currentUser!, matches, newmatches)),
+                                    );
+                                  });
+                                }).catchError((error) {
+                                  AppWidget().itemMessage("Error al crear", context);
+                                });
+                              }
 
-                        usersValidate2.get().then((value) {
-                          if (value.exists == false) {
-                            addMatch();
-                          } else {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => HomeScreen(currentUser!, matches, newmatches)),
-                            );
-                          }
-                        });
-                      }
+                              usersValidate2.get().then((value) {
+                                if (value.exists == false) {
+                                  addMatch();
+                                } else {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => HomeScreen(currentUser!, matches, newmatches)),
+                                  );
+                                }
+                              });
+                            }
 
-                      DocumentReference usersValidate =
-                          FirebaseFirestore.instance.collection('Users').doc(_userDataProfile!.key.toString());
+                            DocumentReference usersValidate =
+                                FirebaseFirestore.instance.collection('Users').doc(_userDataProfile!.key.toString());
 
-                      addUser() {
-                        usersValidate.get().then((value) {
-                          if (value.exists) {
-                            addMatches();
-                          } else {
-                            usersValidate.set({
-                              'Matches': _userDataProfile!.key.toString(), // John Doe
+                            addUser() {
+                              usersValidate.get().then((value) {
+                                if (value.exists) {
+                                  addMatches();
+                                } else {
+                                  usersValidate.set({
+                                    'Matches': _userDataProfile!.key.toString(), // John Doe
 
-                              'UserName': _userDataProfile!.child("fullname").value.toString(),
-                              'userId': _userDataProfile!.key.toString(),
-                            }).then((value) {
-                              AppWidget().itemMessage("Creado", context);
-                              addMatches();
-                            }).catchError((error) {
-                              AppWidget().itemMessage("Error al crear", context);
-                            });
-                          }
-                        });
+                                    'UserName': _userDataProfile!.child("fullname").value.toString(),
+                                    'userId': _userDataProfile!.key.toString(),
+                                  }).then((value) {
+                                    AppWidget().itemMessage("Creado", context);
+                                    addMatches();
+                                  }).catchError((error) {
+                                    AppWidget().itemMessage("Error al crear", context);
+                                  });
+                                }
+                              });
 
-                        // Call the user's CollectionReference to add a new user
-                        /* return users.add({
+                              // Call the user's CollectionReference to add a new user
+                              /* return users.add({
                           'Matches': userDataProfile!.key.toString(), // John Doe
                           //  'isRead': true,
                           'UserName': userDataProfile!.child("fullname").value.toString(),
@@ -626,80 +629,80 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                         }).catchError((error) {
                           AppWidget().itemMessage("Error al crear", context);
                         });*/
-                      }
+                            }
 
-                      addUser();
-                      //  kkk
-                    },
-                    child: Icon(
-                      Icons.message,
-                      size: 40,
-                      color: secondryColor,
-                    )),
-              ],
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            pageOrdens(),
-            SizedBox(
-              height: 20,
-            ),
-            Container(
-                height: 60,
-                child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: [
-                        SizedBox(
-                          width: 10,
-                        ),
-                        AppWidget().buttonShandowRounded("Review", stateIndicator != 1, tap: () {
-                          stateIndicator = 1;
+                            addUser();
+                            //  kkk
+                          },
+                          child: Icon(
+                            Icons.message,
+                            size: 40,
+                            color: secondryColor,
+                          )),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  pageOrdens(),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Container(
+                      height: 60,
+                      child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            children: [
+                              SizedBox(
+                                width: 10,
+                              ),
+                              AppWidget().buttonShandowRounded("Review", stateIndicator != 1, tap: () {
+                                stateIndicator = 1;
 
-                          setState(() {});
-                        }),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        AppWidget().buttonShandowRounded("Portafolio", stateIndicator != 2, tap: () {
-                          stateIndicator = 2;
+                                setState(() {});
+                              }),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              AppWidget().buttonShandowRounded("Portafolio", stateIndicator != 2, tap: () {
+                                stateIndicator = 2;
 
-                          setState(() {});
-                        }),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        AppWidget().buttonShandowRounded("Historial", stateIndicator != 3, tap: () {
-                          stateIndicator = 3;
+                                setState(() {});
+                              }),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              AppWidget().buttonShandowRounded("Historial", stateIndicator != 3, tap: () {
+                                stateIndicator = 3;
 
-                          setState(() {});
-                        }),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        AppWidget().buttonShandowRounded("Información", stateIndicator != 4, tap: () {
-                          stateIndicator = 4;
+                                setState(() {});
+                              }),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              AppWidget().buttonShandowRounded("Información", stateIndicator != 4, tap: () {
+                                stateIndicator = 4;
 
-                          setState(() {});
-                        }),
-                        SizedBox(
-                          width: 10,
-                        ),
-                      ],
-                    ))),
-            SizedBox(
-              height: 20,
-            ),
-            stateIndicator != 2 ? SizedBox() : portafolio(),
-            stateIndicator != 3 ? SizedBox() : stateIndicator1(),
-            stateIndicator != 1 ? SizedBox() : stateIndicator0(),
-            stateIndicator != 4 ? SizedBox() : stateIndicator4(),
-            SizedBox(
-              height: 20,
-            ),
-          ],
-        ));
+                                setState(() {});
+                              }),
+                              SizedBox(
+                                width: 10,
+                              ),
+                            ],
+                          ))),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  stateIndicator != 2 ? SizedBox() : portafolio(),
+                  stateIndicator != 3 ? SizedBox() : stateIndicator1(),
+                  stateIndicator != 1 ? SizedBox() : stateIndicator0(),
+                  stateIndicator != 4 ? SizedBox() : stateIndicator4(),
+                  SizedBox(
+                    height: 20,
+                  ),
+                ],
+              ));
   }
 
   Widget stateIndicator0() {
@@ -1094,10 +1097,10 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
       Container(
           margin: EdgeInsets.only(left: 20, right: 20),
           child: AppWidget().texfieldFormat(
-              controller: priceController,
-              title: "Precio",
-              enabled: FirebaseAuth.instance.currentUser!.uid == widget.id ? false : true,
-              number: true)),
+            controller: priceController,
+            title: "Precio",
+            enabled: FirebaseAuth.instance.currentUser!.uid == widget.id ? false : true,
+          )),
       SizedBox(
         height: 10,
       ),
@@ -1474,17 +1477,19 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                 height: 30,
               ),
               AppWidget().buttonFormColor(context, "Guardar", secondryColor, tap: () {
-                userDataProfile!.ref.update({
-                  'fullname': nameController.text,
-                  'date': dateController.text,
-                  'email': emailController.text,
-                  'phone': phoneController.text,
-                  'state': state,
-                  'price': priceController.text,
-                  'country': country
+                _userDataProfile!.ref.update({
+                  'fullname': nameController.text.toString(),
+                  'date': dateController.text.toString(),
+                  'email': emailController.text.toString(),
+                  'phone': phoneController.text.toString(),
+                  'state': state.text.toString(),
+                  'city': city.text.toString(),
+                  'price': priceController.text.toString(),
+                  'country': country.text.toString(),
                 }).then((value) {
                   AppWidget().itemMessage("Información actualizada", context);
                 }).catchError((onError) {
+                  print("error: " + onError.toString());
                   AppWidget().itemMessage("Error al actualizar foto", context);
                 });
               }),

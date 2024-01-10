@@ -419,6 +419,37 @@ class _CartPageState extends State<CartPage> {
     return total;
   }
 
+  Widget pageMethodPay() {
+    return FutureBuilder(
+        initialData: 1,
+        future: FirebaseDatabase.instance.ref().child('creditcard').once(),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          try {
+            if (snapshot.hasData) {
+              DatabaseEvent response = snapshot.data;
+              // DataSnapshot dataList = response.snapshot.children.toList()[index];
+              return response == null
+                  ? AppWidget().loading()
+                  : DropdownButton<DataSnapshot>(
+                      items: response.snapshot.children.map((DataSnapshot value) {
+                        return DropdownMenuItem<DataSnapshot>(
+                          value: value,
+                          child: Text(value.child("number").value.toString()),
+                        );
+                      }).toList(),
+                      onChanged: (_) {},
+                    );
+            } else {
+              return AppWidget().loading();
+            }
+
+            ;
+          } catch (e) {
+            return AppWidget().loading();
+          }
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -510,7 +541,7 @@ class _CartPageState extends State<CartPage> {
                               title: "Apt 501",
                               execute: () {
                                 dataListObjectGeneral!.ref
-                                    .update({'descriptionLocation': _descriptionLocationController.text.toString()}).then((value) {});
+                                    .update({'description': _descriptionLocationController.text.toString()}).then((value) {});
                               })),
                       SizedBox(
                         width: 20,
@@ -888,14 +919,15 @@ class _CartPageState extends State<CartPage> {
                   SizedBox(
                     height: 10,
                   ),
-                  itemMoney("Costo del servicio", dataListObjectGeneral!.child("price").value.toString()),
-                  itemMoney(
-                      "Tarifa del servicio", (int.parse(dataListObjectGeneral!.child("price").value.toString()) / 20).round().toString()),
-                  itemMoney(
-                      "Costo del domicilio", (int.parse(dataListObjectGeneral!.child("price").value.toString()) / 10).round().toString()),
+                  itemMoney("Costo del servicio", '\$' + dataListObjectGeneral!.child("price").value.toString()),
+                  itemMoney("Tarifa del servicio",
+                      '\$' + (int.parse(dataListObjectGeneral!.child("price").value.toString()) / 20).round().toString()),
+                  itemMoney("Costo del domicilio",
+                      '\$' + (int.parse(dataListObjectGeneral!.child("price").value.toString()) / 10).round().toString()),
                   SizedBox(
                     height: 20,
                   ),
+                  pageMethodPay(),
                   cartItemsList.isEmpty
                       ? Center(
                           child: SafeArea(
@@ -975,8 +1007,8 @@ class _CartPageState extends State<CartPage> {
                 ),
                 Text(
                   /* currencyPos == 'left' ? '$currencySymbol' : '$ktotalprice'*/ dataListObjectGeneral!.child("price").value == null
-                      ? "0"
-                      : getTotalPay().toString(),
+                      ? '\$' + "0"
+                      : '\$' + getTotalPay().toString(),
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 22,

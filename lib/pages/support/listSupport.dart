@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 
 import 'package:flutter/material.dart';
@@ -41,41 +42,48 @@ class _ListSupportPageState extends State<ListSupportPage> {
 
         // initialData: 1,
 
-        future: FirebaseDatabase.instance.ref().child('support').once(),
+        future: FirebaseDatabase.instance
+            .ref()
+            .child('support')
+            .orderByChild("user")
+            .equalTo(FirebaseAuth.instance.currentUser!.uid.toString())
+            .once(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           try {
             if (snapshot.hasData) {
               DatabaseEvent response = snapshot.data;
 
               return response == null
-                  ? Text("Cargando")
-                  : ListView.builder(
-                      itemCount: response.snapshot.children.length,
-                      shrinkWrap: true,
-                      itemBuilder: (BuildContext context, int index) {
-                        DataSnapshot dataList = response.snapshot.children.toList()[index];
+                  ? AppWidget().loading()
+                  : response.snapshot.children.length == 0
+                      ? AppWidget().noResult()
+                      : ListView.builder(
+                          itemCount: response.snapshot.children.length,
+                          shrinkWrap: true,
+                          itemBuilder: (BuildContext context, int index) {
+                            DataSnapshot dataList = response.snapshot.children.toList()[index];
 
-                        return GestureDetector(
-                            onTap: () {
-                              showModalBottomSheet(
-                                  context: context,
-                                  builder: (context) {
-                                    return Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: <Widget>[
-                                        ListTile(
-                                          title: new Text('Eliminar'),
-                                          onTap: () {
-                                            dataList.ref.remove().then((value) {
-                                              AppWidget().itemMessage("Eliminado", context);
+                            return GestureDetector(
+                                onTap: () {
+                                  showModalBottomSheet(
+                                      context: context,
+                                      builder: (context) {
+                                        return Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: <Widget>[
+                                            ListTile(
+                                              title: new Text('Eliminar'),
+                                              onTap: () {
+                                                dataList.ref.remove().then((value) {
+                                                  AppWidget().itemMessage("Eliminado", context);
 
-                                              setState(() {});
-                                            });
+                                                  setState(() {});
+                                                });
 
-                                            Navigator.pop(context);
-                                          },
-                                        ),
-                                        /*ListTile(
+                                                Navigator.pop(context);
+                                              },
+                                            ),
+                                            /*ListTile(
                                           title: new Text('Actualizar'),
                                           onTap: () {
                                             Navigator.pop(context);
@@ -88,80 +96,85 @@ class _ListSupportPageState extends State<ListSupportPage> {
                                                         )));
                                           },
                                         ),*/
-                                        ListTile(
-                                          title: new Text('Cancelar'),
-                                          onTap: () {
-                                            Navigator.pop(context);
-                                          },
-                                        ),
-                                      ],
-                                    );
-                                  });
-                            },
-                            child: Container(
-                                decoration: AppWidget().boxShandowGrey(),
-                                margin: EdgeInsets.only(top: 10),
-                                padding: EdgeInsets.only(top: 20, right: 20, bottom: 20),
-                                child: Row(
-                                  children: [
-                                    SizedBox(
-                                      width: 10,
-                                    ),
-                                    ClipRRect(
-                                      borderRadius: BorderRadius.circular(15),
-                                      child: Image.network(
-                                        dataList.child("foto").value.toString(),
-                                        errorBuilder: (BuildContext? context, Object? exception, StackTrace? stackTrace) {
-                                          return Container(
-                                            width: 70,
-                                            height: 70,
-                                            color: Colors.grey.withOpacity(0.3),
-                                          );
-                                        },
-                                        width: 70,
-                                        height: 70,
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width: 10,
-                                    ),
-                                    Container(
-                                        width: 220,
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                              children: [
-                                                Flexible(
-                                                    child: Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text(
-                                                      dataList.child("name").value.toString(),
-                                                      textAlign: TextAlign.center,
-                                                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: secondryColor),
-                                                    ),
-                                                    Text(
-                                                      dataList.child("date").value == null
-                                                          ? "No disponible"
-                                                          : dataList.child("date").value.toString(),
-                                                      textAlign: TextAlign.center,
-                                                      style: TextStyle(fontSize: 12, color: secondryColor),
-                                                    ),
-                                                  ],
-                                                )),
-
-                                                Text(stateOrder[int.parse(dataList.child("state").value.toString())]),
-
-                                                // Expanded(child: SizedBox()),
-                                              ],
+                                            ListTile(
+                                              title: new Text('Cancelar'),
+                                              onTap: () {
+                                                Navigator.pop(context);
+                                              },
                                             ),
                                           ],
-                                        )),
+                                        );
+                                      });
+                                },
+                                child: Container(
+                                    decoration: AppWidget().boxShandowGrey(),
+                                    margin: EdgeInsets.only(top: 10),
+                                    padding: EdgeInsets.only(top: 20, right: 20, bottom: 20),
+                                    child: Row(
+                                      children: [
+                                        SizedBox(
+                                          width: 10,
+                                        ),
+                                        ClipRRect(
+                                          borderRadius: BorderRadius.circular(15),
+                                          child: Image.network(
+                                            dataList.child("foto").value.toString(),
+                                            errorBuilder: (BuildContext? context, Object? exception, StackTrace? stackTrace) {
+                                              return Container(
+                                                width: 70,
+                                                height: 70,
+                                                color: Colors.grey.withOpacity(0.3),
+                                              );
+                                            },
+                                            width: 70,
+                                            height: 70,
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          width: 10,
+                                        ),
+                                        Container(
+                                            width: 220,
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Row(
+                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                  children: [
+                                                    Flexible(
+                                                        child: Column(
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                      children: [
+                                                        Text(
+                                                          dataList.child("name").value.toString(),
+                                                          textAlign: TextAlign.center,
+                                                          style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: secondryColor),
+                                                        ),
+                                                        Text(
+                                                          dataList.child("date").value == null
+                                                              ? "No disponible"
+                                                              : dataList.child("date").value.toString(),
+                                                          textAlign: TextAlign.center,
+                                                          style: TextStyle(fontSize: 12, color: secondryColor),
+                                                        ),
+                                                        dataList.child("response").value == null
+                                                            ? SizedBox()
+                                                            : Text(dataList.child("response").value.toString()),
+                                                      ],
+                                                    )),
 
-                                    /*  MaterialButton(
+                                                    Text(dataList.child("response").value != null
+                                                        ? "Resuelto"
+                                                        : stateOrder[int.parse(dataList.child("state").value.toString())]),
+
+                                                    // Expanded(child: SizedBox()),
+                                                  ],
+                                                ),
+                                              ],
+                                            )),
+
+                                        /*  MaterialButton(
 
                                     height: 30,
 
@@ -188,9 +201,9 @@ class _ListSupportPageState extends State<ListSupportPage> {
                                       Icons.more_vert_rounded,
 
                                     ))*/
-                                  ],
-                                )));
-                      });
+                                      ],
+                                    )));
+                          });
             } else {
               return AppWidget().loading();
             }

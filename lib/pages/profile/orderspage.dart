@@ -187,10 +187,7 @@ class _MyOrdersState extends State<MyOrdersProfile> with TickerProviderStateMixi
                                 SizedBox(
                                   width: 10,
                                 ),
-                                CircleAvatar(
-                                  backgroundColor: Colors.grey.withOpacity(0.3),
-                                  radius: 40,
-                                ),
+                                AppWidget().circleProfile(dataList.child("photo").value.toString(), size: 60),
                                 SizedBox(
                                   width: 10,
                                 ),
@@ -210,7 +207,9 @@ class _MyOrdersState extends State<MyOrdersProfile> with TickerProviderStateMixi
                                       style: TextStyle(color: Colors.black, fontSize: 10),
                                     ),
                                     RatingBarIndicator(
-                                        rating: 2.5,
+                                        rating: dataList.child("rating").value == null
+                                            ? 0
+                                            : double.parse(dataList.child("rating").value.toString()),
                                         itemCount: 5,
                                         itemSize: 16.0,
                                         itemBuilder: (context, _) => Icon(
@@ -261,75 +260,76 @@ class _MyOrdersState extends State<MyOrdersProfile> with TickerProviderStateMixi
               DatabaseEvent response = snapshot.data;
 
               return response == null
-                  ? Text("Cargando")
-                  : ListView.builder(
-                      itemCount: response.snapshot.children.length,
-                      shrinkWrap: true,
-                      physics: AlwaysScrollableScrollPhysics(),
-                      itemBuilder: (BuildContext context, int index) {
-                        DataSnapshot dataList = response.snapshot.children.toList()[index];
-                        Widget itemList() {
-                          return Container(
-                            margin: EdgeInsets.only(left: 20, right: 20, top: 10),
-                            decoration: AppWidget().boxShandowGreyRectangule(),
-                            child: Row(
-                              children: [
-                                SizedBox(
-                                  width: 10,
-                                ),
-                                CircleAvatar(
-                                  backgroundColor: Colors.grey.withOpacity(0.3),
-                                  radius: 40,
-                                ),
-                                SizedBox(
-                                  width: 10,
-                                ),
-                                Flexible(
-                                    child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                  ? AppWidget().noResult()
+                  : response.snapshot.children.length == 0
+                      ? AppWidget().noResult()
+                      : ListView.builder(
+                          itemCount: response.snapshot.children.length,
+                          shrinkWrap: true,
+                          // physics: AlwaysScrollableScrollPhysics(),
+                          itemBuilder: (BuildContext context, int index) {
+                            DataSnapshot dataList = response.snapshot.children.toList()[index];
+                            Widget itemList() {
+                              return Container(
+                                margin: EdgeInsets.only(left: 20, right: 20, top: 10),
+                                decoration: AppWidget().boxShandowGreyRectangule(),
+                                child: Row(
                                   children: [
                                     SizedBox(
-                                      height: 14,
+                                      width: 10,
                                     ),
-                                    Text(
-                                      dataList.child("fullname").value.toString(),
-                                      style: TextStyle(color: secondryColor, fontSize: 17, fontWeight: FontWeight.bold),
-                                    ),
-                                    Text(
-                                      "Opiniones clientes",
-                                      style: TextStyle(color: Colors.black, fontSize: 10),
-                                    ),
-                                    RatingBarIndicator(
-                                        rating: 2.5,
-                                        itemCount: 5,
-                                        itemSize: 16.0,
-                                        itemBuilder: (context, _) => Icon(
-                                              Icons.star,
-                                              color: secondryColor,
-                                            )),
+                                    AppWidget().circleProfile(dataList.child("photo").value.toString(), size: 60),
                                     SizedBox(
-                                      height: 5,
+                                      width: 10,
                                     ),
-                                    SizedBox(
-                                      height: 14,
-                                    ),
+                                    Flexible(
+                                        child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        SizedBox(
+                                          height: 14,
+                                        ),
+                                        Text(
+                                          dataList.child("fullname").value.toString(),
+                                          style: TextStyle(color: secondryColor, fontSize: 17, fontWeight: FontWeight.bold),
+                                        ),
+                                        Text(
+                                          "Opiniones clientes",
+                                          style: TextStyle(color: Colors.black, fontSize: 10),
+                                        ),
+                                        RatingBarIndicator(
+                                            rating: dataList.child("rating").value == null
+                                                ? 0
+                                                : double.parse(dataList.child("rating").value.toString()),
+                                            itemCount: 5,
+                                            itemSize: 16.0,
+                                            itemBuilder: (context, _) => Icon(
+                                                  Icons.star,
+                                                  color: secondryColor,
+                                                )),
+                                        SizedBox(
+                                          height: 5,
+                                        ),
+                                        SizedBox(
+                                          height: 14,
+                                        ),
+                                      ],
+                                    ))
                                   ],
-                                ))
-                              ],
-                            ),
-                          );
-                        }
+                                ),
+                              );
+                            }
 
-                        if (_searchController.text.isEmpty == false) {
-                          if (searchText.contains(dataList.child("fullname").value.toString())) {
-                            return itemList();
-                          } else {
-                            return SizedBox();
-                          }
-                        } else {
-                          return itemList();
-                        }
-                      });
+                            if (_searchController.text.isEmpty == false) {
+                              if (searchText.contains(dataList.child("fullname").value.toString())) {
+                                return itemList();
+                              } else {
+                                return SizedBox();
+                              }
+                            } else {
+                              return itemList();
+                            }
+                          });
             } else {
               return AppWidget().loading();
             }
@@ -364,6 +364,7 @@ class _MyOrdersState extends State<MyOrdersProfile> with TickerProviderStateMixi
             .equalTo(FirebaseAuth.instance.currentUser!.uid.toString())
             .once(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
+          bool result = false;
           if (snapshot.hasData) {
             DatabaseEvent response = snapshot.data;
 
@@ -392,6 +393,10 @@ class _MyOrdersState extends State<MyOrdersProfile> with TickerProviderStateMixi
                         }
                       }
 
+                      if (positionFilter.toString() == dataList.child("state").value.toString()) {
+                        result = true;
+                      }
+
                       return /*dataList.child("user").value.toString() == "LapnDojkb8QGfSOioTXLkiPAiNt2"
 
                       ? SizedBox()
@@ -399,7 +404,11 @@ class _MyOrdersState extends State<MyOrdersProfile> with TickerProviderStateMixi
                       :*/
 
                           positionFilter.toString() != dataList.child("state").value.toString()
-                              ? SizedBox()
+                              ? response.snapshot.children.toList().length != i
+                                  ? result != true
+                                      ? AppWidget().noResult()
+                                      : SizedBox()
+                                  : SizedBox()
                               : Padding(
                                   padding: const EdgeInsets.all(5),
                                   child: GestureDetector(

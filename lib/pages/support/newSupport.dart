@@ -181,13 +181,13 @@ class _PortafolioPageState extends State<NewPortafolioPage> {
   final _formKey = GlobalKey<FormState>();
 
   Widget updatePortafolio() {
-    return widget.data!.child("photo").value == 0
+    return widget.data!.child("photo").value != null
         ? SizedBox()
         : Container(
             height: 40,
             child: ListView.builder(
                 padding: EdgeInsets.only(left: 10.0),
-                itemCount: fileLicense.length,
+                itemCount: 1,
                 scrollDirection: Axis.horizontal,
                 shrinkWrap: true,
                 itemBuilder: (BuildContext context, int index) {
@@ -210,8 +210,6 @@ class _PortafolioPageState extends State<NewPortafolioPage> {
                         ),
                         GestureDetector(
                             onTap: () {
-                              fileLicense.removeAt(0);
-
                               setState(() {});
                             },
                             child: SvgPicture.asset(
@@ -227,12 +225,12 @@ class _PortafolioPageState extends State<NewPortafolioPage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              fileLicense[index].path.split('/').last,
+                              "Foto",
                               maxLines: 1,
                               style: TextStyle(color: Colors.white, fontSize: 10),
                             ),
                             Text(
-                              AppWidget().getFileSize(fileLicense[index].lengthSync(), 1),
+                              "10kb",
                               style: TextStyle(color: Colors.white, fontSize: 9),
                             ),
                           ],
@@ -476,7 +474,6 @@ class _PortafolioPageState extends State<NewPortafolioPage> {
                           setState(() {});
                         } else {
                           // User canceled the picker
-
                         }
                       },
                       child: DottedBorder(
@@ -548,31 +545,24 @@ class _PortafolioPageState extends State<NewPortafolioPage> {
                         }
 
                         uploadFile() async {
-                          FilePickerResult? result = await FilePicker.platform.pickFiles();
+                          // fileBackgroundCheck.add(File(result.files.single.path!));
 
-                          if (result != null) {
-                            // fileBackgroundCheck.add(File(result.files.single.path!));
+                          int timestamp = new DateTime.now().millisecondsSinceEpoch;
 
-                            int timestamp = new DateTime.now().millisecondsSinceEpoch;
+                          Reference storageReference = FirebaseStorage.instance.ref().child("portafolio/" + timestamp.toString() + ".jpg");
 
-                            Reference storageReference =
-                                FirebaseStorage.instance.ref().child("portafolio/" + timestamp.toString() + ".jpg");
+                          UploadTask uploadTask = storageReference.putFile(File(fileLicense[0].path.toString()));
+                          AppWidget().itemMessage("Subiendo foto", context);
+                          await uploadTask.then((p0) async {
+                            String fileUrl = await storageReference.getDownloadURL();
+                            AppWidget().itemMessage("Archivo subido", context);
 
-                            UploadTask uploadTask = storageReference.putFile(File(result.files.single.path!));
-
-                            await uploadTask.then((p0) async {
-                              String fileUrl = await storageReference.getDownloadURL();
-                              AppWidget().itemMessage("Archivo subido", context);
-
-                              if (widget.data != null) {
-                                savedData(fileUrl);
-                              } else {
-                                updateData(fileUrl);
-                              }
-                            });
-                          } else {
-                            // User canceled the picker
-                          }
+                            if (widget.data == null) {
+                              savedData(fileUrl);
+                            } else {
+                              updateData(fileUrl);
+                            }
+                          });
 
                           setState(() {});
                         }
@@ -619,7 +609,7 @@ class _PortafolioPageState extends State<NewPortafolioPage> {
     if (widget.data != null) {
       _namePortafolioController.text = widget.data!.child("name").value.toString();
 
-      _categoriController.text = widget.data!.child("category").value.toString();
+      _searchHome.text = widget.data!.child("category").value.toString();
 
       if (widget.data!.child("type").value.toString() == "1") {
         checkInspeccion = true;

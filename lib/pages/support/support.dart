@@ -1,4 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/cupertino.dart';
 
 import 'package:flutter/material.dart';
 
@@ -15,6 +17,7 @@ import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
 import 'package:fullpro/pages/homepage.dart';
 
 import 'package:fullpro/widgets/widget.dart';
+import 'package:intl/intl.dart';
 
 class SupportAppPage extends StatefulWidget {
   const SupportAppPage({Key? key}) : super(key: key);
@@ -185,13 +188,44 @@ class _SupportAppPageState extends State<SupportAppPage> {
 
                   SizedBox(height: 10),
 
-                  AppWidget()
-                      .texfieldFormat(title: "Teléfono de contacto", urlIcon: "images/icons/support2.svg", controller: _phoneController),
+                  AppWidget().texfieldFormat(
+                      title: "Teléfono de contacto", urlIcon: "images/icons/support2.svg", controller: _phoneController, number: true),
 
                   SizedBox(height: 10),
+                  GestureDetector(
+                      onTap: () {
+                        void _showIOS_DatePicker(ctx) {
+                          showCupertinoModalPopup(
+                              context: ctx,
+                              builder: (_) => Container(
+                                    height: 190,
+                                    color: Color.fromARGB(255, 255, 255, 255),
+                                    child: Column(
+                                      children: [
+                                        Container(
+                                          height: 180,
+                                          child: CupertinoDatePicker(
+                                              mode: CupertinoDatePickerMode.date,
+                                              initialDateTime: DateTime.now(),
+                                              onDateTimeChanged: (val) {
+                                                setState(() {
+                                                  final f = new DateFormat('yyyy-MM-dd');
 
-                  AppWidget()
-                      .texfieldFormat(title: "Fecha de solicitud", urlIcon: "images/icons/support3.svg", controller: _dateController),
+                                                  _dateController.text = f.format(val);
+
+                                                  //  dateSelected = val.toString();
+                                                });
+                                              }),
+                                        ),
+                                      ],
+                                    ),
+                                  ));
+                        }
+
+                        _showIOS_DatePicker(context);
+                      },
+                      child: AppWidget().texfieldFormat(
+                          title: "Fecha de solicitud", controller: _dateController, urlIcon: "images/icons/calendar.svg", enabled: true)),
 
                   SizedBox(height: 10),
 
@@ -223,6 +257,7 @@ class _SupportAppPageState extends State<SupportAppPage> {
                       Map userMap = {
                         'name': _nameController.text,
                         'phone': _phoneController.text,
+                        'user': FirebaseAuth.instance.currentUser!.uid.toString(),
                         'date': _dateController.text,
                         'description': _descriptionController.text,
                         'state': 0,

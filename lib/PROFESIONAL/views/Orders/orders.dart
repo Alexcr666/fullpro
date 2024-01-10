@@ -361,6 +361,7 @@ class _MyOrdersState extends State<MyOrders> with TickerProviderStateMixin {
             .equalTo(FirebaseAuth.instance.currentUser!.uid.toString())
             .once(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
+          bool result = false;
           if (snapshot.hasData) {
             DatabaseEvent response = snapshot.data;
 
@@ -391,7 +392,11 @@ class _MyOrdersState extends State<MyOrders> with TickerProviderStateMixin {
                       DatabaseEvent? responseUser = null;
 
                       return dataList.child("state").value.toString() != positionFilter.toString()
-                          ? SizedBox()
+                          ? response.snapshot.children.toList().length != i
+                              ? result != true
+                                  ? AppWidget().noResult()
+                                  : SizedBox()
+                              : SizedBox()
                           : Padding(
                               padding: const EdgeInsets.all(5),
                               child: GestureDetector(
@@ -865,8 +870,8 @@ class _MyOrdersState extends State<MyOrders> with TickerProviderStateMixin {
                           Container(
                               width: 110,
                               child: AppWidget().buttonShandow("Pendiente",
-                                  color: positionFilter != 0 ? Colors.grey.withOpacity(0.2) : redButton, colorText: Colors.white, tap: () {
-                                positionFilter = 0;
+                                  color: positionFilter != 1 ? Colors.grey.withOpacity(0.2) : redButton, colorText: Colors.white, tap: () {
+                                positionFilter = 1;
                                 setState(() {});
                               })),
                           SizedBox(

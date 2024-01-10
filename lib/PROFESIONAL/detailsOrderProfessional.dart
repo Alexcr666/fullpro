@@ -453,7 +453,8 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
         dataListObjectGeneral = snapshot;
         dataListObjectGeneral!.child("comment").value.toString();
 
-        _descriptionCommentController.text = dataListObjectGeneral!.child("comment").value.toString();
+        _descriptionCommentController.text =
+            dataListObjectGeneral!.child("comment").value == null ? "" : dataListObjectGeneral!.child("comment").value.toString();
         _descriptionController.text =
             dataListObjectGeneral!.child("description").value == null ? "" : dataListObjectGeneral!.child("description").value.toString();
         MarkerId markerId = MarkerId(dataListObjectGeneral!.key.toString());
@@ -482,6 +483,39 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
         setState(() {});
       }
     });
+  }
+
+  Widget getUserProfessional() {
+    return dataListObjectGeneral!.child("professional").value == null
+        ? AppWidget().loading()
+        : FutureBuilder(
+            future: FirebaseDatabase.instance
+                .ref()
+                .child('partners')
+                .child(dataListObjectGeneral!.child("professional").value.toString())
+                .once(),
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              if (snapshot.hasData) {
+                DatabaseEvent response = snapshot.data;
+
+                return ListTile(
+                  leading: AppWidget().circleProfile(response.snapshot.child("photo").value.toString()),
+                  title: Text(response.snapshot.child("fullname").value.toString()),
+                  subtitle: RatingBarIndicator(
+                      rating: response.snapshot.child("rating").value == null
+                          ? 0
+                          : double.parse(response.snapshot.child("rating").value.toString()),
+                      itemCount: 5,
+                      itemSize: 16.0,
+                      itemBuilder: (context, _) => Icon(
+                            Icons.star,
+                            color: secondryColor,
+                          )),
+                );
+              } else {
+                return SizedBox();
+              }
+            });
   }
 
   Widget getUserUser() {
@@ -880,7 +914,9 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
                     ),
                     title: Text(widget.dataList.child("professionalName").value.toString()),
                   ),*/
-                      getUserUser(),
+                      widget.dataList.child("professional").value.toString() != FirebaseAuth.instance.currentUser!.uid.toString
+                          ? getUserProfessional()
+                          : getUserUser(),
                       SizedBox(
                         height: 15,
                       ),
@@ -1032,19 +1068,24 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
           height: 10,
         ),
 
-        itemMoney("Costo del servicio", widget.dataList.child("price").value.toString()),
+        itemMoney("Costo del servicio", '\$' + widget.dataList.child("price").value.toString()),
 
-        itemMoney("Tarifa del servicio", (int.parse(widget.dataList.child("price").value.toString()) / 20).round().toString()),
+        itemMoney("Tarifa del servicio", '\$' + (int.parse(widget.dataList.child("price").value.toString()) / 20).round().toString()),
 
-        itemMoney("Costo del domicilio", (int.parse(widget.dataList.child("price").value.toString()) / 10).round().toString()),
+        itemMoney("Costo del domicilio", '\$' + (int.parse(widget.dataList.child("price").value.toString()) / 10).round().toString()),
 
         SizedBox(
-          height: 20,
+          height: 30,
         ),
+        // Text(widget.dataList.child("state").value.toString()),
 
         widget.dataList.child("professional").value.toString() != FirebaseAuth.instance.currentUser!.uid.toString()
             ? SizedBox()
-            : Column(
+            : /* int.parse(widget.dataList.child("state").value.toString()) < 1
+                ? SizedBox()
+                : */
+            Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
                       margin: EdgeInsets.only(left: 20),
@@ -1052,7 +1093,7 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
                         "Evidencias".toString(),
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: 16,
+                          fontSize: 18,
                           color: secondryColor,
                         ),
                       )),
@@ -1173,7 +1214,7 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
                   ),
                 ),
                 Text(
-                  getTotalPay().toString(),
+                  '\$' + getTotalPay().toString(),
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 22,

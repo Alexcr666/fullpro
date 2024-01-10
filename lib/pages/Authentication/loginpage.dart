@@ -62,7 +62,8 @@ class _LoginPageState extends State<LoginPage> {
         UserRef.once().then((event) {
           final dataSnapshot = event.snapshot;
           if (dataSnapshot.value != null) {
-            if (dataSnapshot.child("state").value.toString() == "1") {
+            Navigator.pop(context);
+            if (dataSnapshot.child("stateUser").value.toString() == "1") {
               UserPreferences.setUserEmail(emailController.text);
               AppSharedPreference().setUser(context, emailController.text);
               Navigator.pushNamedAndRemoveUntil(context, kHomePage.id, (route) => false);

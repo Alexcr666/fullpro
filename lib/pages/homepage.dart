@@ -624,7 +624,8 @@ class _kHomePageState extends State<kHomePage> {
                                                       if (snapshot.hasData) {
                                                         return Text(snapshot.data.toString() == "0"
                                                             ? "no"
-                                                            : (double.parse(snapshot.data.toString()).round() / 1000).toString() + " Km");
+                                                            : (double.parse(snapshot.data.toString()).round() / 1000).round().toString() +
+                                                                " Km");
                                                       } else {
                                                         return SizedBox();
                                                       }
@@ -665,6 +666,7 @@ class _kHomePageState extends State<kHomePage> {
                                               if (porcent <= int.parse(userDataProfile!.child("radio").value.toString())) {
                                                 return itemProfile();
                                               } else {
+                                                // return itemProfile();
                                                 return Text(porcent.toString());
                                               }
                                             } catch (e) {

@@ -303,6 +303,16 @@ class _HomePageState extends State<HomePage> {
 
     setupPositionLocator();
 
+    DatabaseReference ref = FirebaseDatabase.instance.ref("ordens/");
+
+// Get the Stream
+    Stream<DatabaseEvent> stream = ref.onValue;
+
+// Subscribe to the stream!
+    stream.listen((DatabaseEvent event) {
+      setState(() {});
+    });
+
     PushNotificationService pushNotificationService = PushNotificationService();
 
     pushNotificationService.initialize(context);
