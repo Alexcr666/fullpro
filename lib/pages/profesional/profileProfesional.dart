@@ -5,7 +5,6 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 
@@ -555,7 +554,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                     });*/
 
                             //CollectionReference users = FirebaseFirestore.instance.collection('Users');
-
+/*
                             addMatches() {
                               DocumentReference usersValidate2 = FirebaseFirestore.instance
                                   .collection('Users')
@@ -613,6 +612,17 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                   }).catchError((error) {
                                     AppWidget().itemMessage("Error al crear", context);
                                   });
+                                  usersValidate.collection("Matches").doc(_userDataProfile!.key.toString()).set({
+                                    'Matches': _userDataProfile!.key.toString(), // John Doe
+
+                                    'UserName': _userDataProfile!.child("fullname").value.toString(),
+                                    'userId': _userDataProfile!.key.toString(),
+                                  }).then((value) {
+                                    AppWidget().itemMessage("Creado", context);
+                                    addMatches();
+                                  }).catchError((error) {
+                                    AppWidget().itemMessage("Error al crear", context);
+                                  });
                                 }
                               });
 
@@ -631,7 +641,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                         });*/
                             }
 
-                            addUser();
+                            addUser();*/
                             //  kkk
                           },
                           child: Icon(
@@ -1694,48 +1704,70 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                             itemBuilder: (context, index) {
                               DataSnapshot dataList = response.snapshot.children.toList()[index];
 
-                              return Container(
-                                  margin: EdgeInsets.only(left: 10, right: 10),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Stack(
+                              return GestureDetector(
+                                  onTap: () {
+                                    Query historyRef = FirebaseDatabase.instance
+                                        .ref()
+                                        .child('ordens')
+                                        .child(userDataProfile!.child("cart").value.toString());
+
+                                    historyRef.once().then((e) async {
+                                      final snapshot = e.snapshot;
+                                      if (snapshot.value != null) {
+                                        snapshot.ref.child("services").push().set({
+                                          "foto": dataList.child("foto").value.toString(),
+                                          "name": dataList.child("name").value,
+                                          "price": dataList.child("price").value
+                                        }).then((value) {});
+                                      }
+                                    });
+                                  },
+                                  child: Container(
+                                      margin: EdgeInsets.only(left: 10, right: 10),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
-                                          ClipRRect(
-                                            borderRadius: BorderRadius.circular(20),
-                                            child: Image.network(
-                                              dataList.child("value").value.toString(),
-                                              errorBuilder: (BuildContext? context, Object? exception, StackTrace? stackTrace) {
-                                                return Container(
-                                                  width: 110,
-                                                  height: 110,
-                                                  color: Colors.grey.withOpacity(0.3),
-                                                );
-                                              },
-                                              width: 80,
-                                              height: 80,
-                                              fit: BoxFit.cover,
-                                            ),
+                                          Stack(
+                                            children: [
+                                              ClipRRect(
+                                                borderRadius: BorderRadius.circular(20),
+                                                child: Image.network(
+                                                  dataList.child("foto").value.toString(),
+                                                  errorBuilder: (BuildContext? context, Object? exception, StackTrace? stackTrace) {
+                                                    return Container(
+                                                      width: 120,
+                                                      height: 120,
+                                                      color: Colors.grey.withOpacity(0.3),
+                                                    );
+                                                  },
+                                                  width: 80,
+                                                  height: 80,
+                                                  fit: BoxFit.cover,
+                                                ),
+                                              ),
+                                              Positioned.fill(
+                                                  child: Align(
+                                                      alignment: Alignment.center,
+                                                      child: SvgPicture.asset(
+                                                        "images/icons/addCircleBlue.svg",
+                                                        width: 40,
+                                                      ))),
+                                            ],
                                           ),
-                                          Positioned.fill(
-                                              child: Align(
-                                                  alignment: Alignment.center,
-                                                  child: SvgPicture.asset(
-                                                    "images/icons/addCircleBlue.svg",
-                                                    width: 40,
-                                                  ))),
+                                          Text(
+                                            dataList.child("name").value.toString(),
+                                            style: TextStyle(color: secondryColor, fontSize: 12, fontWeight: FontWeight.bold),
+                                          ),
+                                          Text(
+                                            dataList.child("category").value.toString(),
+                                            style: TextStyle(color: secondryColor, fontSize: 11),
+                                          ),
+                                          Text(
+                                            dataList.child("price").value == null ? "0" : dataList.child("price").value.toString(),
+                                            style: TextStyle(color: secondryColor, fontSize: 11),
+                                          ),
                                         ],
-                                      ),
-                                      Text(
-                                        dataList.child("category").value.toString(),
-                                        style: TextStyle(color: secondryColor, fontSize: 12, fontWeight: FontWeight.bold),
-                                      ),
-                                      Text(
-                                        dataList.child("name").value.toString(),
-                                        style: TextStyle(color: secondryColor, fontSize: 11),
-                                      ),
-                                    ],
-                                  ));
+                                      )));
                             },
                           ));
             } else {

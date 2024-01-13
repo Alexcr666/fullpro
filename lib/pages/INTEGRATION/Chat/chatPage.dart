@@ -300,10 +300,12 @@ class _ChatPageState extends State<ChatPage> {
 
   _messagesIsRead(documentSnapshot) {
     return <Widget>[
+      /*
       Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          InkWell(
+          Text("data"),
+          /* InkWell(
             child: CircleAvatar(
               backgroundColor: secondryColor,
               radius: 25.0,
@@ -325,9 +327,9 @@ class _ChatPageState extends State<ChatPage> {
                 builder: (context) {
                   return Info(widget.second, widget.sender, null);
                 }),
-          ),
+          ),*/
         ],
-      ),
+      ),*/
       SizedBox(
         width: 10,
       ),
@@ -464,21 +466,23 @@ class _ChatPageState extends State<ChatPage> {
     return snapshot.data!.docs
         .map<Widget>((doc) => Container(
               margin: const EdgeInsets.symmetric(vertical: 10.0),
-              child: new Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: doc.get('type') == "Call"
-                      ? [
-                          Text(doc.get('time') != null
-                              ? "${doc.get('text')} : " +
-                                  DateFormat.yMMMd('en_US').add_jm().format(doc.get('time').toDate()).toString() +
-                                  " by ${doc.get('sender_id') == widget.sender.id ? "You" : "${widget.second.name}"}"
-                              : "")
-                        ]
-                      : doc.get('sender_id') != widget.sender.id
-                          ? generateReceiverLayout(
-                              doc,
-                            )
-                          : generateSenderLayout(doc)),
+              child: /*_messagesIsRead(
+                doc)*/
+                  new Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: doc.get('type') == "Call"
+                          ? [
+                              Text(doc.get('time') != null
+                                  ? "${doc.get('text')} : " +
+                                      DateFormat.yMMMd('en_US').add_jm().format(doc.get('time').toDate()).toString() +
+                                      " by ${doc.get('sender_id') == widget.sender.id ? "You" : "${widget.second.name}"}"
+                                  : "")
+                            ]
+                          : doc.get('sender_id') != widget.sender.id
+                              ? generateReceiverLayout(
+                                  doc,
+                                )
+                              : generateSenderLayout(doc)),
             ))
         .toList();
   }

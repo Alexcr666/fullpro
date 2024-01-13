@@ -4,7 +4,7 @@ import 'package:flutter_locales/flutter_locales.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
-import 'package:flutter_stripe/flutter_stripe.dart';
+//import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:fullpro/PROFESIONAL/config.dart';
 import 'package:fullpro/PROFESIONAL/controllers/mainController.dart';
 import 'package:fullpro/PROFESIONAL/utils/globalConstants.dart';
@@ -356,7 +356,7 @@ class _WalletState extends State<Wallet> {
   }
 
   Future<void> makePayment() async {
-    try {
+    /* try {
       String dbalance = dueBalanceValue.toInt().toString();
       paymentIntent = await createPaymentIntent(dbalance, stripeCurrency);
       //Payment Sheet
@@ -370,10 +370,11 @@ class _WalletState extends State<Wallet> {
       displayPaymentSheet();
     } catch (e, s) {
       print('exception:$e$s');
-    }
+    }*/
   }
 
   displayPaymentSheet() async {
+    /*
     try {
       await Stripe.instance.presentPaymentSheet().then((value) {
         // Clear Due Balance
@@ -413,7 +414,7 @@ class _WalletState extends State<Wallet> {
               ));
     } catch (e) {
       print('$e');
-    }
+    }*/
   }
 
   //  Future<Map<String, dynamic>>

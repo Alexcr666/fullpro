@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_database/firebase_database.dart';
 
@@ -57,13 +59,14 @@ class Matches extends StatelessWidget {
                       scrollDirection: Axis.horizontal,
                       itemCount: matches.length,
                       itemBuilder: (BuildContext context, int index) {
+                        print("chatid:" + currentUser.id.toString());
                         return GestureDetector(
                           onTap: () => Navigator.push(
                             context,
                             CupertinoPageRoute(
                               builder: (_) => ChatPage(
                                 sender: currentUser,
-                                chatId: chatId(currentUser, matches[index]),
+                                chatId: /*chatId(*/ currentUser.id.toString() /*, matches[index])*/,
                                 second: matches[index],
                               ),
                             ),
@@ -129,8 +132,16 @@ var groupChatId;
 
 chatId(currentUser, sender) {
   if (currentUser.id.hashCode <= sender.id.hashCode) {
+    return groupChatId = '${currentUser.id}';
+  } else {
+    return groupChatId = '${sender.id}';
+  }
+}
+/*
+chatId(currentUser, sender) {
+  if (currentUser.id.hashCode <= sender.id.hashCode) {
     return groupChatId = '${currentUser.id}-${sender.id}';
   } else {
     return groupChatId = '${sender.id}-${currentUser.id}';
   }
-}
+}*/

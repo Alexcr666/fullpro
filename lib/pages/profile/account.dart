@@ -283,160 +283,165 @@ class _AccountState extends State<Account> with TickerProviderStateMixin {
           ),
         ),
       ),*/
-      body: SafeArea(
-          child: Padding(
-        padding: EdgeInsets.only(
-          left: leftPadding,
-          right: rightPadding,
-          bottom: bottomPadding,
-          top: topPadding,
-        ),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              SizedBox(
-                height: 10,
+      body: userDataProfile == null
+          ? AppWidget().loading()
+          : SafeArea(
+              child: Padding(
+              padding: EdgeInsets.only(
+                left: leftPadding,
+                right: rightPadding,
+                bottom: bottomPadding,
+                top: topPadding,
               ),
-              AppWidget().back(context),
-              SizedBox(
-                height: 10,
-              ),
-              GestureDetector(
-                  onTap: () async {
-                    /* ImagePicker imagePicker = ImagePicker();
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    SizedBox(
+                      height: 10,
+                    ),
+                    AppWidget().back(context),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    GestureDetector(
+                        onTap: () async {
+                          /* ImagePicker imagePicker = ImagePicker();
 
                     var image = await imagePicker.pickImage(source: ImageSource.gallery);
                     imagePickerFile = File(image!.path);
                     setState(() {});*/
-                    //kkk
+                          //kkk
 
-                    ImagePicker imagePicker = ImagePicker();
+                          ImagePicker imagePicker = ImagePicker();
 
-                    var image = await imagePicker.pickImage(source: ImageSource.gallery);
-                    imagePickerFile = File(image!.path);
-                    FirebaseAuth user = FirebaseAuth.instance;
+                          var image = await imagePicker.pickImage(source: ImageSource.gallery);
+                          imagePickerFile = File(image!.path);
+                          FirebaseAuth user = FirebaseAuth.instance;
 
-                    AppWidget().itemMessage("Subiendo..", context);
+                          AppWidget().itemMessage("Subiendo..", context);
 
-                    int timestamp = new DateTime.now().millisecondsSinceEpoch;
+                          int timestamp = new DateTime.now().millisecondsSinceEpoch;
 
-                    Reference storageReference =
-                        FirebaseStorage.instance.ref().child('user/' + user.currentUser!.uid.toString() + timestamp.toString() + '.jpg');
+                          Reference storageReference = FirebaseStorage.instance
+                              .ref()
+                              .child('user/' + user.currentUser!.uid.toString() + timestamp.toString() + '.jpg');
 
-                    UploadTask uploadTask = storageReference.putFile(File(image!.path));
+                          UploadTask uploadTask = storageReference.putFile(File(image!.path));
 
-                    await uploadTask.then((p0) async {
-                      String fileUrl = await storageReference.getDownloadURL();
+                          await uploadTask.then((p0) async {
+                            String fileUrl = await storageReference.getDownloadURL();
 
-                      log("urlfile: " + fileUrl.toString());
+                            log("urlfile: " + fileUrl.toString());
 
-                      // userProfileData.child("photo")
+                            // userProfileData.child("photo")
 
-                      userDataProfile.ref.update({'photo': fileUrl}).then((value) {
-                        //  Navigator.pop(context);
+                            userDataProfile.ref.update({'photo': fileUrl}).then((value) {
+                              //  Navigator.pop(context);
 
-                        setState(() {});
+                              setState(() {});
 
-                        AppWidget().itemMessage("Foto actualizada", context);
-                        getUserInfo();
-                      }).catchError((onError) {
-                        AppWidget().itemMessage("Error al actualizar foto", context);
-                      });
+                              AppWidget().itemMessage("Foto actualizada", context);
+                              getUserInfo();
+                            }).catchError((onError) {
+                              AppWidget().itemMessage("Error al actualizar foto", context);
+                            });
 
-                      //   _sendImage(messageText: 'Photo', imageUrl: fileUrl);
-                    }).catchError((onError) {
-                      print("error: " + onError.toString());
-                    });
-                  },
-                  child: userDataProfile.child("photo").value == null
-                      ? AppWidget().circleProfile(userDataProfile.child("photo").value.toString(), size: 120)
-                      : imagePickerFile != null
-                          ? ClipRRect(
-                              borderRadius: BorderRadius.circular(100),
-                              child: Image.file(
-                                imagePickerFile!,
-                                fit: BoxFit.cover,
-                                width: 130,
-                                height: 130,
-                              ),
-                            )
-                          : SvgPicture.asset(
-                              "images/icons/profileCircle.svg",
-                              width: 130,
-                            )),
-              /* const SizedBox(height: 30),
+                            //   _sendImage(messageText: 'Photo', imageUrl: fileUrl);
+                          }).catchError((onError) {
+                            print("error: " + onError.toString());
+                          });
+                        },
+                        child: userDataProfile.child("photo").value == null
+                            ? AppWidget().circleProfile(userDataProfile.child("photo").value.toString(), size: 120)
+                            : imagePickerFile != null
+                                ? ClipRRect(
+                                    borderRadius: BorderRadius.circular(100),
+                                    child: Image.file(
+                                      imagePickerFile!,
+                                      fit: BoxFit.cover,
+                                      width: 130,
+                                      height: 130,
+                                    ),
+                                  )
+                                : SvgPicture.asset(
+                                    "images/icons/profileCircle.svg",
+                                    width: 130,
+                                  )),
+                    /* const SizedBox(height: 30),
               ProfileWidget(
                 imagePath: 'images/user_icon.png',
                 onClicked: () async {},
               ),*/
-              SizedBox(
-                height: 10,
-              ),
-              Text(
-                '${UserPreferences.getUsername() ?? currentUserInfo?.fullName}',
-                style: TextStyle(color: secondryColor, fontSize: 22, fontWeight: FontWeight.bold),
-              ),
-              Container(
-                padding: const EdgeInsets.all(10),
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      itemOptionProfile("Mi perfil", "images/icons/profileCircle.svg", tap: () {
-                        activeProfile = !activeProfile;
-                        setState(() {});
-                      }),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Container(
-                        width: double.infinity,
-                        height: 0.5,
-                        color: secondryColor,
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      activeProfile
-                          ? SizedBox()
-                          : Column(
-                              children: [
-                                Row(
-                                  children: [
-                                    GestureDetector(
-                                        onTap: () async {},
-                                        child: SvgPicture.asset(
-                                          "images/icons/profileCircle.svg",
-                                          width: 35,
-                                        )),
-                                    SizedBox(
-                                      width: 20,
-                                    ),
-                                    Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          "Mi Perfil",
-                                          style: TextStyle(color: secondryColor, fontSize: 17),
-                                        ),
-                                        Text(
-                                          "Datos cliente",
-                                          style: TextStyle(color: secondryColor, fontSize: 17, fontWeight: FontWeight.bold),
-                                        ),
-                                      ],
-                                    ),
-                                    Expanded(child: SizedBox()),
-                                    Text(
-                                      "Datos personales",
-                                      style: TextStyle(color: secondryColor, fontSize: 13, fontWeight: FontWeight.normal),
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(
-                                  height: 20,
-                                ),
-                                /* Padding(
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Text(
+                      userDataProfile.child("fullname").value == null
+                          ? "No disponible"
+                          : userDataProfile.child("fullname").value.toString(),
+                      style: TextStyle(color: secondryColor, fontSize: 22, fontWeight: FontWeight.bold),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.all(10),
+                      child: Form(
+                        key: _formKey,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            itemOptionProfile("Mi perfil", "images/icons/profileCircle.svg", tap: () {
+                              activeProfile = !activeProfile;
+                              setState(() {});
+                            }),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Container(
+                              width: double.infinity,
+                              height: 0.5,
+                              color: secondryColor,
+                            ),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            activeProfile
+                                ? SizedBox()
+                                : Column(
+                                    children: [
+                                      Row(
+                                        children: [
+                                          GestureDetector(
+                                              onTap: () async {},
+                                              child: SvgPicture.asset(
+                                                "images/icons/profileCircle.svg",
+                                                width: 35,
+                                              )),
+                                          SizedBox(
+                                            width: 20,
+                                          ),
+                                          Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                "Mi Perfil",
+                                                style: TextStyle(color: secondryColor, fontSize: 17),
+                                              ),
+                                              Text(
+                                                "Datos cliente",
+                                                style: TextStyle(color: secondryColor, fontSize: 17, fontWeight: FontWeight.bold),
+                                              ),
+                                            ],
+                                          ),
+                                          Expanded(child: SizedBox()),
+                                          Text(
+                                            "Datos personales",
+                                            style: TextStyle(color: secondryColor, fontSize: 13, fontWeight: FontWeight.normal),
+                                          ),
+                                        ],
+                                      ),
+                                      SizedBox(
+                                        height: 20,
+                                      ),
+                                      /* Padding(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 0,
                           vertical: 5,
@@ -468,55 +473,55 @@ class _AccountState extends State<Account> with TickerProviderStateMixin {
                         ),
                       ),*/
 
-                                AppWidget().texfieldFormat(
-                                    title: "Nombre completo", urlIcon: "images/icons/user.svg", controller: _nameController),
-                                const SizedBox(height: 10),
-                                GestureDetector(
-                                    onTap: () {
-                                      void _showIOS_DatePicker(ctx) {
-                                        showCupertinoModalPopup(
-                                            context: ctx,
-                                            builder: (_) => Container(
-                                                  height: 190,
-                                                  color: Color.fromARGB(255, 255, 255, 255),
-                                                  child: Column(
-                                                    children: [
-                                                      Container(
-                                                        height: 180,
-                                                        child: CupertinoDatePicker(
-                                                            mode: CupertinoDatePickerMode.date,
-                                                            initialDateTime: DateTime.now(),
-                                                            onDateTimeChanged: (val) {
-                                                              setState(() {
-                                                                final f = new DateFormat('yyyy-MM-dd');
+                                      AppWidget().texfieldFormat(
+                                          title: "Nombre completo", urlIcon: "images/icons/user.svg", controller: _nameController),
+                                      const SizedBox(height: 10),
+                                      GestureDetector(
+                                          onTap: () {
+                                            void _showIOS_DatePicker(ctx) {
+                                              showCupertinoModalPopup(
+                                                  context: ctx,
+                                                  builder: (_) => Container(
+                                                        height: 190,
+                                                        color: Color.fromARGB(255, 255, 255, 255),
+                                                        child: Column(
+                                                          children: [
+                                                            Container(
+                                                              height: 180,
+                                                              child: CupertinoDatePicker(
+                                                                  mode: CupertinoDatePickerMode.date,
+                                                                  initialDateTime: DateTime.now(),
+                                                                  onDateTimeChanged: (val) {
+                                                                    setState(() {
+                                                                      final f = new DateFormat('yyyy-MM-dd');
 
-                                                                _dateController.text = f.format(val);
-                                                                //  dateSelected = val.toString();
-                                                              });
-                                                            }),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ));
-                                      }
+                                                                      _dateController.text = f.format(val);
+                                                                      //  dateSelected = val.toString();
+                                                                    });
+                                                                  }),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ));
+                                            }
 
-                                      _showIOS_DatePicker(context);
-                                    },
-                                    child: AppWidget().texfieldFormat(
-                                        title: "Fecha de nacimiento",
-                                        urlIcon: "images/icons/calendar.svg",
-                                        controller: _dateController,
-                                        enabled: true)),
-                                const SizedBox(height: 10),
-                                AppWidget().texfieldFormat(
-                                    title: "Correo electronico", urlIcon: "images/icons/message.svg", controller: _emailController),
-                                const SizedBox(height: 10),
-                                //   AppWidget().texfieldFormat(
-                                //     title: "Contraseña", urlIcon: "images/icons/password.svg", controller: _passwordController),
-                              ],
-                            ),
+                                            _showIOS_DatePicker(context);
+                                          },
+                                          child: AppWidget().texfieldFormat(
+                                              title: "Fecha de nacimiento",
+                                              urlIcon: "images/icons/calendar.svg",
+                                              controller: _dateController,
+                                              enabled: true)),
+                                      const SizedBox(height: 10),
+                                      AppWidget().texfieldFormat(
+                                          title: "Correo electronico", urlIcon: "images/icons/message.svg", controller: _emailController),
+                                      const SizedBox(height: 10),
+                                      //   AppWidget().texfieldFormat(
+                                      //     title: "Contraseña", urlIcon: "images/icons/password.svg", controller: _passwordController),
+                                    ],
+                                  ),
 
-                      /* Text(
+                            /* Text(
                         Locales.string(context, 'war_phone_can_not_change'),
                         style: const TextStyle(fontSize: 14),
                       ),
@@ -552,8 +557,8 @@ class _AccountState extends State<Account> with TickerProviderStateMixin {
                           ),
                         ),
                       ),*/
-                      const SizedBox(height: 20),
-                      /*  Center(
+                            const SizedBox(height: 20),
+                            /*  Center(
                         child: SizedBox(
                           width: MediaQuery.of(context).size.width * .6,
                           child: MaterialButton(
@@ -576,95 +581,103 @@ class _AccountState extends State<Account> with TickerProviderStateMixin {
                           ),
                         ),
                       ),*/
-                      SizedBox(
-                        height: 30,
-                      ),
-                      itemOptionProfile("Ajustes", "images/icons/settings.svg", tap: () {
-                        activeSetting = !activeSetting;
-                        setState(() {});
-                      }),
-                      activeSetting
-                          ? SizedBox()
-                          : Column(
-                              children: [
-                                SizedBox(
-                                  height: 30,
-                                ),
-                                itemOptionProfileOptions("Radio de busqueda", "images/icons/locationCircle.svg",
-                                    subtitle: _currentSliderValue.round().toString() + " KM"),
-                                Slider(
-                                  value: _currentSliderValue,
-                                  max: 100,
-                                  activeColor: secondryColor,
-                                  divisions: 5,
-                                  label: _currentSliderValue.round().toString(),
-                                  onChanged: (double value) {
-                                    setState(() {
-                                      _currentSliderValue = value;
-                                    });
-                                  },
-                                ),
-                                SizedBox(
-                                  height: 10,
-                                ),
-                                itemOptionProfileOptions("Ajuste de cuenta", "images/icons/profileCircle.svg", onTap: () {
-                                  activeAjustCount = !activeAjustCount;
-                                  setState(() {});
-                                }),
-                                SizedBox(
-                                  height: 20,
-                                ),
-                                activeAjustCount
-                                    ? SizedBox()
-                                    : userDataProfile != null
-                                        ? SizedBox()
-                                        : Column(
-                                            children: [
-                                              itemOptionProfile("Eliminar cuenta", "images/icons/profileCircle.svg", tap: () {
-                                                Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (context) => DeleteAccountPage(
-                                                              userProfileData: userDataProfile,
-                                                            )));
-                                              }),
-                                              itemOptionProfile("Fecha", "", subtitle: userDataProfile.child("date").value.toString(),
-                                                  tap: () {
-                                                //    Navigator.push(context, MaterialPageRoute(builder: (context) => const PortafolioPage()));
-                                              }),
-                                              itemOptionProfile("Usuario", "", subtitle: userDataProfile.child("name").value.toString()),
-                                              itemOptionProfile("Estado del usuario", "",
-                                                  subtitle: stateOrderUser[int.parse(userDataProfile.child("state").value.toString())]),
-                                              SizedBox(
-                                                height: 30,
-                                              ),
-                                              itemOptionProfile("Cambiar contraseña", "", subtitle: "", tap: () {
-                                                Navigator.push(context, MaterialPageRoute(builder: (context) => ChangePasswordScreen()));
-                                                //   Navigator.push(context, MaterialPageRoute(builder: (context) => ProfileProfesionalPage()));
-                                              }),
-                                              /*  itemOptionProfile("Suspender cuenta", "", subtitle: "", tap: () {
+                            SizedBox(
+                              height: 30,
+                            ),
+                            itemOptionProfile("Ajustes", "images/icons/settings.svg", tap: () {
+                              activeSetting = !activeSetting;
+                              setState(() {});
+                            }),
+                            activeSetting
+                                ? SizedBox()
+                                : Column(
+                                    children: [
+                                      SizedBox(
+                                        height: 30,
+                                      ),
+                                      itemOptionProfileOptions("Radio de busqueda", "images/icons/locationCircle.svg",
+                                          subtitle: _currentSliderValue.round().toString() + " KM"),
+                                      Slider(
+                                        value: _currentSliderValue,
+                                        max: 100,
+                                        activeColor: secondryColor,
+                                        divisions: 5,
+                                        label: _currentSliderValue.round().toString(),
+                                        onChanged: (double value) {
+                                          setState(() {
+                                            _currentSliderValue = value;
+                                          });
+                                        },
+                                      ),
+                                      SizedBox(
+                                        height: 10,
+                                      ),
+                                      itemOptionProfileOptions("Ajuste de cuenta", "images/icons/profileCircle.svg", onTap: () {
+                                        activeAjustCount = !activeAjustCount;
+                                        setState(() {});
+                                      }),
+                                      SizedBox(
+                                        height: 20,
+                                      ),
+                                      activeAjustCount
+                                          ? SizedBox()
+                                          : userDataProfile != null
+                                              ? SizedBox()
+                                              : Column(
+                                                  children: [
+                                                    itemOptionProfile("Eliminar cuenta", "images/icons/profileCircle.svg", tap: () {
+                                                      Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                              builder: (context) => DeleteAccountPage(
+                                                                    userProfileData: userDataProfile,
+                                                                  )));
+                                                    }),
+                                                    itemOptionProfile("Fecha", "",
+                                                        subtitle: userDataProfile.child("date").value == null
+                                                            ? "No disponible"
+                                                            : userDataProfile.child("date").value.toString(), tap: () {
+                                                      //    Navigator.push(context, MaterialPageRoute(builder: (context) => const PortafolioPage()));
+                                                    }),
+                                                    itemOptionProfile("Usuario", "",
+                                                        subtitle: userDataProfile.child("name").value == null
+                                                            ? "No disponible"
+                                                            : userDataProfile.child("name").value.toString()),
+                                                    itemOptionProfile("Estado del usuario", "",
+                                                        subtitle: userDataProfile.child("state").value == null
+                                                            ? "Disponible"
+                                                            : stateOrderUser[int.parse(userDataProfile.child("state").value.toString())]),
+                                                    SizedBox(
+                                                      height: 30,
+                                                    ),
+                                                    itemOptionProfile("Cambiar contraseña", "", subtitle: "", tap: () {
+                                                      Navigator.push(
+                                                          context, MaterialPageRoute(builder: (context) => ChangePasswordScreen()));
+                                                      //   Navigator.push(context, MaterialPageRoute(builder: (context) => ProfileProfesionalPage()));
+                                                    }),
+                                                    /*  itemOptionProfile("Suspender cuenta", "", subtitle: "", tap: () {
                                                 Navigator.push(context, MaterialPageRoute(builder: (context) => const DeleteAccountPage()));
                                                 //   Navigator.push(context, MaterialPageRoute(builder: (context) => ProfileProfesionalPage()));
                                               }),*/
-                                              SizedBox(
-                                                height: 10,
-                                              ),
-                                              /*  itemOptionProfile("Archivar cuenta", "", subtitle: "", tap: () {
+                                                    SizedBox(
+                                                      height: 10,
+                                                    ),
+                                                    /*  itemOptionProfile("Archivar cuenta", "", subtitle: "", tap: () {
                                             Navigator.push(context, MaterialPageRoute(builder: (context) => const DeleteAccountPage()));
                                           }),*/
-                                              SizedBox(
-                                                height: 30,
-                                              ),
-                                            ],
-                                          ),
-                              ],
+                                                    SizedBox(
+                                                      height: 30,
+                                                    ),
+                                                  ],
+                                                ),
+                                    ],
+                                  ),
+                            SizedBox(
+                              height: 30,
                             ),
-                      SizedBox(
-                        height: 30,
-                      ),
-                      Row(
-                        children: [
-                          /* GestureDetector(
+                            Row(
+                              children: [
+                                /* GestureDetector(
                               onTap: () {},
                               child: Flexible(
                                   child: Row(
@@ -682,51 +695,51 @@ class _AccountState extends State<Account> with TickerProviderStateMixin {
                                   ),
                                 ],
                               ))),*/
-                          Expanded(child: SizedBox()),
-                          GestureDetector(
-                              onTap: () {
-                                // if (_formKey.currentState!.validate()) {
-                                //
-                                //updateProfile();
+                                Expanded(child: SizedBox()),
+                                GestureDetector(
+                                    onTap: () {
+                                      // if (_formKey.currentState!.validate()) {
+                                      //
+                                      //updateProfile();
 
-                                userDataProfile.ref.update({
-                                  'radio': int.parse(_currentSliderValue.round().toString()),
-                                  "fullname": _nameController.text.toString(),
-                                  "dateUser": _dateController.text,
-                                  "email": _emailController.text
-                                }).then((value) {
-                                  AppWidget().itemMessage("Guardado", context);
-                                });
+                                      userDataProfile.ref.update({
+                                        'radio': int.parse(_currentSliderValue.round().toString()),
+                                        "fullname": _nameController.text.toString(),
+                                        "dateUser": _dateController.text,
+                                        "email": _emailController.text
+                                      }).then((value) {
+                                        AppWidget().itemMessage("Guardado", context);
+                                      });
 
-                                //  }
-                              },
-                              child: Flexible(
-                                  child: Row(
-                                children: [
-                                  SvgPicture.asset(
-                                    "images/icons/saved.svg",
-                                    width: 30,
-                                  ),
-                                  SizedBox(
-                                    width: 10,
-                                  ),
-                                  Text(
-                                    "Guardar",
-                                    style: TextStyle(color: secondryColor, fontSize: 20),
-                                  ),
-                                ],
-                              ))),
-                          Expanded(child: SizedBox()),
-                        ],
-                      )
-                    ],
-                  ),
+                                      //  }
+                                    },
+                                    child: Flexible(
+                                        child: Row(
+                                      children: [
+                                        SvgPicture.asset(
+                                          "images/icons/saved.svg",
+                                          width: 30,
+                                        ),
+                                        SizedBox(
+                                          width: 10,
+                                        ),
+                                        Text(
+                                          "Guardar",
+                                          style: TextStyle(color: secondryColor, fontSize: 20),
+                                        ),
+                                      ],
+                                    ))),
+                                Expanded(child: SizedBox()),
+                              ],
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            ],
-          ),
-        ),
-      )),
+            )),
     );
   }
 

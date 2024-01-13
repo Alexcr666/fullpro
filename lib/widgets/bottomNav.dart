@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'dart:developer';
 import 'dart:io';
 
@@ -422,9 +423,14 @@ class _BottomNavState extends State<BottomNav> {
                 //
                 GestureDetector(
                     onTap: () {
+                      // List<String> arr = ["a", "a", "b", "c", "b", "d"];
+                      List<userD.User> result = LinkedHashSet<userD.User>.from(matches).toList();
+
+                      List<userD.User> newMatchesResult = LinkedHashSet<userD.User>.from(newmatches).toList();
+// => ["a", "b", "c", "d"]
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => HomeScreen(currentUser!, matches, newmatches)),
+                        MaterialPageRoute(builder: (context) => HomeScreen(currentUser!, result, newMatchesResult)),
                       );
                     },
                     child: Container(

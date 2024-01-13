@@ -419,6 +419,8 @@ class _CartPageState extends State<CartPage> {
     return total;
   }
 
+  DataSnapshot? selectMethod = null;
+
   Widget pageMethodPay() {
     return FutureBuilder(
         initialData: 1,
@@ -437,7 +439,12 @@ class _CartPageState extends State<CartPage> {
                           child: Text(value.child("number").value.toString()),
                         );
                       }).toList(),
-                      onChanged: (_) {},
+                      hint: Text(selectMethod == null ? "Seleccionar metodo de pago" : selectMethod!.child("number").value.toString()),
+                      onChanged: (data) {
+                        setState(() {
+                          selectMethod = data;
+                        });
+                      },
                     );
             } else {
               return AppWidget().loading();
@@ -916,18 +923,84 @@ class _CartPageState extends State<CartPage> {
                   SizedBox(
                     height: 15,
                   ),
+
+                  Container(
+                      margin: EdgeInsets.only(left: 20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Servicios".toString(),
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                              color: secondryColor,
+                            ),
+                          ),
+                        ],
+                      )),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  ListView.builder(
+                      padding: EdgeInsets.only(left: 10.0),
+                      itemCount: dataListObjectGeneral!.child("services").children.length,
+                      physics: NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      itemBuilder: (BuildContext context, int index) {
+                        var data = dataListObjectGeneral!.child("services").children.toList()[index];
+                        return Container(
+                            margin: EdgeInsets.only(top: 10),
+                            child: ListTile(
+                              leading: AppWidget().circleProfile(data.child("foto").value.toString(), size: 50),
+                              trailing: data.child("price").value == null
+                                  ? Text("0")
+                                  : Text(
+                                      '\$' + data.child("price").value.toString(),
+                                      style: TextStyle(fontSize: 14),
+                                    ),
+                              title: Text(data.child("name").value.toString()),
+                            ));
+                      }),
+                  SizedBox(
+                    height: 20,
+                  ),
                   SizedBox(
                     height: 10,
                   ),
                   itemMoney("Costo del servicio", '\$' + dataListObjectGeneral!.child("price").value.toString()),
                   itemMoney("Tarifa del servicio",
                       '\$' + (int.parse(dataListObjectGeneral!.child("price").value.toString()) / 20).round().toString()),
-                  itemMoney("Costo del domicilio",
-                      '\$' + (int.parse(dataListObjectGeneral!.child("price").value.toString()) / 10).round().toString()),
+                  //  itemMoney("Costo del domicilio",
+                  //    '\$' + (int.parse(dataListObjectGeneral!.child("price").value.toString()) / 10).round().toString()),
                   SizedBox(
                     height: 20,
                   ),
-                  pageMethodPay(),
+                  Container(
+                    margin: EdgeInsets.only(left: 20, right: 20),
+                    width: double.infinity,
+                    height: 1,
+                    color: secondryColor,
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Container(
+                      margin: EdgeInsets.only(left: 20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Metodos de pago".toString(),
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                              color: secondryColor,
+                            ),
+                          ),
+                          Container(width: double.infinity, child: pageMethodPay()),
+                        ],
+                      )),
                   cartItemsList.isEmpty
                       ? Center(
                           child: SafeArea(

@@ -24,6 +24,7 @@ import 'package:fullpro/controller/loader.dart';
 import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
 
 import 'package:fullpro/pages/homepage.dart';
+import 'package:fullpro/pages/profesional/profileProfesional.dart';
 
 import 'package:fullpro/widgets/widget.dart';
 
@@ -50,6 +51,9 @@ List<File> fileLicense = [];
 
 class _PortafolioPageState extends State<NewPortafolioPage> {
   TextEditingController _searchHome = TextEditingController();
+
+  TextEditingController _priceController = TextEditingController();
+  TextEditingController _profesionController = TextEditingController();
 
   TextEditingController _namePortafolioController = TextEditingController();
 
@@ -454,6 +458,7 @@ class _PortafolioPageState extends State<NewPortafolioPage> {
                   SizedBox(
                     height: 20,
                   ),
+                  AppWidget().texfieldFormat(title: "Precio", controller: _priceController),
                   Text("Fotos portafolio"),
                   SizedBox(
                     height: 10,
@@ -516,6 +521,7 @@ class _PortafolioPageState extends State<NewPortafolioPage> {
                             'type': checkInspeccion ? 1 : 2,
                             'category': _searchHome.text,
                             'foto': fileUrl.toString(),
+                            'price': int.parse(priceController.text),
                           };
 
                           newUserRef.set(userMap).then((value) {

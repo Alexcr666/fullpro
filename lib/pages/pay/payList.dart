@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 
 import 'package:flutter/material.dart';
@@ -83,7 +84,12 @@ class _PayListPageState extends State<PayListPage> {
   Widget stateIndicator0() {
     return FutureBuilder(
         initialData: 1,
-        future: FirebaseDatabase.instance.ref().child('creditcard').once(),
+        future: FirebaseDatabase.instance
+            .ref()
+            .child('creditcard')
+            .orderByChild("user")
+            .equalTo(FirebaseAuth.instance.currentUser!.uid.toString())
+            .once(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           try {
             if (snapshot.hasData) {

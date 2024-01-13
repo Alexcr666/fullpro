@@ -1,5 +1,6 @@
 // ignore_for_file: file_names
 
+import 'dart:collection';
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -171,9 +172,15 @@ class _BottomNavState extends State<BottomNav> {
 
                 GestureDetector(
                     onTap: () {
+                      //   _getMatches();
+
+                      List<userD.User> result = LinkedHashSet<userD.User>.from(matches).toList();
+
+                      List<userD.User> newMatchesResult = LinkedHashSet<userD.User>.from(newmatches).toList();
+                      log("iduser: " + FirebaseAuth.instance.currentUser!.uid.toString());
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => HomeScreen(currentUser!, matches, newmatches)),
+                        MaterialPageRoute(builder: (context) => HomeScreen(currentUser!, result, newMatchesResult)),
                       );
                     },
                     child: Container(
