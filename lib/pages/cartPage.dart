@@ -408,13 +408,20 @@ class _CartPageState extends State<CartPage> {
 
   getTotalPay() {
     int total = 0;
-    if (dataListObjectGeneral != null) {
+
+    for (var i = 0; i < dataListObjectGeneral!.child("services").children.toList().length; i++) {
+      var data = dataListObjectGeneral!.child("services").children.toList()[i];
+      total += int.parse(data.child("price").value.toString());
+    }
+
+    // total += (int.parse(dataListObjectGeneral!.child("price").value.toString()) / 10).round();
+    /* if (dataListObjectGeneral != null) {
       total = int.parse(dataListObjectGeneral!.child("price").value.toString());
 
       total += (int.parse(dataListObjectGeneral!.child("price").value.toString()) / 20).round();
 
       total += (int.parse(dataListObjectGeneral!.child("price").value.toString()) / 10).round();
-    }
+    }*/
 
     return total;
   }
@@ -953,13 +960,32 @@ class _CartPageState extends State<CartPage> {
                             margin: EdgeInsets.only(top: 10),
                             child: ListTile(
                               leading: AppWidget().circleProfile(data.child("foto").value.toString(), size: 50),
-                              trailing: data.child("price").value == null
-                                  ? Text("0")
-                                  : Text(
-                                      '\$' + data.child("price").value.toString(),
-                                      style: TextStyle(fontSize: 14),
-                                    ),
-                              title: Text(data.child("name").value.toString()),
+                              trailing: GestureDetector(
+                                  onTap: () {
+                                    data.ref.remove().then((value) {
+                                      AppWidget().itemMessage("Eliminado", context);
+                                    }).catchError((onError) {});
+                                  },
+                                  child: Icon(
+                                    Icons.close,
+                                    size: 24,
+                                    color: Color.fromARGB(255, 122, 122, 122),
+                                  )),
+                              title: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(data.child("name").value.toString()),
+                                  SizedBox(
+                                    height: 2,
+                                  ),
+                                  data.child("price").value == null
+                                      ? Text("0")
+                                      : Text(
+                                          '\$' + data.child("price").value.toString(),
+                                          style: TextStyle(fontSize: 14),
+                                        )
+                                ],
+                              ),
                             ));
                       }),
                   SizedBox(
@@ -968,9 +994,8 @@ class _CartPageState extends State<CartPage> {
                   SizedBox(
                     height: 10,
                   ),
-                  itemMoney("Costo del servicio", '\$' + dataListObjectGeneral!.child("price").value.toString()),
-                  itemMoney("Tarifa del servicio",
-                      '\$' + (int.parse(dataListObjectGeneral!.child("price").value.toString()) / 20).round().toString()),
+                  itemMoney("Costo del servicio", '\$' + getTotalPay().toString()),
+                  itemMoney("Tarifa del servicio", '\$' + (int.parse(getTotalPay().toString()) / 10).round().toString()),
                   //  itemMoney("Costo del domicilio",
                   //    '\$' + (int.parse(dataListObjectGeneral!.child("price").value.toString()) / 10).round().toString()),
                   SizedBox(
@@ -1081,7 +1106,7 @@ class _CartPageState extends State<CartPage> {
                 Text(
                   /* currencyPos == 'left' ? '$currencySymbol' : '$ktotalprice'*/ dataListObjectGeneral!.child("price").value == null
                       ? '\$' + "0"
-                      : '\$' + getTotalPay().toString(),
+                      : '\$' + (int.parse(getTotalPay().toString()) + int.parse(getTotalPay().toString()) / 10).round().toString(),
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 22,

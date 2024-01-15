@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'dart:convert';
 
 import 'dart:io';
@@ -9,7 +10,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 
 import 'package:dotted_border/dotted_border.dart';
-
+import 'package:fullpro/pages/INTEGRATION/models/user_model.dart' as userD;
 import 'package:file_picker/file_picker.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
@@ -438,6 +439,43 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
         });
   }
 
+  clickPhoto() async {
+    ImagePicker imagePicker = ImagePicker();
+
+    var image = await imagePicker.pickImage(source: ImageSource.gallery);
+
+    FirebaseAuth user = FirebaseAuth.instance;
+
+    int timestamp = new DateTime.now().millisecondsSinceEpoch;
+
+    Reference storageReference =
+        FirebaseStorage.instance.ref().child('partners/' + user.currentUser!.uid.toString() + timestamp.toString() + '.jpg');
+
+    UploadTask uploadTask = storageReference.putFile(File(image!.path));
+    AppWidget().itemMessage("Subiendo foto...", context);
+    await uploadTask.then((p0) async {
+      String fileUrl = await storageReference.getDownloadURL();
+
+      //  log("urlfile: " + fileUrl.toString());
+
+      // userProfileData.child("photo")
+
+      _userDataProfile!.ref.update({'photo': fileUrl}).then((value) {
+        //  Navigator.pop(context);
+
+        setState(() {});
+
+        AppWidget().itemMessage("Foto actualizada", context);
+      }).catchError((onError) {
+        AppWidget().itemMessage("Error al actualizar foto", context);
+      });
+
+      //   _sendImage(messageText: 'Photo', imageUrl: fileUrl);
+    }).catchError((onError) {
+      print("error: " + onError.toString());
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -466,24 +504,28 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                   SizedBox(
                                     height: 60,
                                   ),
-                                  Container(
-                                      height: 120,
-                                      width: 120,
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(90),
-                                        child: CachedNetworkImage(
-                                          fit: BoxFit.cover,
-                                          imageUrl: imageUser ?? '',
-                                          useOldImageOnUrlChange: true,
-                                          placeholder: (context, url) => CupertinoActivityIndicator(
-                                            radius: 20,
-                                            color: Colors.grey.withOpacity(0.3),
-                                          ),
-                                          errorWidget: (context, url, error) => Container(
-                                            color: Colors.grey.withOpacity(0.4),
-                                          ),
-                                        ),
-                                      )),
+                                  GestureDetector(
+                                      onTap: () {
+                                        clickPhoto();
+                                      },
+                                      child: Container(
+                                          height: 120,
+                                          width: 120,
+                                          child: ClipRRect(
+                                            borderRadius: BorderRadius.circular(90),
+                                            child: CachedNetworkImage(
+                                              fit: BoxFit.cover,
+                                              imageUrl: imageUser ?? '',
+                                              useOldImageOnUrlChange: true,
+                                              placeholder: (context, url) => CupertinoActivityIndicator(
+                                                radius: 20,
+                                                color: Colors.grey.withOpacity(0.3),
+                                              ),
+                                              errorWidget: (context, url, error) => Container(
+                                                color: Colors.grey.withOpacity(0.4),
+                                              ),
+                                            ),
+                                          ))),
                                   SizedBox(
                                     height: 10,
                                   ),
@@ -520,6 +562,8 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                   FirebaseAuth.instance.currentUser!.uid.toString() == widget.id ? "Editar perfil" : "Solicitar",
                                   false, tap: () {
                                 if (FirebaseAuth.instance.currentUser!.uid.toString() == widget.id) {
+                                  stateIndicator = 4;
+                                  setState(() {});
                                 } else {
                                   createOrdens(context,
                                       name: "Tecnp",
@@ -534,6 +578,16 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                       ),
                       GestureDetector(
                           onTap: () {
+                            if (FirebaseAuth.instance.currentUser!.uid.toString() == widget.id) {
+                              List<userD.User> result = LinkedHashSet<userD.User>.from(matches).toList();
+
+                              List<userD.User> newMatchesResult = LinkedHashSet<userD.User>.from(newmatches).toList();
+// => ["a", "b", "c", "d"]
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => HomeScreen(currentUser!, result, newMatchesResult)),
+                              );
+                            }
                             /* CollectionReference users = FirebaseFirestore.instance
                       .collection('Users')
                       .doc("Mkoc6GZaIWMf6yO2mDAHlZucj9V2" /*FirebaseAuth.instance.currentUser!.uid.toString()*/)
@@ -1104,13 +1158,13 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
         height: 10,
       ),
 
-      Container(
+      /*  Container(
           margin: EdgeInsets.only(left: 20, right: 20),
           child: AppWidget().texfieldFormat(
             controller: priceController,
             title: "Precio",
             enabled: FirebaseAuth.instance.currentUser!.uid == widget.id ? false : true,
-          )),
+          )),*/
       SizedBox(
         height: 10,
       ),
@@ -1706,21 +1760,251 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
 
                               return GestureDetector(
                                   onTap: () {
-                                    Query historyRef = FirebaseDatabase.instance
-                                        .ref()
-                                        .child('ordens')
-                                        .child(userDataProfile!.child("cart").value.toString());
-
-                                    historyRef.once().then((e) async {
-                                      final snapshot = e.snapshot;
-                                      if (snapshot.value != null) {
-                                        snapshot.ref.child("services").push().set({
-                                          "foto": dataList.child("foto").value.toString(),
-                                          "name": dataList.child("name").value,
-                                          "price": dataList.child("price").value
-                                        }).then((value) {});
+                                    watchService(String urlString) async {
+                                      final Uri url = Uri.parse(urlString);
+                                      if (!await launchUrl(url)) {
+                                        throw Exception('Could not launch');
                                       }
-                                    });
+                                    }
+
+                                    if (FirebaseAuth.instance.currentUser!.uid != widget.id) {
+                                      showDialog(
+                                          context: context,
+                                          builder: (BuildContext contextAlert) {
+                                            return AlertDialog(
+                                              backgroundColor: Colors.white,
+                                              insetPadding: EdgeInsets.all(0),
+                                              contentPadding: EdgeInsets.all(0),
+                                              content: Container(
+                                                  decoration: BoxDecoration(
+                                                    borderRadius: BorderRadius.circular(10),
+                                                    color: Colors.white,
+                                                  ),
+                                                  child: Column(
+                                                    mainAxisSize: MainAxisSize.min,
+                                                    children: [
+                                                      SizedBox(
+                                                        height: 20,
+                                                      ),
+                                                      Container(
+                                                          width: double.infinity,
+                                                          child: Text(
+                                                            "Información del servicio",
+                                                            style:
+                                                                TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 17),
+                                                            textAlign: TextAlign.center,
+                                                          )),
+                                                      SizedBox(
+                                                        height: 20,
+                                                      ),
+                                                      ClipRRect(
+                                                        borderRadius: BorderRadius.circular(25),
+                                                        child: Image.network(
+                                                          dataList.child("foto").value.toString(),
+                                                          errorBuilder: (BuildContext? context, Object? exception, StackTrace? stackTrace) {
+                                                            return Container(
+                                                              width: 200,
+                                                              height: 100,
+                                                              color: Colors.grey.withOpacity(0.3),
+                                                            );
+                                                          },
+                                                          width: 220,
+                                                          height: 100,
+                                                          fit: BoxFit.cover,
+                                                        ),
+                                                      ),
+                                                      SizedBox(
+                                                        height: 20,
+                                                      ),
+                                                      Row(
+                                                        children: [
+                                                          Container(
+                                                              margin: EdgeInsets.only(left: 10),
+                                                              child: Column(
+                                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                                children: [
+                                                                  Text(
+                                                                    "Categoria",
+                                                                    style: TextStyle(
+                                                                        color: secondryColor, fontWeight: FontWeight.bold, fontSize: 16),
+                                                                  ),
+                                                                  SizedBox(
+                                                                    height: 2,
+                                                                  ),
+                                                                  Text(
+                                                                    dataList.child("category").value.toString(),
+                                                                    style: TextStyle(
+                                                                        color: Colors.black, fontWeight: FontWeight.bold, fontSize: 13),
+                                                                  ),
+                                                                  SizedBox(
+                                                                    height: 10,
+                                                                  ),
+                                                                  /* RatingBarIndicator(
+                                                                                        rating: 2.5,
+                                                                                        itemCount: 5,
+                                                                                        itemSize: 30.0,
+                                                                                        itemBuilder: (context, _) => Icon(
+                                                                                              Icons.star_border_rounded,
+                                                                                              color: secondryColor,
+                                                                                            )),*/
+                                                                  SizedBox(
+                                                                    height: 10,
+                                                                  ),
+                                                                ],
+                                                              )),
+                                                          Expanded(child: SizedBox()),
+                                                          Column(
+                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                            children: [
+                                                              SizedBox(
+                                                                height: 10,
+                                                              ),
+                                                              Text(
+                                                                "Costo del servicio",
+                                                                style: TextStyle(
+                                                                    color: secondryColor, fontWeight: FontWeight.bold, fontSize: 15),
+                                                              ),
+                                                              Text(
+                                                                dataList.child("price").value == null
+                                                                    ? '\$' + "0"
+                                                                    : '\$' + dataList.child("price").value.toString(),
+                                                                style: TextStyle(
+                                                                    color: Colors.black, fontWeight: FontWeight.bold, fontSize: 16),
+                                                              ),
+                                                              SizedBox(
+                                                                height: 40,
+                                                              ),
+                                                            ],
+                                                          ),
+                                                          SizedBox(
+                                                            width: 20,
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      Container(
+                                                          alignment: Alignment.centerLeft,
+                                                          margin: EdgeInsets.only(left: 20, right: 20),
+                                                          child: Text(
+                                                            dataList.child("name").value.toString(),
+                                                            style:
+                                                                TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 12),
+                                                          )),
+                                                      SizedBox(
+                                                        height: 20,
+                                                      ),
+                                                      Container(
+                                                          margin: EdgeInsets.only(left: 20, right: 20),
+                                                          child: Row(
+                                                            children: [
+                                                              Flexible(
+                                                                  child: AppWidget().buttonFormLine(context, "Cancelar", true, tap: () {
+                                                                Navigator.pop(context);
+                                                              })),
+                                                              SizedBox(
+                                                                width: 10,
+                                                              ),
+                                                              Flexible(
+                                                                  child: AppWidget().buttonFormLine(context, "Solicitar", false, tap: () {
+                                                                Navigator.pop(context);
+                                                                Query historyRef = FirebaseDatabase.instance
+                                                                    .ref()
+                                                                    .child('ordens')
+                                                                    .child(userDataProfile!.child("cart").value.toString());
+
+                                                                createService(DataSnapshot snapshot) {
+                                                                  snapshot.ref.child("services").push().set({
+                                                                    "foto": dataList.child("foto").value.toString(),
+                                                                    "name": dataList.child("name").value,
+                                                                    "price": dataList.child("price").value
+                                                                  }).then((value) {
+                                                                    AppWidget().itemMessage("Agregado", context);
+                                                                  }).catchError((onError) {
+                                                                    AppWidget().itemMessage("Ha ocurrido un error", context);
+                                                                  });
+                                                                }
+
+                                                                historyRef.once().then((e) async {
+                                                                  final snapshot = e.snapshot;
+                                                                  if (snapshot.value != null) {
+                                                                    if (snapshot.child("professional").value.toString() ==
+                                                                        _userDataProfile.key.toString()) {
+                                                                      createService(snapshot);
+                                                                    } else {
+                                                                      AppWidget().itemMessage(
+                                                                          "No se puede seleccionar otro professional", context);
+                                                                    }
+                                                                  } else {
+                                                                    createOrdens(context,
+                                                                        name: dataList.child("name").value.toString(),
+                                                                        inspections: dataList.child("inspections").value.toString(),
+                                                                        profesionalName: dataList.child("fullname").value.toString(),
+                                                                        profesional: _userDataProfile.key.toString(),
+                                                                        price: int.parse(dataList.child("price").value.toString()));
+
+                                                                    Future.delayed(const Duration(milliseconds: 1000), () {
+                                                                      createService(snapshot);
+                                                                    });
+                                                                  }
+                                                                });
+                                                              })),
+                                                            ],
+                                                          )),
+                                                      SizedBox(
+                                                        height: 20,
+                                                      ),
+                                                    ],
+                                                  )),
+                                            );
+                                          });
+                                      /* showModalBottomSheet(
+                                          context: context,
+                                          builder: (context) {
+                                            return Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: <Widget>[
+                                                ListTile(
+                                                  title: new Text('Ver portafolio'),
+                                                  onTap: () {
+                                                    Navigator.pop(context);
+                                                    watchService((dataList!.child("foto").value.toString()));
+                                                  },
+                                                ),
+                                                ListTile(
+                                                  title: new Text('Agregar servicio'),
+                                                  onTap: () {
+                                                    Query historyRef = FirebaseDatabase.instance
+                                                        .ref()
+                                                        .child('ordens')
+                                                        .child(userDataProfile!.child("cart").value.toString());
+
+                                                    historyRef.once().then((e) async {
+                                                      final snapshot = e.snapshot;
+                                                      if (snapshot.value != null) {
+                                                        snapshot.ref.child("services").push().set({
+                                                          "foto": dataList.child("foto").value.toString(),
+                                                          "name": dataList.child("name").value,
+                                                          "price": dataList.child("price").value
+                                                        }).then((value) {
+                                                          AppWidget().itemMessage("Agregado", context);
+                                                        }).catchError((onError) {
+                                                          AppWidget().itemMessage("Ha ocurrido un error", context);
+                                                        });
+                                                      } else {
+                                                       
+                                                      }
+                                                    });
+                                                  },
+                                                ),
+                                                ListTile(
+                                                  title: new Text('Cancelar'),
+                                                  onTap: () {},
+                                                ),
+                                              ],
+                                            );
+                                          });*/
+                                    } else {
+                                      watchService((dataList.child("foto").value.toString()));
+                                    }
                                   },
                                   child: Container(
                                       margin: EdgeInsets.only(left: 10, right: 10),
@@ -1745,13 +2029,15 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                                   fit: BoxFit.cover,
                                                 ),
                                               ),
-                                              Positioned.fill(
-                                                  child: Align(
-                                                      alignment: Alignment.center,
-                                                      child: SvgPicture.asset(
-                                                        "images/icons/addCircleBlue.svg",
-                                                        width: 40,
-                                                      ))),
+                                              FirebaseAuth.instance.currentUser!.uid == widget.id
+                                                  ? SizedBox()
+                                                  : Positioned.fill(
+                                                      child: Align(
+                                                          alignment: Alignment.center,
+                                                          child: SvgPicture.asset(
+                                                            "images/icons/addCircleBlue.svg",
+                                                            width: 40,
+                                                          ))),
                                             ],
                                           ),
                                           Text(
@@ -1763,7 +2049,9 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                             style: TextStyle(color: secondryColor, fontSize: 11),
                                           ),
                                           Text(
-                                            dataList.child("price").value == null ? "0" : dataList.child("price").value.toString(),
+                                            dataList.child("price").value == null
+                                                ? "No disponible"
+                                                : dataList.child("price").value.toString(),
                                             style: TextStyle(color: secondryColor, fontSize: 11),
                                           ),
                                         ],

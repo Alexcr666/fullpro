@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 import 'package:flutter/cupertino.dart';
 
@@ -16,6 +17,7 @@ import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
 
 import 'package:fullpro/styles/styles.dart';
 import 'package:fullpro/widgets/widget.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Notifications extends StatefulWidget {
   // final User currentUser;
@@ -58,6 +60,47 @@ class _NotificationsState extends State<Notifications> {
     // });
 
     // if (mounted) setState(() {});
+  }
+
+  Widget pageOrdensHistory() {
+    return FutureBuilder(
+
+        //   kkk
+
+        future: FirebaseDatabase.instance.ref().child('notifications').once(),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          var response = snapshot.data;
+
+          return response == null
+              ? AppWidget().loading()
+              : response.snapshot.children.toList().length == 0
+                  ? AppWidget().noResult()
+                  : Container(
+                      margin: EdgeInsets.only(left: 20, right: 20, top: 20),
+                      child: Card(
+                          child: ListView.builder(
+                              padding: EdgeInsets.only(left: 10.0),
+                              itemCount: response.snapshot.children.toList().length,
+                              physics: NeverScrollableScrollPhysics(),
+                              shrinkWrap: true,
+                              itemBuilder: (BuildContext context, int i) {
+                                DataSnapshot dataList = response.snapshot.children.toList()[i];
+
+                                return ListTile(
+                                  onTap: () async {
+                                    final Uri url = Uri.parse(dataList.child("url").value.toString());
+                                    if (!await launchUrl(url)) {
+                                      throw Exception('Could not launch');
+                                    }
+                                  },
+                                  title: Text(dataList.child("description").value.toString()),
+                                  subtitle: Text(
+                                    dataList.child("date").value.toString(),
+                                    style: TextStyle(fontSize: 11),
+                                  ),
+                                );
+                              })));
+        });
   }
 
   @override
@@ -143,201 +186,7 @@ class _NotificationsState extends State<Notifications> {
 
                 // ),
 
-                true
-                    ? AppWidget().noResult()
-                    : StreamBuilder<QuerySnapshot>(
-                        stream: matchReference.orderBy('timestamp', descending: true).snapshots(),
-                        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                          if (!snapshot.hasData)
-                            return Center(
-                                child: Text(
-                              "No Notification".toString(),
-                              style: TextStyle(color: secondryColor, fontSize: 16),
-                            ));
-                          else if (snapshot.data!.docs.length == 0) {
-                            return Center(
-                                child: Text(
-                              "No Notification".toString(),
-                              style: TextStyle(color: secondryColor, fontSize: 16),
-                            ));
-                          }
-
-                          return Expanded(
-                            child: ListView(
-                              children: snapshot.data!.docs
-                                  .map((doc) => Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Container(
-                                            decoration: BoxDecoration(
-                                                borderRadius: BorderRadius.circular(20),
-                                                color: !doc.get('isRead') ? Colors.white : Colors.white),
-                                            child: ListTile(
-                                              contentPadding: EdgeInsets.all(5),
-
-                                              leading: CircleAvatar(
-                                                radius: 25,
-
-                                                backgroundColor: secondryColor,
-
-                                                child: ClipRRect(
-                                                  borderRadius: BorderRadius.circular(
-                                                    25,
-                                                  ),
-                                                  child: CachedNetworkImage(
-                                                    imageUrl: doc.get('pictureUrl') ?? "",
-                                                    fit: BoxFit.cover,
-                                                    useOldImageOnUrlChange: true,
-                                                    placeholder: (context, url) => CupertinoActivityIndicator(
-                                                      radius: 20,
-                                                    ),
-                                                    errorWidget: (context, url, error) => Icon(
-                                                      Icons.error,
-                                                      color: Colors.black,
-                                                    ),
-                                                  ),
-                                                ),
-
-                                                // backgroundImage:
-
-                                                //     NetworkImage(
-
-                                                //   widget.notification[index]
-
-                                                //       .sender.imageUrl[0],
-
-                                                // )
-                                              ),
-
-                                              //title: Text(
-
-                                              //    "you are matched with ${doc.data['userName'] ?? "__"}".toString()),
-
-                                              title: Text(
-                                                doc.get('userName').toString(),
-                                                style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold),
-                                              ),
-
-                                              subtitle: Text(
-                                                "${(doc.get('timestamp').toDate())}",
-                                                style: TextStyle(color: Colors.grey),
-                                              ),
-
-                                              //  Text(
-
-                                              //     "Now you can start chat with ${notification[index].sender.name}"),
-
-                                              // "if you want to match your profile with ${notifications[index].sender.name} just like ${notifications[index].sender.name}'s profile"),
-
-                                              trailing: Padding(
-                                                padding: const EdgeInsets.only(right: 10),
-                                                child: Column(
-                                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                                  children: <Widget>[
-                                                    !doc.get('isRead')
-                                                        ? Container(
-                                                            width: 40.0,
-                                                            height: 20.0,
-                                                            decoration: BoxDecoration(
-                                                              color: primaryColor,
-                                                              borderRadius: BorderRadius.circular(30.0),
-                                                            ),
-                                                            alignment: Alignment.center,
-                                                            child: Text(
-                                                              'NEW',
-                                                              style: TextStyle(
-                                                                color: Colors.white,
-                                                                fontSize: 12.0,
-                                                                fontWeight: FontWeight.bold,
-                                                              ),
-                                                            ),
-                                                          )
-                                                        : Text(""),
-                                                  ],
-                                                ),
-                                              ),
-
-                                              onTap: () async {
-                                                /*  print(doc.get("Matches"));
-
-
-                                            showDialog(
-
-                                                context: context,
-
-                                                builder: (context) {
-
-                                                  return Center(
-
-                                                      child: CircularProgressIndicator(
-
-                                                    strokeWidth: 2,
-
-                                                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-
-                                                  ));
-
-                                                });
-
-
-                                            DocumentSnapshot userdoc = await db.collection("Users").doc(doc.get("Matches")).get();
-
-
-                                            if (userdoc.exists) {
-
-                                              Navigator.pop(context);
-
-
-                                              User tempuser = User.fromDocument(userdoc);
-
-
-                                              tempuser.distanceBW = calculateDistance(
-
-                                                      widget.currentUser.coordinates!['latitude'],
-
-                                                      widget.currentUser.coordinates!['longitude'],
-
-                                                      tempuser.coordinates!['latitude'],
-
-                                                      tempuser.coordinates!['longitude'])
-
-                                                  .round();
-
-
-                                              await showDialog(
-
-                                                  barrierDismissible: false,
-
-                                                  context: context,
-
-                                                  builder: (context) {
-
-                                                    if (!doc.get("isRead")) {
-
-                                                      FirebaseFirestore.instance
-
-                                                          .collection("/Users/Mkoc6GZaIWMf6yO2mDAHlZucj9V2/Matches")
-
-                                                          .doc('${doc.get("Matches")}')
-
-                                                          .update({'isRead': true});
-
-                                                    }
-
-
-                                                    return Info(tempuser, "", null);
-
-                                                  });*/
-                                              },
-                                            )
-
-                                            //  : Container()
-
-                                            ),
-                                      ))
-                                  .toList(),
-                            ),
-                          );
-                        }),
+                pageOrdensHistory(),
 
                 Expanded(child: SizedBox()),
 

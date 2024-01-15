@@ -166,8 +166,12 @@ class _ProfileOptionsPageState extends State<ProfileOptionsPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "Hola " + UserPreferences.getUsername().toString(),
+                        "Hola ",
                         style: TextStyle(color: secondryColor, fontSize: 25),
+                      ),
+                      Text(
+                        UserPreferences.getUsername().toString(),
+                        style: TextStyle(color: secondryColor, fontSize: 25, fontWeight: FontWeight.bold),
                       ),
                     ],
                   )

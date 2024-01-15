@@ -536,18 +536,34 @@ class _PortafolioPageState extends State<NewPortafolioPage> {
                         }
 
                         updateData(String fileUrl) {
-                          widget.data!.ref.update({
-                            'name': _namePortafolioController.text,
-                            'type': checkInspeccion ? 1 : 2,
-                            'category': _searchHome.text.toString(),
-                            'foto': fileUrl.toString()
-                          }).then((value) {
-                            Navigator.pop(context);
+                          if (fileUrl != "") {
+                            widget.data!.ref.update({
+                              'name': _namePortafolioController.text,
+                              'type': checkInspeccion ? 1 : 2,
+                              'price': int.parse(_priceController.text.toString()),
+                              'category': _searchHome.text.toString(),
+                              'foto': fileUrl.toString()
+                            }).then((value) {
+                              Navigator.pop(context);
 
-                            AppWidget().itemMessage("Actualizado", context);
-                          }).catchError((onError) {
-                            AppWidget().itemMessage("Error al guardar", context);
-                          });
+                              AppWidget().itemMessage("Actualizado", context);
+                            }).catchError((onError) {
+                              AppWidget().itemMessage("Error al guardar", context);
+                            });
+                          } else {
+                            widget.data!.ref.update({
+                              'name': _namePortafolioController.text,
+                              'type': checkInspeccion ? 1 : 2,
+                              'price': int.parse(_priceController.text.toString()),
+                              'category': _searchHome.text.toString(),
+                            }).then((value) {
+                              Navigator.pop(context);
+
+                              AppWidget().itemMessage("Actualizado", context);
+                            }).catchError((onError) {
+                              AppWidget().itemMessage("Error al guardar", context);
+                            });
+                          }
                         }
 
                         uploadFile() async {
@@ -579,7 +595,11 @@ class _PortafolioPageState extends State<NewPortafolioPage> {
 
                             licenceCheck = false;
                           } else {
-                            licenceCheck = true;
+                            if (widget.data != null) {
+                              updateData("");
+                            } else {
+                              licenceCheck = true;
+                            }
                           }
 
                           setState(() {});
@@ -614,7 +634,7 @@ class _PortafolioPageState extends State<NewPortafolioPage> {
 
     if (widget.data != null) {
       _namePortafolioController.text = widget.data!.child("name").value.toString();
-
+      _priceController.text = widget.data!.child("price").value == null ? "" : widget.data!.child("price").value.toString();
       _searchHome.text = widget.data!.child("category").value.toString();
 
       if (widget.data!.child("type").value.toString() == "1") {

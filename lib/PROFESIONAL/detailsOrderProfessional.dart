@@ -1009,13 +1009,19 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
   getTotalPay() {
     int total = 0;
 
-    try {
-      total = int.parse(widget.dataList.child("price").value.toString());
+    for (var i = 0; i < widget.dataList!.child("services").children.toList().length; i++) {
+      var data = widget.dataList!.child("services").children.toList()[i];
+      total += int.parse(data.child("price").value.toString());
+    }
 
-      total += (int.parse(widget.dataList.child("price").value.toString()) / 20).round();
+    // total += (int.parse(dataListObjectGeneral!.child("price").value.toString()) / 10).round();
+    /* if (dataListObjectGeneral != null) {
+      total = int.parse(dataListObjectGeneral!.child("price").value.toString());
 
-      total += (int.parse(widget.dataList.child("price").value.toString()) / 10).round();
-    } catch (e) {}
+      total += (int.parse(dataListObjectGeneral!.child("price").value.toString()) / 20).round();
+
+      total += (int.parse(dataListObjectGeneral!.child("price").value.toString()) / 10).round();
+    }*/
 
     return total;
   }
@@ -1052,7 +1058,62 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
 
         fadeBottom(.6, pricingList()),
         fadeBottom(.6, probWidget()),*/
+        SizedBox(
+          height: 15,
+        ),
 
+        Container(
+            margin: EdgeInsets.only(left: 20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Servicios".toString(),
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                    color: secondryColor,
+                  ),
+                ),
+              ],
+            )),
+        SizedBox(
+          height: 15,
+        ),
+        ListView.builder(
+            padding: EdgeInsets.only(left: 10.0),
+            itemCount: widget.dataList!.child("services").children.length,
+            physics: NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            itemBuilder: (BuildContext context, int index) {
+              var data = widget.dataList!.child("services").children.toList()[index];
+              return Container(
+                  margin: EdgeInsets.only(top: 10),
+                  child: ListTile(
+                    leading: AppWidget().circleProfile(data.child("foto").value.toString(), size: 50),
+                    title: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(data.child("name").value.toString()),
+                        SizedBox(
+                          height: 2,
+                        ),
+                        data.child("price").value == null
+                            ? Text("0")
+                            : Text(
+                                '\$' + data.child("price").value.toString(),
+                                style: TextStyle(fontSize: 14),
+                              )
+                      ],
+                    ),
+                  ));
+            }),
+        SizedBox(
+          height: 20,
+        ),
+        SizedBox(
+          height: 10,
+        ),
         Container(
             margin: EdgeInsets.only(left: 10),
             child: Text(
@@ -1068,11 +1129,9 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
           height: 10,
         ),
 
-        itemMoney("Costo del servicio", '\$' + widget.dataList.child("price").value.toString()),
+        itemMoney("Costo del servicio", '\$' + getTotalPay().toString()),
 
-        itemMoney("Tarifa del servicio", '\$' + (int.parse(widget.dataList.child("price").value.toString()) / 20).round().toString()),
-
-        itemMoney("Costo del domicilio", '\$' + (int.parse(widget.dataList.child("price").value.toString()) / 10).round().toString()),
+        itemMoney("Tarifa del servicio", '\$' + (int.parse(getTotalPay().toString()) / 10).round().toString()),
 
         SizedBox(
           height: 30,
