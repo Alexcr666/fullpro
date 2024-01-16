@@ -2,13 +2,13 @@ import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:flutter/cupertino.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:flutter_geofire/flutter_geofire.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:http/http.dart';
+
 import 'package:provider/provider.dart';
 import 'package:fullpro/config.dart';
 import 'package:fullpro/utils/globalConstants.dart';
