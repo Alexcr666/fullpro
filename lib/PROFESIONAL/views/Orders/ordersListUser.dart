@@ -180,7 +180,9 @@ Widget pageOrdensWidget(int state) {
                                                 width: 5,
                                               ),
                                               Text(
-                                                dataList.child("date").value.toString(),
+                                                dataList.child("date").value == null
+                                                    ? "No disponible"
+                                                    : dataList.child("date").value.toString(),
                                                 style: TextStyle(
                                                   color: secondryColor,
 

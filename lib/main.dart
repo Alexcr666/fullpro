@@ -1,10 +1,11 @@
 // ignore_for_file: prefer_const_constructors
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:fullpro/PROFESIONAL/controllers/mainController.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:fullpro/controller/mainController.dart';
 import 'package:fullpro/pages/Authentication/Database_Entry.dart';
-import 'package:fullpro/pages/Authentication/otp.dart';
+
 import 'package:fullpro/pages/Authentication/register.dart';
 import 'package:fullpro/pages/Authentication/registerationpage.dart';
 import 'package:fullpro/pages/Authentication/loginpage.dart';
@@ -22,6 +23,10 @@ import 'package:flutter_locales/flutter_locales.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  Stripe.publishableKey = "pk_test_51MVzfVJD6GFsjF8jq2jnRULZtIPFzMC4dlOpAhyEM4iEdV8OFOU7OozX2TUFqkWueBVnAyUWhFVmYBjn2it8txbC00XmD1ftqH";
+  Stripe.merchantIdentifier = 'merchant.flutter.stripe.test';
+  Stripe.urlScheme = 'flutterstripe';
+  await Stripe.instance.applySettings();
   await Locales.init(
       ['en', 'af', 'ar', 'de', 'es', 'fr', 'hi', 'ur', 'id', 'ja', 'nl', 'pt', 'tr', 'it', 'ko', 'ne', 'ru', 'vi', 'he', 'th']);
 
@@ -76,7 +81,6 @@ class MyApp extends StatelessWidget {
             kTrending.id: (context) => kTrending(),
             Onboarding.id: (context) => Onboarding(),
             Register.id: (context) => Register(),
-            OtpPage.id: (context) => OtpPage(),
             DatabaeEntry.id: (context) => DatabaeEntry(),
             RegistrationPage.id: (context) => RegistrationPage(),
             LoginPage.id: (context) => LoginPage(),

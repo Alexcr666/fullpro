@@ -1,107 +1,62 @@
 import 'package:flutter/cupertino.dart';
 
-
 import 'package:flutter/material.dart';
-
 
 import 'package:flutter_locales/flutter_locales.dart';
 
-
 import 'package:flutter_svg/flutter_svg.dart';
-
 
 import 'package:fullpro/PROFESIONAL/views/profile/menuProfile.dart';
 
-
 import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
 
-
 appbarProfessional(BuildContext context, bool activeColor) {
-
   String dayTime = "";
-
 
   TimeOfDay day = TimeOfDay.now();
 
-
   switch (day.period) {
-
     case DayPeriod.am:
-
       dayTime = Locales.string(context, 'lbl_morning');
-
 
       break;
 
-
     case DayPeriod.pm:
-
       dayTime = Locales.string(context, 'lbl_evening');
-
   }
 
-
   return AppBar(
-
     centerTitle: false,
-
     title: Column(
-
       crossAxisAlignment: CrossAxisAlignment.start,
-
 
       //  crossAxisAlignment: CrossAxisAlignment.start,
 
-
       // mainAxisAlignment: MainAxisAlignment.center,
 
-
       children: [
-
         Text(
-
           '$dayTime',
-
           style: TextStyle(color: activeColor ? Colors.white : secondryColor, fontSize: 12, fontWeight: FontWeight.bold),
-
         ),
-
         Text(
-
-          "Hola " + 'Alex',
-
+          "Hola " /*+ 'Alex'*/,
           style: TextStyle(
-
             color: activeColor ? Colors.white : Colors.black,
-
             fontSize: 15,
-
           ),
-
         ),
-
       ],
-
     ),
-
     actions: [
-
       Image.asset(
-
         "images/logo.png",
-
         color: activeColor ? Colors.white : secondryColor,
-
         width: 70,
-
       ),
-
       SizedBox(
-
         width: 20,
-
       ),
-
 
       /*   Padding(
 
@@ -140,68 +95,35 @@ appbarProfessional(BuildContext context, bool activeColor) {
             )),
 
       ),*/
-
     ],
-
     backgroundColor: activeColor ? secondryColor : Colors.white,
-
     elevation: 0.0,
-
     toolbarHeight: 70,
-
     leadingWidth: 80,
-
     leading: Column(
-
       crossAxisAlignment: CrossAxisAlignment.center,
-
       mainAxisAlignment: MainAxisAlignment.center,
-
       children: [
-
         const SizedBox(width: 20),
-
         Row(
-
           crossAxisAlignment: CrossAxisAlignment.start,
-
           mainAxisAlignment: MainAxisAlignment.center,
-
           children: [
-
             Column(
-
               children: [
-
                 GestureDetector(
-
                     onTap: () {
-
                       Navigator.push(context, MaterialPageRoute(builder: (context) => ProfileOptionsProfessionalPage()));
-
                     },
-
                     child: SvgPicture.asset(
-
                       "images/icons/drawer.svg",
-
                       width: 35,
-
                     ))
-
               ],
-
             ),
-
           ],
-
         ),
-
       ],
-
     ),
-
   );
-
 }
-

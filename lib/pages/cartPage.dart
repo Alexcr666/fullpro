@@ -12,6 +12,7 @@ import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
 import 'package:fullpro/pages/homepage.dart';
 import 'package:fullpro/pages/profesional/profileProfesional.dart';
 import 'package:fullpro/pages/profile/address/addressUser.dart';
+import 'package:fullpro/stripe/stripe.dart';
 import 'package:fullpro/widgets/widget.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
@@ -431,7 +432,12 @@ class _CartPageState extends State<CartPage> {
   Widget pageMethodPay() {
     return FutureBuilder(
         initialData: 1,
-        future: FirebaseDatabase.instance.ref().child('creditcard').once(),
+        future: FirebaseDatabase.instance
+            .ref()
+            .child('creditcard')
+            .orderByChild("user")
+            .equalTo(FirebaseAuth.instance.currentUser!.uid.toString())
+            .once(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           try {
             if (snapshot.hasData) {
@@ -1121,13 +1127,15 @@ class _CartPageState extends State<CartPage> {
                 Container(
                     width: 200,
                     child: AppWidget().buttonFormLine(context, "Solicitar", false, urlIcon: "images/icons/userDone.svg", tap: () {
-                      dataListObjectGeneral!.ref.update({'state': 1}).then((value) {
-                        // setState(() {});
-                        userDataProfile!.ref.child("cart").remove();
+                      AppStripe().makePayment(context, execute: () {
+                        dataListObjectGeneral!.ref.update({'state': 1}).then((value) {
+                          // setState(() {});
+                          userDataProfile!.ref.child("cart").remove();
 
-                        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_) => kHomePage()), (route) => false);
+                          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_) => kHomePage()), (route) => false);
 
-                        AppWidget().itemMessage("Orden creada", context);
+                          AppWidget().itemMessage("Orden creada", context);
+                        });
                       });
                     })),
                 SizedBox(

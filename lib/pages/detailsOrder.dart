@@ -383,8 +383,6 @@ class _DetailsOrderPageState extends State<DetailsOrderPage> {
                   setState(() {});
                 });
 
-                //return Text(dataListObject!.child("name").value.toString());
-
                 return ListView.builder(
                     padding: EdgeInsets.only(left: 10.0),
                     itemCount: 1,
@@ -414,31 +412,6 @@ class _DetailsOrderPageState extends State<DetailsOrderPage> {
     return Scaffold(
         key: scaffoldKey,
         backgroundColor: Colors.white,
-
-        /*appBar: AppBar(
-        centerTitle: true,
-        title: Text(
-          Locales.string(context, 'lbl_book_service'),
-          style: const TextStyle(color: Colors.black),
-        ),
-        backgroundColor: Static.dashboardCard,
-        elevation: 0.0,
-        toolbarHeight: 70,
-        leadingWidth: 100,
-        iconTheme: const IconThemeData(
-          color: Colors.black,
-        ),
-        leading: IconButton(
-          splashColor: Colors.transparent,
-          onPressed: () {
-            setState(() {
-              Navigator.pop(context);
-            });
-          },
-          icon: SvgPicture.asset('images/svg_icons/arrowLeft.svg'),
-        ),
-      ),*/
-
         body: ListView(
           children: [
             SizedBox(
@@ -667,34 +640,6 @@ class _DetailsOrderPageState extends State<DetailsOrderPage> {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        /* if (cartItemsList.isNotEmpty)
-          fadeLeft(
-            0.1,
-            dateRangeSlider(),
-          )
-        else
-          const SizedBox(),*/
-
-        //  fadeRight(0.3, timeRangeSlider()),
-
-        /*fadeTop(0.5, removeAllButton()),
-        CartItems(),
-        SizedBox(
-          height: 10,
-        ),
-        Container(
-          margin: EdgeInsets.only(left: 10, right: 10),
-          width: double.infinity,
-          height: 1,
-          color: secondryColor,
-        ),
-        SizedBox(
-          height: 10,
-        ),
-
-        fadeBottom(.6, pricingList()),
-        fadeBottom(.6, probWidget()),*/
-
         Row(
           children: [
             SizedBox(
@@ -1067,30 +1012,7 @@ class _DetailsOrderPageState extends State<DetailsOrderPage> {
                         width: MediaQuery.of(context).size.width * .5,
                         child: Row(
                           children: [
-                            /* changed kServices.discount! != '0'
-                                ? Text(
-                                    currencyPos == 'left'
-                                        ? '$currencySymbol${int.parse(kServices.price!)}'
-                                        : '${int.parse(kServices.price!)}$currencySymbol',
-                                    style: const TextStyle(
-                                      color: Colors.black,
-                                      decoration: TextDecoration.lineThrough,
-                                      decorationColor: Colors.black,
-                                      decorationThickness: 2,
-                                    ),
-                                  )
-                                : const SizedBox(),*/
-
                             kServices.discount! != '0' ? const SizedBox(width: 15) : const SizedBox(),
-
-                            /*  changed  Text(
-                              currencyPos == 'left'
-                                  ? '$currencySymbol${int.parse(kServices.price!) - int.parse(kServices.discount!)}'
-                                  : '${int.parse(kServices.price!) - int.parse(kServices.discount!)}$currencySymbol',
-                              style: const TextStyle(
-                                color: Colors.black,
-                              ),
-                            ),*/
                           ],
                         ),
                       ),
@@ -1199,41 +1121,6 @@ class _DetailsOrderPageState extends State<DetailsOrderPage> {
                   ),
                 ),
                 const SizedBox(width: 5),
-
-                /*  GestureDetector(
-
-                    onTap: () {
-
-                      Loader.page(context, const Addresses());
-
-                    },
-
-                    child: Text(
-
-                      'Cambiar',
-
-                      style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 16),
-
-                    )),*/
-
-                /*  SizedBox(
-                        width: 45,
-                        child: MaterialButton(
-                          shape: const CircleBorder(),
-                          elevation: 0,
-                          highlightElevation: 0,
-                          color: Colors.white,
-                          padding: const EdgeInsets.all(13),
-                          onPressed: () {
-                            Loader.page(context, const Addresses());
-                          },
-                          child: const Icon(
-                            FeatherIcons.edit,
-                            color: Colors.black,
-                            size: 20,
-                          ),
-                        ),
-                      ),*/
               ],
             ),
           ),
@@ -1257,12 +1144,6 @@ class _DetailsOrderPageState extends State<DetailsOrderPage> {
             ? Padding(
                 padding: const EdgeInsets.all(5),
                 child: Container(
-                  /* decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: Static.dashboardBG,
-                    border: Border.all(color: Colors.black12),
-                  ),*/
-
                   padding: const EdgeInsets.all(20),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

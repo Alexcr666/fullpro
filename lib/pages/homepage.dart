@@ -10,6 +10,7 @@ import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:fullpro/PROFESIONAL/views/stripe.dart';
 import 'package:fullpro/TESTING/testing.dart';
 import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
 import 'package:fullpro/pages/profesional/profileProfesional.dart';
@@ -829,8 +830,9 @@ class _kHomePageState extends State<kHomePage> {
               //  _initMarkers();
               //    kkk
 
-              //  Navigator.push(context, MaterialPageRoute(builder: (context) => FirstPage()));
-              servicesSearch(1);
+              Navigator.push(context, MaterialPageRoute(builder: (context) => StripeTest()));
+              // servicesSearch(1);
+              //StripeTest
             },
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

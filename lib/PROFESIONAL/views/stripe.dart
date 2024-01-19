@@ -1,9 +1,9 @@
-/*import 'dart:convert';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:fullpro/PROFESIONAL/config.dart';
 import 'package:http/http.dart' as http;
-//import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 
 class StripeTest extends StatefulWidget {
   const StripeTest({Key? key}) : super(key: key);
@@ -117,4 +117,3 @@ class _StripeTestState extends State<StripeTest> {
     return calculatedAmout.toString();
   }
 }
-*/

@@ -403,12 +403,15 @@ class _MyOrdersState extends State<MyOrdersProfile> with TickerProviderStateMixi
 
                       :*/
 
-                          positionFilter.toString() != dataList.child("state").value.toString()
+                          /*   positionFilter.toString() != dataList.child("state").value.toString()
                               ? response.snapshot.children.toList().length != i
                                   ? result != true
                                       ? AppWidget().noResult()
                                       : SizedBox()
                                   : SizedBox()
+                              : */
+                          positionFilter.toString() != dataList.child("state").value.toString()
+                              ? SizedBox()
                               : Padding(
                                   padding: const EdgeInsets.all(5),
                                   child: GestureDetector(

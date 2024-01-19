@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.ustaadapp.ustaad">
+    package="com.app.fullpro">
 
     
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -23,7 +23,8 @@
             android:name=".MainActivity"
             android:exported="true"
             android:launchMode="singleTop"
-            android:theme="@style/LaunchTheme"
+           
+            android:theme="@style/Theme.AppCompat.Light"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
             android:hardwareAccelerated="true"
             android:windowSoftInputMode="adjustResize">

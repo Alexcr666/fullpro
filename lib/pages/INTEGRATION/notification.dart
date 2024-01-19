@@ -1,17 +1,9 @@
 import 'dart:math';
 
-import 'package:cached_network_image/cached_network_image.dart';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_database/firebase_database.dart';
 
-import 'package:flutter/cupertino.dart';
-
 import 'package:flutter/material.dart';
-
-import 'package:fullpro/pages/INTEGRATION/information.dart';
-
-import 'package:fullpro/pages/INTEGRATION/models/user_model.dart';
 
 import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
 

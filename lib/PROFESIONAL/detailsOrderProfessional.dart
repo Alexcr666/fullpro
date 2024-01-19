@@ -1013,6 +1013,7 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
       var data = widget.dataList!.child("services").children.toList()[i];
       total += int.parse(data.child("price").value.toString());
     }
+    total += (total / 10).round();
 
     // total += (int.parse(dataListObjectGeneral!.child("price").value.toString()) / 10).round();
     /* if (dataListObjectGeneral != null) {

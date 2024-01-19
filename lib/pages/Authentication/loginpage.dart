@@ -179,35 +179,6 @@ class _LoginPageState extends State<LoginPage> {
                     margin: EdgeInsets.only(left: 19, right: 19),
                     child: AppWidget().texfieldFormat(controller: passwordController, title: "Password", password: true)),
 
-                /*  Padding(
-                  padding: EdgeInsets.only(
-                    right: 20,
-                    left: 20,
-                  ),
-                  child: TextField(
-                    controller: passwordController,
-                    obscureText: true,
-                    decoration: InputDecoration(
-                      contentPadding: EdgeInsets.only(top: 17, bottom: 17, left: 15),
-                      //     fillColor: Colors.white,
-                      enabledBorder: OutlineInputBorder(
-                          // width: 0.0 produces a thin "hairline" border
-                          borderSide: BorderSide(color: secondryColor, width: 1.0),
-                          borderRadius: BorderRadius.circular(11)),
-                      border: OutlineInputBorder(
-                          borderSide: BorderSide(color: secondryColor, width: 1.0), borderRadius: BorderRadius.circular(12)),
-                      labelText: Locales.string(context, 'lbl_password'),
-                      labelStyle: TextStyle(
-                        color: Colors.black,
-                        fontSize: 12.0,
-                      ),
-                    ),
-                    style: TextStyle(
-                      fontSize: 14,
-                    ),
-                  ),
-                ),*/
-                //
                 SizedBox(
                   height: 20,
                 ),
@@ -219,7 +190,6 @@ class _LoginPageState extends State<LoginPage> {
                   child: TextButton(
                     onPressed: () async {
                       Navigator.push(context, MaterialPageRoute(builder: (context) => ResetPasswordScreen()));
-                      // Navigator.pushNamedAndRemoveUntil(context, RegistrationPage.id, (route) => false);
                     },
                     child: Text(
                       "Forgot your password",

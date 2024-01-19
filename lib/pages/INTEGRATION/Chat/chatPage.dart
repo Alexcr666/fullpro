@@ -21,8 +21,6 @@ import 'package:fullpro/pages/INTEGRATION/information.dart';
 
 import 'package:fullpro/pages/INTEGRATION/models/user_model.dart';
 
-import 'package:fullpro/pages/INTEGRATION/reportUser.dart';
-
 import 'package:fullpro/styles/styles.dart';
 import 'package:fullpro/widgets/widget.dart';
 
@@ -35,8 +33,6 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:fullpro/pages/INTEGRATION/Chat/largeImage.dart';
 
 import 'package:fullpro/pages/INTEGRATION/models/user_model.dart';
-
-import 'package:fullpro/views/INTEGRATION/reportUser.dart';
 
 import 'package:fullpro/views/INTEGRATION/snackbar.dart';
 
