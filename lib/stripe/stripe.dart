@@ -7,14 +7,16 @@ import 'package:flutter_stripe/flutter_stripe.dart';
 
 class AppStripe {
   Map<String, dynamic>? paymentIntent;
-  Future<void> makePayment(BuildContext context, {Function? execute}) async {
+  Future<void> makePayment(int value, BuildContext context, {Function? execute}) async {
     try {
-      paymentIntent = await createPaymentIntent('10', 'USD');
+      paymentIntent = await createPaymentIntent(value.toString(), 'COP');
       //Payment Sheet
       await Stripe.instance
           .initPaymentSheet(
               paymentSheetParameters: SetupPaymentSheetParameters(
                   paymentIntentClientSecret: paymentIntent!['client_secret'],
+                  billingDetails: BillingDetails(email: "alex@gmail.com"),
+
                   // applePay: const PaymentSheetApplePay(merchantCountryCode: '+92',),
                   // googlePay: const PaymentSheetGooglePay(testEnv: true, currencyCode: "US", merchantCountryCode: "+92"),
                   style: ThemeMode.light,

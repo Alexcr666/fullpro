@@ -1127,14 +1127,14 @@ class _CartPageState extends State<CartPage> {
                 Container(
                     width: 200,
                     child: AppWidget().buttonFormLine(context, "Solicitar", false, urlIcon: "images/icons/userDone.svg", tap: () {
-                      AppStripe().makePayment(context, execute: () {
+                      AppStripe().makePayment(getTotalPay(), context, execute: () {
                         dataListObjectGeneral!.ref.update({'state': 1}).then((value) {
                           // setState(() {});
-                          userDataProfile!.ref.child("cart").remove();
+                          userDataProfile!.ref.child("cart").remove().then((value) {
+                            Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_) => kHomePage()), (route) => false);
 
-                          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_) => kHomePage()), (route) => false);
-
-                          AppWidget().itemMessage("Orden creada", context);
+                            AppWidget().itemMessage("Orden creada", context);
+                          });
                         });
                       });
                     })),

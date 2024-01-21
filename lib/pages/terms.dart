@@ -6,6 +6,7 @@ import 'package:fullpro/controller/loader.dart';
 import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
 import 'package:fullpro/pages/homepage.dart';
 import 'package:fullpro/widgets/widget.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 import '../styles/statics.dart' as Static;
 
 class TermsPage extends StatefulWidget {
@@ -15,6 +16,8 @@ class TermsPage extends StatefulWidget {
   @override
   State<TermsPage> createState() => _TermsPageState();
 }
+
+WebViewController controller = WebViewController();
 
 class _TermsPageState extends State<TermsPage> {
   @override
@@ -67,13 +70,16 @@ class _TermsPageState extends State<TermsPage> {
                 height: 50,
               ),
 
-              Text(
+              Container(width: double.infinity, height: 200, child: WebViewWidget(controller: controller)),
+
+              /* Text(
                 '$appName ${Locales.string(context, 'lbl_terms_para_one')}',
                 style: const TextStyle(
                   fontSize: 14,
                 ),
                 textAlign: TextAlign.center,
-              ),
+              ),*/
+
               const SizedBox(height: 30),
               //
               //
@@ -90,5 +96,31 @@ class _TermsPageState extends State<TermsPage> {
         ),
       ),
     );
+  }
+
+  @override
+  initState() {
+    super.initState();
+
+    controller = WebViewController()
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..setBackgroundColor(Color(0x00000000))
+      ..enableZoom(false)
+      ..setNavigationDelegate(
+        NavigationDelegate(
+          onProgress: (int progress) {},
+          onPageStarted: (String url) {
+            print("step1: " + url.toString());
+          },
+          onPageFinished: (String url) {},
+          onWebResourceError: (WebResourceError error) {},
+          onNavigationRequest: (NavigationRequest request) {
+            return NavigationDecision.navigate;
+          },
+        ),
+      )
+      ..loadRequest(Uri.parse('https://fullprorestoration.luislagunaworks.com/login')).then((value) {
+        setState(() {});
+      });
   }
 }
