@@ -11,6 +11,14 @@ class AppSharedPreference {
     prefs.setString('user', user);
   }
 
+  Future setProfessional(
+    BuildContext context,
+  ) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    prefs.setBool('professional', true);
+  }
+
   Future getUser(
     BuildContext context,
   ) async {

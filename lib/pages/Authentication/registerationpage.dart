@@ -340,7 +340,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                                   Loader.page(
                                       context,
                                       TermsPage(
-                                        state: true,
+                                        state: 1,
                                       ));
                                 },
                             ),

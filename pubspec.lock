@@ -281,6 +281,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.7.8"
+  dio:
+    dependency: transitive
+    description:
+      name: dio
+      sha256: "7d328c4d898a61efc3cd93655a0955858e29a0aa647f0f9e02d59b3bb275e2e8"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.0.6"
   dotted_border:
     dependency: "direct main"
     description:
@@ -1245,6 +1253,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.7.3"
+  power_file_view:
+    dependency: "direct main"
+    description:
+      name: power_file_view
+      sha256: b566c653557b1a711ff5365278038505241107671cc76acab6423bf25ef826b3
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.1"
   provider:
     dependency: "direct main"
     description:

@@ -51,9 +51,11 @@ import 'dart:async';
 import 'package:string_similarity/string_similarity.dart';
 
 class AddressesUser extends StatefulWidget {
-  AddressesUser({
+  AddressesUser(
+    this.user, {
     Key? key,
   }) : super(key: key);
+  String? user;
 
   @override
   _AddressesState createState() => _AddressesState();
@@ -93,13 +95,19 @@ class _AddressesState extends State<AddressesUser> {
 
     currentFirebaseUser = FirebaseAuth.instance.currentUser;
 
-    DatabaseReference curAddressRef =
-        FirebaseDatabase.instance.ref().child('users/${currentFirebaseUser?.uid}').child('currentAddress').child('placename');
+    DatabaseReference curAddressRef = FirebaseDatabase.instance
+        .ref()
+        .child(widget.user.toString() + '/${currentFirebaseUser?.uid}')
+        .child('currentAddress')
+        .child('placename');
 
     curAddressRef.set(userLocation);
 
-    DatabaseReference curAddCoordinatesRef =
-        FirebaseDatabase.instance.ref().child('users/${currentFirebaseUser?.uid}').child('currentAddress').child('location');
+    DatabaseReference curAddCoordinatesRef = FirebaseDatabase.instance
+        .ref()
+        .child(widget.user.toString() + '/${currentFirebaseUser?.uid}')
+        .child('currentAddress')
+        .child('location');
 
     Map CoordinateRef = {
       'latitude': position.latitude,
@@ -108,8 +116,11 @@ class _AddressesState extends State<AddressesUser> {
 
     curAddCoordinatesRef.set(CoordinateRef);
 
-    DatabaseReference manualAddressRef =
-        FirebaseDatabase.instance.ref().child('users/${currentFirebaseUser?.uid}').child('manualAddress').child('placename');
+    DatabaseReference manualAddressRef = FirebaseDatabase.instance
+        .ref()
+        .child(widget.user.toString() + '/${currentFirebaseUser?.uid}')
+        .child('manualAddress')
+        .child('placename');
 
     manualAddressRef.once().then((e) async {
       final DataSnapshot = e.snapshot;
@@ -145,7 +156,8 @@ class _AddressesState extends State<AddressesUser> {
   void updateAddressinUse() {
     currentFirebaseUser = FirebaseAuth.instance.currentUser;
 
-    DatabaseReference curAddressRef = FirebaseDatabase.instance.ref().child('users/${currentFirebaseUser?.uid}').child('AddressinUse');
+    DatabaseReference curAddressRef =
+        FirebaseDatabase.instance.ref().child(widget.user.toString() + '/${currentFirebaseUser?.uid}').child('AddressinUse');
 
     curAddressRef.once().then((e) async {
       final datasnapshot = e.snapshot;
@@ -323,7 +335,7 @@ class _AddressesState extends State<AddressesUser> {
 
     String? userid = currentFirebaseUser?.uid;
 
-    final UserRef = FirebaseDatabase.instance.ref().child("users").child(userid!);
+    final UserRef = FirebaseDatabase.instance.ref().child(widget.user.toString()).child(userid!);
 
     UserRef.once().then((e) async {
       if (e.snapshot != null) {
@@ -420,39 +432,41 @@ class _AddressesState extends State<AddressesUser> {
 
             //return Text(dataListObject!.child("name").value.toString());
 
-            return ListView.builder(
-                padding: EdgeInsets.only(left: 10.0),
-                itemCount: response.snapshot.children.toList().length,
-                physics: NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                itemBuilder: (BuildContext context, int i) {
-                  DataSnapshot dataList = response.snapshot.children.toList()[i];
+            return response.snapshot.children.toList().length == 0
+                ? AppWidget().noResult()
+                : ListView.builder(
+                    padding: EdgeInsets.only(left: 10.0),
+                    itemCount: response.snapshot.children.toList().length,
+                    physics: NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    itemBuilder: (BuildContext context, int i) {
+                      DataSnapshot dataList = response.snapshot.children.toList()[i];
 
-                  Widget itemAddress() {
-                    return Container(
-                        margin: EdgeInsets.only(top: 20),
-                        child: Flexible(
-                            child: Row(
-                          children: [
-                            SvgPicture.asset(
-                              "images/icons/iconLocation.svg",
-                              width: 40,
-                              height: 40,
-                            ),
-                            SizedBox(
-                              width: 10,
-                            ),
-                            GestureDetector(
-                                onTap: () {
-                                  userDataProfile.ref.update({
-                                    "latitud": double.parse(dataList.child("latitude").value.toString()),
-                                    "longitude": double.parse(dataList.child("longitude").value.toString()),
-                                    "location": dataList.child("name").value.toString()
-                                  }).then((value) {
-                                    AppWidget().itemMessage("Ubicación cambiada", context);
-                                  }).catchError((onError) {});
+                      Widget itemAddress() {
+                        return Container(
+                            margin: EdgeInsets.only(top: 20),
+                            child: Flexible(
+                                child: Row(
+                              children: [
+                                SvgPicture.asset(
+                                  "images/icons/iconLocation.svg",
+                                  width: 40,
+                                  height: 40,
+                                ),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                GestureDetector(
+                                    onTap: () {
+                                      userDataProfile.ref.update({
+                                        "latitud": double.parse(dataList.child("latitude").value.toString()),
+                                        "longitude": double.parse(dataList.child("longitude").value.toString()),
+                                        "location": dataList.child("name").value.toString()
+                                      }).then((value) {
+                                        AppWidget().itemMessage("Ubicación cambiada", context);
+                                      }).catchError((onError) {});
 
-                                  /*   widget.dataListObjectGeneral!.ref
+                                      /*   widget.dataListObjectGeneral!.ref
 
                                       .update({'address': dataList.child("name").value.toString()}).then((value) {
 
@@ -466,34 +480,34 @@ class _AddressesState extends State<AddressesUser> {
                                     AppWidget().itemMessage("Error actulizar dirección", context);
 
                                   });*/
-                                },
-                                child: Container(
-                                    width: 240,
-                                    child: Text(
-                                      dataList.child("name").value.toString(),
-                                      style: TextStyle(color: secondryColor, fontSize: 14, fontWeight: FontWeight.bold),
-                                    ))),
-                            GestureDetector(
-                              onTap: () {
-                                showModalBottomSheet(
-                                    context: context,
-                                    builder: (context) {
-                                      return Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: <Widget>[
-                                          ListTile(
-                                            title: new Text('Eliminar'),
-                                            onTap: () {
-                                              dataList.ref.remove().then((value) {
-                                                AppWidget().itemMessage("Eliminado", context);
+                                    },
+                                    child: Container(
+                                        width: 240,
+                                        child: Text(
+                                          dataList.child("name").value.toString(),
+                                          style: TextStyle(color: secondryColor, fontSize: 14, fontWeight: FontWeight.bold),
+                                        ))),
+                                GestureDetector(
+                                  onTap: () {
+                                    showModalBottomSheet(
+                                        context: context,
+                                        builder: (context) {
+                                          return Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: <Widget>[
+                                              ListTile(
+                                                title: new Text('Eliminar'),
+                                                onTap: () {
+                                                  dataList.ref.remove().then((value) {
+                                                    AppWidget().itemMessage("Eliminado", context);
 
-                                                setState(() {});
-                                              });
+                                                    setState(() {});
+                                                  });
 
-                                              Navigator.pop(context);
-                                            },
-                                          ),
-                                          /* ListTile(
+                                                  Navigator.pop(context);
+                                                },
+                                              ),
+                                              /* ListTile(
                                             title: new Text('Actualizar'),
                                             onTap: () {
                                               Navigator.pop(context);
@@ -501,31 +515,31 @@ class _AddressesState extends State<AddressesUser> {
                                               openDialog(true, dataList: dataList);
                                             },
                                           ),*/
-                                          ListTile(
-                                            title: new Text('Cancelar'),
-                                            onTap: () {
-                                              Navigator.pop(context);
-                                            },
-                                          ),
-                                        ],
-                                      );
-                                    });
-                              },
-                              child: Icon(
-                                Icons.more_vert_sharp,
-                                color: secondryColor,
-                              ),
-                            )
-                          ],
-                        )));
-                  }
+                                              ListTile(
+                                                title: new Text('Cancelar'),
+                                                onTap: () {
+                                                  Navigator.pop(context);
+                                                },
+                                              ),
+                                            ],
+                                          );
+                                        });
+                                  },
+                                  child: Icon(
+                                    Icons.more_vert_sharp,
+                                    color: secondryColor,
+                                  ),
+                                )
+                              ],
+                            )));
+                      }
 
-                  return searchTextController.text.isEmpty
-                      ? itemAddress()
-                      : searchTextController.text.similarityTo(dataList.child("name").value.toString()) >= 0.5
-                          ? SizedBox()
-                          : itemAddress();
-                });
+                      return searchTextController.text.isEmpty
+                          ? itemAddress()
+                          : searchTextController.text.similarityTo(dataList.child("name").value.toString()) >= 0.5
+                              ? SizedBox()
+                              : itemAddress();
+                    });
           }
 
           // }
@@ -613,7 +627,7 @@ class _AddressesState extends State<AddressesUser> {
                           title: "Ingresa una nueva ubicación",
                           controller: searchTextController,
                           execute: () async {
-                            await Future.delayed(Duration(milliseconds: 1000)); //   setState(() {});
+                            //  await Future.delayed(Duration(milliseconds: 1000)); //   setState(() {});
 
                             getPlaceLocation();
                           }),
@@ -858,7 +872,8 @@ class _AddressesState extends State<AddressesUser> {
   void userCurrentAddress(String status) {
     currentFirebaseUser = FirebaseAuth.instance.currentUser;
 
-    DatabaseReference curAddressRef = FirebaseDatabase.instance.ref().child('users/${currentFirebaseUser?.uid}').child('AddressinUse');
+    DatabaseReference curAddressRef =
+        FirebaseDatabase.instance.ref().child(widget.user.toString() + '/${currentFirebaseUser?.uid}').child('AddressinUse');
 
     curAddressRef.set(status);
   }
@@ -879,8 +894,11 @@ class _AddressesState extends State<AddressesUser> {
 
       currentFirebaseUser = FirebaseAuth.instance.currentUser;
 
-      DatabaseReference curAddressRef =
-          FirebaseDatabase.instance.ref().child('users/${currentFirebaseUser?.uid}').child('manualAddress').child('placename');
+      DatabaseReference curAddressRef = FirebaseDatabase.instance
+          .ref()
+          .child(widget.user.toString() + '/${currentFirebaseUser?.uid}')
+          .child('manualAddress')
+          .child('placename');
 
       curAddressRef.set(placeName);
 

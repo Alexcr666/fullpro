@@ -9,6 +9,7 @@ import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:fullpro/PROFESIONAL/views/Orders/orders.dart';
+import 'package:fullpro/PROFESIONAL/views/homepage.dart';
 
 import 'package:fullpro/PROFESIONAL/views/support/listSupport.dart';
 
@@ -38,6 +39,7 @@ import 'package:fullpro/pages/pay/payList.dart';
 import 'package:fullpro/pages/profesional/profileProfesional.dart';
 
 import 'package:fullpro/pages/profile/account.dart';
+import 'package:fullpro/pages/profile/address/addressUser.dart';
 
 import 'package:fullpro/pages/profile/addresses.dart';
 
@@ -173,7 +175,7 @@ class _ProfileOptionsProfessionalPageState extends State<ProfileOptionsProfessio
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "Hola",
+                        userInfoPartners == null ? "Hola " : "Hola " + userInfoPartners!.child("fullname").value.toString(),
                         style: TextStyle(color: secondryColor, fontSize: 25),
                       ),
 
@@ -275,6 +277,19 @@ class _ProfileOptionsProfessionalPageState extends State<ProfileOptionsProfessio
                         },
                         icon: "images/icons/miprofile1.svg",
                       ),
+                      const Divider(color: Colors.black12),
+
+                      ProfileButton(
+                        buttonName: /*Locales.string(context, 'lbl_address')*/ "Ubicaciones",
+                        onCLicked: () {
+                          //  Navigator.pop(context);
+
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => AddressesUser("partners")));
+
+                          //   Navigator.push(context, MaterialPageRoute(builder: (context) => const Addresses()));
+                        },
+                        icon: "images/icons/miprofile3.svg",
+                      ),
 
                       const Divider(color: Colors.black12),
 
@@ -283,7 +298,12 @@ class _ProfileOptionsProfessionalPageState extends State<ProfileOptionsProfessio
                         onCLicked: () {
                           bool isPuchased = false;
 
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => const AccountProfessional()));
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ProfileProfesionalPage(id: FirebaseAuth.instance.currentUser!.uid.toString())));
+
+                          //     Navigator.push(context, MaterialPageRoute(builder: (context) => const AccountProfessional()));
 
                           //  Navigator.pop(context);
 
@@ -313,7 +333,7 @@ class _ProfileOptionsProfessionalPageState extends State<ProfileOptionsProfessio
                         onCLicked: () {
                           //   Navigator.pop(context);
 
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => TermsPage(state: false)));
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => TermsPage(state: 2)));
 
                           //Navigator.push(context, MaterialPageRoute(builder: (context) => const Language()));
                         },

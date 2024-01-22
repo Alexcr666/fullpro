@@ -289,7 +289,7 @@ class _ProfileOptionsPageState extends State<ProfileOptionsPage> {
                         onCLicked: () {
                           //  Navigator.pop(context);
 
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => AddressesUser()));
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => AddressesUser("users")));
 
                           //   Navigator.push(context, MaterialPageRoute(builder: (context) => const Addresses()));
                         },
@@ -307,7 +307,7 @@ class _ProfileOptionsPageState extends State<ProfileOptionsPage> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => TermsPage(
-                                        state: false,
+                                        state: 2,
                                       )));
 
                           //Navigator.push(context, MaterialPageRoute(builder: (context) => const Language()));

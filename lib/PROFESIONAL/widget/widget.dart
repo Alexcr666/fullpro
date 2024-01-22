@@ -5,10 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:fullpro/PROFESIONAL/views/homepage.dart';
 
 import 'package:fullpro/PROFESIONAL/views/profile/menuProfile.dart';
 
 import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
+import 'package:fullpro/pages/profile/address/addressUser.dart';
 
 appbarProfessional(BuildContext context, bool activeColor) {
   String dayTime = "";
@@ -40,12 +42,27 @@ appbarProfessional(BuildContext context, bool activeColor) {
           style: TextStyle(color: activeColor ? Colors.white : secondryColor, fontSize: 12, fontWeight: FontWeight.bold),
         ),
         Text(
-          "Hola " /*+ 'Alex'*/,
+          userInfoPartners == null ? "Hola " : "Hola " + userInfoPartners!.child("fullname").value.toString(),
           style: TextStyle(
             color: activeColor ? Colors.white : Colors.black,
             fontSize: 15,
           ),
         ),
+        GestureDetector(
+            onTap: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => AddressesUser("partners")));
+            },
+            child: Text(
+              userInfoPartners == null
+                  ? "Selecciona ubicación"
+                  : userInfoPartners!.child("location").value == null
+                      ? "Seleccionar ubicación"
+                      : userInfoPartners!.child("location").value.toString(),
+              style: const TextStyle(
+                color: Colors.black,
+                fontSize: 12,
+              ),
+            )),
       ],
     ),
     actions: [

@@ -1,7 +1,9 @@
 // ignore_for_file: prefer_const_constructors
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:fullpro/PROFESIONAL/controllers/mainController.dart';
+import 'package:fullpro/PROFESIONAL/views/homepage.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:power_file_view/power_file_view.dart';
 import 'package:provider/provider.dart';
 import 'package:fullpro/controller/mainController.dart';
 import 'package:fullpro/pages/Authentication/Database_Entry.dart';
@@ -18,15 +20,18 @@ import 'package:fullpro/utils/globalConstants.dart';
 import 'package:fullpro/styles/theme.dart';
 import 'package:fullpro/pages/homepage.dart';
 import 'package:fullpro/utils/userpreferences.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'pages/onboarding/pages/boarding/onboarding.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 
+bool professionalState = false;
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Stripe.publishableKey = "pk_test_51MVzfVJD6GFsjF8jq2jnRULZtIPFzMC4dlOpAhyEM4iEdV8OFOU7OozX2TUFqkWueBVnAyUWhFVmYBjn2it8txbC00XmD1ftqH";
   Stripe.merchantIdentifier = 'merchant.flutter.stripe.test';
   Stripe.urlScheme = 'flutterstripe';
   await Stripe.instance.applySettings();
+  PowerFileViewManager.initEngine();
   await Locales.init(
       ['en', 'af', 'ar', 'de', 'es', 'fr', 'hi', 'ur', 'id', 'ja', 'nl', 'pt', 'tr', 'it', 'ko', 'ne', 'ru', 'vi', 'he', 'th']);
 
@@ -40,6 +45,10 @@ Future<void> main() async {
   await UserPreferences.init();
   MainController.getSettings();
   MainControllerProfesional.getSettings();
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  if (prefs.getBool("professional") != null) {
+    professionalState = prefs.getBool("professional")!;
+  }
 
   runApp(const MyApp());
 }
@@ -75,7 +84,11 @@ class MyApp extends StatelessWidget {
               ),
             ),
           ),
-          initialRoute: currentFirebaseUser != null ? kHomePage.id : LoginPage.id,
+          initialRoute: currentFirebaseUser != null
+              ? professionalState == true
+                  ? HomePage.id
+                  : kHomePage.id
+              : LoginPage.id,
           routes: {
             kHomePage.id: (context) => kHomePage(),
             kTrending.id: (context) => kTrending(),
@@ -84,6 +97,7 @@ class MyApp extends StatelessWidget {
             DatabaeEntry.id: (context) => DatabaeEntry(),
             RegistrationPage.id: (context) => RegistrationPage(),
             LoginPage.id: (context) => LoginPage(),
+            HomePage.id: (context) => HomePage(),
           },
         ),
       ),

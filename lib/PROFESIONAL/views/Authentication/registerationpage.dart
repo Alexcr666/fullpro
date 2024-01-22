@@ -911,7 +911,7 @@ class _RegistrationProfessionalPageState extends State<RegistrationProfessionalP
                                             context,
                                             MaterialPageRoute(
                                                 builder: (context) => TermsPage(
-                                                      state: true,
+                                                      state: 1,
                                                     )));
 
                                         // Loader.page(context, TermsPage());

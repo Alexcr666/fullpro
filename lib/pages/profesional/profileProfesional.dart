@@ -87,6 +87,38 @@ Iterable<DataSnapshot>? dataListObjectOrdens;
 TextEditingController priceController = TextEditingController();
 
 class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
+  Widget itemOptionProfileOptions(String title, String url, {String? subtitle, Function? onTap}) {
+    return GestureDetector(
+        onTap: () {
+          onTap!();
+        },
+        child: Container(
+            margin: EdgeInsets.only(top: 8),
+            child: Row(
+              children: [
+                SvgPicture.asset(
+                  url,
+                  width: 35,
+                  //  color: secondryColor,
+                ),
+                SizedBox(
+                  width: 20,
+                ),
+                Text(
+                  title,
+                  style: TextStyle(color: secondryColor, fontSize: 19, fontWeight: FontWeight.bold),
+                ),
+                Expanded(child: SizedBox()),
+                subtitle == null
+                    ? SizedBox()
+                    : Text(
+                        subtitle,
+                        style: TextStyle(color: secondryColor, fontSize: 19, fontWeight: FontWeight.bold),
+                      ),
+              ],
+            )));
+  }
+
   bool agree = false;
 
   List<File> fileLicense = [];
@@ -122,7 +154,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
   String imageUser = "";
 
   // TextEditingController passwordController = TextEditingController();
-
+  double _currentSliderValue = 20;
   Widget pageOrdens() {
     return FutureBuilder(
         future: FirebaseDatabase.instance.ref().child('ordens').orderByChild("professional").equalTo(widget.id.toString()).once(),
@@ -1538,6 +1570,23 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                         ),
                       )),
               SizedBox(
+                height: 15,
+              ),
+              itemOptionProfileOptions("Radio de busqueda", "images/icons/locationCircle.svg",
+                  subtitle: _currentSliderValue.round().toString() + " KM"),
+              Slider(
+                value: _currentSliderValue,
+                max: 100,
+                activeColor: secondryColor,
+                divisions: 5,
+                label: _currentSliderValue.round().toString(),
+                onChanged: (double value) {
+                  setState(() {
+                    _currentSliderValue = value;
+                  });
+                },
+              ),
+              SizedBox(
                 height: 30,
               ),
               AppWidget().buttonFormColor(context, "Guardar", secondryColor, tap: () {
@@ -1548,6 +1597,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                   'phone': phoneController.text.toString(),
                   'state': state.text.toString(),
                   'city': city.text.toString(),
+                  'radio': _currentSliderValue.round().toString(),
                   'price': priceController.text.toString(),
                   'country': country.text.toString(),
                 }).then((value) {
@@ -1676,6 +1726,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
 
       if (dataSnapshot.child("fullname").value != null) {
         nameProfesional = dataSnapshot.child("fullname").value.toString();
+        _currentSliderValue = double.parse(dataSnapshot.child("radio").value.toString());
 
         nameController.text = dataSnapshot.child("fullname").value.toString();
 

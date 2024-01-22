@@ -30,8 +30,10 @@ import '../styles/statics.dart' as appcolors;
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import '../utils/permissions.dart';
 
+DataSnapshot? userInfoPartners = null;
+
 class HomePage extends StatefulWidget {
-  static const String id = 'HomePage';
+  static const String id = 'HomePageProfessional';
 
   final String? currentScreen;
   final int? currentTab;
@@ -133,6 +135,7 @@ class _HomePageState extends State<HomePage> {
     final userRef = FirebaseDatabase.instance.ref().child("partners").child(userid!);
     userRef.once().then((e) async {
       final _datasnapshot = e.snapshot;
+      userInfoPartners = e.snapshot;
 
       if (_datasnapshot.value != null) {
         currentPartnerInfo = Partner.fromSnapshot(_datasnapshot);
@@ -319,7 +322,17 @@ class _HomePageState extends State<HomePage> {
     pushNotificationService.getToken();
 
     locationPermision();
-    getUserInfo();
+
+    DatabaseReference ref2 = FirebaseDatabase.instance.ref("partners/");
+
+// Get the Stream
+    Stream<DatabaseEvent> stream2 = ref2.onValue;
+
+// Subscribe to the stream!
+    stream2.listen((DatabaseEvent event) {
+      getUserInfo();
+    });
+    //  getUserInfo();
     MainControllerProfesional.dueBalance();
     MainControllerProfesional.checkEarning();
     MainControllerProfesional.getSettings();

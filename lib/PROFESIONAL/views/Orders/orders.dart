@@ -74,6 +74,7 @@ class _MyOrdersState extends State<MyOrders> with TickerProviderStateMixin {
       serviceCheck = true;
     }
     Timer.run(() {
+      positionFilter = 1;
       setState(() {});
     });
     timer = Timer.periodic(
@@ -366,6 +367,7 @@ class _MyOrdersState extends State<MyOrders> with TickerProviderStateMixin {
             DatabaseEvent response = snapshot.data;
 
             DataSnapshot? dataListObject = null;
+            bool emptyResult = false;
 
             //   for (var i = 0; i < response.snapshot.children.toList().length; i++) {
 
@@ -380,6 +382,7 @@ class _MyOrdersState extends State<MyOrders> with TickerProviderStateMixin {
                     shrinkWrap: true,
                     itemBuilder: (BuildContext context, int i) {
                       DataSnapshot dataList = response.snapshot.children.toList()[i];
+                      int lenght = response.snapshot.children.toList().length;
 
                       getCancelButton() {
                         if (dataList.child("state").value.toString() == "3" || dataList.child("state").value.toString() == "4") {
@@ -391,6 +394,10 @@ class _MyOrdersState extends State<MyOrders> with TickerProviderStateMixin {
 
                       DatabaseEvent? responseUser = null;
 
+                      if (dataList.child("state").value.toString() != positionFilter.toString()) {
+                        emptyResult = true;
+                      }
+
                       return /* dataList.child("state").value.toString() != positionFilter.toString()
                           ? response.snapshot.children.toList().length != i
                               ? result != true
@@ -400,7 +407,11 @@ class _MyOrdersState extends State<MyOrders> with TickerProviderStateMixin {
                           :*/
 
                           dataList.child("state").value.toString() != positionFilter.toString()
-                              ? SizedBox()
+                              ? ((i + 1) != lenght)
+                                  ? SizedBox()
+                                  : emptyResult == false
+                                      ? SizedBox()
+                                      : AppWidget().noResult()
                               : Padding(
                                   padding: const EdgeInsets.all(5),
                                   child: GestureDetector(

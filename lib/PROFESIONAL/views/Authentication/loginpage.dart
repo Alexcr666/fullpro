@@ -19,6 +19,7 @@ import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
 
 import 'package:fullpro/styles/statics.dart' as Static;
 import 'package:fullpro/styles/styles.dart';
+import 'package:fullpro/utils/userpreferences.dart';
 import 'package:fullpro/widgets/widget.dart';
 
 class LoginPageProfesional extends StatefulWidget {
@@ -64,11 +65,12 @@ class _LoginPageState extends State<LoginPageProfesional> {
           if (dataSnapshot.value != null) {
             if (event.snapshot.child("state").value != null) {
               if (int.parse(event.snapshot.child("stateUser").value.toString()) == 1) {
-                UserPreferences.setUserEmail(emailController.text);
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => const HomePage()),
-                );
+                AppSharedPreference().setProfessional(context).then((value) {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => const HomePage()),
+                  );
+                });
               } else {
                 Navigator.pop(context);
                 int state = int.parse(event.snapshot.child("stateUser").value.toString());

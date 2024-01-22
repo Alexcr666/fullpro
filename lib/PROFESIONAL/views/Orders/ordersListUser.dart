@@ -81,9 +81,19 @@ Widget pageOrdensWidget(int state) {
                   shrinkWrap: true,
                   itemBuilder: (BuildContext context, int i) {
                     DataSnapshot dataList = response.snapshot.children.toList()[i];
+                    bool emptyResult = false;
+                    int lenght = response.snapshot.children.toList().length;
+
+                    if (int.parse(dataList!.child("state").value.toString()) != state) {
+                      emptyResult = true;
+                    }
 
                     return int.parse(dataList!.child("state").value.toString()) != state
-                        ? SizedBox()
+                        ? (i + 1) != lenght
+                            ? SizedBox()
+                            : emptyResult != true
+                                ? SizedBox()
+                                : AppWidget().noResult()
                         : Padding(
                             padding: const EdgeInsets.all(5),
                             child: GestureDetector(
@@ -277,6 +287,10 @@ class _SolicitudListState extends State<SolicitudList> with TickerProviderStateM
       repeatTime,
       (Timer t) => setState(() {}),
     );
+    Timer.run(() {
+      positionFilter = 1;
+      setState(() {});
+    });
   }
 
   @override

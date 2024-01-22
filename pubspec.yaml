@@ -118,6 +118,7 @@ dependencies:
   flutter_stripe: ^10.0.0
   webview_flutter: ^4.4.4
   money_formatter: ^0.0.5
+  power_file_view: ^1.0.1
 
 dependency_overrides:
   flutter:
