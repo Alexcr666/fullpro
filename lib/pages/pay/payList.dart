@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_credit_card/flutter_credit_card.dart';
 
 import 'package:flutter_locales/flutter_locales.dart';
 
@@ -83,7 +84,6 @@ class _PayListPageState extends State<PayListPage> {
 
   Widget stateIndicator0() {
     return FutureBuilder(
-        initialData: 1,
         future: FirebaseDatabase.instance
             .ref()
             .child('creditcard')
@@ -91,19 +91,20 @@ class _PayListPageState extends State<PayListPage> {
             .equalTo(FirebaseAuth.instance.currentUser!.uid.toString())
             .once(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
-          try {
-            if (snapshot.hasData) {
-              DatabaseEvent response = snapshot.data;
+          if (snapshot.hasData) {
+            DatabaseEvent response = snapshot.data;
 
-              return response == null
-                  ? Text("Cargando")
-                  : ListView.builder(
-                      itemCount: response.snapshot.children.length,
-                      shrinkWrap: true,
-                      itemBuilder: (BuildContext context, int index) {
-                        DataSnapshot dataList = response.snapshot.children.toList()[index];
+            return response == null
+                ? AppWidget().loading()
+                : response.snapshot.children.length == 0
+                    ? AppWidget().noResult()
+                    : ListView.builder(
+                        itemCount: response.snapshot.children.length,
+                        shrinkWrap: true,
+                        itemBuilder: (BuildContext context, int index) {
+                          DataSnapshot dataList = response.snapshot.children.toList()[index];
 
-                        return GestureDetector(
+                          return GestureDetector(
                             onTap: () {
                               showModalBottomSheet(
                                   context: context,
@@ -145,57 +146,55 @@ class _PayListPageState extends State<PayListPage> {
                                     );
                                   });
                             },
-                            child: Container(
-                              margin: EdgeInsets.only(top: 10),
-                              decoration: AppWidget().boxShandowGreyRectangule(),
-                              child: Row(
-                                children: [
-                                  SizedBox(
-                                    width: 10,
+                            child: CreditCardWidget(
+                              enableFloatingCard: false,
+                              glassmorphismConfig: _getGlassmorphismConfig(),
+                              cardNumber: dataList.child("number").value.toString(),
+                              expiryDate: dataList.child("expiryDate").value.toString(),
+                              cardHolderName: dataList.child("cardHolder").value.toString(),
+                              cvvCode: dataList.child("cvv").value.toString(),
+                              // textStyle: TextStyle(color: Colors.white, fontSize: 13),
+                              bankName: 'Axis Bank',
+                              frontCardBorder: Border.all(color: Colors.grey),
+                              backCardBorder: Border.all(color: Colors.grey),
+                              showBackView: false,
+                              obscureCardNumber: true,
+                              obscureCardCvv: true,
+                              isHolderNameVisible: true,
+                              cardBgColor: secondryColor,
+                              backgroundImage: 'assets/card_bg.png',
+                              isSwipeGestureEnabled: true,
+                              onCreditCardWidgetChange: (CreditCardBrand creditCardBrand) {},
+                              customCardTypeIcons: <CustomCardTypeIcon>[
+                                CustomCardTypeIcon(
+                                  cardType: CardType.mastercard,
+                                  cardImage: Image.asset(
+                                    'assets/mastercard.png',
+                                    height: 48,
+                                    width: 48,
                                   ),
-                                  CircleAvatar(
-                                    backgroundColor: Colors.grey.withOpacity(0.3),
-                                    radius: 30,
-                                  ),
-                                  SizedBox(
-                                    width: 10,
-                                  ),
-                                  Flexible(
-                                      child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      SizedBox(
-                                        height: 100,
-                                      ),
-                                      Text(
-                                        dataList.child("number").value.toString(),
-                                        style: TextStyle(color: secondryColor, fontSize: 14, fontWeight: FontWeight.bold),
-                                      ),
-                                      Text(
-                                        dataList.child("cardHolder").value.toString(),
-                                        style: TextStyle(color: Colors.black, fontSize: 10),
-                                      ),
-                                      SizedBox(
-                                        height: 5,
-                                      ),
-                                      SizedBox(
-                                        height: 14,
-                                      ),
-                                    ],
-                                  ))
-                                ],
-                              ),
-                            ));
-                      });
-            } else {
-              return AppWidget().loading();
-            }
-
-            ;
-          } catch (e) {
+                                ),
+                              ],
+                            ),
+                          );
+                        });
+          } else {
             return AppWidget().loading();
           }
+
+          ;
         });
+  }
+
+  Glassmorphism? _getGlassmorphismConfig() {
+    final LinearGradient gradient = LinearGradient(
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+      colors: <Color>[secondryColor, secondryColor],
+      stops: const <double>[0.3, 0],
+    );
+
+    return Glassmorphism(blurX: 0, blurY: 0, gradient: gradient);
   }
 
   @override

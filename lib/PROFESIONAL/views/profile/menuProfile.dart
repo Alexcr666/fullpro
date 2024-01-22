@@ -13,6 +13,7 @@ import 'package:fullpro/PROFESIONAL/views/Orders/orders.dart';
 import 'package:fullpro/PROFESIONAL/views/support/listSupport.dart';
 
 import 'package:fullpro/PROFESIONAL/views/support/supportUser.dart';
+import 'package:fullpro/PROFESIONAL/views/wallet/walletMoney.dart';
 
 import 'package:fullpro/config.dart';
 
@@ -377,6 +378,23 @@ class _ProfileOptionsProfessionalPageState extends State<ProfileOptionsProfessio
                         icon: "images/icons/miprofile6.svg",
                       ),
                       const Divider(color: Colors.black12),
+                      ProfileButton(
+                        buttonName: "Cartera",
+                        onCLicked: () {
+                          bool isPuchased = false;
+
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => const WallletPage()));
+
+                          //  Navigator.pop(context);
+
+                          // Navigator.push(context, MaterialPageRoute(builder: (context) => Profile(currentUser!, isPuchased)));
+                        },
+                        icon: "images/icons/miprofile2.svg",
+                      ),
+                      const Divider(color: Colors.black12),
+                      SizedBox(
+                        height: 20,
+                      ),
                       ProfileButton(
                         buttonName: /* Locales.string(context, 'lbl_about')*/ "Cerrar sesión",
                         onCLicked: () {
