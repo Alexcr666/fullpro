@@ -44,6 +44,7 @@ import 'dart:async';
 import 'package:fullpro/styles/statics.dart' as appcolors;
 
 import 'package:fullpro/styles/statics.dart';
+import 'package:fullpro/utils/utils.dart';
 
 import 'package:fullpro/widgets/widget.dart';
 
@@ -120,10 +121,21 @@ Widget pageOrdensWidget(int state) {
                                   ),
                                   child: Row(
                                     children: [
-                                      CircleAvatar(
-                                        backgroundColor: Colors.grey.withOpacity(0.4),
-                                        radius: 30,
-                                      ),
+                                      FutureBuilder(
+                                          future: FirebaseDatabase.instance
+                                              .ref()
+                                              .child('users')
+                                              .child(dataList.child("user").value.toString())
+                                              .once(),
+                                          builder: (BuildContext context, AsyncSnapshot snapshot) {
+                                            if (snapshot.hasData) {
+                                              DatabaseEvent response = snapshot.data;
+
+                                              return AppWidget().circleProfile(response.snapshot.child("photo").value.toString(), size: 57);
+                                            } else {
+                                              return SizedBox();
+                                            }
+                                          }),
                                       const SizedBox(width: 10),
                                       Column(
                                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -134,7 +146,7 @@ Widget pageOrdensWidget(int state) {
                                             child: Text(
                                               dataList.child("name").value == null
                                                   ? "No disponible"
-                                                  : dataList.child("name").value.toString(),
+                                                  : dataList.child("name").value.toString().capitalize(),
                                               overflow: TextOverflow.ellipsis,
                                               style: TextStyle(
                                                 color: secondryColor,
@@ -158,8 +170,8 @@ Widget pageOrdensWidget(int state) {
                                             children: [
                                               SvgPicture.asset(
                                                 "images/icons/userCircle.svg",
-                                                color: secondryColor,
-                                                height: 17,
+                                                color: Colors.grey,
+                                                height: 15,
                                               ),
                                               SizedBox(
                                                 width: 5,
@@ -169,7 +181,7 @@ Widget pageOrdensWidget(int state) {
                                                     ? "Sin asignar"
                                                     : dataList.child("nameProfessional").value.toString(),
                                                 style: TextStyle(
-                                                  color: secondryColor,
+                                                  color: Colors.grey,
                                                   fontWeight: FontWeight.bold,
                                                   fontSize: 12,
                                                 ),
@@ -183,8 +195,8 @@ Widget pageOrdensWidget(int state) {
                                             children: [
                                               SvgPicture.asset(
                                                 "images/icons/calendar.svg",
-                                                color: secondryColor,
-                                                height: 17,
+                                                color: Colors.grey,
+                                                height: 15,
                                               ),
                                               SizedBox(
                                                 width: 5,
@@ -194,11 +206,11 @@ Widget pageOrdensWidget(int state) {
                                                     ? "No disponible"
                                                     : dataList.child("date").value.toString(),
                                                 style: TextStyle(
-                                                  color: secondryColor,
+                                                  color: Colors.grey,
 
                                                   //fontWeight: FontWeight.bold,
 
-                                                  fontSize: 14,
+                                                  fontSize: 12,
                                                 ),
                                               ),
                                             ],
@@ -208,21 +220,28 @@ Widget pageOrdensWidget(int state) {
                                       Expanded(child: SizedBox()),
                                       Column(
                                         children: [
-                                          Container(
+                                          /* Container(
                                               width: 140,
                                               height: 40,
                                               child: AppWidget().buttonFormColor(
                                                   context,
                                                   stateOrder[int.parse(dataList!.child("state").value.toString())],
                                                   stateOrderColor[int.parse(dataList!.child("state").value.toString())],
-                                                  tap: () {})),
+                                                  tap: () {})),*/
+
+                                          Text(
+                                            stateOrder[int.parse(dataList!.child("state").value.toString())].toString(),
+                                            style: TextStyle(
+                                                color: stateOrderColor[int.parse(dataList!.child("state").value.toString())],
+                                                fontWeight: FontWeight.bold),
+                                          ),
                                           SizedBox(
                                             height: 10,
                                           ),
                                           Container(
                                               width: 140,
                                               height: 40,
-                                              child: AppWidget().buttonFormColor(context, "Cancelar", Colors.red, tap: () {
+                                              child: AppWidget().buttonFormColor(context, "Cancelar", Colors.red.withOpacity(0.3), tap: () {
                                                 dataList.ref.update({'state': 3}).then((value) {
                                                   AppWidget().itemMessage("Actualizado", context);
                                                 });

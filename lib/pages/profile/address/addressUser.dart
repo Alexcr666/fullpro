@@ -414,6 +414,42 @@ class _AddressesState extends State<AddressesUser> {
     });
   }
 
+  Widget startIndicator(String title) {
+    return FutureBuilder(
+        future: FirebaseDatabase.instance
+            .ref()
+            .child('address')
+            .orderByChild("user")
+            .equalTo(FirebaseAuth.instance.currentUser!.uid.toString())
+            .once(),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          if (snapshot.hasData) {
+            DatabaseEvent response = snapshot.data;
+
+            DataSnapshot? dataListObject = null;
+            bool start = false;
+            for (var i = 0; i < response.snapshot.children.toList().length; i++) {
+              DataSnapshot data = response.snapshot.children.toList()[i];
+
+              if (data.child("").value == title) {
+                start = true;
+              }
+            }
+
+            //return Text(dataListObject!.child("name").value.toString());
+
+            return response.snapshot.children.toList().length == 0
+                ? SizedBox()
+                : Icon(
+                    Icons.star,
+                    color: start ? Colors.amber : Colors.grey,
+                  );
+          } else {
+            return SizedBox();
+          }
+        });
+  }
+
   Widget pageAddress() {
     return FutureBuilder(
         future: FirebaseDatabase.instance
@@ -673,7 +709,7 @@ class _AddressesState extends State<AddressesUser> {
                                               };
 
                                               newUserRef.set(userMap).then((value) {
-                                                Navigator.pop(context);
+                                                //   Navigator.pop(context);
 
                                                 setState(() {});
 
@@ -685,10 +721,7 @@ class _AddressesState extends State<AddressesUser> {
 
                                             savedData();
                                           },
-                                          child: Icon(
-                                            Icons.star,
-                                            color: Colors.amber.withOpacity(0.3),
-                                          )),
+                                          child: startIndicator(data.name.toString())),
                                       title: Text(
                                         data.name.toString(),
                                         style: TextStyle(fontWeight: FontWeight.bold, color: secondryColor, fontSize: 13),

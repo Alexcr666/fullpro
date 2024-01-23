@@ -3,6 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:fullpro/pages/Authentication/loginpage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+extension StringExtension on String {
+  String capitalize() {
+    return "${this[0].toUpperCase()}${this.substring(1).toLowerCase()}";
+  }
+}
+
 class AppUtils {
   noNull(String value) {
     if (value == null || value.toString() == "null") {

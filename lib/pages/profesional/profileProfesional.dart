@@ -82,7 +82,7 @@ String nameProfesional = "";
 
 int stateIndicator = 0;
 
-late DataSnapshot _userDataProfile;
+DataSnapshot? _userDataProfile = null;
 Iterable<DataSnapshot>? dataListObjectOrdens;
 TextEditingController priceController = TextEditingController();
 
@@ -569,9 +569,9 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                     height: 5,
                                   ),
                                   RatingBarIndicator(
-                                      rating: _userDataProfile.child("rating").value == null
+                                      rating: _userDataProfile!.child("rating").value == null
                                           ? 0
-                                          : double.parse(_userDataProfile.child("rating").value.toString()),
+                                          : double.parse(_userDataProfile!.child("rating").value.toString()),
                                       itemCount: 5,
                                       itemSize: 30.0,
                                       itemBuilder: (context, _) => Icon(
@@ -608,19 +608,21 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                       SizedBox(
                         width: 10,
                       ),
-                      GestureDetector(
-                          onTap: () {
-                            if (FirebaseAuth.instance.currentUser!.uid.toString() == widget.id) {
-                              List<userD.User> result = LinkedHashSet<userD.User>.from(matches).toList();
+                      FirebaseAuth.instance.currentUser!.uid.toString() == widget.id
+                          ? SizedBox()
+                          : GestureDetector(
+                              onTap: () {
+                                if (FirebaseAuth.instance.currentUser!.uid.toString() == widget.id) {
+                                  List<userD.User> result = LinkedHashSet<userD.User>.from(matches).toList();
 
-                              List<userD.User> newMatchesResult = LinkedHashSet<userD.User>.from(newmatches).toList();
+                                  List<userD.User> newMatchesResult = LinkedHashSet<userD.User>.from(newmatches).toList();
 // => ["a", "b", "c", "d"]
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => HomeScreen(currentUser!, result, newMatchesResult)),
-                              );
-                            }
-                            /* CollectionReference users = FirebaseFirestore.instance
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => HomeScreen(currentUser!, result, newMatchesResult)),
+                                  );
+                                }
+                                /* CollectionReference users = FirebaseFirestore.instance
                       .collection('Users')
                       .doc("Mkoc6GZaIWMf6yO2mDAHlZucj9V2" /*FirebaseAuth.instance.currentUser!.uid.toString()*/)
                       .collection("Matches");
@@ -639,7 +641,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                       AppWidget().itemMessage("Error al crear", context);
                     });*/
 
-                            //CollectionReference users = FirebaseFirestore.instance.collection('Users');
+                                //CollectionReference users = FirebaseFirestore.instance.collection('Users');
 /*
                             addMatches() {
                               DocumentReference usersValidate2 = FirebaseFirestore.instance
@@ -728,13 +730,13 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                             }
 
                             addUser();*/
-                            //  kkk
-                          },
-                          child: Icon(
-                            Icons.message,
-                            size: 40,
-                            color: secondryColor,
-                          )),
+                                //  kkk
+                              },
+                              child: Icon(
+                                Icons.message,
+                                size: 40,
+                                color: secondryColor,
+                              )),
                     ],
                   ),
                   SizedBox(
@@ -979,6 +981,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
   }*/
 
   var _dialCode = '';
+  final formkey = GlobalKey<FormState>();
 
   void _callBackFunction(String name, String dialCode, String flag) {
     _dialCode = dialCode;
@@ -999,7 +1002,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
       await uploadTask.then((p0) async {
         String fileUrl = await storageReference.getDownloadURL();
 
-        _userDataProfile.ref.update({doc: fileUrl}).then((value) {
+        _userDataProfile!.ref.update({doc: fileUrl}).then((value) {
           setState(() {});
 
           AppWidget().itemMessage("Archivo subido", context);
@@ -1106,76 +1109,78 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
 
       Container(
           margin: EdgeInsets.only(left: 20, right: 20),
-          child: Column(
-            children: [
-              SizedBox(
-                height: 20,
-              ),
-              AppWidget().texfieldFormat(
-                  controller: nameController,
-                  title: "Nombre Completo",
-                  enabled: FirebaseAuth.instance.currentUser!.uid == widget.id ? false : true),
-              SizedBox(
-                height: 10,
-              ),
-              GestureDetector(
-                  onTap: () {
-                    void _showIOS_DatePicker(ctx) {
-                      showCupertinoModalPopup(
-                          context: ctx,
-                          builder: (_) => Container(
-                                height: 190,
-                                color: Color.fromARGB(255, 255, 255, 255),
-                                child: Column(
-                                  children: [
-                                    Container(
-                                      height: 180,
-                                      child: CupertinoDatePicker(
-                                          mode: CupertinoDatePickerMode.date,
-                                          initialDateTime: DateTime.now(),
-                                          onDateTimeChanged: (val) {
-                                            setState(() {
-                                              final f = new DateFormat('yyyy-MM-dd');
+          child: Form(
+              key: formkey,
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: 20,
+                  ),
+                  AppWidget().texfieldFormat(
+                      controller: nameController,
+                      title: "Nombre Completo",
+                      enabled: FirebaseAuth.instance.currentUser!.uid == widget.id ? false : true),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  GestureDetector(
+                      onTap: () {
+                        void _showIOS_DatePicker(ctx) {
+                          showCupertinoModalPopup(
+                              context: ctx,
+                              builder: (_) => Container(
+                                    height: 190,
+                                    color: Color.fromARGB(255, 255, 255, 255),
+                                    child: Column(
+                                      children: [
+                                        Container(
+                                          height: 180,
+                                          child: CupertinoDatePicker(
+                                              mode: CupertinoDatePickerMode.date,
+                                              initialDateTime: DateTime.now(),
+                                              onDateTimeChanged: (val) {
+                                                setState(() {
+                                                  final f = new DateFormat('yyyy-MM-dd');
 
-                                              dateController.text = f.format(val);
-                                              //  dateSelected = val.toString();
-                                            });
-                                          }),
+                                                  dateController.text = f.format(val);
+                                                  //  dateSelected = val.toString();
+                                                });
+                                              }),
+                                        ),
+                                      ],
                                     ),
-                                  ],
-                                ),
-                              ));
-                    }
+                                  ));
+                        }
 
-                    _showIOS_DatePicker(context);
-                  },
-                  child: AppWidget().texfieldFormat(title: "Fecha de nacimiento", controller: dateController, enabled: true)),
-              SizedBox(
-                height: 10,
-              ),
-              AppWidget().texfieldFormat(
-                  controller: emailController,
-                  title: "Correo electronico",
-                  enabled: FirebaseAuth.instance.currentUser!.uid == widget.id ? false : true),
-              SizedBox(
-                height: 10,
-              ),
-              AppWidget().texfieldFormat(
-                  controller: phoneController,
-                  title: "Celular",
-                  enabled: FirebaseAuth.instance.currentUser!.uid == widget.id ? false : true),
-              SizedBox(
-                height: 10,
-              ),
-              AppWidget().texfieldFormat(
-                  controller: professionController,
-                  title: "Profesión",
-                  enabled: FirebaseAuth.instance.currentUser!.uid == widget.id ? false : true),
-              SizedBox(
-                height: 10,
-              ),
-            ],
-          )),
+                        _showIOS_DatePicker(context);
+                      },
+                      child: AppWidget().texfieldFormat(title: "Fecha de nacimiento", controller: dateController, enabled: true)),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  AppWidget().texfieldFormat(
+                      controller: emailController,
+                      title: "Correo electronico",
+                      enabled: FirebaseAuth.instance.currentUser!.uid == widget.id ? false : true),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  AppWidget().texfieldFormat(
+                      controller: phoneController,
+                      title: "Celular",
+                      enabled: FirebaseAuth.instance.currentUser!.uid == widget.id ? false : true),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  AppWidget().texfieldFormat(
+                      controller: professionController,
+                      title: "Profesión",
+                      enabled: FirebaseAuth.instance.currentUser!.uid == widget.id ? false : true),
+                  SizedBox(
+                    height: 10,
+                  ),
+                ],
+              ))),
 
       Container(
           margin: EdgeInsets.only(left: 20, right: 20),
@@ -1208,7 +1213,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
 
       // _userDataProfile.child("licence") == null
 
-      _userDataProfile.child("license").value == null
+      _userDataProfile!.child("license").value == null
           ? AppWidget().noResult()
           : Container(
               height: 40,
@@ -1237,7 +1242,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                           ),
                           GestureDetector(
                               onTap: () {
-                                _userDataProfile.ref.child("license").remove().then((value) {
+                                _userDataProfile!.ref.child("license").remove().then((value) {
                                   setState(() {});
                                 }).catchError((onError) {
                                   print("error: " + onError.toString());
@@ -1272,7 +1277,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                           ),
                           GestureDetector(
                               onTap: () async {
-                                final Uri url = Uri.parse(_userDataProfile.child("license").value.toString());
+                                final Uri url = Uri.parse(_userDataProfile!.child("license").value.toString());
                                 if (!await launchUrl(url)) {
                                   throw Exception('Could not launch _url');
                                 }
@@ -1347,7 +1352,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
               SizedBox(
                 height: 10,
               ),
-              _userDataProfile.child("background").value == null
+              _userDataProfile!.child("background").value == null
                   ? AppWidget().noResult()
                   : Container(
                       height: 40,
@@ -1376,7 +1381,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                   ),
                                   GestureDetector(
                                       onTap: () {
-                                        _userDataProfile.ref.child("background").remove().then((value) {
+                                        _userDataProfile!.ref.child("background").remove().then((value) {
                                           setState(() {});
                                         });
                                       },
@@ -1407,7 +1412,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                   ),
                                   GestureDetector(
                                       onTap: () async {
-                                        final Uri url = Uri.parse(_userDataProfile.child("background").value.toString());
+                                        final Uri url = Uri.parse(_userDataProfile!.child("background").value.toString());
                                         if (!await launchUrl(url)) {
                                           throw Exception('Could not launch _url');
                                         }
@@ -1452,7 +1457,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
               SizedBox(
                 height: 10,
               ),
-              _userDataProfile.child("legal").value == null
+              _userDataProfile!.child("legal").value == null
                   ? AppWidget().noResult()
                   : Container(
                       height: 40,
@@ -1481,7 +1486,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                   ),
                                   GestureDetector(
                                       onTap: () {
-                                        _userDataProfile.ref.child("legal").remove().then((value) {
+                                        _userDataProfile!.ref.child("legal").remove().then((value) {
                                           setState(() {});
                                         });
                                       },
@@ -1512,7 +1517,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                   ),
                                   GestureDetector(
                                       onTap: () async {
-                                        final Uri url = Uri.parse(_userDataProfile.child("legal").value.toString());
+                                        final Uri url = Uri.parse(_userDataProfile!.child("legal").value.toString());
                                         if (!await launchUrl(url)) {
                                           throw Exception('Could not launch _url');
                                         }
@@ -1590,22 +1595,30 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                 height: 30,
               ),
               AppWidget().buttonFormColor(context, "Guardar", secondryColor, tap: () {
-                _userDataProfile!.ref.update({
-                  'fullname': nameController.text.toString(),
-                  'date': dateController.text.toString(),
-                  'email': emailController.text.toString(),
-                  'phone': phoneController.text.toString(),
-                  'state': state.text.toString(),
-                  'city': city.text.toString(),
-                  'radio': _currentSliderValue.round().toString(),
-                  'price': priceController.text.toString(),
-                  'country': country.text.toString(),
-                }).then((value) {
-                  AppWidget().itemMessage("Información actualizada", context);
-                }).catchError((onError) {
-                  print("error: " + onError.toString());
-                  AppWidget().itemMessage("Error al actualizar foto", context);
-                });
+
+            if(    _userDataProfile!.child("legal") == null &&)  _userDataProfile!.child("usd") == null {
+
+            }
+                if (formkey.currentState!.validate()) {
+                  _userDataProfile!.ref.update({
+                    'fullname': nameController.text.toString(),
+                    'date': dateController.text.toString(),
+                    'email': emailController.text.toString(),
+                    'phone': phoneController.text.toString(),
+                    'state': state.text.toString(),
+                    'city': city.text.toString(),
+                    'radio': _currentSliderValue.round().toString(),
+                    'price': priceController.text.toString(),
+                    'country': country.text.toString(),
+                  }).then((value) {
+                    AppWidget().itemMessage("Información actualizada", context);
+                  }).catchError((onError) {
+                    print("error: " + onError.toString());
+                    AppWidget().itemMessage("Error al actualizar foto", context);
+                  });
+                } else {
+                  AppWidget().itemMessage("Faltan campos", context);
+                }
               }),
               SizedBox(
                 height: 30,
@@ -1978,7 +1991,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                                                   final snapshot = e.snapshot;
                                                                   if (snapshot.value != null) {
                                                                     if (snapshot.child("professional").value.toString() ==
-                                                                        _userDataProfile.key.toString()) {
+                                                                        _userDataProfile!.key.toString()) {
                                                                       createService(snapshot);
                                                                     } else {
                                                                       AppWidget().itemMessage(
@@ -1989,7 +2002,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                                                         name: dataList.child("name").value.toString(),
                                                                         inspections: dataList.child("inspections").value.toString(),
                                                                         profesionalName: dataList.child("fullname").value.toString(),
-                                                                        profesional: _userDataProfile.key.toString(),
+                                                                        profesional: _userDataProfile!.key.toString(),
                                                                         price: int.parse(dataList.child("price").value.toString()));
 
                                                                     Future.delayed(const Duration(milliseconds: 1000), () {
@@ -2115,7 +2128,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
 
             ;
           } catch (e) {
-            return AppWidget().noResult();
+            return AppWidget().loading();
           }
         });
   }

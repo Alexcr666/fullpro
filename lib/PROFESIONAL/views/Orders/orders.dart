@@ -829,7 +829,7 @@ class _MyOrdersState extends State<MyOrders> with TickerProviderStateMixin {
                     style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 20),
                   )),
               Expanded(child: SizedBox()),
-              Container(
+              /*  Container(
                   margin: EdgeInsets.only(left: 30),
                   child: Row(
                     children: [
@@ -846,7 +846,7 @@ class _MyOrdersState extends State<MyOrders> with TickerProviderStateMixin {
                         color: secondryColor,
                       ),
                     ],
-                  )),
+                  )),*/
               SizedBox(
                 width: 50,
               ),
