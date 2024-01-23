@@ -554,24 +554,39 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                       onTap: () {
                                         clickPhoto();
                                       },
-                                      child: Container(
-                                          height: 120,
-                                          width: 120,
-                                          child: ClipRRect(
-                                            borderRadius: BorderRadius.circular(90),
-                                            child: CachedNetworkImage(
-                                              fit: BoxFit.cover,
-                                              imageUrl: imageUser ?? '',
-                                              useOldImageOnUrlChange: true,
-                                              placeholder: (context, url) => CupertinoActivityIndicator(
-                                                radius: 20,
-                                                color: Colors.grey.withOpacity(0.3),
-                                              ),
-                                              errorWidget: (context, url, error) => Container(
-                                                color: Colors.grey.withOpacity(0.4),
-                                              ),
-                                            ),
-                                          ))),
+                                      child: Stack(
+                                        children: [
+                                          Container(
+                                              height: 120,
+                                              width: 120,
+                                              child: ClipRRect(
+                                                borderRadius: BorderRadius.circular(90),
+                                                child: CachedNetworkImage(
+                                                  fit: BoxFit.cover,
+                                                  imageUrl: imageUser ?? '',
+                                                  useOldImageOnUrlChange: true,
+                                                  placeholder: (context, url) => CupertinoActivityIndicator(
+                                                    radius: 20,
+                                                    color: Colors.grey.withOpacity(0.3),
+                                                  ),
+                                                  errorWidget: (context, url, error) => Container(
+                                                    color: Colors.grey.withOpacity(0.4),
+                                                  ),
+                                                ),
+                                              )),
+                                          Positioned.fill(
+                                              child: Align(
+                                                  alignment: Alignment.bottomRight,
+                                                  child: Container(
+                                                      width: 40,
+                                                      height: 40,
+                                                      decoration: BoxDecoration(shape: BoxShape.circle, color: secondryColor),
+                                                      child: Icon(
+                                                        Icons.camera_alt_outlined,
+                                                        color: Colors.white,
+                                                      )))),
+                                        ],
+                                      )),
                                   SizedBox(
                                     height: 10,
                                   ),

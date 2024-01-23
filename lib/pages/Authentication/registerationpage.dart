@@ -337,11 +337,12 @@ class _RegistrationPageState extends State<RegistrationPage> {
                               style: TextStyle(color: Colors.blue),
                               recognizer: TapGestureRecognizer()
                                 ..onTap = () {
-                                  Loader.page(
+                                  Navigator.push(
                                       context,
-                                      TermsPage(
-                                        state: 1,
-                                      ));
+                                      MaterialPageRoute(
+                                          builder: (context) => TermsPage(
+                                                state: 2,
+                                              )));
                                 },
                             ),
                           ],

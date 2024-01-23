@@ -120,6 +120,10 @@ dependencies:
   money_formatter: ^0.0.5
   power_file_view: ^1.0.1
 
+  flutter_widget_from_html: ^0.9.1
+  flutter_cached_pdfview: ^0.4.2
+  flutter_local_notifications: ^16.3.0
+
 dependency_overrides:
   flutter:
     sdk: flutter

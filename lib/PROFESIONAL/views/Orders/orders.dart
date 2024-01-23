@@ -12,6 +12,7 @@ import 'package:fullpro/PROFESIONAL/detailsOrderProfessional.dart';
 import 'package:fullpro/PROFESIONAL/models/ordersModel.dart';
 import 'package:fullpro/PROFESIONAL/utils/globalConstants.dart';
 import 'package:fullpro/PROFESIONAL/views/Orders/orderDetail.dart';
+import 'package:fullpro/PROFESIONAL/views/homepage.dart';
 import 'package:fullpro/PROFESIONAL/widget/DataLoadedProgress.dart';
 import 'package:fullpro/PROFESIONAL/widget/accountHold.dart';
 import 'package:fullpro/const.dart';
@@ -933,7 +934,14 @@ class _MyOrdersState extends State<MyOrders> with TickerProviderStateMixin {
               userCheck == false ? SizedBox() : pageUsers(),
               profesionalCheck == false ? SizedBox() : pageProfessional(),
               //    Text(positionFilter.toString()),
-              serviceCheck == false ? SizedBox() : pageOrdensWidget()
+              serviceCheck == false
+                  ? SizedBox()
+                  : userInfoPartners == null
+                      ? AppWidget().noLocation()
+                      : userInfoPartners!.child("location").value == null
+                          ? AppWidget().noLocation()
+                          : pageOrdensWidget()
+
               /*  serviceCheck == false
                       ? SizedBox()
                       : Column(

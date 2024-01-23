@@ -19,6 +19,7 @@ import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
 import 'package:fullpro/pages/homepage.dart';
 
 import 'package:fullpro/pages/support/newSupport.dart';
+import 'package:fullpro/utils/utils.dart';
 
 import 'package:fullpro/widgets/widget.dart';
 
@@ -65,13 +66,17 @@ class _PortafolioPageState extends State<PortafolioPage> {
                                         ListTile(
                                           title: new Text('Eliminar'),
                                           onTap: () {
-                                            dataList.ref.remove().then((value) {
-                                              AppWidget().itemMessage("Eliminado", context);
-
-                                              setState(() {});
-                                            });
-
                                             Navigator.pop(context);
+
+                                            AppWidget().optionsEnabled("¿Estas seguro que quieres eliminar?", context, tap: () {
+                                              dataList.ref.remove().then((value) {
+                                                AppWidget().itemMessage("Eliminado", context);
+
+                                                setState(() {});
+                                              });
+                                            }, tap2: () {
+                                              Navigator.pop(context);
+                                            });
                                           },
                                         ),
                                         ListTile(
@@ -143,12 +148,12 @@ class _PortafolioPageState extends State<PortafolioPage> {
                                                       crossAxisAlignment: CrossAxisAlignment.start,
                                                       children: [
                                                         Text(
-                                                          dataList.child("name").value.toString(),
+                                                          dataList.child("name").value.toString().capitalize(),
                                                           textAlign: TextAlign.center,
                                                           style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: secondryColor),
                                                         ),
                                                         Text(
-                                                          dataList.child("category").value.toString(),
+                                                          dataList.child("category").value.toString().capitalize(),
                                                           textAlign: TextAlign.center,
                                                           style: TextStyle(fontSize: 10, color: secondryColor),
                                                         ),

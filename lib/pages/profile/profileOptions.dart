@@ -307,7 +307,7 @@ class _ProfileOptionsPageState extends State<ProfileOptionsPage> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => TermsPage(
-                                        state: 2,
+                                        state: 3,
                                       )));
 
                           //Navigator.push(context, MaterialPageRoute(builder: (context) => const Language()));

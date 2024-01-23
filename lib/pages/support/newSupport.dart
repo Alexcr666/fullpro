@@ -459,6 +459,9 @@ class _PortafolioPageState extends State<NewPortafolioPage> {
                     height: 20,
                   ),
                   AppWidget().texfieldFormat(title: "Precio", controller: _priceController),
+                  SizedBox(
+                    height: 20,
+                  ),
                   Text("Fotos portafolio"),
                   SizedBox(
                     height: 10,
@@ -521,7 +524,7 @@ class _PortafolioPageState extends State<NewPortafolioPage> {
                             'type': checkInspeccion ? 1 : 2,
                             'category': _searchHome.text,
                             'foto': fileUrl.toString(),
-                            'price': int.parse(priceController.text),
+                            'price': int.parse(_priceController.text.toString()),
                           };
 
                           newUserRef.set(userMap).then((value) {

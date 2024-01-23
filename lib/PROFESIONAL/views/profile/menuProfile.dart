@@ -336,7 +336,7 @@ class _ProfileOptionsProfessionalPageState extends State<ProfileOptionsProfessio
                         onCLicked: () {
                           //   Navigator.pop(context);
 
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => TermsPage(state: 2)));
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => TermsPage(state: 3)));
 
                           //Navigator.push(context, MaterialPageRoute(builder: (context) => const Language()));
                         },

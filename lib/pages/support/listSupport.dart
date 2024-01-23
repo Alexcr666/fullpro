@@ -74,13 +74,16 @@ class _ListSupportPageState extends State<ListSupportPage> {
                                             ListTile(
                                               title: new Text('Eliminar'),
                                               onTap: () {
-                                                dataList.ref.remove().then((value) {
-                                                  AppWidget().itemMessage("Eliminado", context);
-
-                                                  setState(() {});
-                                                });
-
                                                 Navigator.pop(context);
+                                                AppWidget().optionsEnabled("¿Estas seguro que quieres eliminar?", context, tap: () {
+                                                  dataList.ref.remove().then((value) {
+                                                    Navigator.pop(context);
+                                                    setState(() {});
+                                                    AppWidget().itemMessage("Eliminado", context);
+                                                  });
+                                                }, tap2: () {
+                                                  Navigator.pop(context);
+                                                });
                                               },
                                             ),
                                             /*ListTile(

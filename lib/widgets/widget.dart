@@ -30,6 +30,32 @@ import 'package:flutter_locales/flutter_locales.dart';
 import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
 
 class AppWidget {
+  showAlertDialogLoading(BuildContext context) {
+    AlertDialog alert = AlertDialog(
+      content: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            "Cargando",
+            style: TextStyle(color: secondryColor, fontSize: 26),
+          ),
+          SizedBox(
+            width: 30,
+          ),
+          Container(width: 30, height: 30, child: CircularProgressIndicator()),
+        ],
+      ),
+    );
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
   redSocialProfessional(BuildContext context, bool active) {
     return Column(
       children: [
@@ -196,6 +222,35 @@ class AppWidget {
               style: TextStyle(color: secondryColor, fontSize: 20),
             ),
             Expanded(child: SizedBox()),
+          ],
+        ),
+        SizedBox(
+          height: 20,
+        ),
+      ],
+    );
+  }
+
+  Widget noLocation() {
+    return Column(
+      children: [
+        SizedBox(
+          height: 20,
+        ),
+        Row(
+          children: [
+            SizedBox(
+              width: 20,
+            ),
+            Flexible(
+                child: Text(
+              "Para recibir ordenes debe seleccionar una ubicación",
+              style: TextStyle(color: secondryColor, fontSize: 18),
+              textAlign: TextAlign.center,
+            )),
+            SizedBox(
+              width: 20,
+            ),
           ],
         ),
         SizedBox(

@@ -23,11 +23,13 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fullpro/const.dart';
 
 import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
+import 'package:fullpro/utils/utils.dart';
 
 import 'package:fullpro/widgets/widget.dart';
 
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:money_formatter/money_formatter.dart';
 
 import 'package:provider/provider.dart';
 
@@ -500,7 +502,7 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
 
                 return ListTile(
                   leading: AppWidget().circleProfile(response.snapshot.child("photo").value.toString()),
-                  title: Text(response.snapshot.child("fullname").value.toString()),
+                  title: Text(response.snapshot.child("fullname").value.toString().capitalize()),
                   subtitle: RatingBarIndicator(
                       rating: response.snapshot.child("rating").value == null
                           ? 0
@@ -529,7 +531,7 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
 
                 return ListTile(
                   leading: AppWidget().circleProfile(response.snapshot.child("photo").value.toString()),
-                  title: Text(response.snapshot.child("fullname").value.toString()),
+                  title: Text(response.snapshot.child("fullname").value.toString().capitalize()),
                   subtitle: RatingBarIndicator(
                       rating: response.snapshot.child("rating").value == null
                           ? 0
@@ -914,6 +916,27 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
                     ),
                     title: Text(widget.dataList.child("professionalName").value.toString()),
                   ),*/
+                      SizedBox(
+                        height: 15,
+                      ),
+                      Container(
+                          margin: EdgeInsets.only(left: 20),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Usuario".toString(),
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                  color: secondryColor,
+                                ),
+                              ),
+                            ],
+                          )),
+                      SizedBox(
+                        height: 10,
+                      ),
                       widget.dataList.child("professional").value.toString() != FirebaseAuth.instance.currentUser!.uid.toString
                           ? getUserProfessional()
                           : getUserUser(),
@@ -1095,14 +1118,21 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
                     title: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(data.child("name").value.toString()),
+                        Text(
+                          data.child("name").value.toString().capitalize(),
+                          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                        ),
                         SizedBox(
                           height: 2,
                         ),
                         data.child("price").value == null
-                            ? Text("0")
+                            ? Text('\$ ' + "0")
                             : Text(
-                                '\$' + data.child("price").value.toString(),
+                                '\$ ' +
+                                    MoneyFormatter(amount: double.parse(data.child("price").value.toString()))
+                                        .output
+                                        .withoutFractionDigits
+                                        .toString(),
                                 style: TextStyle(fontSize: 14),
                               )
                       ],
@@ -1130,9 +1160,21 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
           height: 10,
         ),
 
-        itemMoney("Costo del servicio", '\$' + getTotalPay().toString()),
+        itemMoney(
+            "Costo del servicio",
+            '\$' +
+                MoneyFormatter(amount: double.parse(((getTotalPay() - (int.parse(getTotalPay().toString())) / 10)).toString()))
+                    .output
+                    .withoutFractionDigits
+                    .toString()),
 
-        itemMoney("Tarifa del servicio", '\$' + (int.parse(getTotalPay().toString()) / 10).round().toString()),
+        itemMoney(
+            "Tarifa del servicio",
+            '\$' +
+                MoneyFormatter(amount: double.parse((int.parse(getTotalPay().toString()) / 10).toString()))
+                    .output
+                    .withoutFractionDigits
+                    .toString()),
 
         SizedBox(
           height: 30,
@@ -1274,7 +1316,7 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
                   ),
                 ),
                 Text(
-                  '\$' + getTotalPay().toString(),
+                  '\$' + MoneyFormatter(amount: double.parse(getTotalPay().toString())).output.withoutFractionDigits.toString(),
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 22,

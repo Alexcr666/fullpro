@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -19,7 +20,9 @@ import 'package:fullpro/PROFESIONAL/views/support/support.dart';
 import 'package:fullpro/PROFESIONAL/views/wallet/wallet.dart';
 import 'package:fullpro/PROFESIONAL/widget/bottomNav.dart';
 import 'package:fullpro/PROFESIONAL/widget/widget.dart';
+import 'package:fullpro/main.dart';
 import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
+import 'package:fullpro/widgets/widget.dart';
 import 'package:geolocator/geolocator.dart';
 
 import '../utils/globalConstants.dart';
@@ -45,6 +48,23 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  late FirebaseMessaging messaging;
+
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+
+  static void initialize() {
+    // Initialization  setting for android
+    const InitializationSettings initializationSettingsAndroid =
+        InitializationSettings(android: AndroidInitializationSettings("@drawable/notification_icon"));
+    notificationsPlugin.initialize(
+      initializationSettingsAndroid,
+      // to handle event when we receive notification
+      onDidReceiveNotificationResponse: (details) {
+        if (details.input != null) {}
+      },
+    );
+  }
+
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   var refreshKey = GlobalKey<RefreshIndicatorState>();
 
@@ -136,6 +156,8 @@ class _HomePageState extends State<HomePage> {
     userRef.once().then((e) async {
       final _datasnapshot = e.snapshot;
       userInfoPartners = e.snapshot;
+
+      userInfoPartners!.ref.update({"tokenNotification": deviceToken});
 
       if (_datasnapshot.value != null) {
         currentPartnerInfo = Partner.fromSnapshot(_datasnapshot);
@@ -303,6 +325,21 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    messaging = FirebaseMessaging.instance;
+    messaging.getToken().then((value) {
+      print("token: " + value.toString());
+      deviceToken = value!;
+    });
+
+    initialize();
+
+    FirebaseMessaging.onMessage.listen((RemoteMessage event) {
+      // print("message recieved" + event.data.toString());
+
+      // if (event.notification != null) {
+      display(event);
+      //  }
+    });
 
     setupPositionLocator();
 
@@ -565,7 +602,12 @@ class _HomePageState extends State<HomePage> {
             //   Counts CONTAINER
 
             // SolicitudList(),
-            Expanded(child: pageOrdensWidget(1)),
+            userInfoPartners == null
+                ? AppWidget().noLocation()
+                : userInfoPartners!.child("location").value == null
+                    ? AppWidget().noLocation()
+                    : Expanded(child: pageOrdensWidget(1)),
+
             // countsContainer(ordersCountLoaded, totalOrders, earningsCountLoaded, getUserEarning!, context),
 
             const SizedBox(height: 30),

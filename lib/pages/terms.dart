@@ -1,7 +1,9 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_cached_pdfview/flutter_cached_pdfview.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:fullpro/config.dart';
 import 'package:fullpro/controller/loader.dart';
 import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
@@ -20,12 +22,17 @@ class TermsPage extends StatefulWidget {
   State<TermsPage> createState() => _TermsPageState();
 }
 
-List<String> titles = ["", "Terminos y condiciones", "Acerca de la aplicación", "Politicas de privacidad"];
+List<String> titles = [
+  "",
+  "Politicas de privacidad",
+  "Terminos y condiciones",
+  "Acerca de la aplicación",
+];
 
 WebViewController controller = WebViewController();
 
 late String downloadPath;
-late String downloadUrl;
+String? downloadUrl;
 
 class _TermsPageState extends State<TermsPage> {
   @override
@@ -77,36 +84,12 @@ class _TermsPageState extends State<TermsPage> {
             ),
 
             Expanded(
-                // width: double.infinity,
-                // height: 200,
-                child: PowerFileViewWidget(
-              downloadUrl: downloadUrl,
-              filePath: downloadPath,
-              loadingBuilder: (viewType, progress) {
-                return Container(
-                  color: Colors.grey,
-                  alignment: Alignment.center,
-                  child: Text("Loading: $progress"),
-                );
-              },
-              errorBuilder: (viewType) {
-                return Container(
-                  color: Colors.red,
-                  alignment: Alignment.center,
-                  child: const Text("Something went wrong!!!!"),
-                );
-              },
+                child: PDF().cachedFromUrl(
+              downloadUrl!,
+              placeholder: (progress) => Center(child: Text('$progress %')),
+              errorWidget: (error) => Center(child: Text(error.toString())),
             )),
-
-            /* Text(
-                '$appName ${Locales.string(context, 'lbl_terms_para_one')}',
-                style: const TextStyle(
-                  fontSize: 14,
-                ),
-                textAlign: TextAlign.center,
-              ),*/
-
-            const SizedBox(height: 30),
+            SizedBox(height: 30),
             //
             //
             const SizedBox(height: 40),
@@ -126,10 +109,6 @@ class _TermsPageState extends State<TermsPage> {
   @override
   initState() {
     super.initState();
-
-    getTemporaryDirectory().then((value) {
-      downloadPath = "${value.path}/" + "filename.pdf";
-    });
 
     FirebaseDatabase.instance.ref().child('terms').child(widget.state.toString()).once().then((value) {
       String url = value.snapshot.child("value").value.toString();
