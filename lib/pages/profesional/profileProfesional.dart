@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:collection';
 import 'dart:convert';
 
@@ -57,12 +58,14 @@ import 'package:fullpro/pages/subServicePage.dart';
 import 'package:fullpro/styles/statics.dart';
 
 import 'package:fullpro/utils/countryStateCity/AddressPickerRow.dart';
+import 'package:fullpro/utils/utils.dart';
 import 'package:fullpro/widgets/bottomNav.dart';
 
 import 'package:fullpro/widgets/widget.dart';
 
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:money_formatter/money_formatter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../styles/styles.dart';
@@ -70,9 +73,10 @@ import '../../styles/styles.dart';
 import '../styles/statics.dart' as Static;
 
 class ProfileProfesionalPage extends StatefulWidget {
-  ProfileProfesionalPage({Key? key, required this.id}) : super(key: key);
+  ProfileProfesionalPage({Key? key, required this.id, this.settings}) : super(key: key);
 
   String? id;
+  bool? settings;
 
   @override
   State<ProfileProfesionalPage> createState() => _ProfileProfesionalPageState();
@@ -205,11 +209,17 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                                 crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
                                                   Text(
-                                                    dataList.child("name").value.toString(),
+                                                    dataList.child("name").value.toString().capitalize(),
                                                     style: TextStyle(color: Colors.black, fontSize: 17, fontWeight: FontWeight.bold),
                                                   ),
                                                   Text(
-                                                    dataList.child("price").value.toString(),
+                                                    dataList.child("price").value == null
+                                                        ? '\$ ' + "0"
+                                                        : '\$ ' +
+                                                            MoneyFormatter(amount: double.parse(dataList.child("price").value.toString()))
+                                                                .output
+                                                                .withoutFractionDigits
+                                                                .toString(),
                                                     style: TextStyle(color: Colors.black, fontSize: 23, fontWeight: FontWeight.bold),
                                                   ),
                                                   Text(
@@ -314,7 +324,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                           Text(
                                             dataList.child("name").value == null
                                                 ? "No disponible"
-                                                : dataList.child("name").value.toString(),
+                                                : dataList.child("name").value.toString().capitalize(),
                                             style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 14),
                                           ),
                                         ],
@@ -349,7 +359,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                               child: Text(
                                             dataList.child("address").value == null
                                                 ? "No disponible"
-                                                : dataList.child("address").value.toString(),
+                                                : dataList.child("address").value.toString().capitalize(),
                                             maxLines: 1,
                                             style: TextStyle(color: secondryColor, fontSize: 12),
                                           )),
@@ -367,9 +377,13 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                           ),
                                           Text(
                                             dataList.child("price").value == null
-                                                ? "No disponible"
-                                                : dataList.child("price").value.toString(),
-                                            style: TextStyle(color: secondryColor, fontSize: 18, fontWeight: FontWeight.bold),
+                                                ? '\$' + "0"
+                                                : '\$' +
+                                                    MoneyFormatter(amount: double.parse(dataList.child("price").value.toString()))
+                                                        .output
+                                                        .withoutFractionDigits
+                                                        .toString(),
+                                            style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 20),
                                           ),
                                         ],
                                       ),
@@ -562,8 +576,8 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                     height: 10,
                                   ),
                                   Text(
-                                    nameProfesional,
-                                    style: TextStyle(color: secondryColor, fontSize: 18, fontWeight: FontWeight.bold),
+                                    nameProfesional.capitalize(),
+                                    style: TextStyle(color: secondryColor, fontSize: 22, fontWeight: FontWeight.bold),
                                   ),
                                   SizedBox(
                                     height: 5,
@@ -582,47 +596,47 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                               ))),
                     ],
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Flexible(
-                          child: Container(
-                              width: 170,
-                              child: AppWidget().buttonFormLine(
-                                  context,
-                                  FirebaseAuth.instance.currentUser!.uid.toString() == widget.id ? "Editar perfil" : "Solicitar",
-                                  false, tap: () {
-                                if (FirebaseAuth.instance.currentUser!.uid.toString() == widget.id) {
-                                  stateIndicator = 4;
-                                  setState(() {});
-                                } else {
-                                  createOrdens(context,
-                                      name: "Tecnp",
-                                      inspections: "si",
-                                      profesionalName: nameProfesional,
-                                      profesional: userDataProfile!.key.toString(),
-                                      price: 1000);
-                                }
-                              }))),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      FirebaseAuth.instance.currentUser!.uid.toString() == widget.id
-                          ? SizedBox()
-                          : GestureDetector(
-                              onTap: () {
-                                if (FirebaseAuth.instance.currentUser!.uid.toString() == widget.id) {
-                                  List<userD.User> result = LinkedHashSet<userD.User>.from(matches).toList();
+                  FirebaseAuth.instance.currentUser!.uid.toString() == widget.id
+                      ? SizedBox()
+                      : Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Flexible(
+                                child: Container(
+                                    width: 170,
+                                    child: AppWidget().buttonFormLine(
+                                        context,
+                                        FirebaseAuth.instance.currentUser!.uid.toString() == widget.id ? "Editar perfil" : "Solicitar",
+                                        false, tap: () {
+                                      if (FirebaseAuth.instance.currentUser!.uid.toString() == widget.id) {
+                                        stateIndicator = 4;
+                                        setState(() {});
+                                      } else {
+                                        createOrdens(context,
+                                            name: "Tecnp",
+                                            inspections: "si",
+                                            profesionalName: nameProfesional,
+                                            profesional: userDataProfile!.key.toString(),
+                                            price: 1000);
+                                      }
+                                    }))),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            GestureDetector(
+                                onTap: () {
+                                  if (FirebaseAuth.instance.currentUser!.uid.toString() == widget.id) {
+                                    List<userD.User> result = LinkedHashSet<userD.User>.from(matches).toList();
 
-                                  List<userD.User> newMatchesResult = LinkedHashSet<userD.User>.from(newmatches).toList();
+                                    List<userD.User> newMatchesResult = LinkedHashSet<userD.User>.from(newmatches).toList();
 // => ["a", "b", "c", "d"]
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(builder: (context) => HomeScreen(currentUser!, result, newMatchesResult)),
-                                  );
-                                }
-                                /* CollectionReference users = FirebaseFirestore.instance
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(builder: (context) => HomeScreen(currentUser!, result, newMatchesResult)),
+                                    );
+                                  }
+                                  /* CollectionReference users = FirebaseFirestore.instance
                       .collection('Users')
                       .doc("Mkoc6GZaIWMf6yO2mDAHlZucj9V2" /*FirebaseAuth.instance.currentUser!.uid.toString()*/)
                       .collection("Matches");
@@ -641,7 +655,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                       AppWidget().itemMessage("Error al crear", context);
                     });*/
 
-                                //CollectionReference users = FirebaseFirestore.instance.collection('Users');
+                                  //CollectionReference users = FirebaseFirestore.instance.collection('Users');
 /*
                             addMatches() {
                               DocumentReference usersValidate2 = FirebaseFirestore.instance
@@ -730,15 +744,15 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                             }
 
                             addUser();*/
-                                //  kkk
-                              },
-                              child: Icon(
-                                Icons.message,
-                                size: 40,
-                                color: secondryColor,
-                              )),
-                    ],
-                  ),
+                                  //  kkk
+                                },
+                                child: Icon(
+                                  Icons.message,
+                                  size: 40,
+                                  color: secondryColor,
+                                )),
+                          ],
+                        ),
                   SizedBox(
                     height: 20,
                   ),
@@ -771,11 +785,13 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                               SizedBox(
                                 width: 10,
                               ),
-                              AppWidget().buttonShandowRounded("Historial", stateIndicator != 3, tap: () {
-                                stateIndicator = 3;
+                              FirebaseAuth.instance.currentUser!.uid.toString() != widget.id
+                                  ? SizedBox()
+                                  : AppWidget().buttonShandowRounded("Historial", stateIndicator != 3, tap: () {
+                                      stateIndicator = 3;
 
-                                setState(() {});
-                              }),
+                                      setState(() {});
+                                    }),
                               SizedBox(
                                 width: 10,
                               ),
@@ -804,6 +820,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
   }
 
   Widget stateIndicator0() {
+    bool emptyResult = false;
     return dataListObjectOrdens == null
         ? AppWidget().loading()
         : dataListObjectOrdens!.length == 0
@@ -815,90 +832,101 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                 itemBuilder: (BuildContext context, int index) {
                   DataSnapshot dataList = dataListObjectOrdens!.toList().reversed.toList()[index];
 
-                  return Container(
-                    margin: EdgeInsets.only(left: 20, right: 20, top: 10),
-                    decoration: AppWidget().boxShandowGreyRectangule(),
-                    child: Row(
-                      children: [
-                        SizedBox(
-                          width: 10,
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Flexible(
-                            child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            SizedBox(
-                              height: 14,
-                            ),
-                            dataList!.child("user").value == null
-                                ? SizedBox()
-                                : FutureBuilder(
-                                    future: FirebaseDatabase.instance
-                                        .ref()
-                                        .child('users')
-                                        .child(dataList!.child("user").value.toString())
-                                        .once(),
-                                    builder: (BuildContext context, AsyncSnapshot snapshot) {
-                                      late DatabaseEvent response;
-                                      if (snapshot.hasData) {
-                                        response = snapshot.data;
-                                      } else {}
-                                      return snapshot.hasData == false
-                                          ? AppWidget().loading()
-                                          : Row(
-                                              children: [
-                                                Flexible(
-                                                    child: AppWidget()
-                                                        .circleProfile(response.snapshot.child("photo").value.toString(), size: 50)),
-                                                SizedBox(
-                                                  width: 20,
-                                                ),
-                                                Flexible(
-                                                  child: Column(
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                  if (dataList.child("rating").value == 0) {
+                    emptyResult = true;
+                  }
+
+                  return dataList.child("rating").value == 0
+                      ? (index == dataListObjectOrdens!.length)
+                          ? SizedBox()
+                          : emptyResult == false
+                              ? SizedBox()
+                              : AppWidget().noResult()
+                      : Container(
+                          margin: EdgeInsets.only(left: 20, right: 20, top: 10),
+                          decoration: AppWidget().boxShandowGreyRectangule(),
+                          child: Row(
+                            children: [
+                              SizedBox(
+                                width: 10,
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Flexible(
+                                  child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SizedBox(
+                                    height: 14,
+                                  ),
+                                  dataList!.child("user").value == null
+                                      ? SizedBox()
+                                      : FutureBuilder(
+                                          future: FirebaseDatabase.instance
+                                              .ref()
+                                              .child('users')
+                                              .child(dataList!.child("user").value.toString())
+                                              .once(),
+                                          builder: (BuildContext context, AsyncSnapshot snapshot) {
+                                            late DatabaseEvent response;
+                                            if (snapshot.hasData) {
+                                              response = snapshot.data;
+                                            } else {}
+                                            return snapshot.hasData == false
+                                                ? AppWidget().loading()
+                                                : Row(
                                                     children: [
-                                                      Text(
-                                                        response.snapshot.child("fullname").value == null
-                                                            ? "No disponible"
-                                                            : response.snapshot.child("fullname").value.toString(),
-                                                        style: TextStyle(color: secondryColor, fontSize: 17, fontWeight: FontWeight.bold),
+                                                      Flexible(
+                                                          child: AppWidget()
+                                                              .circleProfile(response.snapshot.child("photo").value.toString(), size: 50)),
+                                                      SizedBox(
+                                                        width: 20,
                                                       ),
-                                                      RatingBarIndicator(
-                                                          rating: response.snapshot.child("rating").value == null
-                                                              ? 0
-                                                              : double.parse(response.snapshot.child("rating").value.toString()),
-                                                          itemCount: 5,
-                                                          itemSize: 16.0,
-                                                          itemBuilder: (context, _) => Icon(
-                                                                Icons.star,
-                                                                color: secondryColor,
-                                                              )),
+                                                      Flexible(
+                                                        child: Column(
+                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                          children: [
+                                                            Text(
+                                                              response.snapshot.child("fullname").value == null
+                                                                  ? "No disponible"
+                                                                  : response.snapshot.child("fullname").value.toString(),
+                                                              style: TextStyle(
+                                                                  color: secondryColor, fontSize: 17, fontWeight: FontWeight.bold),
+                                                            ),
+                                                            RatingBarIndicator(
+                                                                rating: response.snapshot.child("rating").value == null
+                                                                    ? 0
+                                                                    : double.parse(response.snapshot.child("rating").value.toString()),
+                                                                itemCount: 5,
+                                                                itemSize: 16.0,
+                                                                itemBuilder: (context, _) => Icon(
+                                                                      Icons.star,
+                                                                      color: secondryColor,
+                                                                    )),
+                                                          ],
+                                                        ),
+                                                      )
                                                     ],
-                                                  ),
-                                                )
-                                              ],
-                                            );
-                                    }),
-                            SizedBox(
-                              height: 5,
-                            ),
-                            /*Container(
+                                                  );
+                                          }),
+                                  SizedBox(
+                                    height: 5,
+                                  ),
+                                  /*Container(
                             margin: EdgeInsets.only(left: 10, right: 10),
                             child: Text(
                               dataList.child("comment").value == null ? "" : dataList.child("comment").value.toString(),
                               style: TextStyle(fontSize: 10),
                             )),*/
-                            SizedBox(
-                              height: 14,
-                            ),
-                          ],
-                        ))
-                      ],
-                    ),
-                  );
+                                  SizedBox(
+                                    height: 14,
+                                  ),
+                                ],
+                              ))
+                            ],
+                          ),
+                        );
                 });
   }
 
@@ -1106,7 +1134,6 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
           Expanded(child: SizedBox()),
         ],
       ),
-
       Container(
           margin: EdgeInsets.only(left: 20, right: 20),
           child: Form(
@@ -1181,136 +1208,144 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                   ),
                 ],
               ))),
+      FirebaseAuth.instance.currentUser!.uid.toString() != widget.id
+          ? SizedBox()
+          : Column(
+              children: [
+                Container(
+                    margin: EdgeInsets.only(left: 20, right: 20),
+                    child: CountryStateCityPickerRow(
+                      country: country,
+                      state: state,
+                      city: city,
+                      textFieldInputBorder: const UnderlineInputBorder(),
+                    )),
 
-      Container(
-          margin: EdgeInsets.only(left: 20, right: 20),
-          child: CountryStateCityPickerRow(
-            country: country,
-            state: state,
-            city: city,
-            textFieldInputBorder: const UnderlineInputBorder(),
-          )),
+                SizedBox(
+                  height: 10,
+                ),
 
-      SizedBox(
-        height: 10,
-      ),
-
-      /*  Container(
+                /*  Container(
           margin: EdgeInsets.only(left: 20, right: 20),
           child: AppWidget().texfieldFormat(
             controller: priceController,
             title: "Precio",
             enabled: FirebaseAuth.instance.currentUser!.uid == widget.id ? false : true,
           )),*/
-      SizedBox(
-        height: 10,
-      ),
-      Container(margin: EdgeInsets.only(left: 20), alignment: Alignment.centerLeft, child: Text("Licencias")),
+                SizedBox(
+                  height: 10,
+                ),
+                Container(margin: EdgeInsets.only(left: 20), alignment: Alignment.centerLeft, child: Text("Licencias")),
 
-      SizedBox(
-        height: 10,
-      ),
+                SizedBox(
+                  height: 10,
+                ),
 
-      // _userDataProfile.child("licence") == null
+                // _userDataProfile.child("licence") == null
 
-      _userDataProfile!.child("license").value == null
-          ? AppWidget().noResult()
-          : Container(
-              height: 40,
-              child: ListView.builder(
-                  padding: EdgeInsets.only(left: 10.0),
-                  itemCount: 1,
-                  scrollDirection: Axis.horizontal,
-                  shrinkWrap: true,
-                  itemBuilder: (BuildContext context, int index) {
-                    return Container(
-                      width: 150,
-                      margin: EdgeInsets.only(left: 5),
-                      padding: EdgeInsets.all(2),
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        color: Color(0xff38CAB3),
+                _userDataProfile!.child("license").value == null
+                    ? AppWidget().noResult()
+                    : Container(
+                        height: 40,
+                        child: ListView.builder(
+                            padding: EdgeInsets.only(left: 10.0),
+                            itemCount: 1,
+                            scrollDirection: Axis.horizontal,
+                            shrinkWrap: true,
+                            itemBuilder: (BuildContext context, int index) {
+                              return Container(
+                                width: 150,
+                                margin: EdgeInsets.only(left: 5),
+                                padding: EdgeInsets.all(2),
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                  color: Color(0xff38CAB3),
 
-                        // Set border width
+                                  // Set border width
 
-                        borderRadius: BorderRadius.all(Radius.circular(10.0)), // Set rounded corner radius
-                      ),
-                      child: Row(
-                        children: [
-                          SizedBox(
-                            width: 10,
-                          ),
-                          GestureDetector(
-                              onTap: () {
-                                _userDataProfile!.ref.child("license").remove().then((value) {
-                                  setState(() {});
-                                }).catchError((onError) {
-                                  print("error: " + onError.toString());
-                                });
+                                  borderRadius: BorderRadius.all(Radius.circular(10.0)), // Set rounded corner radius
+                                ),
+                                child: Row(
+                                  children: [
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    GestureDetector(
+                                        onTap: () {
+                                          AppWidget().optionsEnabled("¿Seguro quieres eliminar?", context, tap: () {
+                                            _userDataProfile!.ref.child("license").remove().then((value) {
+                                              setState(() {});
+                                            }).catchError((onError) {
+                                              print("error: " + onError.toString());
+                                            });
 
-                                setState(() {});
-                              },
-                              child: SvgPicture.asset(
-                                "images/icons/closeFile.svg",
-                                width: 35,
-                              )),
-                          SizedBox(
-                            width: 5,
-                          ),
-                          Container(
-                              child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Foto: " + index.toString(),
-                                style: TextStyle(color: Colors.white, fontSize: 10),
-                              ),
-                              Text(
-                                "291 KB",
-                                style: TextStyle(color: Colors.white, fontSize: 9),
-                              ),
-                            ],
-                          )),
-                          SizedBox(
-                            width: 15,
-                          ),
-                          GestureDetector(
-                              onTap: () async {
-                                final Uri url = Uri.parse(_userDataProfile!.child("license").value.toString());
-                                if (!await launchUrl(url)) {
-                                  throw Exception('Could not launch _url');
-                                }
-                              },
-                              child: Icon(
-                                Icons.remove_red_eye,
-                                size: 30,
-                              )),
-                        ],
-                      ),
-                    );
-                  })),
+                                            setState(() {});
+                                          }, tap2: () {
+                                            Navigator.pop(context);
+                                          });
+                                        },
+                                        child: SvgPicture.asset(
+                                          "images/icons/closeFile.svg",
+                                          width: 35,
+                                        )),
+                                    SizedBox(
+                                      width: 5,
+                                    ),
+                                    Container(
+                                        child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "Foto: " + index.toString(),
+                                          style: TextStyle(color: Colors.white, fontSize: 10),
+                                        ),
+                                        Text(
+                                          "291 KB",
+                                          style: TextStyle(color: Colors.white, fontSize: 9),
+                                        ),
+                                      ],
+                                    )),
+                                    SizedBox(
+                                      width: 15,
+                                    ),
+                                    GestureDetector(
+                                        onTap: () async {
+                                          final Uri url = Uri.parse(_userDataProfile!.child("license").value.toString());
+                                          if (!await launchUrl(url)) {
+                                            throw Exception('Could not launch _url');
+                                          }
+                                        },
+                                        child: Icon(
+                                          Icons.remove_red_eye,
+                                          size: 30,
+                                          color: Colors.black.withOpacity(0.4),
+                                        )),
+                                  ],
+                                ),
+                              );
+                            })),
 
-      /* Row(
+                /* Row(
           children: [
             kkk
            
           ],
         ),*/
 
-      SizedBox(
-        height: 5,
-      ),
+                SizedBox(
+                  height: 5,
+                ),
 
-      Container(
-          margin: EdgeInsets.only(left: 20, right: 20),
-          child: Column(
-            children: [
-              FirebaseAuth.instance.currentUser!.uid != widget.id
-                  ? SizedBox()
-                  : GestureDetector(
-                      onTap: () async {
-                        /*   FilePickerResult? result = await FilePicker.platform.pickFiles();
+                Container(
+                    margin: EdgeInsets.only(left: 20, right: 20),
+                    child: Column(
+                      children: [
+                        FirebaseAuth.instance.currentUser!.uid != widget.id
+                            ? SizedBox()
+                            : GestureDetector(
+                                onTap: () async {
+                                  /*   FilePickerResult? result = await FilePicker.platform.pickFiles();
 
 
                     if (result != null) {
@@ -1329,217 +1364,237 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
 
                     }*/
 
-                        uploadFile("license");
-                      },
-                      child: DottedBorder(
-                        color: licenceCheck ? Colors.red : Colors.grey,
-                        borderType: BorderType.RRect,
-                        radius: Radius.circular(12),
-                        padding: EdgeInsets.all(6),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.all(Radius.circular(12)),
-                          child: Container(
-                            height: 40,
-                            width: double.infinity,
-                            child: Center(child: Text("Drag & Drop your files or Mobile")),
-                          ),
+                                  uploadFile("license");
+                                },
+                                child: DottedBorder(
+                                  color: licenceCheck ? Colors.red : Colors.grey,
+                                  borderType: BorderType.RRect,
+                                  radius: Radius.circular(12),
+                                  padding: EdgeInsets.all(6),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.all(Radius.circular(12)),
+                                    child: Container(
+                                      height: 40,
+                                      width: double.infinity,
+                                      child: Center(child: Text("Drag & Drop your files or Mobile")),
+                                    ),
+                                  ),
+                                )),
+                        SizedBox(
+                          height: 10,
                         ),
-                      )),
-              SizedBox(
-                height: 10,
-              ),
-              Container(margin: EdgeInsets.only(left: 3), alignment: Alignment.centerLeft, child: Text("Background check")),
-              SizedBox(
-                height: 10,
-              ),
-              _userDataProfile!.child("background").value == null
-                  ? AppWidget().noResult()
-                  : Container(
-                      height: 40,
-                      child: ListView.builder(
-                          padding: EdgeInsets.only(left: 10.0),
-                          itemCount: 1,
-                          scrollDirection: Axis.horizontal,
-                          shrinkWrap: true,
-                          itemBuilder: (BuildContext context, int index) {
-                            return Container(
-                              width: 150,
-                              margin: EdgeInsets.only(left: 5),
-                              padding: EdgeInsets.all(2),
-                              alignment: Alignment.center,
-                              decoration: BoxDecoration(
-                                color: Color(0xff38CAB3),
-
-                                // Set border width
-
-                                borderRadius: BorderRadius.all(Radius.circular(10.0)), // Set rounded corner radius
-                              ),
-                              child: Row(
-                                children: [
-                                  SizedBox(
-                                    width: 10,
-                                  ),
-                                  GestureDetector(
-                                      onTap: () {
-                                        _userDataProfile!.ref.child("background").remove().then((value) {
-                                          setState(() {});
-                                        });
-                                      },
-                                      child: SvgPicture.asset(
-                                        "images/icons/closeFile.svg",
-                                        width: 35,
-                                      )),
-                                  SizedBox(
-                                    width: 5,
-                                  ),
-                                  Container(
-                                      child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        "Foto: " + index.toString(),
-                                        style: TextStyle(color: Colors.white, fontSize: 10),
-                                      ),
-                                      Text(
-                                        "291 KB",
-                                        style: TextStyle(color: Colors.white, fontSize: 9),
-                                      ),
-                                    ],
-                                  )),
-                                  SizedBox(
-                                    width: 15,
-                                  ),
-                                  GestureDetector(
-                                      onTap: () async {
-                                        final Uri url = Uri.parse(_userDataProfile!.child("background").value.toString());
-                                        if (!await launchUrl(url)) {
-                                          throw Exception('Could not launch _url');
-                                        }
-                                      },
-                                      child: Icon(
-                                        Icons.remove_red_eye,
-                                        size: 30,
-                                      )),
-                                ],
-                              ),
-                            );
-                          })),
-              SizedBox(
-                height: 5,
-              ),
-              FirebaseAuth.instance.currentUser!.uid != widget.id
-                  ? SizedBox(
-                      height: 10,
-                    )
-                  : GestureDetector(
-                      onTap: () async {
-                        uploadFile("background");
-                      },
-                      child: DottedBorder(
-                        color: backgroundCheck ? Colors.red : Colors.grey,
-                        borderType: BorderType.RRect,
-                        radius: Radius.circular(12),
-                        padding: EdgeInsets.all(6),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.all(Radius.circular(12)),
-                          child: Container(
-                            height: 40,
-                            width: double.infinity,
-                            child: Center(child: Text("Drag & Drop your files or Mobile")),
-                          ),
+                        Container(margin: EdgeInsets.only(left: 3), alignment: Alignment.centerLeft, child: Text("Background check")),
+                        SizedBox(
+                          height: 10,
                         ),
-                      )),
-              SizedBox(
-                height: 10,
-              ),
-              Container(margin: EdgeInsets.only(left: 3), alignment: Alignment.centerLeft, child: Text("Registro legal w9")),
-              SizedBox(
-                height: 10,
-              ),
-              _userDataProfile!.child("legal").value == null
-                  ? AppWidget().noResult()
-                  : Container(
-                      height: 40,
-                      child: ListView.builder(
-                          padding: EdgeInsets.only(left: 10.0),
-                          itemCount: 1,
-                          scrollDirection: Axis.horizontal,
-                          shrinkWrap: true,
-                          itemBuilder: (BuildContext context, int index) {
-                            return Container(
-                              width: 150,
-                              margin: EdgeInsets.only(left: 5),
-                              padding: EdgeInsets.all(2),
-                              alignment: Alignment.center,
-                              decoration: BoxDecoration(
-                                color: Color(0xff38CAB3),
+                        _userDataProfile!.child("background").value == null
+                            ? AppWidget().noResult()
+                            : Container(
+                                height: 40,
+                                child: ListView.builder(
+                                    padding: EdgeInsets.only(left: 10.0),
+                                    itemCount: 1,
+                                    scrollDirection: Axis.horizontal,
+                                    shrinkWrap: true,
+                                    itemBuilder: (BuildContext context, int index) {
+                                      return Container(
+                                        width: 150,
+                                        margin: EdgeInsets.only(left: 5),
+                                        padding: EdgeInsets.all(2),
+                                        alignment: Alignment.center,
+                                        decoration: BoxDecoration(
+                                          color: Color(0xff38CAB3),
 
-                                // Set border width
+                                          // Set border width
 
-                                borderRadius: BorderRadius.all(Radius.circular(10.0)), // Set rounded corner radius
-                              ),
-                              child: Row(
-                                children: [
-                                  SizedBox(
-                                    width: 10,
+                                          borderRadius: BorderRadius.all(Radius.circular(10.0)), // Set rounded corner radius
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            SizedBox(
+                                              width: 10,
+                                            ),
+                                            GestureDetector(
+                                                onTap: () {
+                                                  AppWidget().optionsEnabled("¿Seguro quieres eliminar?", context, tap: () {
+                                                    Navigator.pop(context);
+                                                    _userDataProfile!.ref.child("background").remove().then((value) {
+                                                      setState(() {});
+                                                    });
+
+                                                    setState(() {});
+                                                  }, tap2: () {
+                                                    Navigator.pop(context);
+                                                  });
+                                                },
+                                                child: SvgPicture.asset(
+                                                  "images/icons/closeFile.svg",
+                                                  width: 35,
+                                                )),
+                                            SizedBox(
+                                              width: 5,
+                                            ),
+                                            Container(
+                                                child: Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  "Foto: " + index.toString(),
+                                                  style: TextStyle(color: Colors.white, fontSize: 10),
+                                                ),
+                                                Text(
+                                                  "291 KB",
+                                                  style: TextStyle(color: Colors.white, fontSize: 9),
+                                                ),
+                                              ],
+                                            )),
+                                            SizedBox(
+                                              width: 15,
+                                            ),
+                                            GestureDetector(
+                                                onTap: () async {
+                                                  final Uri url = Uri.parse(_userDataProfile!.child("background").value.toString());
+                                                  if (!await launchUrl(url)) {
+                                                    throw Exception('Could not launch _url');
+                                                  }
+                                                },
+                                                child: Icon(
+                                                  Icons.remove_red_eye,
+                                                  color: Colors.black.withOpacity(0.4),
+                                                  size: 30,
+                                                )),
+                                          ],
+                                        ),
+                                      );
+                                    })),
+                        SizedBox(
+                          height: 5,
+                        ),
+                        FirebaseAuth.instance.currentUser!.uid != widget.id
+                            ? SizedBox(
+                                height: 10,
+                              )
+                            : GestureDetector(
+                                onTap: () async {
+                                  uploadFile("background");
+                                },
+                                child: DottedBorder(
+                                  color: backgroundCheck ? Colors.red : Colors.grey,
+                                  borderType: BorderType.RRect,
+                                  radius: Radius.circular(12),
+                                  padding: EdgeInsets.all(6),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.all(Radius.circular(12)),
+                                    child: Container(
+                                      height: 40,
+                                      width: double.infinity,
+                                      child: Center(child: Text("Drag & Drop your files or Mobile")),
+                                    ),
                                   ),
-                                  GestureDetector(
-                                      onTap: () {
-                                        _userDataProfile!.ref.child("legal").remove().then((value) {
-                                          setState(() {});
-                                        });
-                                      },
-                                      child: SvgPicture.asset(
-                                        "images/icons/closeFile.svg",
-                                        width: 35,
-                                      )),
-                                  SizedBox(
-                                    width: 5,
-                                  ),
-                                  Container(
-                                      child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        "Foto: " + index.toString(),
-                                        style: TextStyle(color: Colors.white, fontSize: 10),
-                                      ),
-                                      Text(
-                                        "291 KB",
-                                        style: TextStyle(color: Colors.white, fontSize: 9),
-                                      ),
-                                    ],
-                                  )),
-                                  SizedBox(
-                                    width: 15,
-                                  ),
-                                  GestureDetector(
-                                      onTap: () async {
-                                        final Uri url = Uri.parse(_userDataProfile!.child("legal").value.toString());
-                                        if (!await launchUrl(url)) {
-                                          throw Exception('Could not launch _url');
-                                        }
-                                      },
-                                      child: Icon(
-                                        Icons.remove_red_eye,
-                                        size: 30,
-                                      )),
-                                ],
-                              ),
-                            );
-                          })),
-              SizedBox(
-                height: 5,
-              ),
-              FirebaseAuth.instance.currentUser!.uid != widget.id
-                  ? SizedBox(
-                      height: 10,
-                    )
-                  : GestureDetector(
-                      onTap: () async {
-                        /* FilePickerResult? result = await FilePicker.platform.pickFiles();
+                                )),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Container(margin: EdgeInsets.only(left: 3), alignment: Alignment.centerLeft, child: Text("Registro legal w9")),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        _userDataProfile!.child("legal").value == null
+                            ? AppWidget().noResult()
+                            : Container(
+                                height: 40,
+                                child: ListView.builder(
+                                    padding: EdgeInsets.only(left: 10.0),
+                                    itemCount: 1,
+                                    scrollDirection: Axis.horizontal,
+                                    shrinkWrap: true,
+                                    itemBuilder: (BuildContext context, int index) {
+                                      return Container(
+                                        width: 150,
+                                        margin: EdgeInsets.only(left: 5),
+                                        padding: EdgeInsets.all(2),
+                                        alignment: Alignment.centerLeft,
+                                        decoration: BoxDecoration(
+                                          color: Color(0xff38CAB3),
+
+                                          // Set border width
+
+                                          borderRadius: BorderRadius.all(Radius.circular(10.0)), // Set rounded corner radius
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            SizedBox(
+                                              width: 10,
+                                            ),
+                                            GestureDetector(
+                                                onTap: () {
+                                                  AppWidget().optionsEnabled("¿Seguro quieres eliminar?", context, tap: () {
+                                                    Navigator.pop(context);
+                                                    _userDataProfile!.ref.child("legal").remove().then((value) {
+                                                      setState(() {});
+                                                    });
+
+                                                    setState(() {});
+                                                  }, tap2: () {
+                                                    Navigator.pop(context);
+                                                  });
+                                                },
+                                                child: SvgPicture.asset(
+                                                  "images/icons/closeFile.svg",
+                                                  width: 35,
+                                                )),
+                                            SizedBox(
+                                              width: 5,
+                                            ),
+                                            Container(
+                                                child: Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  "Foto: " + index.toString(),
+                                                  style: TextStyle(color: Colors.white, fontSize: 10),
+                                                ),
+                                                Text(
+                                                  "291 KB",
+                                                  style: TextStyle(color: Colors.white, fontSize: 9),
+                                                ),
+                                              ],
+                                            )),
+                                            SizedBox(
+                                              width: 15,
+                                            ),
+                                            GestureDetector(
+                                                onTap: () async {
+                                                  final Uri url = Uri.parse(_userDataProfile!.child("legal").value.toString());
+                                                  if (!await launchUrl(url)) {
+                                                    throw Exception('Could not launch _url');
+                                                  }
+                                                },
+                                                child: Icon(
+                                                  Icons.remove_red_eye,
+                                                  color: Colors.black.withOpacity(0.4),
+                                                  size: 30,
+                                                )),
+                                          ],
+                                        ),
+                                      );
+                                    })),
+                        SizedBox(
+                          height: 5,
+                        ),
+                      ],
+                    )),
+                FirebaseAuth.instance.currentUser!.uid != widget.id
+                    ? SizedBox(
+                        height: 10,
+                      )
+                    : Container(
+                        margin: EdgeInsets.only(left: 20, right: 20),
+                        child: GestureDetector(
+                            onTap: () async {
+                              /* FilePickerResult? result = await FilePicker.platform.pickFiles();
 
 
                     if (result != null) {
@@ -1558,73 +1613,80 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
 
                     setState(() {});*/
 
-                        uploadFile("legal");
-                      },
-                      child: DottedBorder(
-                        color: registroCheck ? Colors.red : Colors.grey,
-                        borderType: BorderType.RRect,
-                        radius: Radius.circular(12),
-                        padding: EdgeInsets.all(6),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.all(Radius.circular(12)),
-                          child: Container(
-                            height: 40,
-                            width: double.infinity,
-                            child: Center(child: Text("Drag & Drop your files or Mobile")),
-                          ),
-                        ),
-                      )),
-              SizedBox(
-                height: 15,
-              ),
-              itemOptionProfileOptions("Radio de busqueda", "images/icons/locationCircle.svg",
-                  subtitle: _currentSliderValue.round().toString() + " KM"),
-              Slider(
-                value: _currentSliderValue,
-                max: 100,
-                activeColor: secondryColor,
-                divisions: 5,
-                label: _currentSliderValue.round().toString(),
-                onChanged: (double value) {
-                  setState(() {
-                    _currentSliderValue = value;
-                  });
-                },
-              ),
-              SizedBox(
-                height: 30,
-              ),
-              AppWidget().buttonFormColor(context, "Guardar", secondryColor, tap: () {
+                              uploadFile("legal");
+                            },
+                            child: DottedBorder(
+                              color: registroCheck ? Colors.red : Colors.grey,
+                              borderType: BorderType.RRect,
+                              radius: Radius.circular(12),
+                              padding: EdgeInsets.all(6),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.all(Radius.circular(12)),
+                                child: Container(
+                                  height: 40,
+                                  width: double.infinity,
+                                  child: Center(child: Text("Drag & Drop your files or Mobile")),
+                                ),
+                              ),
+                            ))),
+                SizedBox(
+                  height: 15,
+                ),
+                Container(
+                  margin: EdgeInsets.only(left: 20, right: 20),
+                  child: itemOptionProfileOptions("Radio de busqueda", "images/icons/locationCircle.svg",
+                      subtitle: _currentSliderValue.round().toString() + " KM"),
+                ),
+                Slider(
+                  value: _currentSliderValue,
+                  max: 100,
+                  activeColor: secondryColor,
+                  divisions: 5,
+                  label: _currentSliderValue.round().toString(),
+                  onChanged: (double value) {
+                    setState(() {
+                      _currentSliderValue = value;
+                    });
+                  },
+                ),
+                SizedBox(
+                  height: 30,
+                ),
+                Container(
+                    margin: EdgeInsets.only(left: 20, right: 20),
+                    child: AppWidget().buttonFormColor(context, "Guardar", secondryColor, tap: () {
+                      if (_userDataProfile!.child("legal") == null && _userDataProfile!.child("background") == null) {
+                        AppWidget().itemMessage("Error al actualizar foto", context);
+                      } else {
+                        AppWidget().itemMessage("Error al actualizar foto", context);
+                      }
 
-            if(    _userDataProfile!.child("legal") == null &&)  _userDataProfile!.child("usd") == null {
-
-            }
-                if (formkey.currentState!.validate()) {
-                  _userDataProfile!.ref.update({
-                    'fullname': nameController.text.toString(),
-                    'date': dateController.text.toString(),
-                    'email': emailController.text.toString(),
-                    'phone': phoneController.text.toString(),
-                    'state': state.text.toString(),
-                    'city': city.text.toString(),
-                    'radio': _currentSliderValue.round().toString(),
-                    'price': priceController.text.toString(),
-                    'country': country.text.toString(),
-                  }).then((value) {
-                    AppWidget().itemMessage("Información actualizada", context);
-                  }).catchError((onError) {
-                    print("error: " + onError.toString());
-                    AppWidget().itemMessage("Error al actualizar foto", context);
-                  });
-                } else {
-                  AppWidget().itemMessage("Faltan campos", context);
-                }
-              }),
-              SizedBox(
-                height: 30,
-              ),
-            ],
-          )),
+                      if (formkey.currentState!.validate()) {
+                        _userDataProfile!.ref.update({
+                          'fullname': nameController.text.toString(),
+                          'date': dateController.text.toString(),
+                          'email': emailController.text.toString(),
+                          'phone': phoneController.text.toString(),
+                          'state': state.text.toString(),
+                          'city': city.text.toString(),
+                          'radio': _currentSliderValue.round().toString(),
+                          'price': priceController.text.toString(),
+                          'country': country.text.toString(),
+                        }).then((value) {
+                          AppWidget().itemMessage("Información actualizada", context);
+                        }).catchError((onError) {
+                          print("error: " + onError.toString());
+                          AppWidget().itemMessage("Error al actualizar foto", context);
+                        });
+                      } else {
+                        AppWidget().itemMessage("Faltan campos", context);
+                      }
+                    })),
+                SizedBox(
+                  height: 30,
+                ),
+              ],
+            ),
 
       /* CountryPicker(
         callBackFunction: _callBackFunction,
@@ -1789,6 +1851,13 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
       getProfile(widget.id.toString());
     });
 
+    if (widget.settings != null) {
+      stateIndicator = 4;
+      Timer.run(() {
+        setState(() {});
+      });
+    }
+
     /*if (widget.id != null) {
       getProfile(widget.id.toString());
     } else {
@@ -1931,7 +2000,13 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                                               Text(
                                                                 dataList.child("price").value == null
                                                                     ? '\$' + "0"
-                                                                    : '\$' + dataList.child("price").value.toString(),
+                                                                    : '\$' +
+                                                                        MoneyFormatter(
+                                                                                amount:
+                                                                                    double.parse(dataList.child("price").value.toString()))
+                                                                            .output
+                                                                            .withoutFractionDigits
+                                                                            .toString(),
                                                                 style: TextStyle(
                                                                     color: Colors.black, fontWeight: FontWeight.bold, fontSize: 16),
                                                               ),
@@ -2105,17 +2180,21 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                             ],
                                           ),
                                           Text(
-                                            dataList.child("name").value.toString(),
+                                            dataList.child("name").value.toString().capitalize(),
                                             style: TextStyle(color: secondryColor, fontSize: 12, fontWeight: FontWeight.bold),
                                           ),
                                           Text(
-                                            dataList.child("category").value.toString(),
+                                            dataList.child("category").value.toString().capitalize(),
                                             style: TextStyle(color: secondryColor, fontSize: 11),
                                           ),
                                           Text(
                                             dataList.child("price").value == null
                                                 ? "No disponible"
-                                                : dataList.child("price").value.toString(),
+                                                : '\$' +
+                                                    MoneyFormatter(amount: double.parse(dataList.child("price").value.toString()))
+                                                        .output
+                                                        .withoutFractionDigits
+                                                        .toString(),
                                             style: TextStyle(color: secondryColor, fontSize: 11),
                                           ),
                                         ],

@@ -301,7 +301,10 @@ class _ProfileOptionsProfessionalPageState extends State<ProfileOptionsProfessio
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => ProfileProfesionalPage(id: FirebaseAuth.instance.currentUser!.uid.toString())));
+                                  builder: (context) => ProfileProfesionalPage(
+                                        id: FirebaseAuth.instance.currentUser!.uid.toString(),
+                                        settings: true,
+                                      )));
 
                           //     Navigator.push(context, MaterialPageRoute(builder: (context) => const AccountProfessional()));
 

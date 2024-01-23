@@ -8,7 +8,9 @@ import 'package:flutter/material.dart';
 import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
 
 import 'package:fullpro/styles/styles.dart';
+import 'package:fullpro/utils/utils.dart';
 import 'package:fullpro/widgets/widget.dart';
+import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class Notifications extends StatefulWidget {
@@ -80,14 +82,16 @@ class _NotificationsState extends State<Notifications> {
 
                                 return ListTile(
                                   onTap: () async {
-                                    final Uri url = Uri.parse(dataList.child("url").value.toString());
-                                    if (!await launchUrl(url)) {
-                                      throw Exception('Could not launch');
+                                    if (dataList.child("url").value != null) {
+                                      final Uri url = Uri.parse(dataList.child("url").value.toString());
+                                      if (!await launchUrl(url)) {
+                                        throw Exception('Could not launch');
+                                      }
                                     }
                                   },
-                                  title: Text(dataList.child("description").value.toString()),
+                                  title: Text(dataList.child("description").value.toString().capitalize()),
                                   subtitle: Text(
-                                    dataList.child("date").value.toString(),
+                                    DateFormat('yyyy-MM-dd – KK:mm a').format(DateTime.parse(dataList.child("date").value.toString())),
                                     style: TextStyle(fontSize: 11),
                                   ),
                                 );
