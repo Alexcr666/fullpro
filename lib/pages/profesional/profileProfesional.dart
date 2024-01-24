@@ -1893,111 +1893,109 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
   Widget portafolio() {
     return FutureBuilder(
         initialData: 1,
-        future: FirebaseDatabase.instance.ref().child('portafolio').child(widget.id.toString()).once(),
+        future: FirebaseDatabase.instance.ref().child('portafolio').orderByChild("user").equalTo(widget.id.toString()).once(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
-          try {
-            if (snapshot.hasData && snapshot.data != null) {
-              DatabaseEvent response;
+          if (snapshot.hasData && snapshot.data != null) {
+            DatabaseEvent response;
 
-              response = snapshot.data;
+            response = snapshot.data;
 
-              return response == null
-                  ? AppWidget().loading()
-                  : response.snapshot.children.toList().length == 0
-                      ? AppWidget().noResult()
-                      : Container(
-                          width: double.infinity,
-                          height: 300,
-                          child: AlignedGridView.count(
-                            crossAxisCount: 3,
-                            itemCount: response.snapshot.children.length,
-                            mainAxisSpacing: 2,
-                            crossAxisSpacing: 2,
-                            itemBuilder: (context, index) {
-                              DataSnapshot dataList = response.snapshot.children.toList()[index];
+            return response == null
+                ? AppWidget().loading()
+                : response.snapshot.children.toList().length == 0
+                    ? AppWidget().noResult()
+                    : Container(
+                        width: double.infinity,
+                        height: 300,
+                        child: AlignedGridView.count(
+                          crossAxisCount: 3,
+                          itemCount: response.snapshot.children.length,
+                          mainAxisSpacing: 2,
+                          crossAxisSpacing: 2,
+                          itemBuilder: (context, index) {
+                            DataSnapshot dataList = response.snapshot.children.toList()[index];
 
-                              return GestureDetector(
-                                  onTap: () {
-                                    watchService(String urlString) async {
-                                      final Uri url = Uri.parse(urlString);
-                                      if (!await launchUrl(url)) {
-                                        throw Exception('Could not launch');
-                                      }
+                            return GestureDetector(
+                                onTap: () {
+                                  watchService(String urlString) async {
+                                    final Uri url = Uri.parse(urlString);
+                                    if (!await launchUrl(url)) {
+                                      throw Exception('Could not launch');
                                     }
+                                  }
 
-                                    if (FirebaseAuth.instance.currentUser!.uid != widget.id) {
-                                      showDialog(
-                                          context: context,
-                                          builder: (BuildContext contextAlert) {
-                                            return AlertDialog(
-                                              backgroundColor: Colors.white,
-                                              insetPadding: EdgeInsets.all(0),
-                                              contentPadding: EdgeInsets.all(0),
-                                              content: Container(
-                                                  decoration: BoxDecoration(
-                                                    borderRadius: BorderRadius.circular(10),
-                                                    color: Colors.white,
-                                                  ),
-                                                  child: Column(
-                                                    mainAxisSize: MainAxisSize.min,
-                                                    children: [
-                                                      SizedBox(
-                                                        height: 20,
+                                  if (FirebaseAuth.instance.currentUser!.uid != widget.id) {
+                                    showDialog(
+                                        context: context,
+                                        builder: (BuildContext contextAlert) {
+                                          return AlertDialog(
+                                            backgroundColor: Colors.white,
+                                            insetPadding: EdgeInsets.all(0),
+                                            contentPadding: EdgeInsets.all(0),
+                                            content: Container(
+                                                decoration: BoxDecoration(
+                                                  borderRadius: BorderRadius.circular(10),
+                                                  color: Colors.white,
+                                                ),
+                                                child: Column(
+                                                  mainAxisSize: MainAxisSize.min,
+                                                  children: [
+                                                    SizedBox(
+                                                      height: 20,
+                                                    ),
+                                                    Container(
+                                                        width: double.infinity,
+                                                        child: Text(
+                                                          "Información del servicio",
+                                                          style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 17),
+                                                          textAlign: TextAlign.center,
+                                                        )),
+                                                    SizedBox(
+                                                      height: 20,
+                                                    ),
+                                                    ClipRRect(
+                                                      borderRadius: BorderRadius.circular(25),
+                                                      child: Image.network(
+                                                        dataList.child("foto").value.toString(),
+                                                        errorBuilder: (BuildContext? context, Object? exception, StackTrace? stackTrace) {
+                                                          return Container(
+                                                            width: 200,
+                                                            height: 100,
+                                                            color: Colors.grey.withOpacity(0.3),
+                                                          );
+                                                        },
+                                                        width: 220,
+                                                        height: 100,
+                                                        fit: BoxFit.cover,
                                                       ),
-                                                      Container(
-                                                          width: double.infinity,
-                                                          child: Text(
-                                                            "Información del servicio",
-                                                            style:
-                                                                TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 17),
-                                                            textAlign: TextAlign.center,
-                                                          )),
-                                                      SizedBox(
-                                                        height: 20,
-                                                      ),
-                                                      ClipRRect(
-                                                        borderRadius: BorderRadius.circular(25),
-                                                        child: Image.network(
-                                                          dataList.child("foto").value.toString(),
-                                                          errorBuilder: (BuildContext? context, Object? exception, StackTrace? stackTrace) {
-                                                            return Container(
-                                                              width: 200,
-                                                              height: 100,
-                                                              color: Colors.grey.withOpacity(0.3),
-                                                            );
-                                                          },
-                                                          width: 220,
-                                                          height: 100,
-                                                          fit: BoxFit.cover,
-                                                        ),
-                                                      ),
-                                                      SizedBox(
-                                                        height: 20,
-                                                      ),
-                                                      Row(
-                                                        children: [
-                                                          Container(
-                                                              margin: EdgeInsets.only(left: 10),
-                                                              child: Column(
-                                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                                children: [
-                                                                  Text(
-                                                                    "Categoria",
-                                                                    style: TextStyle(
-                                                                        color: secondryColor, fontWeight: FontWeight.bold, fontSize: 16),
-                                                                  ),
-                                                                  SizedBox(
-                                                                    height: 2,
-                                                                  ),
-                                                                  Text(
-                                                                    dataList.child("category").value.toString(),
-                                                                    style: TextStyle(
-                                                                        color: Colors.black, fontWeight: FontWeight.bold, fontSize: 13),
-                                                                  ),
-                                                                  SizedBox(
-                                                                    height: 10,
-                                                                  ),
-                                                                  /* RatingBarIndicator(
+                                                    ),
+                                                    SizedBox(
+                                                      height: 20,
+                                                    ),
+                                                    Row(
+                                                      children: [
+                                                        Container(
+                                                            margin: EdgeInsets.only(left: 10),
+                                                            child: Column(
+                                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                                              children: [
+                                                                Text(
+                                                                  "Categoria",
+                                                                  style: TextStyle(
+                                                                      color: secondryColor, fontWeight: FontWeight.bold, fontSize: 16),
+                                                                ),
+                                                                SizedBox(
+                                                                  height: 2,
+                                                                ),
+                                                                Text(
+                                                                  dataList.child("category").value.toString(),
+                                                                  style: TextStyle(
+                                                                      color: Colors.black, fontWeight: FontWeight.bold, fontSize: 13),
+                                                                ),
+                                                                SizedBox(
+                                                                  height: 10,
+                                                                ),
+                                                                /* RatingBarIndicator(
                                                                                         rating: 2.5,
                                                                                         itemCount: 5,
                                                                                         itemSize: 30.0,
@@ -2005,122 +2003,121 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                                                                               Icons.star_border_rounded,
                                                                                               color: secondryColor,
                                                                                             )),*/
-                                                                  SizedBox(
-                                                                    height: 10,
-                                                                  ),
-                                                                ],
-                                                              )),
-                                                          Expanded(child: SizedBox()),
-                                                          Column(
-                                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                                            children: [
-                                                              SizedBox(
-                                                                height: 10,
-                                                              ),
-                                                              Text(
-                                                                "Costo del servicio",
-                                                                style: TextStyle(
-                                                                    color: secondryColor, fontWeight: FontWeight.bold, fontSize: 15),
-                                                              ),
-                                                              Text(
-                                                                dataList.child("price").value == null
-                                                                    ? '\$' + "0"
-                                                                    : '\$' +
-                                                                        MoneyFormatter(
-                                                                                amount:
-                                                                                    double.parse(dataList.child("price").value.toString()))
-                                                                            .output
-                                                                            .withoutFractionDigits
-                                                                            .toString(),
-                                                                style: TextStyle(
-                                                                    color: Colors.black, fontWeight: FontWeight.bold, fontSize: 16),
-                                                              ),
-                                                              SizedBox(
-                                                                height: 40,
-                                                              ),
-                                                            ],
-                                                          ),
-                                                          SizedBox(
-                                                            width: 20,
-                                                          ),
-                                                        ],
-                                                      ),
-                                                      Container(
-                                                          alignment: Alignment.centerLeft,
-                                                          margin: EdgeInsets.only(left: 20, right: 20),
-                                                          child: Text(
-                                                            dataList.child("name").value.toString(),
-                                                            style:
-                                                                TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 12),
-                                                          )),
-                                                      SizedBox(
-                                                        height: 20,
-                                                      ),
-                                                      Container(
-                                                          margin: EdgeInsets.only(left: 20, right: 20),
-                                                          child: Row(
-                                                            children: [
-                                                              Flexible(
-                                                                  child: AppWidget().buttonFormLine(context, "Cancelar", true, tap: () {
-                                                                Navigator.pop(context);
-                                                              })),
-                                                              SizedBox(
-                                                                width: 10,
-                                                              ),
-                                                              Flexible(
-                                                                  child: AppWidget().buttonFormLine(context, "Solicitar", false, tap: () {
-                                                                Navigator.pop(context);
-                                                                Query historyRef = FirebaseDatabase.instance
-                                                                    .ref()
-                                                                    .child('ordens')
-                                                                    .child(getDataUser()!.child("cart").value.toString());
+                                                                SizedBox(
+                                                                  height: 10,
+                                                                ),
+                                                              ],
+                                                            )),
+                                                        Expanded(child: SizedBox()),
+                                                        Column(
+                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                          children: [
+                                                            SizedBox(
+                                                              height: 10,
+                                                            ),
+                                                            Text(
+                                                              "Costo del servicio",
+                                                              style: TextStyle(
+                                                                  color: secondryColor, fontWeight: FontWeight.bold, fontSize: 15),
+                                                            ),
+                                                            Text(
+                                                              dataList.child("price").value == null
+                                                                  ? '\$' + "0"
+                                                                  : '\$' +
+                                                                      MoneyFormatter(
+                                                                              amount:
+                                                                                  double.parse(dataList.child("price").value.toString()))
+                                                                          .output
+                                                                          .withoutFractionDigits
+                                                                          .toString(),
+                                                              style:
+                                                                  TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 16),
+                                                            ),
+                                                            SizedBox(
+                                                              height: 40,
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        SizedBox(
+                                                          width: 20,
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    Container(
+                                                        alignment: Alignment.centerLeft,
+                                                        margin: EdgeInsets.only(left: 20, right: 20),
+                                                        child: Text(
+                                                          dataList.child("name").value.toString(),
+                                                          style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 12),
+                                                        )),
+                                                    SizedBox(
+                                                      height: 20,
+                                                    ),
+                                                    Container(
+                                                        margin: EdgeInsets.only(left: 20, right: 20),
+                                                        child: Row(
+                                                          children: [
+                                                            Flexible(
+                                                                child: AppWidget().buttonFormLine(context, "Cancelar", true, tap: () {
+                                                              Navigator.pop(context);
+                                                            })),
+                                                            SizedBox(
+                                                              width: 10,
+                                                            ),
+                                                            Flexible(
+                                                                child: AppWidget().buttonFormLine(context, "Solicitar", false, tap: () {
+                                                              Navigator.pop(context);
+                                                              Query historyRef = FirebaseDatabase.instance
+                                                                  .ref()
+                                                                  .child('ordens')
+                                                                  .child(getDataUser()!.child("cart").value.toString());
 
-                                                                createService(DataSnapshot snapshot) {
-                                                                  snapshot.ref.child("services").push().set({
-                                                                    "foto": dataList.child("foto").value.toString(),
-                                                                    "name": dataList.child("name").value,
-                                                                    "price": dataList.child("price").value
-                                                                  }).then((value) {
-                                                                    AppWidget().itemMessage("Agregado", context);
-                                                                  }).catchError((onError) {
-                                                                    AppWidget().itemMessage("Ha ocurrido un error", context);
+                                                              createService(DataSnapshot snapshot) {
+                                                                snapshot.ref.child("services").push().set({
+                                                                  "foto": dataList.child("foto").value.toString(),
+                                                                  "name": dataList.child("name").value,
+                                                                  "price": dataList.child("price").value
+                                                                }).then((value) {
+                                                                  AppWidget().itemMessage("Agregado", context);
+                                                                }).catchError((onError) {
+                                                                  AppWidget().itemMessage("Ha ocurrido un error", context);
+                                                                });
+                                                              }
+
+                                                              historyRef.once().then((e) async {
+                                                                final snapshot = e.snapshot;
+                                                                if (snapshot.value != null) {
+                                                                  if (snapshot.child("professional").value.toString() ==
+                                                                      getDataUser()!.key.toString()) {
+                                                                    createService(snapshot);
+                                                                  } else {
+                                                                    AppWidget()
+                                                                        .itemMessage("No se puede seleccionar otro professional", context);
+                                                                  }
+                                                                } else {
+                                                                  createOrdens(context,
+                                                                      name: dataList.child("name").value.toString(),
+                                                                      inspections: dataList.child("inspections").value.toString(),
+                                                                      profesionalName: dataList.child("fullname").value.toString(),
+                                                                      profesional: getDataUser()!.key.toString(),
+                                                                      price: int.parse(dataList.child("price").value.toString()));
+
+                                                                  Future.delayed(const Duration(milliseconds: 1000), () {
+                                                                    createService(snapshot);
                                                                   });
                                                                 }
-
-                                                                historyRef.once().then((e) async {
-                                                                  final snapshot = e.snapshot;
-                                                                  if (snapshot.value != null) {
-                                                                    if (snapshot.child("professional").value.toString() ==
-                                                                        getDataUser()!.key.toString()) {
-                                                                      createService(snapshot);
-                                                                    } else {
-                                                                      AppWidget().itemMessage(
-                                                                          "No se puede seleccionar otro professional", context);
-                                                                    }
-                                                                  } else {
-                                                                    createOrdens(context,
-                                                                        name: dataList.child("name").value.toString(),
-                                                                        inspections: dataList.child("inspections").value.toString(),
-                                                                        profesionalName: dataList.child("fullname").value.toString(),
-                                                                        profesional: getDataUser()!.key.toString(),
-                                                                        price: int.parse(dataList.child("price").value.toString()));
-
-                                                                    Future.delayed(const Duration(milliseconds: 1000), () {
-                                                                      createService(snapshot);
-                                                                    });
-                                                                  }
-                                                                });
-                                                              })),
-                                                            ],
-                                                          )),
-                                                      SizedBox(
-                                                        height: 20,
-                                                      ),
-                                                    ],
-                                                  )),
-                                            );
-                                          });
-                                      /* showModalBottomSheet(
+                                                              });
+                                                            })),
+                                                          ],
+                                                        )),
+                                                    SizedBox(
+                                                      height: 20,
+                                                    ),
+                                                  ],
+                                                )),
+                                          );
+                                        });
+                                    /* showModalBottomSheet(
                                           context: context,
                                           builder: (context) {
                                             return Column(
@@ -2166,74 +2163,71 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                               ],
                                             );
                                           });*/
-                                    } else {
-                                      watchService((dataList.child("foto").value.toString()));
-                                    }
-                                  },
-                                  child: Container(
-                                      margin: EdgeInsets.only(left: 10, right: 10),
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Stack(
-                                            children: [
-                                              ClipRRect(
-                                                borderRadius: BorderRadius.circular(20),
-                                                child: Image.network(
-                                                  dataList.child("foto").value.toString(),
-                                                  errorBuilder: (BuildContext? context, Object? exception, StackTrace? stackTrace) {
-                                                    return Container(
-                                                      width: 120,
-                                                      height: 120,
-                                                      color: Colors.grey.withOpacity(0.3),
-                                                    );
-                                                  },
-                                                  width: 80,
-                                                  height: 80,
-                                                  fit: BoxFit.cover,
-                                                ),
+                                  } else {
+                                    watchService((dataList.child("foto").value.toString()));
+                                  }
+                                },
+                                child: Container(
+                                    margin: EdgeInsets.only(left: 10, right: 10),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Stack(
+                                          children: [
+                                            ClipRRect(
+                                              borderRadius: BorderRadius.circular(20),
+                                              child: Image.network(
+                                                dataList.child("foto").value.toString(),
+                                                errorBuilder: (BuildContext? context, Object? exception, StackTrace? stackTrace) {
+                                                  return Container(
+                                                    width: 120,
+                                                    height: 120,
+                                                    color: Colors.grey.withOpacity(0.3),
+                                                  );
+                                                },
+                                                width: 80,
+                                                height: 80,
+                                                fit: BoxFit.cover,
                                               ),
-                                              FirebaseAuth.instance.currentUser!.uid == widget.id
-                                                  ? SizedBox()
-                                                  : Positioned.fill(
-                                                      child: Align(
-                                                          alignment: Alignment.center,
-                                                          child: SvgPicture.asset(
-                                                            "images/icons/addCircleBlue.svg",
-                                                            width: 40,
-                                                          ))),
-                                            ],
-                                          ),
-                                          Text(
-                                            dataList.child("name").value.toString().capitalize(),
-                                            style: TextStyle(color: secondryColor, fontSize: 12, fontWeight: FontWeight.bold),
-                                          ),
-                                          Text(
-                                            dataList.child("category").value.toString().capitalize(),
-                                            style: TextStyle(color: secondryColor, fontSize: 11),
-                                          ),
-                                          Text(
-                                            dataList.child("price").value == null
-                                                ? "No disponible"
-                                                : '\$' +
-                                                    MoneyFormatter(amount: double.parse(dataList.child("price").value.toString()))
-                                                        .output
-                                                        .withoutFractionDigits
-                                                        .toString(),
-                                            style: TextStyle(color: secondryColor, fontSize: 11),
-                                          ),
-                                        ],
-                                      )));
-                            },
-                          ));
-            } else {
-              return AppWidget().noResult();
-            }
-
-            ;
-          } catch (e) {
-            return AppWidget().loading();
+                                            ),
+                                            FirebaseAuth.instance.currentUser!.uid == widget.id
+                                                ? SizedBox()
+                                                : Positioned.fill(
+                                                    child: Align(
+                                                        alignment: Alignment.center,
+                                                        child: SvgPicture.asset(
+                                                          "images/icons/addCircleBlue.svg",
+                                                          width: 40,
+                                                        ))),
+                                          ],
+                                        ),
+                                        Text(
+                                          dataList.child("name").value.toString().capitalize(),
+                                          style: TextStyle(color: secondryColor, fontSize: 12, fontWeight: FontWeight.bold),
+                                        ),
+                                        Text(
+                                          dataList.child("category").value.toString().capitalize(),
+                                          style: TextStyle(color: secondryColor, fontSize: 11),
+                                        ),
+                                        Text(
+                                          dataList.child("price").value == null
+                                              ? "No disponible"
+                                              : '\$' +
+                                                  MoneyFormatter(amount: double.parse(dataList.child("price").value.toString()))
+                                                      .output
+                                                      .withoutFractionDigits
+                                                      .toString(),
+                                          style: TextStyle(color: secondryColor, fontSize: 11),
+                                        ),
+                                      ],
+                                    )));
+                          },
+                        ));
+          } else {
+            return AppWidget().noResult();
           }
+
+          ;
         });
   }
 }
