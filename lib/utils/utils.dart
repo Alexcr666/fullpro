@@ -5,7 +5,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 extension StringExtension on String {
   String capitalize() {
-    return "${this[0].toUpperCase()}${this.substring(1).toLowerCase()}";
+    if (this.isEmpty == true || this == null) {
+      return "";
+    } else {
+      return "${this[0].toUpperCase()}${this.substring(1).toLowerCase()}";
+    }
   }
 }
 

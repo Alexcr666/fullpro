@@ -52,6 +52,8 @@ class _RegistrationProfessionalPageState extends State<RegistrationProfessionalP
   bool licenceCheck = false;
   bool backgroundCheck = false;
   bool registroCheck = false;
+  final _formKey = GlobalKey<FormState>();
+  final _formKey1 = GlobalKey<FormState>();
 
   TextEditingController country = TextEditingController();
   TextEditingController state = TextEditingController();
@@ -268,8 +270,6 @@ class _RegistrationProfessionalPageState extends State<RegistrationProfessionalP
     servicesSearch(1);
   }
 
-  final _formKey = GlobalKey<FormState>();
-  final _formKey1 = GlobalKey<FormState>();
   Widget signUp2() {
     return Form(
         key: _formKey,
@@ -947,6 +947,9 @@ class _RegistrationProfessionalPageState extends State<RegistrationProfessionalP
                           );
                           return;
                         }
+
+                        _formKey1.currentState!.validate();
+                        _formKey.currentState!.validate();
 
                         if (fullNameController.text.length < 3) {
                           ScaffoldMessenger.of(context).showSnackBar(

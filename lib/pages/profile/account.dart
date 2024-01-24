@@ -14,6 +14,7 @@ import 'package:fullpro/const.dart';
 import 'package:fullpro/models/userdata.dart';
 import 'package:fullpro/pages/Authentication/recoverPassword/changePassword.dart';
 import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
+import 'package:fullpro/pages/homepage.dart';
 import 'package:fullpro/pages/pay/payList.dart';
 import 'package:fullpro/pages/profesional/profileProfesional.dart';
 import 'package:fullpro/pages/profile/deleteAccount.dart';
@@ -55,7 +56,7 @@ class _AccountState extends State<Account> with TickerProviderStateMixin {
   String? getUserName = '';
   String? getuserPhone = '';
 
-  late DataSnapshot userDataProfile;
+  // late DataSnapshot userDataProfile;
 
   // Text Field Controllers
 
@@ -88,10 +89,11 @@ class _AccountState extends State<Account> with TickerProviderStateMixin {
         setState(() {});
 
         currentUserInfo = UserData.fromSnapshot(DataSnapshot);
-        _dateController.text = AppUtils().noNull(userDataProfile.child("dateUser").value.toString());
-        _emailController.text = AppUtils().noNull(userDataProfile.child("email").value.toString());
+        _currentSliderValue = double.parse(userDataProfile!.child("radio").value.toString());
+        _dateController.text = AppUtils().noNull(userDataProfile!.child("dateUser").value.toString());
+        _emailController.text = AppUtils().noNull(userDataProfile!.child("email").value.toString());
 
-        _nameController.text = AppUtils().noNull(userDataProfile.child("fullname").value.toString());
+        _nameController.text = AppUtils().noNull(userDataProfile!.child("fullname").value.toString());
       }
       /*  if (mounted) {
         setState(() {
@@ -335,7 +337,7 @@ class _AccountState extends State<Account> with TickerProviderStateMixin {
 
                             // userProfileData.child("photo")
 
-                            userDataProfile.ref.update({'photo': fileUrl}).then((value) {
+                            userDataProfile!.ref.update({'photo': fileUrl}).then((value) {
                               //  Navigator.pop(context);
 
                               setState(() {});
@@ -351,8 +353,8 @@ class _AccountState extends State<Account> with TickerProviderStateMixin {
                             print("error: " + onError.toString());
                           });
                         },
-                        child: userDataProfile.child("photo").value == null
-                            ? AppWidget().circleProfile(userDataProfile.child("photo").value.toString(), size: 120)
+                        child: userDataProfile!.child("photo").value == null
+                            ? AppWidget().circleProfile(userDataProfile!.child("photo").value.toString(), size: 120)
                             : imagePickerFile != null
                                 ? ClipRRect(
                                     borderRadius: BorderRadius.circular(100),
@@ -376,9 +378,9 @@ class _AccountState extends State<Account> with TickerProviderStateMixin {
                       height: 10,
                     ),
                     Text(
-                      userDataProfile.child("fullname").value == null
+                      userDataProfile!.child("fullname").value == null
                           ? "No disponible"
-                          : userDataProfile.child("fullname").value.toString(),
+                          : userDataProfile!.child("fullname").value.toString().capitalize(),
                       style: TextStyle(color: secondryColor, fontSize: 22, fontWeight: FontWeight.bold),
                     ),
                     Container(
@@ -619,57 +621,61 @@ class _AccountState extends State<Account> with TickerProviderStateMixin {
                                       SizedBox(
                                         height: 20,
                                       ),
+                                      //   Text(activeAjustCount.toString()),
                                       activeAjustCount
                                           ? SizedBox()
+                                          :
+                                          /*? SizedBox()
                                           : userDataProfile != null
                                               ? SizedBox()
-                                              : Column(
-                                                  children: [
-                                                    itemOptionProfile("Eliminar cuenta", "images/icons/profileCircle.svg", tap: () {
-                                                      Navigator.push(
-                                                          context,
-                                                          MaterialPageRoute(
-                                                              builder: (context) => DeleteAccountPage(
-                                                                    userProfileData: userDataProfile,
-                                                                  )));
-                                                    }),
-                                                    itemOptionProfile("Fecha", "",
-                                                        subtitle: userDataProfile.child("date").value == null
-                                                            ? "No disponible"
-                                                            : userDataProfile.child("date").value.toString(), tap: () {
-                                                      //    Navigator.push(context, MaterialPageRoute(builder: (context) => const PortafolioPage()));
-                                                    }),
-                                                    itemOptionProfile("Usuario", "",
-                                                        subtitle: userDataProfile.child("name").value == null
-                                                            ? "No disponible"
-                                                            : userDataProfile.child("name").value.toString()),
-                                                    itemOptionProfile("Estado del usuario", "",
-                                                        subtitle: userDataProfile.child("state").value == null
-                                                            ? "Disponible"
-                                                            : stateOrderUser[int.parse(userDataProfile.child("state").value.toString())]),
-                                                    SizedBox(
-                                                      height: 30,
-                                                    ),
-                                                    itemOptionProfile("Cambiar contraseña", "", subtitle: "", tap: () {
-                                                      Navigator.push(
-                                                          context, MaterialPageRoute(builder: (context) => ChangePasswordScreen()));
-                                                      //   Navigator.push(context, MaterialPageRoute(builder: (context) => ProfileProfesionalPage()));
-                                                    }),
-                                                    /*  itemOptionProfile("Suspender cuenta", "", subtitle: "", tap: () {
+                                              :*/
+                                          Column(
+                                              children: [
+                                                itemOptionProfile("Eliminar cuenta", "images/icons/profileCircle.svg", tap: () {
+                                                  Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (context) => DeleteAccountPage(
+                                                                userProfileData: userDataProfile!,
+                                                              )));
+                                                }),
+                                                itemOptionProfile("Fecha", "",
+                                                    subtitle: userDataProfile!.child("date").value == null
+                                                        ? "No disponible"
+                                                        : userDataProfile!.child("date").value.toString(), tap: () {
+                                                  //    Navigator.push(context, MaterialPageRoute(builder: (context) => const PortafolioPage()));
+                                                }),
+                                                /* itemOptionProfile("Usuario", "",
+                                                    subtitle: userDataProfile!.child("name").value == null
+                                                        ? "No disponible"
+                                                        : userDataProfile!.child("name").value.toString()),
+                                                itemOptionProfile("Estado del usuario", "",
+                                                    subtitle: userDataProfile!.child("state").value == null
+                                                        ? "Disponible"
+                                                        : stateOrderUser[int.parse(userDataProfile!.child("state").value.toString())]),
+                                               */
+                                                SizedBox(
+                                                  height: 30,
+                                                ),
+                                                itemOptionProfile("Cambiar contraseña", "", subtitle: "", tap: () {
+                                                  Navigator.push(context, MaterialPageRoute(builder: (context) => ChangePasswordScreen()));
+                                                  //   Navigator.push(context, MaterialPageRoute(builder: (context) => ProfileProfesionalPage()));
+                                                }),
+                                                /*  itemOptionProfile("Suspender cuenta", "", subtitle: "", tap: () {
                                                 Navigator.push(context, MaterialPageRoute(builder: (context) => const DeleteAccountPage()));
                                                 //   Navigator.push(context, MaterialPageRoute(builder: (context) => ProfileProfesionalPage()));
                                               }),*/
-                                                    SizedBox(
-                                                      height: 10,
-                                                    ),
-                                                    /*  itemOptionProfile("Archivar cuenta", "", subtitle: "", tap: () {
+                                                SizedBox(
+                                                  height: 10,
+                                                ),
+                                                /*  itemOptionProfile("Archivar cuenta", "", subtitle: "", tap: () {
                                             Navigator.push(context, MaterialPageRoute(builder: (context) => const DeleteAccountPage()));
                                           }),*/
-                                                    SizedBox(
-                                                      height: 30,
-                                                    ),
-                                                  ],
+                                                SizedBox(
+                                                  height: 30,
                                                 ),
+                                              ],
+                                            ),
                                     ],
                                   ),
                             SizedBox(
@@ -698,20 +704,21 @@ class _AccountState extends State<Account> with TickerProviderStateMixin {
                                 Expanded(child: SizedBox()),
                                 GestureDetector(
                                     onTap: () {
-                                      // if (_formKey.currentState!.validate()) {
-                                      //
-                                      //updateProfile();
+                                      if (_formKey.currentState!.validate()) {
+                                        //
+                                        //updateProfile();
 
-                                      userDataProfile.ref.update({
-                                        'radio': int.parse(_currentSliderValue.round().toString()),
-                                        "fullname": _nameController.text.toString(),
-                                        "dateUser": _dateController.text,
-                                        "email": _emailController.text
-                                      }).then((value) {
-                                        AppWidget().itemMessage("Guardado", context);
-                                      });
-
-                                      //  }
+                                        userDataProfile!.ref.update({
+                                          'radio': int.parse(_currentSliderValue.round().toString()),
+                                          "fullname": _nameController.text.toString(),
+                                          "dateUser": _dateController.text,
+                                          "email": _emailController.text
+                                        }).then((value) {
+                                          AppWidget().itemMessage("Guardado", context);
+                                        });
+                                      } else {
+                                        AppWidget().itemMessage("Faltan campos", context);
+                                      }
                                     },
                                     child: Flexible(
                                         child: Row(

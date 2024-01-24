@@ -40,14 +40,19 @@ class _PortafolioPageState extends State<PortafolioPage> {
 
         // initialData: 1,
 
-        future: FirebaseDatabase.instance.ref().child('portafolio').child(FirebaseAuth.instance.currentUser!.uid.toString()).once(),
+        future: FirebaseDatabase.instance
+            .ref()
+            .child('portafolio')
+            .orderByChild("user")
+            .equalTo(FirebaseAuth.instance.currentUser!.uid.toString())
+            .once(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           try {
             if (snapshot.hasData) {
               DatabaseEvent response = snapshot.data;
 
               return response == null
-                  ? Text("Cargando")
+                  ? AppWidget().loading()
                   : response.snapshot.children.length == 0
                       ? AppWidget().noResult()
                       : ListView.builder(
@@ -119,7 +124,7 @@ class _PortafolioPageState extends State<PortafolioPage> {
                                         ClipRRect(
                                           borderRadius: BorderRadius.circular(15),
                                           child: Image.network(
-                                            dataList.child("foto").value.toString(),
+                                            dataList.child("foto").value == null ? "" : dataList.child("foto").value.toString(),
                                             errorBuilder: (BuildContext? context, Object? exception, StackTrace? stackTrace) {
                                               return Container(
                                                 width: 70,

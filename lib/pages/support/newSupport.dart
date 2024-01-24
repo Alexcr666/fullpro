@@ -48,10 +48,9 @@ class NewPortafolioPage extends StatefulWidget {
 bool licenceCheck = false;
 
 List<File> fileLicense = [];
+TextEditingController _searchHome = TextEditingController();
 
 class _PortafolioPageState extends State<NewPortafolioPage> {
-  TextEditingController _searchHome = TextEditingController();
-
   TextEditingController _priceController = TextEditingController();
   TextEditingController _profesionController = TextEditingController();
 
@@ -447,7 +446,9 @@ class _PortafolioPageState extends State<NewPortafolioPage> {
 
                       clearOnSubmit: true,
                       textSubmitted: (text) {
-                        _searchHome.text = text;
+                        Future.delayed(const Duration(milliseconds: 2200), () {
+                          _searchHome.text = text;
+                        });
                       }
 
                       // setState(() {});
@@ -458,7 +459,7 @@ class _PortafolioPageState extends State<NewPortafolioPage> {
                   SizedBox(
                     height: 20,
                   ),
-                  AppWidget().texfieldFormat(title: "Precio", controller: _priceController),
+                  AppWidget().texfieldFormat(title: "Precio", controller: _priceController, number: true),
                   SizedBox(
                     height: 20,
                   ),
@@ -513,27 +514,31 @@ class _PortafolioPageState extends State<NewPortafolioPage> {
                       Flexible(
                           child: AppWidget().buttonFormLine(context, "Guardar", false, urlIcon: "images/icons/saved.svg", tap: () {
                         savedData(String fileUrl) {
+                          AppWidget().showAlertDialogLoading(context);
                           DatabaseReference newUserRef = FirebaseDatabase.instance
                               .ref()
                               .child('portafolio')
-                              .child(FirebaseAuth.instance.currentUser!.uid.toString())
+                              //  .child(FirebaseAuth.instance.currentUser!.uid.toString())
                               .push();
 
                           Map userMap = {
                             'name': _namePortafolioController.text,
                             'type': checkInspeccion ? 1 : 2,
                             'category': _searchHome.text,
+                            'user': FirebaseAuth.instance.currentUser!.uid.toString(),
                             'foto': fileUrl.toString(),
                             'price': int.parse(_priceController.text.toString()),
                           };
 
                           newUserRef.set(userMap).then((value) {
                             Navigator.pop(context);
+                            Navigator.pop(context);
 
                             Navigator.push(context, MaterialPageRoute(builder: (context) => PortafolioPage()));
 
                             AppWidget().itemMessage("Guardado", context);
                           }).catchError((onError) {
+                            Navigator.pop(context);
                             AppWidget().itemMessage("Error al guardar", context);
                           });
                         }

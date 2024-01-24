@@ -83,12 +83,14 @@ class _TermsPageState extends State<TermsPage> {
               height: 50,
             ),
 
-            Expanded(
-                child: PDF().cachedFromUrl(
-              downloadUrl!,
-              placeholder: (progress) => Center(child: Text('$progress %')),
-              errorWidget: (error) => Center(child: Text(error.toString())),
-            )),
+            downloadUrl == null
+                ? AppWidget().loading()
+                : Expanded(
+                    child: PDF().cachedFromUrl(
+                    downloadUrl!,
+                    placeholder: (progress) => Center(child: Text('$progress %')),
+                    errorWidget: (error) => Center(child: Text(error.toString())),
+                  )),
             SizedBox(height: 30),
             //
             //

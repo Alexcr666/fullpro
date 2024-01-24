@@ -105,6 +105,8 @@ class _RegistrationPageState extends State<RegistrationPage> {
     locationPermision();
   }
 
+  final _formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -112,63 +114,65 @@ class _RegistrationPageState extends State<RegistrationPage> {
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
-            padding: EdgeInsets.only(left: 20, right: 20),
-            child: Column(
-              children: <Widget>[
-                AppWidget().back(context),
-                SizedBox(
-                  height: 40,
-                ),
-                //
-                //
-                Image(
-                  image: AssetImage("images/logo.png"),
-                  alignment: Alignment.center,
-                  height: 70.0,
-                ),
-                SizedBox(
-                  height: 45,
-                ),
-                //
-                //
-                Row(
-                  children: [
-                    Expanded(child: SizedBox()),
-                    SvgPicture.asset(
-                      "images/icons/profileCircle.svg",
-                      width: 50,
+              padding: EdgeInsets.only(left: 20, right: 20),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  children: <Widget>[
+                    AppWidget().back(context),
+                    SizedBox(
+                      height: 40,
+                    ),
+                    //
+                    //
+                    Image(
+                      image: AssetImage("images/logo.png"),
+                      alignment: Alignment.center,
+                      height: 70.0,
                     ),
                     SizedBox(
-                      width: 10,
+                      height: 45,
                     ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    //
+                    //
+                    Row(
                       children: [
-                        Text(
-                          "Registro Cliente",
-                          textAlign: TextAlign.center,
-                          style: AppStyle().boldText(18),
+                        Expanded(child: SizedBox()),
+                        SvgPicture.asset(
+                          "images/icons/profileCircle.svg",
+                          width: 50,
                         ),
-                        Text(
-                          "Datos personales",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: secondryColor),
+                        SizedBox(
+                          width: 10,
                         ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Registro Cliente",
+                              textAlign: TextAlign.center,
+                              style: AppStyle().boldText(18),
+                            ),
+                            Text(
+                              "Datos personales",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: secondryColor),
+                            ),
+                          ],
+                        ),
+                        Expanded(child: SizedBox()),
                       ],
                     ),
-                    Expanded(child: SizedBox()),
-                  ],
-                ),
 
-                SizedBox(
-                  height: 50,
-                ),
-                //
-                // Full Name
+                    SizedBox(
+                      height: 50,
+                    ),
+                    //
+                    // Full Name
 
-                AppWidget().texfieldFormat(
-                    controller: fullNameController, title: Locales.string(context, 'lbl_fullname'), urlIcon: "images/icons/user.svg"),
-                /*  Padding(
+                    AppWidget().texfieldFormat(
+                        controller: fullNameController, title: Locales.string(context, 'lbl_fullname'), urlIcon: "images/icons/user.svg"),
+                    /*  Padding(
                   padding: EdgeInsets.only(
                     right: 20,
                     left: 20,
@@ -194,21 +198,21 @@ class _RegistrationPageState extends State<RegistrationPage> {
                     ),
                   ),
                 ),*/
-                //
-                //
-                SizedBox(
-                  height: 15,
-                ),
-                //
-                //  Phone Number TEXT FIELD
-                //
+                    //
+                    //
+                    SizedBox(
+                      height: 15,
+                    ),
+                    //
+                    //  Phone Number TEXT FIELD
+                    //
 
-                AppWidget().texfieldFormat(
-                    controller: phoneController,
-                    title: Locales.string(context, 'lbl_phone_number'),
-                    urlIcon: "images/icons/phone.svg",
-                    number: true),
-                /*  Padding(
+                    AppWidget().texfieldFormat(
+                        controller: phoneController,
+                        title: Locales.string(context, 'lbl_phone_number'),
+                        urlIcon: "images/icons/phone.svg",
+                        number: true),
+                    /*  Padding(
                   padding: EdgeInsets.only(
                     right: 20,
                     left: 20,
@@ -234,18 +238,18 @@ class _RegistrationPageState extends State<RegistrationPage> {
                     ),
                   ),
                 ),*/
-                //
-                //
-                SizedBox(
-                  height: 15,
-                ),
-                //
-                //  Email Address TEXT FIELD
-                //
+                    //
+                    //
+                    SizedBox(
+                      height: 15,
+                    ),
+                    //
+                    //  Email Address TEXT FIELD
+                    //
 
-                AppWidget().texfieldFormat(
-                    controller: emailController, title: Locales.string(context, 'lbl_email'), urlIcon: "images/icons/message.svg"),
-                /*  Padding(
+                    AppWidget().texfieldFormat(
+                        controller: emailController, title: Locales.string(context, 'lbl_email'), urlIcon: "images/icons/message.svg"),
+                    /*  Padding(
                   padding: EdgeInsets.only(
                     right: 20,
                     left: 20,
@@ -271,17 +275,17 @@ class _RegistrationPageState extends State<RegistrationPage> {
                     ),
                   ),
                 ),*/
-                //
-                //
-                SizedBox(
-                  height: 15,
-                ),
-                //
-                //  Password
+                    //
+                    //
+                    SizedBox(
+                      height: 15,
+                    ),
+                    //
+                    //  Password
 
-                AppWidget().texfieldFormat(
-                    controller: passwordController, title: "Password", urlIcon: "images/icons/password.svg", password: true),
-                /*Padding(
+                    AppWidget().texfieldFormat(
+                        controller: passwordController, title: "Password", urlIcon: "images/icons/password.svg", password: true),
+                    /*Padding(
                   padding: EdgeInsets.only(
                     right: 20,
                     left: 20,
@@ -307,53 +311,53 @@ class _RegistrationPageState extends State<RegistrationPage> {
                     ),
                   ),
                 ),*/
-                SizedBox(height: 25),
+                    SizedBox(height: 25),
 
-                //
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 15),
-                  child: Row(
-                    children: [
-                      Material(
-                        child: Checkbox(
-                          activeColor: secondryColor,
-                          value: agree,
-                          onChanged: (value) {
-                            setState(() {
-                              agree = value ?? false;
-                            });
-                          },
-                        ),
+                    //
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 15),
+                      child: Row(
+                        children: [
+                          Material(
+                            child: Checkbox(
+                              activeColor: secondryColor,
+                              value: agree,
+                              onChanged: (value) {
+                                setState(() {
+                                  agree = value ?? false;
+                                });
+                              },
+                            ),
+                          ),
+                          RichText(
+                            text: TextSpan(
+                              children: [
+                                TextSpan(
+                                  text: Locales.string(context, 'lbl_i_have_read_terms'),
+                                  style: TextStyle(color: Colors.black),
+                                ),
+                                TextSpan(
+                                  text: ' ${Locales.string(context, 'lbl_terms_and_conditions')}',
+                                  style: TextStyle(color: Colors.blue),
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) => TermsPage(
+                                                    state: 2,
+                                                  )));
+                                    },
+                                ),
+                              ],
+                            ),
+                          )
+                        ],
                       ),
-                      RichText(
-                        text: TextSpan(
-                          children: [
-                            TextSpan(
-                              text: Locales.string(context, 'lbl_i_have_read_terms'),
-                              style: TextStyle(color: Colors.black),
-                            ),
-                            TextSpan(
-                              text: ' ${Locales.string(context, 'lbl_terms_and_conditions')}',
-                              style: TextStyle(color: Colors.blue),
-                              recognizer: TapGestureRecognizer()
-                                ..onTap = () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => TermsPage(
-                                                state: 2,
-                                              )));
-                                },
-                            ),
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-                SizedBox(height: 25),
-                //    Register Button
-                /*  Padding(
+                    ),
+                    SizedBox(height: 25),
+                    //    Register Button
+                    /*  Padding(
                   padding: EdgeInsets.only(
                     right: 50,
                     left: 50,
@@ -435,8 +439,8 @@ class _RegistrationPageState extends State<RegistrationPage> {
                     ),
                   ),
                 ),*/
-                AppWidget().buttonForm(context, "Register", tap: () {
-                  /*   var connectivityResult = await(Connectivity().checkConnectivity());
+                    AppWidget().buttonForm(context, "Register", tap: () {
+                      /*  var connectivityResult = await (Connectivity().checkConnectivity());
                   if (connectivityResult != ConnectivityResult.wifi && connectivityResult != ConnectivityResult.mobile) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
@@ -447,76 +451,81 @@ class _RegistrationPageState extends State<RegistrationPage> {
                     );
                     return;
                   }*/
+                      _formKey.currentState!.validate();
 
-                  if (fullNameController.text.length < 3) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          Locales.string(context, 'error_enter_valid_name'),
-                        ),
+                      if (fullNameController.text.length < 3) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              Locales.string(context, 'error_enter_valid_name'),
+                            ),
+                          ),
+                        );
+                        return;
+                      }
+                      if (phoneController.text.length < 10 || phoneController.text.length > 14) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              Locales.string(context, 'error_enter_valid_phone'),
+                            ),
+                          ),
+                        );
+                        return;
+                      }
+                      if (!emailController.text.contains('@') || !emailController.text.contains('.')) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              Locales.string(context, 'error_enter_valid_email'),
+                            ),
+                          ),
+                        );
+                        return;
+                      }
+                      if (passwordController.text.length < 8) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              Locales.string(context, 'error_enter_strong_password'),
+                            ),
+                          ),
+                        );
+                        return;
+                      }
+                      if (_formKey.currentState!.validate()) {
+                        registerUser();
+                      } else {
+                        AppWidget().itemMessage("Falta campos", context);
+                      }
+                    }),
+                    //
+                    //
+                    SizedBox(
+                      height: 10,
+                    ),
+                    //
+                    //
+                    SizedBox(
+                      height: 50.0,
+                      width: double.infinity,
+                      child: TextButton(
+                        onPressed: () async {
+                          Navigator.pushNamedAndRemoveUntil(context, LoginPage.id, (route) => false);
+                        },
+                        child: Text(Locales.string(context, 'lbl_already_have_account')),
                       ),
-                    );
-                    return;
-                  }
-                  if (phoneController.text.length < 10 || phoneController.text.length > 14) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          Locales.string(context, 'error_enter_valid_phone'),
-                        ),
-                      ),
-                    );
-                    return;
-                  }
-                  if (!emailController.text.contains('@') || !emailController.text.contains('.')) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          Locales.string(context, 'error_enter_valid_email'),
-                        ),
-                      ),
-                    );
-                    return;
-                  }
-                  if (passwordController.text.length < 8) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          Locales.string(context, 'error_enter_strong_password'),
-                        ),
-                      ),
-                    );
-                    return;
-                  }
-                  registerUser();
-                }),
-                //
-                //
-                SizedBox(
-                  height: 10,
-                ),
-                //
-                //
-                SizedBox(
-                  height: 50.0,
-                  width: double.infinity,
-                  child: TextButton(
-                    onPressed: () async {
-                      Navigator.pushNamedAndRemoveUntil(context, LoginPage.id, (route) => false);
-                    },
-                    child: Text(Locales.string(context, 'lbl_already_have_account')),
-                  ),
-                ),
-                //
-                //
-                SizedBox(
-                  height: 10,
-                ),
+                    ),
+                    //
+                    //
+                    SizedBox(
+                      height: 10,
+                    ),
 
-                AppWidget().redSocial(context, true),
-                //
-                //
-                /* Padding(
+                    AppWidget().redSocial(context, true),
+                    //
+                    //
+                    /* Padding(
                   padding: EdgeInsets.only(
                     right: 50,
                     left: 50,
@@ -546,9 +555,9 @@ class _RegistrationPageState extends State<RegistrationPage> {
                     ),
                   ),
                 ),*/
-              ],
-            ),
-          ),
+                  ],
+                ),
+              )),
         ),
       ),
     );

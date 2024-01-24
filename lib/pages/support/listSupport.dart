@@ -118,7 +118,7 @@ class _ListSupportPageState extends State<ListSupportPage> {
                                         SizedBox(
                                           width: 10,
                                         ),
-                                        ClipRRect(
+                                        /* ClipRRect(
                                           borderRadius: BorderRadius.circular(15),
                                           child: Image.network(
                                             dataList.child("foto").value.toString(),
@@ -133,7 +133,7 @@ class _ListSupportPageState extends State<ListSupportPage> {
                                             height: 70,
                                             fit: BoxFit.cover,
                                           ),
-                                        ),
+                                        ),*/
                                         SizedBox(
                                           width: 10,
                                         ),

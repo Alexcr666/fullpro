@@ -41,6 +41,7 @@ class _LoginPageState extends State<LoginPageProfesional> {
   set errorMessage(String errorMessage) {}
 
   void login(BuildContext context) async {
+    AppWidget().showAlertDialogLoading(context);
     try {
       final User = (await _auth.signInWithEmailAndPassword(
         email: emailController.text,
@@ -63,6 +64,7 @@ class _LoginPageState extends State<LoginPageProfesional> {
           final dataSnapshot = event.snapshot;
 
           if (dataSnapshot.value != null) {
+            Navigator.pop(context);
             if (event.snapshot.child("state").value != null) {
               if (int.parse(event.snapshot.child("stateUser").value.toString()) == 1) {
                 AppSharedPreference().setProfessional(context).then((value) {

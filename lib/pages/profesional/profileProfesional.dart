@@ -91,6 +91,30 @@ Iterable<DataSnapshot>? dataListObjectOrdens;
 TextEditingController priceController = TextEditingController();
 
 class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
+  TextEditingController country = TextEditingController();
+
+  TextEditingController state = TextEditingController();
+
+  TextEditingController city = TextEditingController();
+
+  TextEditingController nameController = TextEditingController();
+
+  TextEditingController dateController = TextEditingController();
+
+  TextEditingController emailController = TextEditingController();
+
+  TextEditingController phoneController = TextEditingController();
+
+  TextEditingController professionController = TextEditingController();
+
+  getDataUser() {
+    if (FirebaseAuth.instance.currentUser!.uid.toString() == widget.id) {
+      return userDataProfile;
+    } else {
+      return _userDataProfile;
+    }
+  }
+
   Widget itemOptionProfileOptions(String title, String url, {String? subtitle, Function? onTap}) {
     return GestureDetector(
         onTap: () {
@@ -138,22 +162,6 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
   bool backgroundCheck = false;
 
   bool registroCheck = false;
-
-  TextEditingController country = TextEditingController();
-
-  TextEditingController state = TextEditingController();
-
-  TextEditingController city = TextEditingController();
-
-  TextEditingController nameController = TextEditingController();
-
-  TextEditingController dateController = TextEditingController();
-
-  TextEditingController emailController = TextEditingController();
-
-  TextEditingController phoneController = TextEditingController();
-
-  TextEditingController professionController = TextEditingController();
 
   String imageUser = "";
 
@@ -506,7 +514,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
 
       // userProfileData.child("photo")
 
-      _userDataProfile!.ref.update({'photo': fileUrl}).then((value) {
+      getDataUser()!.ref.update({'photo': fileUrl}).then((value) {
         //  Navigator.pop(context);
 
         setState(() {});
@@ -527,7 +535,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
     return Scaffold(
         appBar: appbarProfessional(context, true),
         backgroundColor: Colors.white,
-        body: _userDataProfile == null
+        body: getDataUser() == null
             ? AppWidget().loading()
             : ListView(
                 children: [
@@ -598,9 +606,9 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                     height: 5,
                                   ),
                                   RatingBarIndicator(
-                                      rating: _userDataProfile!.child("rating").value == null
+                                      rating: getDataUser()!.child("rating").value == null
                                           ? 0
-                                          : double.parse(_userDataProfile!.child("rating").value.toString()),
+                                          : double.parse(getDataUser()!.child("rating").value.toString()),
                                       itemCount: 5,
                                       itemSize: 30.0,
                                       itemBuilder: (context, _) => Icon(
@@ -632,7 +640,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                             name: "Tecnp",
                                             inspections: "si",
                                             profesionalName: nameProfesional,
-                                            profesional: userDataProfile!.key.toString(),
+                                            profesional: getDataUser()!.key.toString(),
                                             price: 1000);
                                       }
                                     }))),
@@ -659,11 +667,11 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                   Future<void> addUser() {
                     // Call the user's CollectionReference to add a new user
                     return users.add({
-                      'Matches': userDataProfile!.key.toString(), // John Doe
+                      'Matches': getDataUser()!.key.toString(), // John Doe
                       'isRead': true,
                       'userName': "alex c",
                       // Stokes and Sons
-                      'name': userDataProfile!.child("fullname").value.toString() // 42
+                      'name': getDataUser()!.child("fullname").value.toString() // 42
                     }).then((value) {
                       AppWidget().itemMessage("Creado", context);
                     }).catchError((error) {
@@ -677,13 +685,13 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                   .collection('Users')
                                   .doc(FirebaseAuth.instance.currentUser!.uid.toString())
                                   .collection("Matches")
-                                  .doc(_userDataProfile!.key.toString());
+                                  .doc(getDataUser()!.key.toString());
 
                               addMatch() {
                                 usersValidate2.set({
-                                  'Matches': _userDataProfile!.key.toString(), // John Doe
-                                  'UserName': _userDataProfile!.child("fullname").value.toString(),
-                                  'userId': _userDataProfile!.key.toString(),
+                                  'Matches': getDataUser()!.key.toString(), // John Doe
+                                  'UserName': getDataUser()!.child("fullname").value.toString(),
+                                  'userId': getDataUser()!.key.toString(),
                                 }).then((value) {
                                   AppWidget().itemMessage("Creado", context);
 
@@ -711,7 +719,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                             }
 
                             DocumentReference usersValidate =
-                                FirebaseFirestore.instance.collection('Users').doc(_userDataProfile!.key.toString());
+                                FirebaseFirestore.instance.collection('Users').doc(getDataUser()!.key.toString());
 
                             addUser() {
                               usersValidate.get().then((value) {
@@ -719,21 +727,21 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                   addMatches();
                                 } else {
                                   usersValidate.set({
-                                    'Matches': _userDataProfile!.key.toString(), // John Doe
+                                    'Matches': getDataUser()!.key.toString(), // John Doe
 
-                                    'UserName': _userDataProfile!.child("fullname").value.toString(),
-                                    'userId': _userDataProfile!.key.toString(),
+                                    'UserName': getDataUser()!.child("fullname").value.toString(),
+                                    'userId': getDataUser()!.key.toString(),
                                   }).then((value) {
                                     AppWidget().itemMessage("Creado", context);
                                     addMatches();
                                   }).catchError((error) {
                                     AppWidget().itemMessage("Error al crear", context);
                                   });
-                                  usersValidate.collection("Matches").doc(_userDataProfile!.key.toString()).set({
-                                    'Matches': _userDataProfile!.key.toString(), // John Doe
+                                  usersValidate.collection("Matches").doc(getDataUser()!.key.toString()).set({
+                                    'Matches': getDataUser()!.key.toString(), // John Doe
 
-                                    'UserName': _userDataProfile!.child("fullname").value.toString(),
-                                    'userId': _userDataProfile!.key.toString(),
+                                    'UserName': getDataUser()!.child("fullname").value.toString(),
+                                    'userId': getDataUser()!.key.toString(),
                                   }).then((value) {
                                     AppWidget().itemMessage("Creado", context);
                                     addMatches();
@@ -745,12 +753,12 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
 
                               // Call the user's CollectionReference to add a new user
                               /* return users.add({
-                          'Matches': userDataProfile!.key.toString(), // John Doe
+                          'Matches': getDataUser()!.key.toString(), // John Doe
                           //  'isRead': true,
-                          'UserName': userDataProfile!.child("fullname").value.toString(),
-                          'userId': userDataProfile!.key.toString(),
+                          'UserName': getDataUser()!.child("fullname").value.toString(),
+                          'userId': getDataUser()!.key.toString(),
                           // Stokes and Sons
-                          // 'name': userDataProfile!.child("fullname").value.toString() // 42
+                          // 'name': getDataUser()!.child("fullname").value.toString() // 42
                         }).then((value) {
                           AppWidget().itemMessage("Creado", context);
                         }).catchError((error) {
@@ -807,9 +815,11 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
 
                                       setState(() {});
                                     }),
-                              SizedBox(
-                                width: 10,
-                              ),
+                              FirebaseAuth.instance.currentUser!.uid.toString() != widget.id
+                                  ? SizedBox()
+                                  : SizedBox(
+                                      width: 10,
+                                    ),
                               AppWidget().buttonShandowRounded("Información", stateIndicator != 4, tap: () {
                                 stateIndicator = 4;
 
@@ -1045,7 +1055,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
       await uploadTask.then((p0) async {
         String fileUrl = await storageReference.getDownloadURL();
 
-        _userDataProfile!.ref.update({doc: fileUrl}).then((value) {
+        getDataUser()!.ref.update({doc: fileUrl}).then((value) {
           setState(() {});
 
           AppWidget().itemMessage("Archivo subido", context);
@@ -1256,9 +1266,9 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                   height: 10,
                 ),
 
-                // _userDataProfile.child("licence") == null
+                // getDataUser().child("licence") == null
 
-                _userDataProfile!.child("license").value == null
+                getDataUser()!.child("license").value == null
                     ? AppWidget().noResult()
                     : Container(
                         height: 40,
@@ -1288,7 +1298,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                     GestureDetector(
                                         onTap: () {
                                           AppWidget().optionsEnabled("¿Seguro quieres eliminar?", context, tap: () {
-                                            _userDataProfile!.ref.child("license").remove().then((value) {
+                                            getDataUser()!.ref.child("license").remove().then((value) {
                                               setState(() {});
                                             }).catchError((onError) {
                                               print("error: " + onError.toString());
@@ -1326,7 +1336,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                     ),
                                     GestureDetector(
                                         onTap: () async {
-                                          final Uri url = Uri.parse(_userDataProfile!.child("license").value.toString());
+                                          final Uri url = Uri.parse(getDataUser()!.child("license").value.toString());
                                           if (!await launchUrl(url)) {
                                             throw Exception('Could not launch _url');
                                           }
@@ -1402,7 +1412,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                         SizedBox(
                           height: 10,
                         ),
-                        _userDataProfile!.child("background").value == null
+                        getDataUser()!.child("background").value == null
                             ? AppWidget().noResult()
                             : Container(
                                 height: 40,
@@ -1433,7 +1443,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                                 onTap: () {
                                                   AppWidget().optionsEnabled("¿Seguro quieres eliminar?", context, tap: () {
                                                     Navigator.pop(context);
-                                                    _userDataProfile!.ref.child("background").remove().then((value) {
+                                                    getDataUser()!.ref.child("background").remove().then((value) {
                                                       setState(() {});
                                                     });
 
@@ -1469,7 +1479,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                             ),
                                             GestureDetector(
                                                 onTap: () async {
-                                                  final Uri url = Uri.parse(_userDataProfile!.child("background").value.toString());
+                                                  final Uri url = Uri.parse(getDataUser()!.child("background").value.toString());
                                                   if (!await launchUrl(url)) {
                                                     throw Exception('Could not launch _url');
                                                   }
@@ -1515,7 +1525,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                         SizedBox(
                           height: 10,
                         ),
-                        _userDataProfile!.child("legal").value == null
+                        getDataUser()!.child("legal").value == null
                             ? AppWidget().noResult()
                             : Container(
                                 height: 40,
@@ -1546,7 +1556,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                                 onTap: () {
                                                   AppWidget().optionsEnabled("¿Seguro quieres eliminar?", context, tap: () {
                                                     Navigator.pop(context);
-                                                    _userDataProfile!.ref.child("legal").remove().then((value) {
+                                                    getDataUser()!.ref.child("legal").remove().then((value) {
                                                       setState(() {});
                                                     });
 
@@ -1582,7 +1592,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                             ),
                                             GestureDetector(
                                                 onTap: () async {
-                                                  final Uri url = Uri.parse(_userDataProfile!.child("legal").value.toString());
+                                                  final Uri url = Uri.parse(getDataUser()!.child("legal").value.toString());
                                                   if (!await launchUrl(url)) {
                                                     throw Exception('Could not launch _url');
                                                   }
@@ -1670,14 +1680,14 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                 Container(
                     margin: EdgeInsets.only(left: 20, right: 20),
                     child: AppWidget().buttonFormColor(context, "Guardar", secondryColor, tap: () {
-                      if (_userDataProfile!.child("legal") == null && _userDataProfile!.child("background") == null) {
+                      if (getDataUser()!.child("legal") == null && getDataUser()!.child("background") == null) {
                         AppWidget().itemMessage("Error al actualizar foto", context);
                       } else {
                         AppWidget().itemMessage("Error al actualizar foto", context);
                       }
 
                       if (formkey.currentState!.validate()) {
-                        _userDataProfile!.ref.update({
+                        getDataUser()!.ref.update({
                           'fullname': nameController.text.toString(),
                           'date': dateController.text.toString(),
                           'email': emailController.text.toString(),
@@ -1815,10 +1825,9 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
       _userDataProfile = e.snapshot;
 
       if (dataSnapshot.child("fullname").value != null) {
+        print("dataprofile: " + dataSnapshot.child("fullname").value.toString());
         nameProfesional = dataSnapshot.child("fullname").value.toString();
         _currentSliderValue = double.parse(dataSnapshot.child("radio").value.toString());
-
-        nameController.text = dataSnapshot.child("fullname").value.toString();
 
         nameController.text = dataSnapshot.child("fullname").value.toString();
 
@@ -1857,6 +1866,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
     // TODO: implement initState
 
     super.initState();
+    getProfile(widget.id.toString());
 
     DatabaseReference ref = FirebaseDatabase.instance.ref("partners/" + widget.id.toString());
 
@@ -2063,7 +2073,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                                                 Query historyRef = FirebaseDatabase.instance
                                                                     .ref()
                                                                     .child('ordens')
-                                                                    .child(userDataProfile!.child("cart").value.toString());
+                                                                    .child(getDataUser()!.child("cart").value.toString());
 
                                                                 createService(DataSnapshot snapshot) {
                                                                   snapshot.ref.child("services").push().set({
@@ -2081,7 +2091,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                                                   final snapshot = e.snapshot;
                                                                   if (snapshot.value != null) {
                                                                     if (snapshot.child("professional").value.toString() ==
-                                                                        _userDataProfile!.key.toString()) {
+                                                                        getDataUser()!.key.toString()) {
                                                                       createService(snapshot);
                                                                     } else {
                                                                       AppWidget().itemMessage(
@@ -2092,7 +2102,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                                                         name: dataList.child("name").value.toString(),
                                                                         inspections: dataList.child("inspections").value.toString(),
                                                                         profesionalName: dataList.child("fullname").value.toString(),
-                                                                        profesional: _userDataProfile!.key.toString(),
+                                                                        profesional: getDataUser()!.key.toString(),
                                                                         price: int.parse(dataList.child("price").value.toString()));
 
                                                                     Future.delayed(const Duration(milliseconds: 1000), () {
@@ -2129,7 +2139,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                                     Query historyRef = FirebaseDatabase.instance
                                                         .ref()
                                                         .child('ordens')
-                                                        .child(userDataProfile!.child("cart").value.toString());
+                                                        .child(getDataUser()!.child("cart").value.toString());
 
                                                     historyRef.once().then((e) async {
                                                       final snapshot = e.snapshot;

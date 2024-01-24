@@ -10,6 +10,7 @@ import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
 import 'package:fullpro/pages/cartPage.dart';
 import 'package:fullpro/pages/homepage.dart';
 import 'package:fullpro/pages/profesional/profileProfesional.dart';
+import 'package:fullpro/utils/utils.dart';
 import 'package:fullpro/widgets/widget.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -156,6 +157,143 @@ class _subServicePageState extends State<subServicePage> {
           .once();
     }*/
     return data;
+  }
+
+  Widget pageService(bool inspections) {
+    return FutureBuilder(
+        //  initialData: 1,
+        future: FirebaseDatabase.instance.ref().child('portafolio').orderByChild("category").equalTo(widget.title).once(),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          if (snapshot.hasData) {
+            DatabaseEvent response = snapshot.data;
+
+            return response == null
+                ? AppWidget().loading()
+                : response.snapshot.children.length == 0
+                    ? AppWidget().noResult()
+                    : ListView.builder(
+                        itemCount: response.snapshot.children.length,
+                        shrinkWrap: true,
+                        physics: AlwaysScrollableScrollPhysics(),
+                        itemBuilder: (BuildContext context, int index) {
+                          DataSnapshot dataList = response.snapshot.children.toList()[index];
+
+                          Widget itemList() {
+                            return GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => ProfileProfesionalPage(
+                                                id: dataList.key.toString(),
+                                              )));
+                                },
+                                child: Container(
+                                  margin: EdgeInsets.only(top: 10),
+                                  decoration: AppWidget().boxShandowGreyRectangule(),
+                                  child: Row(
+                                    children: [
+                                      SizedBox(
+                                        width: 10,
+                                      ),
+                                      AppWidget().circleProfile(dataList.child("foto").value.toString()),
+                                      SizedBox(
+                                        width: 10,
+                                      ),
+                                      Flexible(
+                                          child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          SizedBox(
+                                            height: 14,
+                                          ),
+                                          Row(
+                                            children: [
+                                              Text(
+                                                dataList.child("name").value.toString().capitalize(),
+                                                style: TextStyle(color: secondryColor, fontSize: 17, fontWeight: FontWeight.bold),
+                                              ),
+                                              Expanded(child: SizedBox()),
+                                              Container(
+                                                  width: 80,
+                                                  child: GestureDetector(
+                                                    onTap: () {
+                                                     /* Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                              builder: (context) => ProfileProfesionalPage(
+                                                                    id: dataList.key.toString(),
+                                                                  )));*/
+
+                                                                  kkk
+                                                    },
+                                                    child: Container(
+                                                      decoration: BoxDecoration(
+                                                        color: secondryColor,
+                                                        borderRadius: BorderRadius.circular(12),
+                                                      ),
+                                                      padding: const EdgeInsets.symmetric(
+                                                        horizontal: 10,
+                                                        vertical: 8,
+                                                      ),
+                                                      child: Row(
+                                                        children: [
+                                                          Text(
+                                                            "Solicitar",
+                                                            style: const TextStyle(
+                                                              color: Colors.white,
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  )),
+                                              SizedBox(width: 40),
+                                            ],
+                                          ),
+                                          Text(
+                                            "Opiniones clientes",
+                                            style: TextStyle(color: Colors.black, fontSize: 10),
+                                          ),
+                                          RatingBarIndicator(
+                                              rating: dataList.child("rating").value == null
+                                                  ? 0
+                                                  : double.parse(dataList.child("rating").value.toString()),
+                                              itemCount: 5,
+                                              itemSize: 16.0,
+                                              itemBuilder: (context, _) => Icon(
+                                                    Icons.star,
+                                                    color: secondryColor,
+                                                  )),
+                                          SizedBox(
+                                            height: 5,
+                                          ),
+                                          SizedBox(
+                                            height: 14,
+                                          ),
+                                        ],
+                                      ))
+                                    ],
+                                  ),
+                                ));
+                          }
+
+                          if (search.text.isEmpty == false) {
+                            if (search.text.contains(dataList.child("fullname").value.toString())) {
+                              return itemList();
+                            } else {
+                              return SizedBox();
+                            }
+                          } else {
+                            return itemList();
+                          }
+                        });
+          } else {
+            return AppWidget().loading();
+          }
+
+          ;
+        });
   }
 
   Widget pageProfessional(bool inspections) {
@@ -537,15 +675,15 @@ class _subServicePageState extends State<subServicePage> {
                   height: 10,
                 ),
                 // Text(widget.title.toString()),
-
-                Expanded(child: pageProfessional(inspeccion))
+                Expanded(child: pageService(inspeccion)),
+                //  Expanded(child: pageProfessional(inspeccion))
               ],
             )),
       ),
     );
   }
 
-  ServicesComponent({required SingleServices kServices}) {
+  ServicesComponent() {
     return GestureDetector(
         onTap: () {
           showDialog(
@@ -576,7 +714,7 @@ class _subServicePageState extends State<subServicePage> {
                           ClipRRect(
                             borderRadius: BorderRadius.circular(25),
                             child: Image.network(
-                              kServices.image!,
+                          "",
                               errorBuilder: (BuildContext? context, Object? exception, StackTrace? stackTrace) {
                                 return Container(
                                   width: 200,
@@ -696,7 +834,7 @@ class _subServicePageState extends State<subServicePage> {
                   ClipRRect(
                     borderRadius: BorderRadius.circular(15),
                     child: Image.network(
-                      kServices.image!,
+                      "",
                       width: 85,
                       height: 85,
                       errorBuilder: (BuildContext? context, Object? exception, StackTrace? stackTrace) {
@@ -718,15 +856,16 @@ class _subServicePageState extends State<subServicePage> {
                           Container(
                               width: 160,
                               child: Text(
-                                kServices.name!,
+                                "kServices.name!,",
                                 style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold),
                               )),
                           Container(
                               width: 80,
                               child: GestureDetector(
                                 onTap: () {
-                                  CartController.getCartData(context, false, kServices.key, kServices.name, kServices.rating,
-                                      kServices.image, kServices.chargemod, kServices.price, kServices.discount);
+                                    ServicesComponent();
+                                 // CartController.getCartData(context, false, kServices.key, kServices.name, kServices.rating,
+                                   //   kServices.image, kServices.chargemod, kServices.price, kServices.discount);
                                 },
                                 child: Container(
                                   decoration: BoxDecoration(
@@ -752,7 +891,7 @@ class _subServicePageState extends State<subServicePage> {
                         ],
                       ),
                       Text(
-                        kServices.chargemod!,
+                       " kServices.chargemod!",
                         style: const TextStyle(
                           color: Static.colorTextLight,
                           fontSize: 11,
@@ -776,7 +915,7 @@ class _subServicePageState extends State<subServicePage> {
                                 ),
                               )
                             : const SizedBox(),*/
-                            kServices.discount! != '0' ? const SizedBox(width: 15) : const SizedBox(),
+                           false ? const SizedBox(width: 15) : const SizedBox(),
                             /*  Text(
                           currencyPos == 'left'
                               ? '$currencySymbol${int.parse(kServices.price!) - int.parse(kServices.discount!)}'
@@ -813,7 +952,7 @@ class _subServicePageState extends State<subServicePage> {
                                     color: secondryColor,
                                   ),
                                   Text(
-                                    kServices.rating!,
+                                   " kServices.rating!",
                                   ),
                                 ],
                               ),

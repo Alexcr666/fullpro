@@ -33,6 +33,7 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final _formKey = GlobalKey<FormState>();
 
   var emailController = TextEditingController();
 
@@ -41,6 +42,7 @@ class _LoginPageState extends State<LoginPage> {
   set errorMessage(String errorMessage) {}
 
   void login() async {
+    AppWidget().showAlertDialogLoading(context);
     try {
       final User = (await _auth.signInWithEmailAndPassword(
         email: emailController.text,
@@ -60,6 +62,7 @@ class _LoginPageState extends State<LoginPage> {
         DatabaseReference UserRef = FirebaseDatabase.instance.ref().child('users/${User.uid}');
 
         UserRef.once().then((event) {
+          Navigator.pop(context);
           final dataSnapshot = event.snapshot;
           if (dataSnapshot.value != null) {
             Navigator.pop(context);
@@ -105,9 +108,11 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
+          child: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Form(
+            key: _formKey,
             child: Column(
               children: <Widget>[
                 SizedBox(
@@ -147,7 +152,8 @@ class _LoginPageState extends State<LoginPage> {
                     right: 20,
                     left: 20,
                   ),
-                  child: TextField(
+                  child: AppWidget().texfieldFormat(title: "Email", controller: emailController),
+                  /*TextField(
                     controller: emailController,
                     keyboardType: TextInputType.emailAddress,
                     decoration: InputDecoration(
@@ -166,7 +172,7 @@ class _LoginPageState extends State<LoginPage> {
                     style: TextStyle(
                       fontSize: 14,
                     ),
-                  ),
+                  ),*/
                 ),
                 //
                 //
@@ -220,6 +226,7 @@ class _LoginPageState extends State<LoginPage> {
                           );
                           return;
                         }
+                        _formKey.currentState!.validate();
                         //
                         if (!emailController.text.contains('@')) {
                           ScaffoldMessenger.of(context).showSnackBar(
@@ -242,7 +249,9 @@ class _LoginPageState extends State<LoginPage> {
                           return;
                         }
 
-                        login();
+                        if (_formKey.currentState!.validate()) {
+                          login();
+                        }
                       },
                       style: ButtonStyle(
                         foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
@@ -279,7 +288,7 @@ class _LoginPageState extends State<LoginPage> {
             ),
           ),
         ),
-      ),
+      )),
     );
   }
 }

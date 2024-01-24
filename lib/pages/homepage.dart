@@ -53,11 +53,12 @@ class kHomePage extends StatefulWidget {
   _kHomePageState createState() => _kHomePageState();
 }
 
+TextEditingController _searchHome = TextEditingController();
+GlobalKey<AutoCompleteTextFieldState<String>> key = GlobalKey();
+
 class _kHomePageState extends State<kHomePage> {
-  TextEditingController _searchHome = TextEditingController();
   TextEditingController _searchHomeCategorie = TextEditingController();
   int activeCategorie = 0;
-  GlobalKey<AutoCompleteTextFieldState<String>> key = GlobalKey();
 
   TextEditingController _searchInspections = TextEditingController();
 
@@ -312,6 +313,7 @@ class _kHomePageState extends State<kHomePage> {
   @override
   void initState() {
     super.initState();
+    _searchHome.clear();
 
     DatabaseReference ref = FirebaseDatabase.instance.ref("users/" + FirebaseAuth.instance.currentUser!.uid.toString());
 
@@ -753,56 +755,52 @@ class _kHomePageState extends State<kHomePage> {
             }
           }),
         ),*/
-        Row(
-          children: [
-            /*  Flexible(
-                child: ListTile(
-                    title: textField,
-                    trailing: IconButton(
-                        icon: Icon(Icons.add),
-                        onPressed: () {
-                          textField!.triggerSubmitted();
 
-                          showWhichErrorText = !showWhichErrorText;
-
-                          textField!.updateDecoration(decoration: InputDecoration(errorText: showWhichErrorText ? "Beans" : "Tomatoes"));
-                        })))*/
-            Flexible(
-              child: SimpleAutoCompleteTextField(
-                  key: key,
-                  decoration: InputDecoration(
-                    errorText: "Ingresar servicio valido",
-                    contentPadding: EdgeInsets.only(top: 17, bottom: 17, left: 15),
-                    enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: secondryColor, width: 1.0), borderRadius: BorderRadius.circular(11)),
-                    errorBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: primaryColor, width: 1.0), borderRadius: BorderRadius.circular(10)),
-                    border: OutlineInputBorder(
-                        borderSide: BorderSide(color: primaryColor, width: 1.0), borderRadius: BorderRadius.circular(10)),
-                    labelText: "Buscar",
-                    labelStyle: TextStyle(fontSize: 12.0, color: Colors.black),
-                  ),
-                  controller: _searchHome,
-                  suggestions: suggestions,
-                  textChanged: (text) => currentText = text,
-                  clearOnSubmit: true,
-                  textSubmitted: (text) {
-                    print("set: " + _searchHome.text.toString());
-                    _searchHome.text = text;
-
-                    _initMarkers();
-
-                    setState(() {});
-                  }
-
-                  // added.add(text);
-
-                  ),
+        SimpleAutoCompleteTextField(
+            key: key,
+            decoration: InputDecoration(
+              errorText: "Ingresar servicio valido",
+              contentPadding: EdgeInsets.only(top: 17, bottom: 17, left: 15),
+              enabledBorder:
+                  OutlineInputBorder(borderSide: BorderSide(color: secondryColor, width: 1.0), borderRadius: BorderRadius.circular(11)),
+              errorBorder:
+                  OutlineInputBorder(borderSide: BorderSide(color: primaryColor, width: 1.0), borderRadius: BorderRadius.circular(10)),
+              border: OutlineInputBorder(borderSide: BorderSide(color: primaryColor, width: 1.0), borderRadius: BorderRadius.circular(10)),
+              labelText: "Buscar",
+              labelStyle: TextStyle(fontSize: 12.0, color: Colors.black),
             ),
-            //  Container(width: 150, child: AppWidget().buttonShandow("Servicios")),
-            //AppWidget().buttonForm(context, "Search"),
-          ],
-        ),
+            controller: _searchHome,
+            suggestions: suggestions,
+            textChanged: (text) {
+              print("text: " + text.toString());
+
+              currentText = text;
+            },
+            // clearOnSubmit: true,
+            textSubmitted: (text) {
+              print("set1: " + _searchHome.text.toString());
+
+              //   currentText = text;
+              //  cartItemsList = Provider.of<AppData>(context, listen: false).userCartData;
+              Future.delayed(const Duration(milliseconds: 300), () {
+                _searchHome.text = text.toString();
+                print("set2: " + _searchHome.text.toString());
+              });
+
+              // _initMarkers();
+
+              //   setState(() {});
+            }
+
+            // added.add(text);
+
+            ),
+        /* Container(
+            width: 100,
+            height: 30,
+            child: AppWidget().buttonForm(context, "hola", tap: () {
+              _searchHome.text = "hola";
+            })),*/
         Text("Resultados de " + _searchHome.text.toString()),
         // buildSearch(),
         SizedBox(
