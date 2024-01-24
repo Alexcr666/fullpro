@@ -58,8 +58,8 @@ appbarProfessional(BuildContext context, bool activeColor) {
                   : userInfoPartners!.child("location").value == null
                       ? "Seleccionar ubicación"
                       : userInfoPartners!.child("location").value.toString(),
-              style: const TextStyle(
-                color: Colors.black,
+              style: TextStyle(
+                color: activeColor ? Colors.white : Colors.black,
                 fontSize: 12,
               ),
             )),

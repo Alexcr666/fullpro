@@ -15,6 +15,7 @@ import 'package:fullpro/pages/profile/address/addressUser.dart';
 import 'package:fullpro/stripe/stripe.dart';
 import 'package:fullpro/widgets/widget.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:money_formatter/money_formatter.dart';
 import 'package:provider/provider.dart';
 import 'package:fullpro/animation/fadeBottom.dart';
 import 'package:fullpro/animation/fadeRight.dart';
@@ -445,20 +446,22 @@ class _CartPageState extends State<CartPage> {
               // DataSnapshot dataList = response.snapshot.children.toList()[index];
               return response == null
                   ? AppWidget().loading()
-                  : DropdownButton<DataSnapshot>(
-                      items: response.snapshot.children.map((DataSnapshot value) {
-                        return DropdownMenuItem<DataSnapshot>(
-                          value: value,
-                          child: Text(value.child("number").value.toString()),
+                  : response.snapshot.children.length == 0
+                      ? AppWidget().noResult()
+                      : DropdownButton<DataSnapshot>(
+                          items: response.snapshot.children.map((DataSnapshot value) {
+                            return DropdownMenuItem<DataSnapshot>(
+                              value: value,
+                              child: Text(value.child("number").value.toString()),
+                            );
+                          }).toList(),
+                          hint: Text(selectMethod == null ? "Seleccionar metodo de pago" : selectMethod!.child("number").value.toString()),
+                          onChanged: (data) {
+                            setState(() {
+                              selectMethod = data;
+                            });
+                          },
                         );
-                      }).toList(),
-                      hint: Text(selectMethod == null ? "Seleccionar metodo de pago" : selectMethod!.child("number").value.toString()),
-                      onChanged: (data) {
-                        setState(() {
-                          selectMethod = data;
-                        });
-                      },
-                    );
             } else {
               return AppWidget().loading();
             }
@@ -968,9 +971,14 @@ class _CartPageState extends State<CartPage> {
                               leading: AppWidget().circleProfile(data.child("foto").value.toString(), size: 50),
                               trailing: GestureDetector(
                                   onTap: () {
-                                    data.ref.remove().then((value) {
-                                      AppWidget().itemMessage("Eliminado", context);
-                                    }).catchError((onError) {});
+                                    AppWidget().optionsEnabled("¿Estas seguro que quieres eliminar?", context, tap2: () {
+                                      Navigator.pop(context);
+                                    }, tap: () {
+                                      data.ref.remove().then((value) {
+                                        Navigator.pop(context);
+                                        AppWidget().itemMessage("Eliminado", context);
+                                      }).catchError((onError) {});
+                                    });
                                   },
                                   child: Icon(
                                     Icons.close,
@@ -987,7 +995,11 @@ class _CartPageState extends State<CartPage> {
                                   data.child("price").value == null
                                       ? Text("0")
                                       : Text(
-                                          '\$' + data.child("price").value.toString(),
+                                          '\$' +
+                                              MoneyFormatter(amount: double.parse(data.child("price").value.toString()))
+                                                  .output
+                                                  .withoutFractionDigits
+                                                  .toString(),
                                           style: TextStyle(fontSize: 14),
                                         )
                                 ],
@@ -1000,8 +1012,11 @@ class _CartPageState extends State<CartPage> {
                   SizedBox(
                     height: 10,
                   ),
-                  itemMoney("Costo del servicio", '\$' + getTotalPay().toString()),
-                  itemMoney("Tarifa del servicio", '\$' + (int.parse(getTotalPay().toString()) / 10).round().toString()),
+                  itemMoney("Costo del servicio",
+                      '\$' + MoneyFormatter(amount: double.parse(getTotalPay().toString())).output.withoutFractionDigits.toString()),
+                  itemMoney("Tarifa del servicio",
+                      '\$' + MoneyFormatter(amount: (int.parse(getTotalPay().toString()) / 10)).output.withoutFractionDigits.toString()),
+
                   //  itemMoney("Costo del domicilio",
                   //    '\$' + (int.parse(dataListObjectGeneral!.child("price").value.toString()) / 10).round().toString()),
                   SizedBox(
@@ -1112,7 +1127,11 @@ class _CartPageState extends State<CartPage> {
                 Text(
                   /* currencyPos == 'left' ? '$currencySymbol' : '$ktotalprice'*/ dataListObjectGeneral!.child("price").value == null
                       ? '\$' + "0"
-                      : '\$' + (int.parse(getTotalPay().toString()) + int.parse(getTotalPay().toString()) / 10).round().toString(),
+                      : '\$' +
+                          MoneyFormatter(amount: (int.parse(getTotalPay().toString()) + int.parse(getTotalPay().toString()) / 10))
+                              .output
+                              .withoutFractionDigits
+                              .toString(),
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 22,
@@ -1127,16 +1146,32 @@ class _CartPageState extends State<CartPage> {
                 Container(
                     width: 200,
                     child: AppWidget().buttonFormLine(context, "Solicitar", false, urlIcon: "images/icons/userDone.svg", tap: () {
-                      AppStripe().makePayment(getTotalPay(), context, execute: () {
-                        dataListObjectGeneral!.ref.update({'state': 1}).then((value) {
-                          // setState(() {});
-                          userDataProfile!.ref.child("cart").remove().then((value) {
-                            Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_) => kHomePage()), (route) => false);
+                      payOrden() {
+                        int value = int.parse((getTotalPay() + ((getTotalPay() / 10))).round().toString());
+                        AppStripe().makePayment(value, context, execute: () {
+                          dataListObjectGeneral!.ref.update({'state': 1}).then((value) {
+                            // setState(() {});
+                            userDataProfile!.ref.child("cart").remove().then((value) {
+                              Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_) => kHomePage()), (route) => false);
 
-                            AppWidget().itemMessage("Orden creada", context);
+                              AppWidget().itemMessage("Orden creada", context);
+                            });
                           });
                         });
-                      });
+                      }
+
+                      if (dataListObjectGeneral!.child("date").value != null &&
+                          dataListObjectGeneral!.child("time").value != null &&
+                          dataListObjectGeneral!.child("timeFinal").value != null &&
+                          dataListObjectGeneral!.child("dateFinal").value != null) {
+                        if (dataListObjectGeneral!.child("services").children.length != 0) {
+                          payOrden();
+                        } else {
+                          AppWidget().itemMessage("Ingrese servicios", context);
+                        }
+                      } else {
+                        AppWidget().itemMessage("Ingrese todos los campos de fechas", context);
+                      }
                     })),
                 SizedBox(
                   height: 5,

@@ -25,6 +25,7 @@ import 'package:fullpro/styles/statics.dart' as Static;
 import 'package:fullpro/utils/userpreferences.dart';
 import 'package:fullpro/widgets/DataLoadedProgress.dart';
 import 'package:fullpro/widgets/cartBottomButton.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class subServicePage extends StatefulWidget {
   subServicePage({Key? key, this.idPage, this.title, this.price, this.description, this.urlImage}) : super(key: key);
@@ -166,6 +167,8 @@ class _subServicePageState extends State<subServicePage> {
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (snapshot.hasData) {
             DatabaseEvent response = snapshot.data;
+            bool resultService = false;
+            bool resultInspections = false;
 
             return response == null
                 ? AppWidget().loading()
@@ -181,12 +184,43 @@ class _subServicePageState extends State<subServicePage> {
                           Widget itemList() {
                             return GestureDetector(
                                 onTap: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => ProfileProfesionalPage(
-                                                id: dataList.key.toString(),
-                                              )));
+                                  showModalBottomSheet(
+                                      context: context,
+                                      builder: (context) {
+                                        return Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: <Widget>[
+                                            ListTile(
+                                              title: new Text('Ver portafolio'),
+                                              onTap: () async {
+                                                Navigator.pop(context);
+                                                final Uri url = Uri.parse(dataList.child("foto").value.toString());
+                                                if (!await launchUrl(url)) {
+                                                  throw Exception('Could not launch');
+                                                }
+                                              },
+                                            ),
+                                            ListTile(
+                                              title: new Text('Ver perfil'),
+                                              onTap: () {
+                                                Navigator.pop(context);
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) => ProfileProfesionalPage(
+                                                              id: dataList.child("user").value.toString(),
+                                                            )));
+                                              },
+                                            ),
+                                            ListTile(
+                                              title: new Text('Cancelar'),
+                                              onTap: () {
+                                                Navigator.pop(context);
+                                              },
+                                            ),
+                                          ],
+                                        );
+                                      });
                                 },
                                 child: Container(
                                   margin: EdgeInsets.only(top: 10),
@@ -285,7 +319,7 @@ class _subServicePageState extends State<subServicePage> {
                                                                                     style: TextStyle(
                                                                                         color: secondryColor,
                                                                                         fontWeight: FontWeight.bold,
-                                                                                        fontSize: 16),
+                                                                                        fontSize: 14),
                                                                                   ),
                                                                                   SizedBox(
                                                                                     height: 2,
@@ -304,14 +338,36 @@ class _subServicePageState extends State<subServicePage> {
                                                                                   SizedBox(
                                                                                     height: 10,
                                                                                   ),
-                                                                                  RatingBarIndicator(
-                                                                                      rating: 2.5,
-                                                                                      itemCount: 5,
-                                                                                      itemSize: 30.0,
-                                                                                      itemBuilder: (context, _) => Icon(
-                                                                                            Icons.star_border_rounded,
-                                                                                            color: secondryColor,
-                                                                                          )),
+                                                                                  FutureBuilder(
+                                                                                      future: FirebaseDatabase.instance
+                                                                                          .ref()
+                                                                                          .child('partners')
+                                                                                          .child(dataList.child("user").value.toString())
+                                                                                          .once(),
+                                                                                      builder:
+                                                                                          (BuildContext context, AsyncSnapshot snapshot) {
+                                                                                        if (snapshot.hasData) {
+                                                                                          DatabaseEvent response = snapshot.data;
+                                                                                          DataSnapshot dataRating = response.snapshot;
+
+                                                                                          return RatingBarIndicator(
+                                                                                              rating:
+                                                                                                  dataRating.child("rating").value == null
+                                                                                                      ? 0
+                                                                                                      : double.parse(dataRating
+                                                                                                          .child("rating")
+                                                                                                          .value
+                                                                                                          .toString()),
+                                                                                              itemCount: 5,
+                                                                                              itemSize: 16.0,
+                                                                                              itemBuilder: (context, _) => Icon(
+                                                                                                    Icons.star,
+                                                                                                    color: secondryColor,
+                                                                                                  ));
+                                                                                        } else {
+                                                                                          return AppWidget().loading();
+                                                                                        }
+                                                                                      }),
                                                                                   SizedBox(
                                                                                     height: 10,
                                                                                   ),
@@ -326,7 +382,7 @@ class _subServicePageState extends State<subServicePage> {
                                                                                 style: TextStyle(
                                                                                     color: secondryColor,
                                                                                     fontWeight: FontWeight.bold,
-                                                                                    fontSize: 16),
+                                                                                    fontSize: 14),
                                                                               ),
                                                                               Text(
                                                                                 '\$' + dataList.child("price").value.toString(),
@@ -375,9 +431,10 @@ class _subServicePageState extends State<subServicePage> {
                                                                               Flexible(
                                                                                   child: AppWidget()
                                                                                       .buttonFormLine(context, "Aceptar", false, tap: () {
-                                                                                Navigator.pop(context);
+                                                                                //  Navigator.pop(context);
 
                                                                                 Navigator.pop(context);
+
                                                                                 Query historyRef = FirebaseDatabase.instance
                                                                                     .ref()
                                                                                     .child('ordens')
@@ -396,33 +453,63 @@ class _subServicePageState extends State<subServicePage> {
                                                                                   });
                                                                                 }
 
-                                                                                historyRef.once().then((e) async {
-                                                                                  final snapshot = e.snapshot;
-                                                                                  if (snapshot.value != null) {
-                                                                                    if (snapshot.child("professional").value.toString() ==
-                                                                                        userDataProfile!.key.toString()) {
-                                                                                      createService(snapshot);
+                                                                                if (userDataProfile!.child("cart").value != null) {
+                                                                                  historyRef.once().then((e) async {
+                                                                                    final snapshot = e.snapshot;
+                                                                                    if (snapshot.value != null) {
+                                                                                      if (snapshot.child("professional").value.toString() ==
+                                                                                          userDataProfile!.key.toString()) {
+                                                                                        createService(snapshot);
+                                                                                      } else {
+                                                                                        AppWidget().itemMessage(
+                                                                                            "No se puede seleccionar otro professional",
+                                                                                            context);
+                                                                                      }
                                                                                     } else {
-                                                                                      AppWidget().itemMessage(
-                                                                                          "No se puede seleccionar otro professional",
-                                                                                          context);
-                                                                                    }
-                                                                                  } else {
-                                                                                    createOrdens(context,
-                                                                                        name: dataList.child("name").value.toString(),
-                                                                                        inspections:
-                                                                                            dataList.child("inspections").value.toString(),
-                                                                                        profesionalName:
-                                                                                            dataList.child("fullname").value.toString(),
-                                                                                        profesional: userDataProfile!.key.toString(),
-                                                                                        price: int.parse(
-                                                                                            dataList.child("price").value.toString()));
+                                                                                      createOrdens(context,
+                                                                                          name: dataList.child("name").value.toString(),
+                                                                                          inspections: dataList
+                                                                                              .child("inspections")
+                                                                                              .value
+                                                                                              .toString(),
+                                                                                          profesionalName:
+                                                                                              dataList.child("fullname").value.toString(),
+                                                                                          profesional: userDataProfile!.key.toString(),
+                                                                                          price: int.parse(
+                                                                                              dataList.child("price").value.toString()));
 
-                                                                                    Future.delayed(const Duration(milliseconds: 1000), () {
-                                                                                      createService(snapshot);
+                                                                                      Future.delayed(const Duration(milliseconds: 1000),
+                                                                                          () {
+                                                                                        createService(snapshot);
+                                                                                      });
+                                                                                    }
+                                                                                  });
+                                                                                } else {
+                                                                                  createOrdens(context,
+                                                                                      name: dataList.child("name").value.toString(),
+                                                                                      inspections:
+                                                                                          dataList.child("inspections").value.toString(),
+                                                                                      profesionalName:
+                                                                                          dataList.child("fullname").value.toString(),
+                                                                                      profesional: userDataProfile!.key.toString(),
+                                                                                      price: int.parse(
+                                                                                          dataList.child("price").value.toString()));
+
+                                                                                  Future.delayed(const Duration(milliseconds: 1000), () {
+                                                                                    // createService(snapshot);
+
+                                                                                    Query historyRef = FirebaseDatabase.instance
+                                                                                        .ref()
+                                                                                        .child('ordens')
+                                                                                        .child(userDataProfile!
+                                                                                            .child("cart")
+                                                                                            .value
+                                                                                            .toString());
+                                                                                    historyRef.once().then((value) {
+                                                                                      createService(value.snapshot);
                                                                                     });
-                                                                                  }
-                                                                                });
+                                                                                  });
+                                                                                }
                                                                               })),
                                                                             ],
                                                                           )),
@@ -462,16 +549,31 @@ class _subServicePageState extends State<subServicePage> {
                                             "Opiniones clientes",
                                             style: TextStyle(color: Colors.black, fontSize: 10),
                                           ),
-                                          RatingBarIndicator(
-                                              rating: dataList.child("rating").value == null
-                                                  ? 0
-                                                  : double.parse(dataList.child("rating").value.toString()),
-                                              itemCount: 5,
-                                              itemSize: 16.0,
-                                              itemBuilder: (context, _) => Icon(
-                                                    Icons.star,
-                                                    color: secondryColor,
-                                                  )),
+                                          FutureBuilder(
+                                              future: FirebaseDatabase.instance
+                                                  .ref()
+                                                  .child('partners')
+                                                  .child(dataList.child("user").value.toString())
+                                                  .once(),
+                                              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                                                if (snapshot.hasData) {
+                                                  DatabaseEvent response = snapshot.data;
+                                                  DataSnapshot dataRating = response.snapshot;
+
+                                                  return RatingBarIndicator(
+                                                      rating: dataRating.child("rating").value == null
+                                                          ? 0
+                                                          : double.parse(dataRating.child("rating").value.toString()),
+                                                      itemCount: 5,
+                                                      itemSize: 16.0,
+                                                      itemBuilder: (context, _) => Icon(
+                                                            Icons.star,
+                                                            color: secondryColor,
+                                                          ));
+                                                } else {
+                                                  return AppWidget().loading();
+                                                }
+                                              }),
                                           SizedBox(
                                             height: 5,
                                           ),
@@ -492,7 +594,23 @@ class _subServicePageState extends State<subServicePage> {
                               return SizedBox();
                             }
                           } else {
-                            return itemList();
+                            getInspections() {
+                              int type = 1;
+                              if (inspeccion == true) {
+                                resultInspections = true;
+                                type = 2;
+                              } else {
+                                resultService = true;
+                                type = 1;
+                              }
+                              return type;
+                            }
+
+                            return getInspections() != dataList.child("type").value
+                                ? ((index + 1) == response.snapshot.children.length)
+                                    ? AppWidget().noResult()
+                                    : SizedBox()
+                                : itemList();
                           }
                         });
           } else {
@@ -987,7 +1105,7 @@ class _subServicePageState extends State<subServicePage> {
                                                               Text(
                                                                 "Nombre del servicio",
                                                                 style: TextStyle(
-                                                                    color: secondryColor, fontWeight: FontWeight.bold, fontSize: 14),
+                                                                    color: secondryColor, fontWeight: FontWeight.bold, fontSize: 12),
                                                               ),
                                                               SizedBox(
                                                                 height: 2,

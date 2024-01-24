@@ -74,22 +74,28 @@ class _kHomePageState extends State<kHomePage> {
   void _initMarkers() {
     _marker.clear();
 
-    final UserRef =
-        FirebaseDatabase.instance.ref().child("partners").orderByChild("profesion").equalTo(_searchHome.text).once().then((value) {
+    FirebaseDatabase.instance.ref().child("partners").orderByChild("profesion").equalTo(_searchHome.text).once().then((value) {
       DatabaseEvent response = value;
 
       for (var i = 0; i < response.snapshot.children.length; i++) {
         DataSnapshot dataList = response.snapshot.children.toList()[i];
 
         //  if (dataList.child("professional").value.toString() == _searchHome.text.toString()) {
-        if (dataList.child("latitude").value != null && dataList.child("longitude").value != null) {
+        if (dataList.child("latitud").value != null && dataList.child("longitude").value != null) {
           MarkerId markerId = new MarkerId(dataList.key.toString());
           _marker.add(
             new Marker(
               markerId: markerId,
+              infoWindow: InfoWindow(title: dataList.child("fullname").value.toString()),
               position: LatLng(
-                  double.parse(dataList.child("latitude").value.toString()), double.parse(dataList.child("longitude").value.toString())),
+                  double.parse(dataList.child("latitud").value.toString()), double.parse(dataList.child("longitude").value.toString())),
               onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ProfileProfesionalPage(
+                              id: markerId.toString(),
+                            )));
                 // Handle on marker tap
               },
               icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
@@ -538,126 +544,143 @@ class _kHomePageState extends State<kHomePage> {
         // initialData: 1,
         future: FirebaseDatabase.instance.ref().child('partners').orderByChild("profesion").equalTo(_searchHome.text).once(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
-          try {
-            if (snapshot.hasData) {
-              DatabaseEvent response = snapshot.data;
+          bool resultPrimary = false;
+          if (snapshot.hasData) {
+            DatabaseEvent response = snapshot.data;
 
-              return response == null
-                  ? AppWidget().loading()
-                  : response.snapshot.children.length == 0
-                      ? AppWidget().noResult()
-                      : ListView.builder(
-                          itemCount: response.snapshot.children.length,
-                          shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
-                          itemBuilder: (BuildContext context, int index) {
-                            DataSnapshot dataList = response.snapshot.children.toList()[index];
-                            //  Widget itemList() {
+            return response == null
+                ? AppWidget().loading()
+                : response.snapshot.children.length == 0
+                    ? AppWidget().noResult()
+                    : ListView.builder(
+                        itemCount: response.snapshot.children.length,
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        itemBuilder: (BuildContext context, int index) {
+                          DataSnapshot dataList = response.snapshot.children.toList()[index];
 
-                            getDistance() async {
-                              var _distanceInMeters;
+                          if (dataList.child("primary").value == true) {
+                            resultPrimary = true;
+                          }
+                          //  Widget itemList() {
 
-                              if (userDataProfile != null) {
-                                _distanceInMeters = await Geolocator.distanceBetween(
-                                  double.parse(dataList.child("latitude").value.toString()),
-                                  double.parse(dataList.child("longitude").value.toString()),
-                                  userDataProfile!.child("latitud").value == null
-                                      ? double.parse(dataList.child("latitude").value.toString())
-                                      : double.parse(userDataProfile!.child("latitud").value.toString()),
-                                  userDataProfile!.child("latitud").value == null
-                                      ? double.parse(dataList.child("longitude").value.toString())
-                                      : double.parse(userDataProfile!.child("longitude").value.toString()),
-                                );
+                          getDistance() async {
+                            var _distanceInMeters;
+
+                            if (userDataProfile != null) {
+                              _distanceInMeters = await Geolocator.distanceBetween(
+                                double.parse(dataList.child("latitude").value.toString()),
+                                double.parse(dataList.child("longitude").value.toString()),
+                                userDataProfile!.child("latitud").value == null
+                                    ? double.parse(dataList.child("latitude").value.toString())
+                                    : double.parse(userDataProfile!.child("latitud").value.toString()),
+                                userDataProfile!.child("latitud").value == null
+                                    ? double.parse(dataList.child("longitude").value.toString())
+                                    : double.parse(userDataProfile!.child("longitude").value.toString()),
+                              );
+                            }
+                            return _distanceInMeters ?? "0";
+                          }
+
+                          Widget itemProfile() {
+                            return GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => ProfileProfesionalPage(
+                                                id: dataList.key.toString(),
+                                              )));
+                                },
+                                child: Container(
+                                  margin: EdgeInsets.only(top: 10),
+                                  decoration: AppWidget().boxShandowGreyRectangule(),
+                                  child: Row(
+                                    children: [
+                                      SizedBox(
+                                        width: 10,
+                                      ),
+                                      AppWidget().circleProfile(dataList.child("photo").value.toString()),
+                                      SizedBox(
+                                        width: 10,
+                                      ),
+                                      Flexible(
+                                          child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          SizedBox(
+                                            height: 14,
+                                          ),
+                                          Text(
+                                            dataList.child("fullname").value.toString(),
+                                            style: TextStyle(color: secondryColor, fontSize: 17, fontWeight: FontWeight.bold),
+                                          ),
+                                          Text(
+                                            "Opiniones clientes",
+                                            style: TextStyle(color: Colors.black, fontSize: 10),
+                                          ),
+                                          Row(
+                                            children: [
+                                              RatingBarIndicator(
+                                                  rating: 2.5,
+                                                  itemCount: 5,
+                                                  itemSize: 16.0,
+                                                  itemBuilder: (context, _) => Icon(
+                                                        Icons.star,
+                                                        color: secondryColor,
+                                                      )),
+                                              Expanded(child: SizedBox()),
+                                              FutureBuilder(
+                                                  // initialData: 1,
+                                                  future: getDistance(),
+                                                  builder: (BuildContext context, AsyncSnapshot snapshot) {
+                                                    if (snapshot.hasData) {
+                                                      return Text(snapshot.data.toString() == "0"
+                                                          ? "no"
+                                                          : (double.parse(snapshot.data.toString()).round() / 1000).round().toString() +
+                                                              " Km");
+                                                    } else {
+                                                      return SizedBox();
+                                                    }
+                                                  }),
+                                              SizedBox(
+                                                width: 10,
+                                              ),
+                                            ],
+                                          ),
+                                          SizedBox(
+                                            height: 5,
+                                          ),
+                                          SizedBox(
+                                            height: 14,
+                                          ),
+                                        ],
+                                      ))
+                                    ],
+                                  ),
+                                ));
+
+                            //  }
+
+                            /* */
+                          }
+
+                          getNoResult() {
+                            if (((index + 1) == response.snapshot.children.length)) {
+                              if (resultPrimary) {
+                                return AppWidget().noResult();
+                              } else {
+                                return SizedBox();
                               }
-                              return _distanceInMeters ?? "0";
+                            } else {
+                              return SizedBox();
                             }
+                          }
 
-                            Widget itemProfile() {
-                              return GestureDetector(
-                                  onTap: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => ProfileProfesionalPage(
-                                                  id: dataList.key.toString(),
-                                                )));
-                                  },
-                                  child: Container(
-                                    margin: EdgeInsets.only(top: 10),
-                                    decoration: AppWidget().boxShandowGreyRectangule(),
-                                    child: Row(
-                                      children: [
-                                        SizedBox(
-                                          width: 10,
-                                        ),
-                                        AppWidget().circleProfile(dataList.child("photo").value.toString()),
-                                        SizedBox(
-                                          width: 10,
-                                        ),
-                                        Flexible(
-                                            child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            SizedBox(
-                                              height: 14,
-                                            ),
-                                            Text(
-                                              dataList.child("fullname").value.toString(),
-                                              style: TextStyle(color: secondryColor, fontSize: 17, fontWeight: FontWeight.bold),
-                                            ),
-                                            Text(
-                                              "Opiniones clientes",
-                                              style: TextStyle(color: Colors.black, fontSize: 10),
-                                            ),
-                                            Row(
-                                              children: [
-                                                RatingBarIndicator(
-                                                    rating: 2.5,
-                                                    itemCount: 5,
-                                                    itemSize: 16.0,
-                                                    itemBuilder: (context, _) => Icon(
-                                                          Icons.star,
-                                                          color: secondryColor,
-                                                        )),
-                                                Expanded(child: SizedBox()),
-                                                FutureBuilder(
-                                                    // initialData: 1,
-                                                    future: getDistance(),
-                                                    builder: (BuildContext context, AsyncSnapshot snapshot) {
-                                                      if (snapshot.hasData) {
-                                                        return Text(snapshot.data.toString() == "0"
-                                                            ? "no"
-                                                            : (double.parse(snapshot.data.toString()).round() / 1000).round().toString() +
-                                                                " Km");
-                                                      } else {
-                                                        return SizedBox();
-                                                      }
-                                                    }),
-                                                SizedBox(
-                                                  width: 10,
-                                                ),
-                                              ],
-                                            ),
-                                            SizedBox(
-                                              height: 5,
-                                            ),
-                                            SizedBox(
-                                              height: 14,
-                                            ),
-                                          ],
-                                        ))
-                                      ],
-                                    ),
-                                  ));
+                          return dataList.child("primary").value != true ? getNoResult() : itemProfile();
+                          /* dataList.child("primary").value != true ? SizedBox() :*/
 
-                              //  }
-
-                              /* */
-                            }
-
-                            return /* dataList.child("primary").value != true ? SizedBox() :*/
-
-                                dataList.child("latitude").value == null
+                          /* dataList.child("latitude").value == null
                                     ? SizedBox()
                                     : FutureBuilder(
                                         // initialData: 1,
@@ -678,16 +701,13 @@ class _kHomePageState extends State<kHomePage> {
                                           } else {
                                             return AppWidget().loading();
                                           }
-                                        });
-                          });
-            } else {
-              return AppWidget().loading();
-            }
-
-            ;
-          } catch (e) {
+                                        });*/
+                        });
+          } else {
             return AppWidget().loading();
           }
+
+          ;
         });
   }
 
@@ -756,45 +776,47 @@ class _kHomePageState extends State<kHomePage> {
           }),
         ),*/
 
-        SimpleAutoCompleteTextField(
-            key: key,
-            decoration: InputDecoration(
-              errorText: "Ingresar servicio valido",
-              contentPadding: EdgeInsets.only(top: 17, bottom: 17, left: 15),
-              enabledBorder:
-                  OutlineInputBorder(borderSide: BorderSide(color: secondryColor, width: 1.0), borderRadius: BorderRadius.circular(11)),
-              errorBorder:
-                  OutlineInputBorder(borderSide: BorderSide(color: primaryColor, width: 1.0), borderRadius: BorderRadius.circular(10)),
-              border: OutlineInputBorder(borderSide: BorderSide(color: primaryColor, width: 1.0), borderRadius: BorderRadius.circular(10)),
-              labelText: "Buscar",
-              labelStyle: TextStyle(fontSize: 12.0, color: Colors.black),
-            ),
-            controller: _searchHome,
-            suggestions: suggestions,
-            textChanged: (text) {
-              print("text: " + text.toString());
+        activeCategorie == 0
+            ? SizedBox()
+            : SimpleAutoCompleteTextField(
+                key: key,
+                decoration: InputDecoration(
+                  errorText: "Ingresar servicio valido",
+                  contentPadding: EdgeInsets.only(top: 17, bottom: 17, left: 15),
+                  enabledBorder:
+                      OutlineInputBorder(borderSide: BorderSide(color: secondryColor, width: 1.0), borderRadius: BorderRadius.circular(11)),
+                  errorBorder:
+                      OutlineInputBorder(borderSide: BorderSide(color: primaryColor, width: 1.0), borderRadius: BorderRadius.circular(10)),
+                  border:
+                      OutlineInputBorder(borderSide: BorderSide(color: primaryColor, width: 1.0), borderRadius: BorderRadius.circular(10)),
+                  labelText: "Buscar",
+                  labelStyle: TextStyle(fontSize: 12.0, color: Colors.black),
+                ),
+                controller: _searchHome,
+                suggestions: suggestions,
+                textChanged: (text) {
+                  print("text: " + text.toString());
 
-              currentText = text;
-            },
-            // clearOnSubmit: true,
-            textSubmitted: (text) {
-              print("set1: " + _searchHome.text.toString());
+                  currentText = text;
+                },
+                // clearOnSubmit: true,
+                textSubmitted: (text) {
+                  print("set1: " + _searchHome.text.toString());
 
-              //   currentText = text;
-              //  cartItemsList = Provider.of<AppData>(context, listen: false).userCartData;
-              Future.delayed(const Duration(milliseconds: 300), () {
-                _searchHome.text = text.toString();
-                print("set2: " + _searchHome.text.toString());
-              });
+                  //   currentText = text;
+                  //  cartItemsList = Provider.of<AppData>(context, listen: false).userCartData;
+                  Future.delayed(const Duration(milliseconds: 300), () {
+                    _searchHome.text = text.toString();
+                    _initMarkers();
+                    print("set2: " + _searchHome.text.toString());
+                  });
 
-              // _initMarkers();
+                  //   setState(() {});
+                }
 
-              //   setState(() {});
-            }
+                // added.add(text);
 
-            // added.add(text);
-
-            ),
+                ),
         /* Container(
             width: 100,
             height: 30,

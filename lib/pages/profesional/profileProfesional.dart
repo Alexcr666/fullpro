@@ -625,7 +625,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Flexible(
+                            /* Flexible(
                                 child: Container(
                                     width: 170,
                                     child: AppWidget().buttonFormLine(
@@ -643,7 +643,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                             profesional: getDataUser()!.key.toString(),
                                             price: 1000);
                                       }
-                                    }))),
+                                    }))),*/
                             SizedBox(
                               width: 10,
                             ),
@@ -1956,7 +1956,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                                     ClipRRect(
                                                       borderRadius: BorderRadius.circular(25),
                                                       child: Image.network(
-                                                        dataList.child("foto").value.toString(),
+                                                        dataList.child("foto").value == null ? "" : dataList.child("foto").value.toString(),
                                                         errorBuilder: (BuildContext? context, Object? exception, StackTrace? stackTrace) {
                                                           return Container(
                                                             width: 200,
@@ -1988,7 +1988,9 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                                                   height: 2,
                                                                 ),
                                                                 Text(
-                                                                  dataList.child("category").value.toString(),
+                                                                  dataList.child("category").value == null
+                                                                      ? "No disponible"
+                                                                      : dataList.child("category").value.toString(),
                                                                   style: TextStyle(
                                                                       color: Colors.black, fontWeight: FontWeight.bold, fontSize: 13),
                                                                 ),
@@ -2047,7 +2049,9 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                                         alignment: Alignment.centerLeft,
                                                         margin: EdgeInsets.only(left: 20, right: 20),
                                                         child: Text(
-                                                          dataList.child("name").value.toString(),
+                                                          dataList.child("name").value == null
+                                                              ? "No disponible"
+                                                              : dataList.child("name").value.toString(),
                                                           style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 12),
                                                         )),
                                                     SizedBox(
@@ -2202,11 +2206,15 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                           ],
                                         ),
                                         Text(
-                                          dataList.child("name").value.toString().capitalize(),
+                                          dataList.child("name").value == null
+                                              ? "No disponible"
+                                              : dataList.child("name").value.toString().capitalize(),
                                           style: TextStyle(color: secondryColor, fontSize: 12, fontWeight: FontWeight.bold),
                                         ),
                                         Text(
-                                          dataList.child("category").value.toString().capitalize(),
+                                          dataList.child("category").value == null
+                                              ? "No disponible"
+                                              : dataList.child("category").value.toString().capitalize(),
                                           style: TextStyle(color: secondryColor, fontSize: 11),
                                         ),
                                         Text(
