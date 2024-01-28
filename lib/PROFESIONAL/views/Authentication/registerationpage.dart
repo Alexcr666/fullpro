@@ -1,4 +1,5 @@
 // ignore_for_file: prefer_const_constructors
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:autocomplete_textfield/autocomplete_textfield.dart';
@@ -292,10 +293,18 @@ class _RegistrationProfessionalPageState extends State<RegistrationProfessionalP
                 ),
                 controller: _searchHome,
                 suggestions: suggestions,
+                textChanged: (text) {
+                  print("text: " + text.toString());
+
+                  currentText = text;
+                },
                 //   textChanged: (text) => currentText = text,
                 clearOnSubmit: true,
                 textSubmitted: (text) {
-                  _searchHome.text = text;
+                  Future.delayed(const Duration(milliseconds: 300), () {
+                    _searchHome.text = text.toString();
+                    log("texto: " + text.toString());
+                  });
                 }
                 // setState(() {});
                 // added.add(text);
@@ -938,18 +947,15 @@ class _RegistrationProfessionalPageState extends State<RegistrationProfessionalP
                       onPressed: () async {
                         var connectivityResult = await (Connectivity().checkConnectivity());
                         if (connectivityResult != ConnectivityResult.wifi && connectivityResult != ConnectivityResult.mobile) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                Locales.string(context, 'error_no_internet'),
-                              ),
-                            ),
-                          );
+                          AppWidget().itemMessage("No hay conexión a internet", context);
                           return;
                         }
-
-                        _formKey1.currentState!.validate();
-                        _formKey.currentState!.validate();
+                        try {
+                          _formKey1.currentState!.validate();
+                        } catch (e) {}
+                        try {
+                          _formKey.currentState!.validate();
+                        } catch (e) {}
 
                         if (fullNameController.text.length < 3) {
                           ScaffoldMessenger.of(context).showSnackBar(

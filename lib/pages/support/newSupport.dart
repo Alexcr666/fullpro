@@ -446,7 +446,7 @@ class _PortafolioPageState extends State<NewPortafolioPage> {
 
                       clearOnSubmit: true,
                       textSubmitted: (text) {
-                        Future.delayed(const Duration(milliseconds: 2200), () {
+                        Future.delayed(const Duration(milliseconds: 300), () {
                           _searchHome.text = text;
                         });
                       }

@@ -6,6 +6,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:fullpro/PROFESIONAL/controllers/mainController.dart';
 import 'package:fullpro/PROFESIONAL/views/homepage.dart';
+import 'package:fullpro/TESTING/testing.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:power_file_view/power_file_view.dart';
 import 'package:provider/provider.dart';
@@ -134,6 +135,7 @@ class MyApp extends StatelessWidget {
               ? professionalState == true
                   ? HomePage.id
                   : kHomePage.id
+              //  FirstPage.id
               : LoginPage.id,
           routes: {
             kHomePage.id: (context) => kHomePage(),
@@ -144,6 +146,7 @@ class MyApp extends StatelessWidget {
             RegistrationPage.id: (context) => RegistrationPage(),
             LoginPage.id: (context) => LoginPage(),
             HomePage.id: (context) => HomePage(),
+            FirstPage.id: (context) => FirstPage(),
           },
         ),
       ),

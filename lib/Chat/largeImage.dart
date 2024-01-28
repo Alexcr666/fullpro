@@ -1,22 +1,17 @@
 import 'package:cached_network_image/cached_network_image.dart';
-
 import 'package:flutter/cupertino.dart';
-
 import 'package:flutter/material.dart';
-
 import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
-import 'package:fullpro/widgets/widget.dart';
 
 class LargeImage extends StatelessWidget {
   final largeImage;
-
   LargeImage(this.largeImage);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(elevation: 0, automaticallyImplyLeading: false, backgroundColor: secondryColor),
-        backgroundColor: secondryColor,
+        appBar: AppBar(elevation: 0, automaticallyImplyLeading: false, backgroundColor: primaryColor),
+        backgroundColor: primaryColor,
         body: Container(
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.only(topLeft: Radius.circular(50), topRight: Radius.circular(50)), color: Colors.white),
@@ -30,7 +25,6 @@ class LargeImage extends StatelessWidget {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: <Widget>[
-                      AppWidget().back(context),
                       CachedNetworkImage(
                         fit: BoxFit.contain,
                         placeholder: (context, url) => Center(
@@ -46,6 +40,8 @@ class LargeImage extends StatelessWidget {
                       SizedBox(
                         height: 20,
                       ),
+                      FloatingActionButton(
+                          backgroundColor: primaryColor, child: Icon(Icons.arrow_back), onPressed: () => Navigator.pop(context)),
                       SizedBox(
                         height: 20,
                       ),

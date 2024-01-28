@@ -23,6 +23,7 @@ import 'package:fullpro/pages/profesional/profileProfesional.dart';
 import 'dart:async';
 import 'package:fullpro/styles/statics.dart' as appcolors;
 import 'package:fullpro/styles/statics.dart';
+import 'package:fullpro/utils/utils.dart';
 import 'package:fullpro/widgets/widget.dart';
 
 class MyOrdersProfile extends StatefulWidget {
@@ -474,7 +475,7 @@ class _MyOrdersState extends State<MyOrdersProfile> with TickerProviderStateMixi
                                                 SizedBox(
                                                   //  width: MediaQuery.of(context).size.width * .6,
                                                   child: Text(
-                                                    dataList.child("name").value.toString(),
+                                                    dataList.child("name").value.toString().capitalize(),
                                                     overflow: TextOverflow.ellipsis,
                                                     style: TextStyle(
                                                       color: secondryColor,
@@ -799,7 +800,7 @@ class _MyOrdersState extends State<MyOrdersProfile> with TickerProviderStateMixi
                     style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 20),
                   )),
               Expanded(child: SizedBox()),
-              Container(
+              /* Container(
                   margin: EdgeInsets.only(left: 30),
                   child: Row(
                     children: [
@@ -816,7 +817,7 @@ class _MyOrdersState extends State<MyOrdersProfile> with TickerProviderStateMixi
                         color: secondryColor,
                       ),
                     ],
-                  )),
+                  )),*/
               SizedBox(
                 width: 50,
               ),

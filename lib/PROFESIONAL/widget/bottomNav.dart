@@ -14,6 +14,7 @@ import 'package:fullpro/PROFESIONAL/views/Orders/orders.dart';
 import 'package:fullpro/PROFESIONAL/views/Orders/ordersList.dart';
 import 'package:fullpro/PROFESIONAL/views/account.dart';
 import 'package:fullpro/PROFESIONAL/views/profile/menuProfile.dart';
+import 'package:fullpro/TESTING/testing.dart';
 import 'package:fullpro/pages/INTEGRATION/Chat/home_screen.dart';
 import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
 import 'package:fullpro/pages/profesional/profileProfesional.dart';
@@ -37,7 +38,7 @@ class _BottomNavState extends State<BottomNav> {
   @override
   void initState() {
     _getCurrentUser();
-    _getMatches();
+    // _getMatches();
   }
 
   _getCurrentUser() async {
@@ -174,14 +175,15 @@ class _BottomNavState extends State<BottomNav> {
                     onTap: () {
                       //   _getMatches();
 
-                      List<userD.User> result = LinkedHashSet<userD.User>.from(matches).toList();
+                      /*  List<userD.User> result = LinkedHashSet<userD.User>.from(matches).toList();
 
                       List<userD.User> newMatchesResult = LinkedHashSet<userD.User>.from(newmatches).toList();
                       log("iduser: " + FirebaseAuth.instance.currentUser!.uid.toString());
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => HomeScreen(currentUser!, result, newMatchesResult)),
-                      );
+                      );*/
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => FirstPage()));
                     },
                     child: Container(
                       height: 50,

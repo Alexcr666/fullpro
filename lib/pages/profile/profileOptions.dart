@@ -293,7 +293,7 @@ class _ProfileOptionsPageState extends State<ProfileOptionsPage> {
 
                           //   Navigator.push(context, MaterialPageRoute(builder: (context) => const Addresses()));
                         },
-                        icon: "images/icons/miprofile3.svg",
+                        icon: "images/icons/locationCircle.svg",
                       ),
 
                       const Divider(color: Colors.black12),
@@ -389,7 +389,11 @@ class _ProfileOptionsPageState extends State<ProfileOptionsPage> {
                       ProfileButton(
                         buttonName: /* Locales.string(context, 'lbl_about')*/ "Cerrar sesión",
                         onCLicked: () async {
-                          AppUtils().signOut(context);
+                          AppWidget().optionsEnabled("¿Estas seguro que quieres cerrar sesión?", context, tap2: () {
+                            Navigator.pop(context);
+                          }, tap: () {
+                            AppUtils().signOut(context);
+                          });
 
                           //   Navigator.pop(context);
 

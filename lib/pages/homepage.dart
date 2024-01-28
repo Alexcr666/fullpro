@@ -3,17 +3,22 @@ import 'dart:math';
 import 'package:autocomplete_textfield/autocomplete_textfield.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:flutter_geofire/flutter_geofire.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fullpro/PROFESIONAL/views/stripe.dart';
 import 'package:fullpro/TESTING/testing.dart';
+import 'package:fullpro/main.dart';
 import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
 import 'package:fullpro/pages/profesional/profileProfesional.dart';
+import 'package:fullpro/pages/profile/address/addressUser.dart';
+import 'package:fullpro/utils/utils.dart';
 import 'package:fullpro/widgets/widget.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -57,6 +62,23 @@ TextEditingController _searchHome = TextEditingController();
 GlobalKey<AutoCompleteTextFieldState<String>> key = GlobalKey();
 
 class _kHomePageState extends State<kHomePage> {
+  late FirebaseMessaging messaging;
+
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+
+  static void initialize() {
+    // Initialization  setting for android
+    const InitializationSettings initializationSettingsAndroid =
+        InitializationSettings(android: AndroidInitializationSettings("@drawable/notification_icon"));
+    notificationsPlugin.initialize(
+      initializationSettingsAndroid,
+      // to handle event when we receive notification
+      onDidReceiveNotificationResponse: (details) {
+        if (details.input != null) {}
+      },
+    );
+  }
+
   TextEditingController _searchHomeCategorie = TextEditingController();
   int activeCategorie = 0;
 
@@ -90,12 +112,12 @@ class _kHomePageState extends State<kHomePage> {
               position: LatLng(
                   double.parse(dataList.child("latitud").value.toString()), double.parse(dataList.child("longitude").value.toString())),
               onTap: () {
-                Navigator.push(
+                /*Navigator.push(
                     context,
                     MaterialPageRoute(
                         builder: (context) => ProfileProfesionalPage(
                               id: markerId.toString(),
-                            )));
+                            )));*/
                 // Handle on marker tap
               },
               icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
@@ -321,6 +343,22 @@ class _kHomePageState extends State<kHomePage> {
     super.initState();
     _searchHome.clear();
 
+    messaging = FirebaseMessaging.instance;
+    messaging.getToken().then((value) {
+      print("token: " + value.toString());
+      deviceToken = value!;
+    });
+
+    initialize();
+
+    FirebaseMessaging.onMessage.listen((RemoteMessage event) {
+      // print("message recieved" + event.data.toString());
+
+      // if (event.notification != null) {
+      display(event);
+      //  }
+    });
+
     DatabaseReference ref = FirebaseDatabase.instance.ref("users/" + FirebaseAuth.instance.currentUser!.uid.toString());
 
 // Get the Stream
@@ -441,17 +479,21 @@ class _kHomePageState extends State<kHomePage> {
                   fontSize: 15,
                 ),
               ),
-              Text(
-                userDataProfile == null
-                    ? "Selecciona ubicación"
-                    : userDataProfile!.child("location").value == null
-                        ? "Seleccionar ubicación"
-                        : userDataProfile!.child("location").value.toString(),
-                style: const TextStyle(
-                  color: Colors.black,
-                  fontSize: 12,
-                ),
-              ),
+              GestureDetector(
+                  onTap: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => AddressesUser("users")));
+                  },
+                  child: Text(
+                    userDataProfile == null
+                        ? "Selecciona ubicación"
+                        : userDataProfile!.child("location").value == null
+                            ? "Seleccionar ubicación"
+                            : userDataProfile!.child("location").value.toString(),
+                    style: const TextStyle(
+                      color: Colors.black,
+                      fontSize: 12,
+                    ),
+                  )),
             ],
           ),
           actions: [
@@ -997,8 +1039,8 @@ class _kHomePageState extends State<kHomePage> {
           .ref()
           .child("categories")
           .orderByChild("name")
-          .startAt(_searchHomeCategorie.text.toString())
-          .endAt(_searchHomeCategorie.text.toString() + "\uf8ff")
+          .startAt(_searchHomeCategorie.text.toString().capitalize())
+          .endAt(_searchHomeCategorie.text.toString().capitalize() + "\uf8ff")
           // .limitToFirst(int.parse("10"))
           .once();
     }
@@ -1008,7 +1050,6 @@ class _kHomePageState extends State<kHomePage> {
 
   Widget gridviewCategories() {
     return FutureBuilder(
-        initialData: 1,
         future: getFilterCategorie(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           try {
@@ -1018,69 +1059,71 @@ class _kHomePageState extends State<kHomePage> {
               response = snapshot.data;
 
               return response == null
-                  ? Text("Cargando")
-                  : Container(
-                      width: double.infinity,
-                      height: 300,
-                      child: AlignedGridView.count(
-                        //  physics: const NeverScrollableScrollPhysics(),
-                        crossAxisCount: 3,
-                        itemCount: response.snapshot.children.length,
-                        mainAxisSpacing: 2,
-                        crossAxisSpacing: 2,
-                        itemBuilder: (context, index) {
-                          DataSnapshot dataList = response.snapshot.children.toList()[index];
+                  ? AppWidget().loading()
+                  : response.snapshot.children.length == 0
+                      ? AppWidget().noResult()
+                      : Container(
+                          width: double.infinity,
+                          height: 300,
+                          child: AlignedGridView.count(
+                            //  physics: const NeverScrollableScrollPhysics(),
+                            crossAxisCount: 3,
+                            itemCount: response.snapshot.children.length,
+                            mainAxisSpacing: 2,
+                            crossAxisSpacing: 2,
+                            itemBuilder: (context, index) {
+                              DataSnapshot dataList = response.snapshot.children.toList()[index];
 
-                          return GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => subServicePage(
-                                              title: dataList.child("name").value.toString(),
-                                              urlImage: dataList.child("photo").value.toString(),
-                                              idPage: dataList.key.toString(),
-                                            )));
-                              },
-                              child: Container(
-                                  margin: EdgeInsets.only(left: 10, right: 10),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: [
-                                      Stack(
+                              return GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => subServicePage(
+                                                  title: dataList.child("name").value.toString(),
+                                                  urlImage: dataList.child("photo").value.toString(),
+                                                  idPage: dataList.key.toString(),
+                                                )));
+                                  },
+                                  child: Container(
+                                      margin: EdgeInsets.only(left: 10, right: 10),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.center,
                                         children: [
-                                          ClipRRect(
-                                            borderRadius: BorderRadius.circular(20),
-                                            child: Image.network(
-                                              dataList.child("photo").value.toString(),
-                                              errorBuilder: (BuildContext? context, Object? exception, StackTrace? stackTrace) {
-                                                return Container(
+                                          Stack(
+                                            children: [
+                                              ClipRRect(
+                                                borderRadius: BorderRadius.circular(20),
+                                                child: Image.network(
+                                                  dataList.child("photo").value.toString(),
+                                                  errorBuilder: (BuildContext? context, Object? exception, StackTrace? stackTrace) {
+                                                    return Container(
+                                                      width: 110,
+                                                      height: 110,
+                                                      color: Colors.grey.withOpacity(0.3),
+                                                    );
+                                                  },
                                                   width: 110,
                                                   height: 110,
-                                                  color: Colors.grey.withOpacity(0.3),
-                                                );
-                                              },
-                                              width: 110,
-                                              height: 110,
-                                              fit: BoxFit.cover,
-                                            ),
+                                                  fit: BoxFit.cover,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          SizedBox(
+                                            height: 10,
+                                          ),
+                                          Text(
+                                            dataList.child("name").value.toString(),
+                                            style: TextStyle(color: secondryColor, fontSize: 12, fontWeight: FontWeight.bold),
+                                          ),
+                                          SizedBox(
+                                            height: 10,
                                           ),
                                         ],
-                                      ),
-                                      SizedBox(
-                                        height: 10,
-                                      ),
-                                      Text(
-                                        dataList.child("name").value.toString(),
-                                        style: TextStyle(color: secondryColor, fontSize: 12, fontWeight: FontWeight.bold),
-                                      ),
-                                      SizedBox(
-                                        height: 10,
-                                      ),
-                                    ],
-                                  )));
-                        },
-                      ));
+                                      )));
+                            },
+                          ));
             } else {
               return AppWidget().loading();
             }

@@ -262,6 +262,7 @@ class _subServicePageState extends State<subServicePage> {
                                                       showDialog(
                                                           context: context,
                                                           builder: (BuildContext context) {
+                                                            DataSnapshot? dataPartners;
                                                             return AlertDialog(
                                                               backgroundColor: Colors.white,
                                                               insetPadding: EdgeInsets.all(0),
@@ -338,6 +339,9 @@ class _subServicePageState extends State<subServicePage> {
                                                                                   SizedBox(
                                                                                     height: 10,
                                                                                   ),
+                                                                                  Text(dataPartners == null
+                                                                                      ? ""
+                                                                                      : dataPartners!.child("fullname").value.toString()),
                                                                                   FutureBuilder(
                                                                                       future: FirebaseDatabase.instance
                                                                                           .ref()
@@ -349,6 +353,7 @@ class _subServicePageState extends State<subServicePage> {
                                                                                         if (snapshot.hasData) {
                                                                                           DatabaseEvent response = snapshot.data;
                                                                                           DataSnapshot dataRating = response.snapshot;
+                                                                                          dataPartners = dataRating;
 
                                                                                           return RatingBarIndicator(
                                                                                               rating:
@@ -472,9 +477,11 @@ class _subServicePageState extends State<subServicePage> {
                                                                                               .child("inspections")
                                                                                               .value
                                                                                               .toString(),
-                                                                                          profesionalName:
-                                                                                              dataList.child("fullname").value.toString(),
-                                                                                          profesional: userDataProfile!.key.toString(),
+                                                                                          profesionalName: dataPartners!
+                                                                                              .child("fullname")
+                                                                                              .value
+                                                                                              .toString(),
+                                                                                          profesional: dataPartners!.key,
                                                                                           price: int.parse(
                                                                                               dataList.child("price").value.toString()));
 
@@ -490,8 +497,8 @@ class _subServicePageState extends State<subServicePage> {
                                                                                       inspections:
                                                                                           dataList.child("inspections").value.toString(),
                                                                                       profesionalName:
-                                                                                          dataList.child("fullname").value.toString(),
-                                                                                      profesional: userDataProfile!.key.toString(),
+                                                                                          dataPartners!.child("fullname").value.toString(),
+                                                                                      profesional: dataPartners!.key.toString(),
                                                                                       price: int.parse(
                                                                                           dataList.child("price").value.toString()));
 
@@ -903,7 +910,7 @@ class _subServicePageState extends State<subServicePage> {
                 SizedBox(
                   height: 10,
                 ),
-                inspeccion
+                /*inspeccion
                     ? Container(
                         margin: EdgeInsets.only(left: 10, right: 10),
                         child: Column(
@@ -995,7 +1002,7 @@ class _subServicePageState extends State<subServicePage> {
                             title: Locales.string(context, 'lbl_search'),
                             execute: () {
                               onSearch(search.text.toString());
-                            })),
+                            })),*/
                 SizedBox(
                   height: 10,
                 ),

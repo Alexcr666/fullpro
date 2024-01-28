@@ -421,7 +421,11 @@ class _ProfileOptionsProfessionalPageState extends State<ProfileOptionsProfessio
                       ProfileButton(
                         buttonName: /* Locales.string(context, 'lbl_about')*/ "Cerrar sesión",
                         onCLicked: () {
-                          AppUtils().signOut(context);
+                          AppWidget().optionsEnabled("¿Estas seguro que quieres cerrar sesión?", context, tap2: () {
+                            Navigator.pop(context);
+                          }, tap: () {
+                            AppUtils().signOut(context);
+                          });
                         },
                         icon: "images/icons/miprofile7.svg",
                       ),

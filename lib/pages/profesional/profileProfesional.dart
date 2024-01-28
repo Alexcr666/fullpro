@@ -7,6 +7,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 
@@ -26,6 +27,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_locales/flutter_locales.dart';
 
+import 'package:firebase_database/firebase_database.dart' as queryFirebase;
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -108,8 +110,9 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
   TextEditingController professionController = TextEditingController();
 
   getDataUser() {
-    if (FirebaseAuth.instance.currentUser!.uid.toString() == widget.id) {
-      return userDataProfile;
+    if (FirebaseAuth.instance.currentUser!.uid.toString() == widget.id.toString()) {
+      // return userDataProfile;
+      return _userDataProfile;
     } else {
       return _userDataProfile;
     }
@@ -329,12 +332,14 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                           SizedBox(
                                             width: 10,
                                           ),
-                                          Text(
+                                          Flexible(
+                                              child: Text(
                                             dataList.child("name").value == null
                                                 ? "No disponible"
                                                 : dataList.child("name").value.toString().capitalize(),
                                             style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 14),
-                                          ),
+                                            maxLines: 1,
+                                          )),
                                         ],
                                       ),
                                       Row(
@@ -582,17 +587,19 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                                   ),
                                                 ),
                                               )),
-                                          Positioned.fill(
-                                              child: Align(
-                                                  alignment: Alignment.bottomRight,
-                                                  child: Container(
-                                                      width: 40,
-                                                      height: 40,
-                                                      decoration: BoxDecoration(shape: BoxShape.circle, color: secondryColor),
-                                                      child: Icon(
-                                                        Icons.camera_alt_outlined,
-                                                        color: Colors.white,
-                                                      )))),
+                                          FirebaseAuth.instance.currentUser!.uid.toString() != widget.id
+                                              ? SizedBox()
+                                              : Positioned.fill(
+                                                  child: Align(
+                                                      alignment: Alignment.bottomRight,
+                                                      child: Container(
+                                                          width: 40,
+                                                          height: 40,
+                                                          decoration: BoxDecoration(shape: BoxShape.circle, color: secondryColor),
+                                                          child: Icon(
+                                                            Icons.camera_alt_outlined,
+                                                            color: Colors.white,
+                                                          )))),
                                         ],
                                       )),
                                   SizedBox(
@@ -648,8 +655,8 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                               width: 10,
                             ),
                             GestureDetector(
-                                onTap: () {
-                                  if (FirebaseAuth.instance.currentUser!.uid.toString() == widget.id) {
+                                onTap: () async {
+                                  /*if (FirebaseAuth.instance.currentUser!.uid.toString() == widget.id) {
                                     List<userD.User> result = LinkedHashSet<userD.User>.from(matches).toList();
 
                                     List<userD.User> newMatchesResult = LinkedHashSet<userD.User>.from(newmatches).toList();
@@ -659,115 +666,207 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                       MaterialPageRoute(builder: (context) => HomeScreen(currentUser!, result, newMatchesResult)),
                                     );
                                   }
-                                  /* CollectionReference users = FirebaseFirestore.instance
-                      .collection('Users')
-                      .doc("Mkoc6GZaIWMf6yO2mDAHlZucj9V2" /*FirebaseAuth.instance.currentUser!.uid.toString()*/)
-                      .collection("Matches");
+                                  CollectionReference? users = FirebaseFirestore.instance
+                                      .collection('Users')
+                                      .doc("Mkoc6GZaIWMf6yO2mDAHlZucj9V2" /*FirebaseAuth.instance.currentUser!.uid.toString()*/)
+                                      .collection("Matches");
 
-                  Future<void> addUser() {
-                    // Call the user's CollectionReference to add a new user
-                    return users.add({
-                      'Matches': getDataUser()!.key.toString(), // John Doe
-                      'isRead': true,
-                      'userName': "alex c",
-                      // Stokes and Sons
-                      'name': getDataUser()!.child("fullname").value.toString() // 42
-                    }).then((value) {
-                      AppWidget().itemMessage("Creado", context);
-                    }).catchError((error) {
-                      AppWidget().itemMessage("Error al crear", context);
-                    });*/
+                                  //  CollectionReference users = FirebaseFirestore.instance.collection('Users');
 
-                                  //CollectionReference users = FirebaseFirestore.instance.collection('Users');
-/*
-                            addMatches() {
-                              DocumentReference usersValidate2 = FirebaseFirestore.instance
-                                  .collection('Users')
-                                  .doc(FirebaseAuth.instance.currentUser!.uid.toString())
-                                  .collection("Matches")
-                                  .doc(getDataUser()!.key.toString());
+                                  addMatches() {
+                                    DocumentReference usersValidate2 = FirebaseFirestore.instance
+                                        .collection('Users')
+                                        .doc(FirebaseAuth.instance.currentUser!.uid.toString())
+                                        .collection("Matches")
+                                        .doc(getDataUser()!.key.toString());
 
-                              addMatch() {
-                                usersValidate2.set({
-                                  'Matches': getDataUser()!.key.toString(), // John Doe
-                                  'UserName': getDataUser()!.child("fullname").value.toString(),
-                                  'userId': getDataUser()!.key.toString(),
-                                }).then((value) {
-                                  AppWidget().itemMessage("Creado", context);
+                                    addMatch() {
+                                      usersValidate2.set({
+                                        'Matches': getDataUser()!.key.toString(), // John Doe
+                                        'UserName': getDataUser()!.child("fullname").value.toString(),
+                                        'userId': getDataUser()!.key.toString(),
+                                      }).then((value) {
+                                        AppWidget().itemMessage("Creado", context);
 
-                                  Future.delayed(const Duration(milliseconds: 1200), () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(builder: (context) => HomeScreen(currentUser!, matches, newmatches)),
-                                    );
+                                        Future.delayed(const Duration(milliseconds: 1200), () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(builder: (context) => HomeScreen(currentUser!, matches, newmatches)),
+                                          );
+                                        });
+                                      }).catchError((error) {
+                                        AppWidget().itemMessage("Error al crear", context);
+                                      });
+                                    }
+
+                                    usersValidate2.get().then((value) {
+                                      if (value.exists == false) {
+                                        addMatch();
+                                      } else {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(builder: (context) => HomeScreen(currentUser!, matches, newmatches)),
+                                        );
+                                      }
+                                    });
+                                  }
+
+                                  DocumentReference usersValidate =
+                                      FirebaseFirestore.instance.collection('Users').doc(getDataUser()!.key.toString());
+
+                                  addUser() {
+                                    usersValidate.get().then((value) {
+                                      if (value.exists) {
+                                        addMatches();
+                                      } else {
+                                        usersValidate.set({
+                                          'Matches': getDataUser()!.key.toString(), // John Doe
+
+                                          'UserName': getDataUser()!.child("fullname").value.toString(),
+                                          'userId': getDataUser()!.key.toString(),
+                                        }).then((value) {
+                                          AppWidget().itemMessage("Creado", context);
+                                          addMatches();
+                                        }).catchError((error) {
+                                          AppWidget().itemMessage("Error al crear", context);
+                                        });
+                                        usersValidate.collection("Matches").doc(getDataUser()!.key.toString()).set({
+                                          'Matches': getDataUser()!.key.toString(), // John Doe
+
+                                          'UserName': getDataUser()!.child("fullname").value.toString(),
+                                          'userId': getDataUser()!.key.toString(),
+                                        }).then((value) {
+                                          AppWidget().itemMessage("Creado", context);
+                                          addMatches();
+                                        }).catchError((error) {
+                                          AppWidget().itemMessage("Error al crear", context);
+                                        });
+                                      }
+                                    });
+
+                                    return users.add({
+                                      'Matches': getDataUser()!.key.toString(), // John Doe
+
+                                      'UserName': getDataUser()!.child("fullname").value.toString(),
+                                      'userId': getDataUser()!.key.toString(),
+                                    }).then((value) {
+                                      AppWidget().itemMessage("Creado", context);
+                                    }).catchError((error) {
+                                      AppWidget().itemMessage("Error al crear", context);
+                                    });
+                                  }
+
+                                  addUser();*/
+
+                                  String idUserProfessional = _userDataProfile!.key.toString();
+                                  print("idprofessional: " + idUserProfessional.toString());
+                                  String nameUserProfessional = nameProfesional;
+                                  CollectionReference docRef = FirebaseFirestore.instance.collection('Users');
+                                  showDialog(
+                                      context: context,
+                                      builder: (ctx) {
+                                        Future.delayed(Duration(milliseconds: 1700), () {
+                                          Navigator.pop(ctx);
+                                        });
+                                        return Padding(
+                                          padding: const EdgeInsets.only(top: 80),
+                                          child: Align(
+                                            alignment: Alignment.topCenter,
+                                            child: Card(
+                                              child: Container(
+                                                height: 100,
+                                                width: 300,
+                                                child: Center(
+                                                    child: Text(
+                                                  "It's a match\n With ",
+                                                  textAlign: TextAlign.center,
+                                                  style: TextStyle(color: primaryColor, fontSize: 30, decoration: TextDecoration.none),
+                                                )),
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      });
+
+                                  createCurrentUser(bool exist) {
+                                    if (exist) {
+                                      docRef
+                                          .doc(FirebaseAuth.instance.currentUser!.uid.toString())
+                                          .collection("Matches")
+                                          .doc(idUserProfessional.toString())
+                                          .set({
+                                        'Matches': idUserProfessional,
+                                        'isRead': false,
+                                        'userName': nameUserProfessional,
+                                        'pictureUrl': "",
+                                        'timestamp': FieldValue.serverTimestamp()
+                                      }, SetOptions(merge: true)).then((value) {});
+                                    } else {
+                                      docRef = FirebaseFirestore.instance.collection('Users');
+                                      docRef.doc(FirebaseAuth.instance.currentUser!.uid.toString()).set({
+                                        "imageUrl": "",
+                                        "UserName": nameUserProfessional,
+                                        "userId": FirebaseAuth.instance.currentUser!.uid.toString(),
+                                      }).then((value) {
+                                        docRef = FirebaseFirestore.instance.collection('Users');
+                                        docRef
+                                            .doc(FirebaseAuth.instance.currentUser!.uid.toString())
+                                            .collection("Matches")
+                                            .doc(idUserProfessional.toString())
+                                            .update({
+                                          'Matches': idUserProfessional,
+                                          'isRead': false,
+                                          'userName': nameUserProfessional,
+                                          'pictureUrl': "",
+                                          'timestamp': FieldValue.serverTimestamp()
+                                        }).then((value) {});
+                                      });
+                                    }
+                                  }
+
+                                  createUserProfessional(bool exist) {
+                                    if (exist) {
+                                      docRef
+                                          .doc(idUserProfessional)
+                                          .collection("Matches")
+                                          .doc(FirebaseAuth.instance.currentUser!.uid!)
+                                          .set({
+                                        'Matches': FirebaseAuth.instance.currentUser!.uid.toString(),
+                                        'userName': userDataProfile!.child("name").value.toString(),
+                                        'pictureUrl': "currentUser!.imageUrl![0]",
+                                        'isRead': false,
+                                        'timestamp': FieldValue.serverTimestamp()
+                                      }, SetOptions(merge: true)).then((value) {});
+                                    } else {
+                                      docRef = FirebaseFirestore.instance.collection('Users');
+                                      docRef.doc(idUserProfessional).set({
+                                        "imageUrl": "",
+                                        "UserName": nameProfesional.toString(),
+                                        "userId": idUserProfessional,
+                                      }).then((value) {
+                                        docRef = FirebaseFirestore.instance.collection('Users');
+                                        docRef
+                                            .doc(idUserProfessional)
+                                            .collection("Matches")
+                                            .doc(FirebaseAuth.instance.currentUser!.uid!)
+                                            .update({
+                                          'Matches': FirebaseAuth.instance.currentUser!.uid.toString(),
+                                          'userName': nameProfesional.toString(),
+                                          'pictureUrl': "currentUser!.imageUrl![0]",
+                                          'isRead': false,
+                                          'timestamp': FieldValue.serverTimestamp()
+                                        }).then((value) {});
+                                      });
+                                    }
+                                  }
+
+                                  docRef.doc(FirebaseAuth.instance.currentUser!.uid.toString()).get().then((value) {
+                                    createCurrentUser(value.exists);
                                   });
-                                }).catchError((error) {
-                                  AppWidget().itemMessage("Error al crear", context);
-                                });
-                              }
 
-                              usersValidate2.get().then((value) {
-                                if (value.exists == false) {
-                                  addMatch();
-                                } else {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(builder: (context) => HomeScreen(currentUser!, matches, newmatches)),
-                                  );
-                                }
-                              });
-                            }
-
-                            DocumentReference usersValidate =
-                                FirebaseFirestore.instance.collection('Users').doc(getDataUser()!.key.toString());
-
-                            addUser() {
-                              usersValidate.get().then((value) {
-                                if (value.exists) {
-                                  addMatches();
-                                } else {
-                                  usersValidate.set({
-                                    'Matches': getDataUser()!.key.toString(), // John Doe
-
-                                    'UserName': getDataUser()!.child("fullname").value.toString(),
-                                    'userId': getDataUser()!.key.toString(),
-                                  }).then((value) {
-                                    AppWidget().itemMessage("Creado", context);
-                                    addMatches();
-                                  }).catchError((error) {
-                                    AppWidget().itemMessage("Error al crear", context);
+                                  docRef.doc(idUserProfessional).get().then((value) {
+                                    createUserProfessional(value.exists);
                                   });
-                                  usersValidate.collection("Matches").doc(getDataUser()!.key.toString()).set({
-                                    'Matches': getDataUser()!.key.toString(), // John Doe
-
-                                    'UserName': getDataUser()!.child("fullname").value.toString(),
-                                    'userId': getDataUser()!.key.toString(),
-                                  }).then((value) {
-                                    AppWidget().itemMessage("Creado", context);
-                                    addMatches();
-                                  }).catchError((error) {
-                                    AppWidget().itemMessage("Error al crear", context);
-                                  });
-                                }
-                              });
-
-                              // Call the user's CollectionReference to add a new user
-                              /* return users.add({
-                          'Matches': getDataUser()!.key.toString(), // John Doe
-                          //  'isRead': true,
-                          'UserName': getDataUser()!.child("fullname").value.toString(),
-                          'userId': getDataUser()!.key.toString(),
-                          // Stokes and Sons
-                          // 'name': getDataUser()!.child("fullname").value.toString() // 42
-                        }).then((value) {
-                          AppWidget().itemMessage("Creado", context);
-                        }).catchError((error) {
-                          AppWidget().itemMessage("Error al crear", context);
-                        });*/
-                            }
-
-                            addUser();*/
-                                  //  kkk
                                 },
                                 child: Icon(
                                   Icons.message,
@@ -1278,76 +1377,81 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                             scrollDirection: Axis.horizontal,
                             shrinkWrap: true,
                             itemBuilder: (BuildContext context, int index) {
-                              return Container(
-                                width: 150,
-                                margin: EdgeInsets.only(left: 5),
-                                padding: EdgeInsets.all(2),
-                                alignment: Alignment.center,
-                                decoration: BoxDecoration(
-                                  color: Color(0xff38CAB3),
+                              return Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    width: 150,
+                                    margin: EdgeInsets.only(left: 5),
+                                    padding: EdgeInsets.all(2),
+                                    decoration: BoxDecoration(
+                                      color: Color(0xff38CAB3),
 
-                                  // Set border width
+                                      // Set border width
 
-                                  borderRadius: BorderRadius.all(Radius.circular(10.0)), // Set rounded corner radius
-                                ),
-                                child: Row(
-                                  children: [
-                                    SizedBox(
-                                      width: 10,
+                                      borderRadius: BorderRadius.all(Radius.circular(10.0)), // Set rounded corner radius
                                     ),
-                                    GestureDetector(
-                                        onTap: () {
-                                          AppWidget().optionsEnabled("¿Seguro quieres eliminar?", context, tap: () {
-                                            getDataUser()!.ref.child("license").remove().then((value) {
-                                              setState(() {});
-                                            }).catchError((onError) {
-                                              print("error: " + onError.toString());
-                                            });
-
-                                            setState(() {});
-                                          }, tap2: () {
-                                            Navigator.pop(context);
-                                          });
-                                        },
-                                        child: SvgPicture.asset(
-                                          "images/icons/closeFile.svg",
-                                          width: 35,
-                                        )),
-                                    SizedBox(
-                                      width: 5,
-                                    ),
-                                    Container(
-                                        child: Column(
+                                    child: Row(
                                       mainAxisSize: MainAxisSize.min,
-                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Text(
-                                          "Foto: " + index.toString(),
-                                          style: TextStyle(color: Colors.white, fontSize: 10),
+                                        SizedBox(
+                                          width: 10,
                                         ),
-                                        Text(
-                                          "291 KB",
-                                          style: TextStyle(color: Colors.white, fontSize: 9),
+                                        GestureDetector(
+                                            onTap: () {
+                                              AppWidget().optionsEnabled("¿Seguro quieres eliminar?", context, tap: () {
+                                                getDataUser()!.ref.child("license").remove().then((value) {
+                                                  setState(() {});
+                                                }).catchError((onError) {
+                                                  print("error: " + onError.toString());
+                                                });
+
+                                                setState(() {});
+                                              }, tap2: () {
+                                                Navigator.pop(context);
+                                              });
+                                            },
+                                            child: SvgPicture.asset(
+                                              "images/icons/closeFile.svg",
+                                              width: 35,
+                                            )),
+                                        SizedBox(
+                                          width: 5,
                                         ),
-                                      ],
-                                    )),
-                                    SizedBox(
-                                      width: 15,
-                                    ),
-                                    GestureDetector(
-                                        onTap: () async {
-                                          final Uri url = Uri.parse(getDataUser()!.child("license").value.toString());
-                                          if (!await launchUrl(url)) {
-                                            throw Exception('Could not launch _url');
-                                          }
-                                        },
-                                        child: Icon(
-                                          Icons.remove_red_eye,
-                                          size: 30,
-                                          color: Colors.black.withOpacity(0.4),
+                                        Container(
+                                            child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              "DOC",
+                                              style: TextStyle(color: Colors.white, fontSize: 10),
+                                            ),
+                                            /*Text(
+                                              "291 KB",
+                                              style: TextStyle(color: Colors.white, fontSize: 9),
+                                            ),*/
+                                          ],
                                         )),
-                                  ],
-                                ),
+                                        SizedBox(
+                                          width: 15,
+                                        ),
+                                        GestureDetector(
+                                            onTap: () async {
+                                              final Uri url = Uri.parse(getDataUser()!.child("license").value.toString());
+                                              if (!await launchUrl(url)) {
+                                                throw Exception('Could not launch _url');
+                                              }
+                                            },
+                                            child: Icon(
+                                              Icons.remove_red_eye,
+                                              size: 30,
+                                              color: Colors.black.withOpacity(0.4),
+                                            )),
+                                      ],
+                                    ),
+                                  )
+                                ],
                               );
                             })),
 
@@ -1465,13 +1569,13 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                               crossAxisAlignment: CrossAxisAlignment.start,
                                               children: [
                                                 Text(
-                                                  "Foto: " + index.toString(),
+                                                  "DOC",
                                                   style: TextStyle(color: Colors.white, fontSize: 10),
                                                 ),
-                                                Text(
+                                                /*  Text(
                                                   "291 KB",
                                                   style: TextStyle(color: Colors.white, fontSize: 9),
-                                                ),
+                                                ),*/
                                               ],
                                             )),
                                             SizedBox(
@@ -1578,13 +1682,13 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                               crossAxisAlignment: CrossAxisAlignment.start,
                                               children: [
                                                 Text(
-                                                  "Foto: " + index.toString(),
+                                                  "DOC",
                                                   style: TextStyle(color: Colors.white, fontSize: 10),
                                                 ),
-                                                Text(
+                                                /* Text(
                                                   "291 KB",
                                                   style: TextStyle(color: Colors.white, fontSize: 9),
-                                                ),
+                                                ),*/
                                               ],
                                             )),
                                             SizedBox(
@@ -1827,7 +1931,12 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
       if (dataSnapshot.child("fullname").value != null) {
         print("dataprofile: " + dataSnapshot.child("fullname").value.toString());
         nameProfesional = dataSnapshot.child("fullname").value.toString();
-        _currentSliderValue = double.parse(dataSnapshot.child("radio").value.toString());
+
+        if (dataSnapshot.child("radio").value == null) {
+          _currentSliderValue = 20;
+        } else {
+          _currentSliderValue = double.parse(dataSnapshot.child("radio").value.toString());
+        }
 
         nameController.text = dataSnapshot.child("fullname").value.toString();
 
@@ -1842,7 +1951,9 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
 
         country.text = dataSnapshot.child("country").value.toString();
 
-        state.text = dataSnapshot.child("state").value.toString();
+        try {
+          state.text = dataSnapshot.child("state").value.toString();
+        } catch (e) {}
 
         country.text = dataSnapshot.child("country").value.toString();
 
@@ -2022,7 +2133,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                                               style: TextStyle(
                                                                   color: secondryColor, fontWeight: FontWeight.bold, fontSize: 15),
                                                             ),
-                                                            Text(
+                                                            /*  Text(
                                                               dataList.child("price").value == null
                                                                   ? '\$' + "0"
                                                                   : '\$' +
@@ -2034,7 +2145,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                                                           .toString(),
                                                               style:
                                                                   TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 16),
-                                                            ),
+                                                            ),*/
                                                             SizedBox(
                                                               height: 40,
                                                             ),
@@ -2071,7 +2182,8 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                                             Flexible(
                                                                 child: AppWidget().buttonFormLine(context, "Solicitar", false, tap: () {
                                                               Navigator.pop(context);
-                                                              Query historyRef = FirebaseDatabase.instance
+
+                                                              queryFirebase.Query historyRef = FirebaseDatabase.instance
                                                                   .ref()
                                                                   .child('ordens')
                                                                   .child(getDataUser()!.child("cart").value.toString());
@@ -2171,64 +2283,66 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                     watchService((dataList.child("foto").value.toString()));
                                   }
                                 },
-                                child: Container(
-                                    margin: EdgeInsets.only(left: 10, right: 10),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Stack(
+                                child: dataList == null
+                                    ? SizedBox()
+                                    : Container(
+                                        margin: EdgeInsets.only(left: 10, right: 10),
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
-                                            ClipRRect(
-                                              borderRadius: BorderRadius.circular(20),
-                                              child: Image.network(
-                                                dataList.child("foto").value.toString(),
-                                                errorBuilder: (BuildContext? context, Object? exception, StackTrace? stackTrace) {
-                                                  return Container(
-                                                    width: 120,
-                                                    height: 120,
-                                                    color: Colors.grey.withOpacity(0.3),
-                                                  );
-                                                },
-                                                width: 80,
-                                                height: 80,
-                                                fit: BoxFit.cover,
-                                              ),
+                                            Stack(
+                                              children: [
+                                                ClipRRect(
+                                                  borderRadius: BorderRadius.circular(20),
+                                                  child: Image.network(
+                                                    dataList.child("foto").value == null ? "" : dataList.child("foto").value.toString(),
+                                                    errorBuilder: (BuildContext? context, Object? exception, StackTrace? stackTrace) {
+                                                      return Container(
+                                                        width: 120,
+                                                        height: 120,
+                                                        color: Colors.grey.withOpacity(0.3),
+                                                      );
+                                                    },
+                                                    width: 80,
+                                                    height: 80,
+                                                    fit: BoxFit.cover,
+                                                  ),
+                                                ),
+                                                FirebaseAuth.instance.currentUser!.uid == widget.id
+                                                    ? SizedBox()
+                                                    : Positioned.fill(
+                                                        child: Align(
+                                                            alignment: Alignment.center,
+                                                            child: SvgPicture.asset(
+                                                              "images/icons/addCircleBlue.svg",
+                                                              width: 40,
+                                                            ))),
+                                              ],
                                             ),
-                                            FirebaseAuth.instance.currentUser!.uid == widget.id
-                                                ? SizedBox()
-                                                : Positioned.fill(
-                                                    child: Align(
-                                                        alignment: Alignment.center,
-                                                        child: SvgPicture.asset(
-                                                          "images/icons/addCircleBlue.svg",
-                                                          width: 40,
-                                                        ))),
+                                            Text(
+                                              dataList.child("name").value == null
+                                                  ? "No disponible"
+                                                  : dataList.child("name").value.toString().capitalize(),
+                                              style: TextStyle(color: secondryColor, fontSize: 12, fontWeight: FontWeight.bold),
+                                            ),
+                                            Text(
+                                              dataList.child("category").value == null
+                                                  ? "No disponible"
+                                                  : dataList.child("category").value.toString().capitalize(),
+                                              style: TextStyle(color: secondryColor, fontSize: 11),
+                                            ),
+                                            Text(
+                                              dataList.child("price").value == null
+                                                  ? "No disponible"
+                                                  : '\$' +
+                                                      MoneyFormatter(amount: double.parse(dataList.child("price").value.toString()))
+                                                          .output
+                                                          .withoutFractionDigits
+                                                          .toString(),
+                                              style: TextStyle(color: secondryColor, fontSize: 11),
+                                            ),
                                           ],
-                                        ),
-                                        Text(
-                                          dataList.child("name").value == null
-                                              ? "No disponible"
-                                              : dataList.child("name").value.toString().capitalize(),
-                                          style: TextStyle(color: secondryColor, fontSize: 12, fontWeight: FontWeight.bold),
-                                        ),
-                                        Text(
-                                          dataList.child("category").value == null
-                                              ? "No disponible"
-                                              : dataList.child("category").value.toString().capitalize(),
-                                          style: TextStyle(color: secondryColor, fontSize: 11),
-                                        ),
-                                        Text(
-                                          dataList.child("price").value == null
-                                              ? "No disponible"
-                                              : '\$' +
-                                                  MoneyFormatter(amount: double.parse(dataList.child("price").value.toString()))
-                                                      .output
-                                                      .withoutFractionDigits
-                                                      .toString(),
-                                          style: TextStyle(color: secondryColor, fontSize: 11),
-                                        ),
-                                      ],
-                                    )));
+                                        )));
                           },
                         ));
           } else {

@@ -328,28 +328,29 @@ class AppWidget {
     );
   }
 
-  Widget texfieldFormat(
-      {String? title,
-      TextEditingController? controller,
-      bool? password,
-      bool? enabled,
-      String? urlIcon,
-      Color? colorBackground,
-      bool? number,
-      String? suffix,
-      bool? noRequired,
-      Function? execute,
-      bool? float}) {
+  Widget texfieldFormat({
+    String? title,
+    TextEditingController? controller,
+    bool? password,
+    bool? enabled,
+    String? urlIcon,
+    Color? colorBackground,
+    bool? number,
+    String? suffix,
+    bool? noRequired,
+    Function? execute,
+    bool? float,
+  }) {
     bool _passwordVisible = true;
 
     return StatefulBuilder(builder: (context, setState) {
       return Container(
-          color: Colors.white,
+          //color: Colors.white,
 
-          /*decoration: BoxDecoration(
+          decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(15),
-          ),*/
+          ),
 
           // padding: EdgeInsets.symmetric(horizontal: 8),
 

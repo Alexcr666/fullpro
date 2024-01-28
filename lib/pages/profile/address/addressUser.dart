@@ -439,7 +439,10 @@ class _AddressesState extends State<AddressesUser> {
             //return Text(dataListObject!.child("name").value.toString());
 
             return response.snapshot.children.toList().length == 0
-                ? SizedBox()
+                ? Icon(
+                    Icons.star,
+                    color: start ? Colors.amber : Colors.grey,
+                  )
                 : Icon(
                     Icons.star,
                     color: start ? Colors.amber : Colors.grey,
@@ -589,7 +592,7 @@ class _AddressesState extends State<AddressesUser> {
   Future<void> getPlaceLocation() async {
     String value = searchTextController.text;
 
-    final apiUrl = "https://nominatim.openstreetmap.org/search.php?q=$value&format=jsonv2";
+    final apiUrl = "https://nominatim.openstreetmap.org/search.php?q=$value&featuretype=city&format=jsonv2";
 
     var response = await http.get(
       Uri.parse(apiUrl),
@@ -598,7 +601,7 @@ class _AddressesState extends State<AddressesUser> {
 
     // if (response.statusCode == 201) {
 
-    log("response: " + response.body.toString());
+    log("responsecity: " + response.body.toString());
 
     dataPlace = placeAutocompleteModelFromJson(response.body.toString());
 
@@ -660,13 +663,14 @@ class _AddressesState extends State<AddressesUser> {
                       ),
                       const SizedBox(height: 20),
                       AppWidget().texfieldFormat(
-                          title: "Ingresa una nueva ubicación",
-                          controller: searchTextController,
-                          execute: () async {
-                            //  await Future.delayed(Duration(milliseconds: 1000)); //   setState(() {});
+                        title: "Ingresa una nueva ubicación",
+                        controller: searchTextController,
+                        execute: () async {
+                          //  await Future.delayed(Duration(milliseconds: 1000)); //   setState(() {});
 
-                            getPlaceLocation();
-                          }),
+                          getPlaceLocation();
+                        },
+                      ),
                       dataPlace == []
                           ? AppWidget().noResult()
                           : ListView.builder(

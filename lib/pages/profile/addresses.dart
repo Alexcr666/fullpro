@@ -574,7 +574,7 @@ class _AddressesState extends State<Addresses> {
                 ),
                 const SizedBox(height: 20),
                 AppWidget().texfieldFormat(
-                    title: "Ingresa una nueva ubicación",
+                    title: "Ingresa una nueva ubicacións",
                     controller: searchTextController,
                     execute: () {
                       setState(() {});

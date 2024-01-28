@@ -860,12 +860,13 @@ class _MyOrdersState extends State<MyOrders> with TickerProviderStateMixin {
           Container(
               margin: EdgeInsets.only(left: 20, right: 20),
               child: AppWidget().texfieldFormat(
-                  controller: _searchController,
-                  title: "Buscar",
-                  execute: () {
-                    searchText = _searchController.text.toString();
-                    setState(() {});
-                  })),
+                controller: _searchController,
+                title: "Buscar",
+                execute: () {
+                  searchText = _searchController.text.toString();
+                  setState(() {});
+                },
+              )),
           SizedBox(
             height: 10,
           ),

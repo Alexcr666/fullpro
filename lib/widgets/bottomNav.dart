@@ -8,6 +8,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:fullpro/TESTING/testing.dart';
 import 'package:fullpro/controller/loader.dart';
 import 'package:fullpro/pages/INTEGRATION/Chat/home_screen.dart';
 import 'package:fullpro/pages/INTEGRATION/Chat/recent_chats.dart';
@@ -100,9 +101,9 @@ class _BottomNavState extends State<BottomNav> {
   @override
   void initState() {
     _getCurrentUser();
-    _getMatches();
+    // _getMatches();
   }
-
+/*
   _getMatches() async {
     User user = await _firebaseAuth.currentUser!;
     return FirebaseFirestore.instance
@@ -132,7 +133,8 @@ class _BottomNavState extends State<BottomNav> {
         });
       }
     });
-  }
+  }*/
+
 /*
   Future getUserList() async {
     List checkedUser = [];
@@ -424,14 +426,11 @@ class _BottomNavState extends State<BottomNav> {
                 GestureDetector(
                     onTap: () {
                       // List<String> arr = ["a", "a", "b", "c", "b", "d"];
-                      List<userD.User> result = LinkedHashSet<userD.User>.from(matches).toList();
+                      // List<userD.User> result = LinkedHashSet<userD.User>.from(matches).toList();
 
-                      List<userD.User> newMatchesResult = LinkedHashSet<userD.User>.from(newmatches).toList();
+                      //  List<userD.User> newMatchesResult = LinkedHashSet<userD.User>.from(newmatches).toList();
 // => ["a", "b", "c", "d"]
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => HomeScreen(currentUser!, result, newMatchesResult)),
-                      );
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => FirstPage()));
                     },
                     child: Container(
                       height: 40,

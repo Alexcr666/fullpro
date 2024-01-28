@@ -307,13 +307,6 @@ class _AccountState extends State<Account> with TickerProviderStateMixin {
                     ),
                     GestureDetector(
                         onTap: () async {
-                          /* ImagePicker imagePicker = ImagePicker();
-
-                    var image = await imagePicker.pickImage(source: ImageSource.gallery);
-                    imagePickerFile = File(image!.path);
-                    setState(() {});*/
-                          //kkk
-
                           ImagePicker imagePicker = ImagePicker();
 
                           var image = await imagePicker.pickImage(source: ImageSource.gallery);
@@ -353,22 +346,37 @@ class _AccountState extends State<Account> with TickerProviderStateMixin {
                             print("error: " + onError.toString());
                           });
                         },
-                        child: userDataProfile!.child("photo").value == null
-                            ? AppWidget().circleProfile(userDataProfile!.child("photo").value.toString(), size: 120)
-                            : imagePickerFile != null
-                                ? ClipRRect(
-                                    borderRadius: BorderRadius.circular(100),
-                                    child: Image.file(
-                                      imagePickerFile!,
-                                      fit: BoxFit.cover,
-                                      width: 130,
-                                      height: 130,
-                                    ),
-                                  )
-                                : SvgPicture.asset(
-                                    "images/icons/profileCircle.svg",
-                                    width: 130,
-                                  )),
+                        child: Stack(
+                          children: [
+                            userDataProfile!.child("photo").value == null
+                                ? AppWidget().circleProfile(userDataProfile!.child("photo").value.toString(), size: 120)
+                                : imagePickerFile != null
+                                    ? ClipRRect(
+                                        borderRadius: BorderRadius.circular(100),
+                                        child: Image.file(
+                                          imagePickerFile!,
+                                          fit: BoxFit.cover,
+                                          width: 130,
+                                          height: 130,
+                                        ),
+                                      )
+                                    : SvgPicture.asset(
+                                        "images/icons/profileCircle.svg",
+                                        width: 130,
+                                      ),
+                            Positioned.fill(
+                                child: Align(
+                                    alignment: Alignment.bottomRight,
+                                    child: Container(
+                                        width: 40,
+                                        height: 40,
+                                        decoration: BoxDecoration(shape: BoxShape.circle, color: secondryColor),
+                                        child: Icon(
+                                          Icons.camera_alt_outlined,
+                                          color: Colors.white,
+                                        )))),
+                          ],
+                        )),
                     /* const SizedBox(height: 30),
               ProfileWidget(
                 imagePath: 'images/user_icon.png',
