@@ -372,7 +372,7 @@ class _PortafolioPageState extends State<NewPortafolioPage> {
 
                                 contentPadding: EdgeInsets.all(0),
 
-                                title: Text("Servicios", style: TextStyle(color: secondryColor)),
+                                title: Text(Locales.string(context, 'lang_services'), style: TextStyle(color: secondryColor)),
 
                                 value: checkInspeccion == true,
 
@@ -398,7 +398,7 @@ class _PortafolioPageState extends State<NewPortafolioPage> {
                                 contentPadding: EdgeInsets.all(0),
 
                                 title: Text(
-                                  "Inspecciones",
+                                  Locales.string(context, 'lang_inspections'),
                                   style: TextStyle(color: secondryColor, fontSize: 14),
                                 ),
 
@@ -505,7 +505,8 @@ class _PortafolioPageState extends State<NewPortafolioPage> {
                   Row(
                     children: [
                       Flexible(
-                          child: AppWidget().buttonFormLine(context, "Cancelar", true, urlIcon: "images/icons/closeCircle.svg", tap: () {
+                          child: AppWidget().buttonFormLine(context, Locales.string(context, 'lang_cancel'), true,
+                              urlIcon: "images/icons/closeCircle.svg", tap: () {
                         Navigator.pop(context);
                       })),
                       SizedBox(

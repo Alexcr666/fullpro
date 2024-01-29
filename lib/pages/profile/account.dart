@@ -387,7 +387,7 @@ class _AccountState extends State<Account> with TickerProviderStateMixin {
                     ),
                     Text(
                       userDataProfile!.child("fullname").value == null
-                          ? "No disponible"
+                          ? Locales.string(context, 'lang_nodisponible')
                           : userDataProfile!.child("fullname").value.toString().capitalize(),
                       style: TextStyle(color: secondryColor, fontSize: 22, fontWeight: FontWeight.bold),
                     ),
@@ -398,7 +398,7 @@ class _AccountState extends State<Account> with TickerProviderStateMixin {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
-                            itemOptionProfile("Mi perfil", "images/icons/profileCircle.svg", tap: () {
+                            itemOptionProfile(Locales.string(context, 'lang_profile'), "images/icons/profileCircle.svg", tap: () {
                               activeProfile = !activeProfile;
                               setState(() {});
                             }),
@@ -432,18 +432,18 @@ class _AccountState extends State<Account> with TickerProviderStateMixin {
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
                                               Text(
-                                                "Mi Perfil",
+                                                Locales.string(context, 'lang_profile'),
                                                 style: TextStyle(color: secondryColor, fontSize: 17),
                                               ),
                                               Text(
-                                                "Datos cliente",
+                                                Locales.string(context, 'lang_dataprofile'),
                                                 style: TextStyle(color: secondryColor, fontSize: 17, fontWeight: FontWeight.bold),
                                               ),
                                             ],
                                           ),
                                           Expanded(child: SizedBox()),
                                           Text(
-                                            "Datos personales",
+                                            Locales.string(context, 'lang_datapersonal'),
                                             style: TextStyle(color: secondryColor, fontSize: 13, fontWeight: FontWeight.normal),
                                           ),
                                         ],
@@ -484,7 +484,9 @@ class _AccountState extends State<Account> with TickerProviderStateMixin {
                       ),*/
 
                                       AppWidget().texfieldFormat(
-                                          title: "Nombre completo", urlIcon: "images/icons/user.svg", controller: _nameController),
+                                          title: Locales.string(context, 'lbl_fullname'),
+                                          urlIcon: "images/icons/user.svg",
+                                          controller: _nameController),
                                       const SizedBox(height: 10),
                                       GestureDetector(
                                           onTap: () {
@@ -518,16 +520,18 @@ class _AccountState extends State<Account> with TickerProviderStateMixin {
                                             _showIOS_DatePicker(context);
                                           },
                                           child: AppWidget().texfieldFormat(
-                                              title: "Fecha de nacimiento",
+                                              title: Locales.string(context, 'lang_datebirt'),
                                               urlIcon: "images/icons/calendar.svg",
                                               controller: _dateController,
                                               enabled: true)),
                                       const SizedBox(height: 10),
                                       AppWidget().texfieldFormat(
-                                          title: "Correo electronico", urlIcon: "images/icons/message.svg", controller: _emailController),
+                                          title: Locales.string(context, 'lang_email'),
+                                          urlIcon: "images/icons/message.svg",
+                                          controller: _emailController),
                                       const SizedBox(height: 10),
                                       //   AppWidget().texfieldFormat(
-                                      //     title: "Contraseña", urlIcon: "images/icons/password.svg", controller: _passwordController),
+                                      //     title: "Locales.string(context, 'lbl_password')", urlIcon: "images/icons/password.svg", controller: _passwordController),
                                     ],
                                   ),
 
@@ -594,7 +598,7 @@ class _AccountState extends State<Account> with TickerProviderStateMixin {
                             SizedBox(
                               height: 30,
                             ),
-                            itemOptionProfile("Ajustes", "images/icons/settings.svg", tap: () {
+                            itemOptionProfile(Locales.string(context, 'lang_settings'), "images/icons/settings.svg", tap: () {
                               activeSetting = !activeSetting;
                               setState(() {});
                             }),
@@ -605,7 +609,7 @@ class _AccountState extends State<Account> with TickerProviderStateMixin {
                                       SizedBox(
                                         height: 30,
                                       ),
-                                      itemOptionProfileOptions("Radio de busqueda", "images/icons/locationCircle.svg",
+                                      itemOptionProfileOptions(Locales.string(context, 'lang_radio'), "images/icons/locationCircle.svg",
                                           subtitle: _currentSliderValue.round().toString() + " KM"),
                                       Slider(
                                         value: _currentSliderValue,
@@ -622,7 +626,8 @@ class _AccountState extends State<Account> with TickerProviderStateMixin {
                                       SizedBox(
                                         height: 10,
                                       ),
-                                      itemOptionProfileOptions("Ajuste de cuenta", "images/icons/profileCircle.svg", onTap: () {
+                                      itemOptionProfileOptions(Locales.string(context, 'lang_settings'), "images/icons/profileCircle.svg",
+                                          onTap: () {
                                         activeAjustCount = !activeAjustCount;
                                         setState(() {});
                                       }),
@@ -639,7 +644,8 @@ class _AccountState extends State<Account> with TickerProviderStateMixin {
                                               :*/
                                           Column(
                                               children: [
-                                                itemOptionProfile("Eliminar cuenta", "images/icons/profileCircle.svg", tap: () {
+                                                itemOptionProfile(
+                                                    Locales.string(context, 'lang_location'), "images/icons/profileCircle.svg", tap: () {
                                                   Navigator.push(
                                                       context,
                                                       MaterialPageRoute(
@@ -649,13 +655,13 @@ class _AccountState extends State<Account> with TickerProviderStateMixin {
                                                 }),
                                                 itemOptionProfile("Fecha", "",
                                                     subtitle: userDataProfile!.child("date").value == null
-                                                        ? "No disponible"
+                                                        ? Locales.string(context, 'lang_nodisponible')
                                                         : userDataProfile!.child("date").value.toString(), tap: () {
                                                   //    Navigator.push(context, MaterialPageRoute(builder: (context) => const PortafolioPage()));
                                                 }),
                                                 /* itemOptionProfile("Usuario", "",
                                                     subtitle: userDataProfile!.child("name").value == null
-                                                        ? "No disponible"
+                                                        ? Locales.string(context, 'lang_nodisponible')
                                                         : userDataProfile!.child("name").value.toString()),
                                                 itemOptionProfile("Estado del usuario", "",
                                                     subtitle: userDataProfile!.child("state").value == null
@@ -665,7 +671,7 @@ class _AccountState extends State<Account> with TickerProviderStateMixin {
                                                 SizedBox(
                                                   height: 30,
                                                 ),
-                                                itemOptionProfile("Cambiar contraseña", "", subtitle: "", tap: () {
+                                                itemOptionProfile(Locales.string(context, 'lbl_password'), "", subtitle: "", tap: () {
                                                   Navigator.push(context, MaterialPageRoute(builder: (context) => ChangePasswordScreen()));
                                                   //   Navigator.push(context, MaterialPageRoute(builder: (context) => ProfileProfesionalPage()));
                                                 }),

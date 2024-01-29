@@ -72,7 +72,7 @@ Widget pageOrdensWidget(int state) {
           DataSnapshot? dataListObject = null;
 
           return response.snapshot.children.toList().length == 0
-              ? AppWidget().noResult()
+              ? AppWidget().noResult(context)
               : ListView.builder(
                   padding: EdgeInsets.only(left: 10.0),
                   itemCount: response.snapshot.children.toList().length,
@@ -94,7 +94,7 @@ Widget pageOrdensWidget(int state) {
                             ? SizedBox()
                             : emptyResult != true
                                 ? SizedBox()
-                                : AppWidget().noResult()
+                                : AppWidget().noResult(context)
                         : Padding(
                             padding: const EdgeInsets.all(5),
                             child: GestureDetector(
@@ -145,7 +145,7 @@ Widget pageOrdensWidget(int state) {
 
                                             child: Text(
                                               dataList.child("name").value == null
-                                                  ? "No disponible"
+                                                  ? Locales.string(context, 'lang_nodisponible')
                                                   : dataList.child("name").value.toString().capitalize(),
                                               overflow: TextOverflow.ellipsis,
                                               style: TextStyle(
@@ -203,7 +203,7 @@ Widget pageOrdensWidget(int state) {
                                               ),
                                               Text(
                                                 dataList.child("date").value == null
-                                                    ? "No disponible"
+                                                    ? Locales.string(context, 'lang_nodisponible')
                                                     : dataList.child("date").value.toString(),
                                                 style: TextStyle(
                                                   color: Colors.grey,
@@ -241,7 +241,8 @@ Widget pageOrdensWidget(int state) {
                                           Container(
                                               width: 140,
                                               height: 40,
-                                              child: AppWidget().buttonFormColor(context, "Cancelar", Colors.red.withOpacity(0.3), tap: () {
+                                              child: AppWidget().buttonFormColor(
+                                                  context, Locales.string(context, 'lang_cancel'), Colors.red.withOpacity(0.3), tap: () {
                                                 dataList.ref.update({'state': 3}).then((value) {
                                                   AppWidget().itemMessage("Actualizado", context);
                                                 });
@@ -440,7 +441,7 @@ class _SolicitudListState extends State<SolicitudList> with TickerProviderStateM
                                       style: TextStyle(color: secondryColor, fontSize: 17, fontWeight: FontWeight.bold),
                                     ),
                                     Text(
-                                      "Opiniones clientes",
+                                      Locales.string(context, 'lang_solicitudtext'),
                                       style: TextStyle(color: Colors.black, fontSize: 10),
                                     ),
                                     RatingBarIndicator(
@@ -531,7 +532,7 @@ class _SolicitudListState extends State<SolicitudList> with TickerProviderStateM
                                       style: TextStyle(color: secondryColor, fontSize: 17, fontWeight: FontWeight.bold),
                                     ),
                                     Text(
-                                      "Opiniones clientes",
+                                      Locales.string(context, 'lang_solicitudtext'),
                                       style: TextStyle(color: Colors.black, fontSize: 10),
                                     ),
                                     RatingBarIndicator(
@@ -778,7 +779,7 @@ class _SolicitudListState extends State<SolicitudList> with TickerProviderStateM
                                               style: TextStyle(color: secondryColor, fontSize: 17, fontWeight: FontWeight.bold),
                                             ),
                                             Text(
-                                              "Opiniones clientes",
+                                              Locales.string(context, 'lang_solicitudtext'),
                                               style: TextStyle(color: Colors.black, fontSize: 10),
                                             ),
                                             RatingBarIndicator(

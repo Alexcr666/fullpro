@@ -201,18 +201,18 @@ class _ProfileOptionsProfessionalPageState extends State<ProfileOptionsProfessio
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      itemProfile("images/icons/profile1.svg", "Datos de perfil", tap: () {
+                      itemProfile("images/icons/profile1.svg", Locales.string(context, 'lang_dataprofile'), tap: () {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
                                 builder: (context) => ProfileProfesionalPage(id: FirebaseAuth.instance.currentUser!.uid.toString())));
                       }),
 
-                      itemProfile("images/icons/profile2.svg", "Centro de ayuda", tap: () {
+                      itemProfile("images/icons/profile2.svg", Locales.string(context, 'lang_centerhelp'), tap: () {
                         Navigator.push(context, MaterialPageRoute(builder: (context) => ListSupportProfessionalPage()));
                       }),
 
-                      itemProfile("images/icons/profile3.svg", "Historial de pedidos", tap: () {
+                      itemProfile("images/icons/profile3.svg", Locales.string(context, 'lang_history'), tap: () {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -221,7 +221,7 @@ class _ProfileOptionsProfessionalPageState extends State<ProfileOptionsProfessio
                                     )));
                       }),
 
-                      itemProfile("images/icons/profile4.svg", "Metodos de pago", tap: () {
+                      itemProfile("images/icons/profile4.svg", Locales.string(context, 'lang_methodpay'), tap: () {
                         Navigator.push(context, MaterialPageRoute(builder: (context) => const PayListPage()));
                       }),
 
@@ -264,7 +264,7 @@ class _ProfileOptionsProfessionalPageState extends State<ProfileOptionsProfessio
                   child: Column(
                     children: [
                       ProfileButton(
-                        buttonName: /* Locales.string(context, 'lbl_account')*/ "Mi perfil",
+                        buttonName: /* Locales.string(context, 'lbl_account')*/ Locales.string(context, 'lang_profile'),
                         onCLicked: () {
                           //
 
@@ -280,7 +280,7 @@ class _ProfileOptionsProfessionalPageState extends State<ProfileOptionsProfessio
                       const Divider(color: Colors.black12),
 
                       ProfileButton(
-                        buttonName: /*Locales.string(context, 'lbl_address')*/ "Ubicaciones",
+                        buttonName: /*Locales.string(context, 'lbl_address')*/ Locales.string(context, 'lang_location'),
                         onCLicked: () {
                           //  Navigator.pop(context);
 
@@ -294,7 +294,7 @@ class _ProfileOptionsProfessionalPageState extends State<ProfileOptionsProfessio
                       const Divider(color: Colors.black12),
 
                       ProfileButton(
-                        buttonName: "Ajustes",
+                        buttonName: Locales.string(context, 'lang_settings'),
                         onCLicked: () {
                           bool isPuchased = false;
 
@@ -318,7 +318,7 @@ class _ProfileOptionsProfessionalPageState extends State<ProfileOptionsProfessio
                       const Divider(color: Colors.black12),
 
                       ProfileButton(
-                        buttonName: /*Locales.string(context, 'lbl_address')*/ "Notificaciones",
+                        buttonName: /*Locales.string(context, 'lbl_address')*/ Locales.string(context, 'lang_notifications'),
                         onCLicked: () {
                           //  Navigator.pop(context);
 
@@ -332,7 +332,7 @@ class _ProfileOptionsProfessionalPageState extends State<ProfileOptionsProfessio
                       const Divider(color: Colors.black12),
 
                       ProfileButton(
-                        buttonName: /*Locales.string(context, 'lbl_language')*/ "Acerca de el app",
+                        buttonName: /*Locales.string(context, 'lbl_language')*/ Locales.string(context, 'lang_infoapp'),
                         onCLicked: () {
                           //   Navigator.pop(context);
 
@@ -374,7 +374,7 @@ class _ProfileOptionsProfessionalPageState extends State<ProfileOptionsProfessio
                   child: Column(
                     children: [
                       ProfileButton(
-                        buttonName: /*Locales.string(context, 'lbl_invite_friends')*/ "Portafolio",
+                        buttonName: /*Locales.string(context, 'lbl_invite_friends')*/ Locales.string(context, 'lang_portafolio'),
                         onCLicked: () {
                           Navigator.push(context, MaterialPageRoute(builder: (context) => const PortafolioPage()));
 
@@ -388,7 +388,7 @@ class _ProfileOptionsProfessionalPageState extends State<ProfileOptionsProfessio
                       ),
                       const Divider(color: Colors.black12),
                       ProfileButton(
-                        buttonName: /* Locales.string(context, 'lbl_terms_and_conditions')*/ "Soporte",
+                        buttonName: /* Locales.string(context, 'lbl_terms_and_conditions')*/ Locales.string(context, 'lang_support'),
                         onCLicked: () {
                           Navigator.push(context, MaterialPageRoute(builder: (context) => const ListSupportProfessionalPage()));
 
@@ -402,7 +402,7 @@ class _ProfileOptionsProfessionalPageState extends State<ProfileOptionsProfessio
                       ),
                       const Divider(color: Colors.black12),
                       ProfileButton(
-                        buttonName: "Cartera",
+                        buttonName: Locales.string(context, 'lang_wallet'),
                         onCLicked: () {
                           bool isPuchased = false;
 
@@ -415,11 +415,23 @@ class _ProfileOptionsProfessionalPageState extends State<ProfileOptionsProfessio
                         icon: "images/icons/miprofile2.svg",
                       ),
                       const Divider(color: Colors.black12),
+                      ProfileButton(
+                        buttonName: Locales.string(context, 'lang_lenguaje'),
+                        onCLicked: () {
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => Language()));
+
+                          //  Navigator.pop(context);
+
+                          // Navigator.push(context, MaterialPageRoute(builder: (context) => Profile(currentUser!, isPuchased)));
+                        },
+                        icon: "images/icons/miprofile2.svg",
+                      ),
+                      const Divider(color: Colors.black12),
                       SizedBox(
                         height: 20,
                       ),
                       ProfileButton(
-                        buttonName: /* Locales.string(context, 'lbl_about')*/ "Cerrar sesión",
+                        buttonName: /* Locales.string(context, 'lbl_about')*/ Locales.string(context, 'lang_signout'),
                         onCLicked: () {
                           AppWidget().optionsEnabled("¿Estas seguro que quieres cerrar sesión?", context, tap2: () {
                             Navigator.pop(context);

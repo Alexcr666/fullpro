@@ -188,17 +188,17 @@ class _ProfileOptionsPageState extends State<ProfileOptionsPage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      itemProfile("images/icons/profile1.svg", "Datos de perfil", tap: () {
+                      itemProfile("images/icons/profile1.svg", Locales.string(context, 'lang_dataprofile'), tap: () {
                         Navigator.push(context, MaterialPageRoute(builder: (context) => const Account()));
                       }),
 
-                      itemProfile("images/icons/profile2.svg", "Centro de ayuda", tap: () {
+                      itemProfile("images/icons/profile2.svg", Locales.string(context, 'lang_centerhelp'), tap: () {
                         Navigator.push(context, MaterialPageRoute(builder: (context) => SupportAppPage()));
                       }),
 
-                      itemProfile("images/icons/profile3.svg", "Historial de pedidos"),
+                      itemProfile("images/icons/profile3.svg", Locales.string(context, 'lang_history')),
 
-                      itemProfile("images/icons/profile4.svg", "Metodos de pago", tap: () {
+                      itemProfile("images/icons/profile4.svg", Locales.string(context, 'lang_methodpay'), tap: () {
                         Navigator.push(context, MaterialPageRoute(builder: (context) => const PayListPage()));
                       }),
 
@@ -241,7 +241,7 @@ class _ProfileOptionsPageState extends State<ProfileOptionsPage> {
                   child: Column(
                     children: [
                       ProfileButton(
-                        buttonName: /* Locales.string(context, 'lbl_account')*/ "Mi perfil",
+                        buttonName: Locales.string(context, Locales.string(context, 'lang_profile')),
                         onCLicked: () {
                           //
 
@@ -255,7 +255,7 @@ class _ProfileOptionsPageState extends State<ProfileOptionsPage> {
                       const Divider(color: Colors.black12),
 
                       ProfileButton(
-                        buttonName: "Ajustes",
+                        buttonName: Locales.string(context, 'lang_settings'),
                         onCLicked: () {
                           bool isPuchased = false;
 
@@ -271,7 +271,7 @@ class _ProfileOptionsPageState extends State<ProfileOptionsPage> {
                       const Divider(color: Colors.black12),
 
                       ProfileButton(
-                        buttonName: /*Locales.string(context, 'lbl_address')*/ "Notificaciones",
+                        buttonName: /*Locales.string(context, 'lbl_address')*/ Locales.string(context, 'lang_notifications'),
                         onCLicked: () {
                           //  Navigator.pop(context);
 
@@ -285,7 +285,7 @@ class _ProfileOptionsPageState extends State<ProfileOptionsPage> {
                       const Divider(color: Colors.black12),
 
                       ProfileButton(
-                        buttonName: /*Locales.string(context, 'lbl_address')*/ "Ubicaciones",
+                        buttonName: /*Locales.string(context, 'lbl_address')*/ Locales.string(context, 'lang_locationsaved'),
                         onCLicked: () {
                           //  Navigator.pop(context);
 
@@ -299,7 +299,7 @@ class _ProfileOptionsPageState extends State<ProfileOptionsPage> {
                       const Divider(color: Colors.black12),
 
                       ProfileButton(
-                        buttonName: /*Locales.string(context, 'lbl_language')*/ "Acerca de el app",
+                        buttonName: /*Locales.string(context, 'lbl_language')*/ Locales.string(context, 'lang_infoapp'),
                         onCLicked: () {
                           //   Navigator.pop(context);
 
@@ -315,6 +315,15 @@ class _ProfileOptionsPageState extends State<ProfileOptionsPage> {
                         icon: "images/icons/miprofile4.svg",
                       ),
 
+                      const Divider(color: Colors.black12),
+
+                      ProfileButton(
+                        buttonName: Locales.string(context, 'lbl_language'),
+                        onCLicked: () {
+                          Loader.page(context, const Language());
+                        },
+                        icon: "images/icons/miprofile4.svg",
+                      ),
                       const Divider(color: Colors.black12),
 
                       // ProfileButton(
@@ -347,7 +356,7 @@ class _ProfileOptionsPageState extends State<ProfileOptionsPage> {
                     children: [
                       /*   ProfileButton(
 
-                        buttonName: /*Locales.string(context, 'lbl_invite_friends')*/ "Portafolio",
+                        buttonName: /*Locales.string(context, 'lbl_invite_friends')*/ Locales.string(context, 'lang_portafolio'),
 
                         onCLicked: () {
 
@@ -371,7 +380,7 @@ class _ProfileOptionsPageState extends State<ProfileOptionsPage> {
                       // const Divider(color: Colors.black12),
 
                       ProfileButton(
-                        buttonName: /* Locales.string(context, 'lbl_terms_and_conditions')*/ "Soporte",
+                        buttonName: /* Locales.string(context, 'lbl_terms_and_conditions')*/ Locales.string(context, 'lang_support'),
                         onCLicked: () {
                           Navigator.push(context, MaterialPageRoute(builder: (context) => ListSupportPage()));
 
@@ -387,9 +396,9 @@ class _ProfileOptionsPageState extends State<ProfileOptionsPage> {
                       const Divider(color: Colors.black12),
 
                       ProfileButton(
-                        buttonName: /* Locales.string(context, 'lbl_about')*/ "Cerrar sesión",
+                        buttonName: /* Locales.string(context, 'lbl_about')*/ Locales.string(context, 'lang_signout'),
                         onCLicked: () async {
-                          AppWidget().optionsEnabled("¿Estas seguro que quieres cerrar sesión?", context, tap2: () {
+                          AppWidget().optionsEnabled(Locales.string(context, 'lang_signoutdescription'), context, tap2: () {
                             Navigator.pop(context);
                           }, tap: () {
                             AppUtils().signOut(context);

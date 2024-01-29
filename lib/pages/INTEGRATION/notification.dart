@@ -68,7 +68,7 @@ class _NotificationsState extends State<Notifications> {
           return response == null
               ? AppWidget().loading()
               : response.snapshot.children.toList().length == 0
-                  ? AppWidget().noResult()
+                  ? AppWidget().noResult(context)
                   : Container(
                       margin: EdgeInsets.only(left: 20, right: 20, top: 20),
                       child: Card(
@@ -141,7 +141,11 @@ class _NotificationsState extends State<Notifications> {
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
                 SizedBox(
-                  height: 100,
+                  height: 50,
+                ),
+                AppWidget().back(context),
+                SizedBox(
+                  height: 50,
                 ),
 
                 Column(

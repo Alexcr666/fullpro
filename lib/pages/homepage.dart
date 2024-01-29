@@ -593,7 +593,7 @@ class _kHomePageState extends State<kHomePage> {
             return response == null
                 ? AppWidget().loading()
                 : response.snapshot.children.length == 0
-                    ? AppWidget().noResult()
+                    ? AppWidget().noResult(context)
                     : ListView.builder(
                         itemCount: response.snapshot.children.length,
                         shrinkWrap: true,
@@ -658,7 +658,7 @@ class _kHomePageState extends State<kHomePage> {
                                             style: TextStyle(color: secondryColor, fontSize: 17, fontWeight: FontWeight.bold),
                                           ),
                                           Text(
-                                            "Opiniones clientes",
+                                            Locales.string(context, 'lang_solicitudtext'),
                                             style: TextStyle(color: Colors.black, fontSize: 10),
                                           ),
                                           Row(
@@ -710,7 +710,7 @@ class _kHomePageState extends State<kHomePage> {
                           getNoResult() {
                             if (((index + 1) == response.snapshot.children.length)) {
                               if (resultPrimary) {
-                                return AppWidget().noResult();
+                                return AppWidget().noResult(context);
                               } else {
                                 return SizedBox();
                               }
@@ -770,7 +770,8 @@ class _kHomePageState extends State<kHomePage> {
             ),
             Container(
                 width: 150,
-                child: AppWidget().buttonShandowActive("Servicios", activeCategorie == 1 ? true : false, tap: () {
+                child:
+                    AppWidget().buttonShandowActive(Locales.string(context, 'lang_services'), activeCategorie == 1 ? true : false, tap: () {
                   activeCategorie = 1;
 
                   servicesSearch(1);
@@ -782,14 +783,15 @@ class _kHomePageState extends State<kHomePage> {
                     print("error: " + onError.toString());
                   });*/
                 })),
-            // Flexible(child: AppWidget().buttonForm(context, "Servicios")),
+            // Flexible(child: AppWidget().buttonForm(context, Locales.string(context, 'lang_services'))),
             SizedBox(
               width: 10,
             ),
 
             Container(
                 width: 150,
-                child: AppWidget().buttonShandowActive("Inspecciones", activeCategorie == 2 ? true : false, tap: () {
+                child: AppWidget().buttonShandowActive(Locales.string(context, 'lang_inspections'), activeCategorie == 2 ? true : false,
+                    tap: () {
                   activeCategorie = 2;
                   servicesSearch(2);
                   setState(() {});
@@ -797,7 +799,7 @@ class _kHomePageState extends State<kHomePage> {
             SizedBox(
               width: 20,
             ),
-            //   Flexible(child: AppWidget().buttonForm(context, "Inspecciones")),
+            //   Flexible(child: AppWidget().buttonForm(context, Locales.string(context,'lang_inspections'))),
           ],
         ),
         SizedBox(
@@ -831,7 +833,7 @@ class _kHomePageState extends State<kHomePage> {
                       OutlineInputBorder(borderSide: BorderSide(color: primaryColor, width: 1.0), borderRadius: BorderRadius.circular(10)),
                   border:
                       OutlineInputBorder(borderSide: BorderSide(color: primaryColor, width: 1.0), borderRadius: BorderRadius.circular(10)),
-                  labelText: "Buscar",
+                  labelText: Locales.string(context, 'lang_search'),
                   labelStyle: TextStyle(fontSize: 12.0, color: Colors.black),
                 ),
                 controller: _searchHome,
@@ -900,11 +902,11 @@ class _kHomePageState extends State<kHomePage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Perfiles de",
+                  Locales.string(context, 'lang_profilethe'),
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: secondryColor),
                 ),
                 Text(
-                  "profesionales destacados",
+                  Locales.string(context, 'lang_professionaldestacado'),
                   style: TextStyle(fontSize: 18, color: secondryColor),
                 ),
               ],
@@ -1061,7 +1063,7 @@ class _kHomePageState extends State<kHomePage> {
               return response == null
                   ? AppWidget().loading()
                   : response.snapshot.children.length == 0
-                      ? AppWidget().noResult()
+                      ? AppWidget().noResult(context)
                       : Container(
                           width: double.infinity,
                           height: 300,
@@ -1197,7 +1199,7 @@ class _kHomePageState extends State<kHomePage> {
           SizedBox(
             height: 20,
           ),
-          AppWidget().texfieldFormat(title: "Buscar", controller: _searchHomeCategorie),
+          AppWidget().texfieldFormat(title: Locales.string(context, 'lang_search'), controller: _searchHomeCategorie),
           SizedBox(
             height: 20,
           ),

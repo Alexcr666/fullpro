@@ -332,7 +332,7 @@ class _AddressesState extends State<Addresses> {
                                         mainAxisSize: MainAxisSize.min,
                                         children: <Widget>[
                                           ListTile(
-                                            title: new Text('Eliminar'),
+                                            title: new Text(Locales.string(context, 'lang_location')),
                                             onTap: () {
                                               dataList.ref.remove().then((value) {
                                                 AppWidget().itemMessage("Eliminado", context);
@@ -351,7 +351,7 @@ class _AddressesState extends State<Addresses> {
                                             },
                                           ),
                                           ListTile(
-                                            title: new Text('Cancelar'),
+                                            title: new Text(Locales.string(context, 'lang_cancel')),
                                             onTap: () {
                                               Navigator.pop(context);
                                             },
@@ -558,7 +558,7 @@ class _AddressesState extends State<Addresses> {
                     Container(
                         width: 200,
                         child: Text(
-                          "Agregar o escoge una dirección",
+                          Locales.string(context, 'lang_addlocation'),
                           style: TextStyle(fontSize: 19, color: secondryColor, fontWeight: FontWeight.bold),
                         )),
                     Expanded(child: SizedBox()),
@@ -574,7 +574,7 @@ class _AddressesState extends State<Addresses> {
                 ),
                 const SizedBox(height: 20),
                 AppWidget().texfieldFormat(
-                    title: "Ingresa una nueva ubicacións",
+                    title: Locales.string(context, 'lang_addnewlocation'),
                     controller: searchTextController,
                     execute: () {
                       setState(() {});
@@ -705,7 +705,7 @@ class _AddressesState extends State<Addresses> {
             ),
 
             // The end action pane is the one at the right or the bottom side.
-            endActionPane: const ActionPane(
+            endActionPane: ActionPane(
               motion: ScrollMotion(),
               children: [
                 SlidableAction(
@@ -715,7 +715,7 @@ class _AddressesState extends State<Addresses> {
                   backgroundColor: Color(0xFFFE4A49),
                   foregroundColor: Colors.white,
                   icon: Icons.delete,
-                  label: 'Eliminar',
+                  label: Locales.string(context, 'lang_location'),
                 ),
               ],
             ),

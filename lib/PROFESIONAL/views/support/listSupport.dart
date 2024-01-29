@@ -57,7 +57,7 @@ class _ListSupportProfessionalPageState extends State<ListSupportProfessionalPag
               return response == null
                   ? AppWidget().loading()
                   : response.snapshot.children!.length == 0
-                      ? AppWidget().noResult()
+                      ? AppWidget().noResult(context)
                       : ListView.builder(
                           itemCount: response.snapshot.children.length,
                           shrinkWrap: true,
@@ -73,10 +73,12 @@ class _ListSupportProfessionalPageState extends State<ListSupportProfessionalPag
                                           mainAxisSize: MainAxisSize.min,
                                           children: <Widget>[
                                             ListTile(
-                                              title: new Text('Eliminar'),
+                                              title: new Text(Locales.string(context, 'lang_location')),
                                               onTap: () {
                                                 Navigator.pop(context);
-                                                AppWidget().optionsEnabled("¿Estas seguro que quieres eliminar?", context, tap: () {
+                                                AppWidget().optionsEnabled(
+                                                    "¿Estas seguro que quieres Locales.string(context, 'lang_location')?", context,
+                                                    tap: () {
                                                   dataList.ref.remove().then((value) {
                                                     setState(() {});
                                                     AppWidget().itemMessage("Eliminado", context);
@@ -113,7 +115,7 @@ class _ListSupportProfessionalPageState extends State<ListSupportProfessionalPag
                                             ),*/
 
                                             ListTile(
-                                              title: new Text('Cancelar'),
+                                              title: new Text(Locales.string(context, 'lang_cancel')),
                                               onTap: () {
                                                 Navigator.pop(context);
                                               },
@@ -296,7 +298,7 @@ class _ListSupportProfessionalPageState extends State<ListSupportProfessionalPag
   @override
   void initState() {
     super.initState();
-    DatabaseReference ref = FirebaseDatabase.instance.ref("portafolio");
+    DatabaseReference ref = FirebaseDatabase.instance.ref(Locales.string(context, 'lang_portafolio'));
 
 // Get the Stream
     Stream<DatabaseEvent> stream = ref.onValue;

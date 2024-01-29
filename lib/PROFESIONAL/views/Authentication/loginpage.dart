@@ -106,7 +106,7 @@ class _LoginPageState extends State<LoginPageProfesional> {
     } on FirebaseAuthException catch (ex) {
       switch (ex.code) {
         case "wrong-password":
-          AppWidget().itemMessage("Contraseña incorrecta", context);
+          AppWidget().itemMessage("Locales.string(context, 'lbl_password') incorrecta", context);
           break;
         case "user-not-found":
           AppWidget().itemMessage("Usuario no existe", context);
@@ -148,16 +148,12 @@ class _LoginPageState extends State<LoginPageProfesional> {
                 ),
                 //
                 //
-                Text("Welcome back", textAlign: TextAlign.center, style: AppStyle().boldText(20)),
+                Text(Locales.string(context, 'lbl_welcome'), textAlign: TextAlign.center, style: AppStyle().boldText(20)),
 
                 SizedBox(
                   height: 1,
                 ),
-                Text(
-                  "please Login!",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.bold),
-                ),
+
                 SizedBox(
                   height: 40,
                 ),
@@ -175,7 +171,8 @@ class _LoginPageState extends State<LoginPageProfesional> {
                         ),
                         //
 
-                        AppWidget().texfieldFormat(title: "Password", controller: passwordController, password: true),
+                        AppWidget()
+                            .texfieldFormat(title: Locales.string(context, 'lbl_password'), controller: passwordController, password: true),
                       ],
                     )),
 
@@ -189,7 +186,7 @@ class _LoginPageState extends State<LoginPageProfesional> {
                       // Navigator.pushNamedAndRemoveUntil(context, RegistrationPage.id, (route) => false);
                     },
                     child: Text(
-                      "Forgot your password",
+                      Locales.string(context, 'lang_recoverpassword'),
                       style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold),
                     ),
                   ),

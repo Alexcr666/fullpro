@@ -240,7 +240,7 @@ class _FirstPageState extends State<FirstPage> {
                 context: context))
       ]),*/
       body: Column(children: [
-        Expanded(child: HomeScreen(currentUser!, matches, newmatches)),
+        Expanded(child: HomeScreenChat(currentUser!, matches, newmatches)),
       ]),
     );
   }

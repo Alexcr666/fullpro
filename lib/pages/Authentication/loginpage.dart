@@ -8,6 +8,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
+import 'package:fullpro/PROFESIONAL/views/homepage.dart';
 import 'package:fullpro/controller/loader.dart';
 import 'package:fullpro/pages/Authentication/recoverPassword/recoverPassword.dart';
 import 'package:fullpro/pages/Authentication/registerationpage.dart';
@@ -41,7 +42,7 @@ class _LoginPageState extends State<LoginPage> {
 
   set errorMessage(String errorMessage) {}
 
-  void login() async {
+  void login(BuildContext context) async {
     AppWidget().showAlertDialogLoading(context);
     try {
       final User = (await _auth.signInWithEmailAndPassword(
@@ -59,31 +60,117 @@ class _LoginPageState extends State<LoginPage> {
       );
 
       if (User != null) {
-        DatabaseReference UserRef = FirebaseDatabase.instance.ref().child('users/${User.uid}');
+        DatabaseReference UserRef = FirebaseDatabase.instance.ref().child('partners/' + FirebaseAuth.instance.currentUser!.uid.toString());
 
         UserRef.once().then((event) {
-          Navigator.pop(context);
-          final dataSnapshot = event.snapshot;
-          if (dataSnapshot.value != null) {
-            Navigator.pop(context);
-            if (dataSnapshot.child("stateUser").value.toString() == "1") {
-              UserPreferences.setUserEmail(emailController.text);
-              AppSharedPreference().setUser(context, emailController.text);
-              Navigator.pushNamedAndRemoveUntil(context, kHomePage.id, (route) => false);
-            } else {
-              AppWidget().itemMessage("Usuario bloqueado", context);
-            }
+          if (event.snapshot.exists) {
+            final dataSnapshot = event.snapshot;
 
-            //kkk
+            if (dataSnapshot.value != null && event.snapshot.child("fullname").value != null) {
+              print("datosprofessional: " + event.snapshot.child("fullname").value.toString());
+              Navigator.pop(context);
+              if (event.snapshot.child("state").value != null) {
+                if (int.parse(event.snapshot.child("stateUser").value.toString()) == 1) {
+                  AppSharedPreference().setProfessional(context).then((value) {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => const HomePage()),
+                    );
+                  });
+                } else {
+                  Navigator.pop(context);
+                  int state = int.parse(event.snapshot.child("stateUser").value.toString());
+                  if (state == 0) {
+                    AppWidget().itemMessage("Usuario Pendiente", context);
+                  } else {
+                    if (state == 2) {
+                      AppWidget().itemMessage("Usuario bloqueado", context);
+                    } else {
+                      if (state == 3) {
+                        AppWidget().itemMessage("Suspendido", context);
+                      } else {
+                        AppWidget().itemMessage("Suspendido", context);
+                      }
+                    }
+                  }
+                }
+              } else {
+                Navigator.pop(context);
+                AppWidget().itemMessage("Suspendido", context);
+              }
+            } else {
+              loginUser(User);
+              AppWidget().itemMessage("Usuario rol cliente", context);
+            }
           } else {
-            Navigator.pop(context);
-            AppWidget().itemMessage("Usuario rol professional", context);
+            loginUser(User);
+            AppWidget().itemMessage("Usuario rol cliente", context);
           }
         });
+        // UserPreferences.setUserEmail(emailController.text);
+        // Navigator.pushNamedAndRemoveUntil(context, HomePage.id, (route) => false);
       } else {
-        AppWidget().itemMessage("Error al iniciar sesión", context);
+        // log("error al iniciar sessión");
+        AppWidget().itemMessage("Error al iniciar sessión2", context);
       }
     } on FirebaseAuthException catch (ex) {
+      switch (ex.code) {
+        case "wrong-password":
+          AppWidget().itemMessage("Locales.string(context, 'lbl_password') incorrecta", context);
+          break;
+        case "user-not-found":
+          AppWidget().itemMessage("Usuario no existe", context);
+          break;
+        default:
+          AppWidget().itemMessage("Ha ocurrido un error", context);
+          print(ex.code);
+      }
+    }
+  }
+
+  void loginUser(var User) async {
+    AppWidget().showAlertDialogLoading(context);
+    /*  try {
+      final User = (await _auth.signInWithEmailAndPassword(
+        email: emailController.text,
+        password: passwordController.text,
+      ))
+          .user;*/
+
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) => ProgressDialog(
+        status: Locales.string(context, 'lbl_logining_in'),
+      ),
+    );
+
+    if (User != null) {
+      DatabaseReference UserRef = FirebaseDatabase.instance.ref().child('users/${User.uid}');
+
+      UserRef.once().then((event) {
+        Navigator.pop(context);
+        final dataSnapshot = event.snapshot;
+        if (dataSnapshot.value != null) {
+          Navigator.pop(context);
+          if (dataSnapshot.child("stateUser").value.toString() == "1") {
+            UserPreferences.setUserEmail(emailController.text);
+            AppSharedPreference().setUser(context, emailController.text);
+            Navigator.pushNamedAndRemoveUntil(context, kHomePage.id, (route) => false);
+          } else {
+            AppWidget().itemMessage("Usuario bloqueado", context);
+          }
+
+          //kkk
+        } else {
+          Navigator.pop(context);
+          AppWidget().itemMessage("Usuario rol professional", context);
+        }
+      });
+    } else {
+      AppWidget().itemMessage("Error al iniciar sesión", context);
+    }
+    /*} on FirebaseAuthException catch (ex) {
       switch (ex.code) {
         case "wrong-password":
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(Locales.string(context, 'error_incorrect_email_or_password'))));
@@ -94,7 +181,7 @@ class _LoginPageState extends State<LoginPage> {
         default:
           print(ex.code);
       }
-    }
+    }*/
   }
 
   @override
@@ -130,16 +217,13 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 //
                 //
-                Text("Welcome back", textAlign: TextAlign.center, style: AppStyle().boldText(20)),
+                Text(Locales.string(context, 'lbl_welcome'), textAlign: TextAlign.center, style: AppStyle().boldText(20)),
 
                 SizedBox(
                   height: 1,
                 ),
-                Text(
-                  "please Login!",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.bold),
-                ),
+
+                Text(Locales.string(context, "lbl_create_free_account")),
                 SizedBox(
                   height: 70,
                 ),
@@ -152,7 +236,7 @@ class _LoginPageState extends State<LoginPage> {
                     right: 20,
                     left: 20,
                   ),
-                  child: AppWidget().texfieldFormat(title: "Email", controller: emailController),
+                  child: AppWidget().texfieldFormat(title: Locales.string(context, 'lang_email'), controller: emailController),
                   /*TextField(
                     controller: emailController,
                     keyboardType: TextInputType.emailAddress,
@@ -183,7 +267,8 @@ class _LoginPageState extends State<LoginPage> {
 
                 Container(
                     margin: EdgeInsets.only(left: 19, right: 19),
-                    child: AppWidget().texfieldFormat(controller: passwordController, title: "Password", password: true)),
+                    child: AppWidget()
+                        .texfieldFormat(controller: passwordController, title: Locales.string(context, 'lbl_password'), password: true)),
 
                 SizedBox(
                   height: 20,
@@ -198,7 +283,7 @@ class _LoginPageState extends State<LoginPage> {
                       Navigator.push(context, MaterialPageRoute(builder: (context) => ResetPasswordScreen()));
                     },
                     child: Text(
-                      "Forgot your password",
+                      Locales.string(context, 'lang_recoverpassword'),
                       style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold),
                     ),
                   ),
@@ -250,7 +335,7 @@ class _LoginPageState extends State<LoginPage> {
                         }
 
                         if (_formKey.currentState!.validate()) {
-                          login();
+                          login(context);
                         }
                       },
                       style: ButtonStyle(
@@ -283,7 +368,7 @@ class _LoginPageState extends State<LoginPage> {
                   height: 10,
                 ),
 
-                AppWidget().redSocial(context, false),
+                AppWidget().redSocialProfessional(context, false),
               ],
             ),
           ),

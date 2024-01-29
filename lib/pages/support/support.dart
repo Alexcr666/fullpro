@@ -54,7 +54,7 @@ class _SupportAppPageState extends State<SupportAppPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              /* "¿Desactivar la cuenta en lugar de eliminarla?"*/ title,
+              /* "¿Desactivar la cuenta en lugar de Locales.string(context, 'lang_location')la?"*/ title,
               textAlign: TextAlign.left,
               style: TextStyle(
                 color: secondryColor,
@@ -63,7 +63,7 @@ class _SupportAppPageState extends State<SupportAppPage> {
               ),
             ),
             Text(
-              /*"¿Desactivar la cuenta en lugar de eliminarla?"*/ subtitle,
+              /*"¿Desactivar la cuenta en lugar de Locales.string(context, 'lang_location')la?"*/ subtitle,
               textAlign: TextAlign.left,
               style: TextStyle(
                 color: secondryColor,
@@ -123,7 +123,7 @@ class _SupportAppPageState extends State<SupportAppPage> {
                     children: [
                       Container(
                           child: Text(
-                        "Soporte",
+                        Locales.string(context, 'lang_support'),
                         style: TextStyle(
                           color: secondryColor,
                           fontSize: 20,
@@ -184,7 +184,8 @@ class _SupportAppPageState extends State<SupportAppPage> {
 
                   SizedBox(height: 10),
 
-                  AppWidget().texfieldFormat(title: "Nombre", urlIcon: "images/icons/support1.svg", controller: _nameController),
+                  AppWidget().texfieldFormat(
+                      title: Locales.string(context, 'lbl_fullname'), urlIcon: "images/icons/support1.svg", controller: _nameController),
 
                   SizedBox(height: 10),
 
@@ -246,7 +247,7 @@ class _SupportAppPageState extends State<SupportAppPage> {
 
                       //   margin: EdgeInsets.only(left: 70, right: 70),
 
-                      child: AppWidget().buttonForm(context, "Enviar", tap: () {
+                      child: AppWidget().buttonForm(context, Locales.string(context, 'lbl_send'), tap: () {
                     //Loader.PagewithHome(context, const kHomePage());
 
                     savedData() {

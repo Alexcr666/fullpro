@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:flutter_locales/flutter_locales.dart';
+import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
 import 'package:fullpro/styles/statics.dart' as Static;
 import 'package:fullpro/widgets/language_item.dart';
 
@@ -47,7 +48,7 @@ class _LanguageState extends State<Language> {
         centerTitle: true,
         title: Text(
           Locales.string(context, 'title_language'),
-          style: const TextStyle(color: Colors.black),
+          style: const TextStyle(color: Colors.black, fontSize: 16),
         ),
         backgroundColor: Static.dashboardBG,
         elevation: 0.0,
@@ -60,7 +61,10 @@ class _LanguageState extends State<Language> {
           onPressed: () {
             Navigator.pop(context);
           },
-          icon: const Icon(Icons.arrow_back_ios_new),
+          icon: Icon(
+            Icons.arrow_back_ios_new,
+            color: secondryColor,
+          ),
         ),
       ),
       body: SafeArea(
@@ -83,8 +87,7 @@ class _LanguageState extends State<Language> {
                             children: [
                               LanguageItem(
                                 title: Locales.string(context, 'lang_english'),
-                                bgColor:
-                                    Locales.currentLocale(context)!.languageCode == 'en' ? Static.themeColor[500]! : Static.dashboardCard,
+                                bgColor: Locales.currentLocale(context)!.languageCode == 'en' ? secondryColor : Static.dashboardCard,
                                 iconColor: Locales.currentLocale(context)!.languageCode == 'en' ? Colors.white : Colors.black87,
                                 textColor: Locales.currentLocale(context)!.languageCode == 'en' ? Colors.white : Colors.black87,
                                 prefixWidget: Icon(
@@ -96,10 +99,9 @@ class _LanguageState extends State<Language> {
                                   Locales.change(context, 'en');
                                 },
                               ),
-                              LanguageItem(
+                              /* LanguageItem(
                                 title: Locales.string(context, 'lang_arabic'),
-                                bgColor:
-                                    Locales.currentLocale(context)!.languageCode == 'ar' ? Static.themeColor[500]! : Static.dashboardCard,
+                                bgColor: Locales.currentLocale(context)!.languageCode == 'ar' ? secondryColor : Static.dashboardCard,
                                 iconColor: Locales.currentLocale(context)!.languageCode == 'ar' ? Colors.white : Colors.black87,
                                 textColor: Locales.currentLocale(context)!.languageCode == 'ar' ? Colors.white : Colors.black87,
                                 prefixWidget: Icon(
@@ -113,8 +115,7 @@ class _LanguageState extends State<Language> {
                               ),
                               LanguageItem(
                                 title: Locales.string(context, 'lang_afrikaans'),
-                                bgColor:
-                                    Locales.currentLocale(context)!.languageCode == 'af' ? Static.themeColor[500]! : Static.dashboardCard,
+                                bgColor: Locales.currentLocale(context)!.languageCode == 'af' ? secondryColor : Static.dashboardCard,
                                 iconColor: Locales.currentLocale(context)!.languageCode == 'af' ? Colors.white : Colors.black87,
                                 textColor: Locales.currentLocale(context)!.languageCode == 'af' ? Colors.white : Colors.black87,
                                 prefixWidget: Icon(
@@ -128,8 +129,7 @@ class _LanguageState extends State<Language> {
                               ),
                               LanguageItem(
                                 title: Locales.string(context, 'lang_german'),
-                                bgColor:
-                                    Locales.currentLocale(context)!.languageCode == 'de' ? Static.themeColor[500]! : Static.dashboardCard,
+                                bgColor: Locales.currentLocale(context)!.languageCode == 'de' ? secondryColor : Static.dashboardCard,
                                 iconColor: Locales.currentLocale(context)!.languageCode == 'de' ? Colors.white : Colors.black87,
                                 textColor: Locales.currentLocale(context)!.languageCode == 'de' ? Colors.white : Colors.black87,
                                 prefixWidget: Icon(
@@ -140,11 +140,10 @@ class _LanguageState extends State<Language> {
                                 onTap: () async {
                                   Locales.change(context, 'de');
                                 },
-                              ),
+                              ),*/
                               LanguageItem(
                                 title: Locales.string(context, 'lang_spanish'),
-                                bgColor:
-                                    Locales.currentLocale(context)!.languageCode == 'es' ? Static.themeColor[500]! : Static.dashboardCard,
+                                bgColor: Locales.currentLocale(context)!.languageCode == 'es' ? secondryColor : Static.dashboardCard,
                                 iconColor: Locales.currentLocale(context)!.languageCode == 'es' ? Colors.white : Colors.black87,
                                 textColor: Locales.currentLocale(context)!.languageCode == 'es' ? Colors.white : Colors.black87,
                                 prefixWidget: Icon(
@@ -156,10 +155,9 @@ class _LanguageState extends State<Language> {
                                   Locales.change(context, 'es');
                                 },
                               ),
-                              LanguageItem(
+                              /* LanguageItem(
                                 title: Locales.string(context, 'lang_french'),
-                                bgColor:
-                                    Locales.currentLocale(context)!.languageCode == 'fr' ? Static.themeColor[500]! : Static.dashboardCard,
+                                bgColor: Locales.currentLocale(context)!.languageCode == 'fr' ? secondryColor : Static.dashboardCard,
                                 iconColor: Locales.currentLocale(context)!.languageCode == 'fr' ? Colors.white : Colors.black87,
                                 textColor: Locales.currentLocale(context)!.languageCode == 'fr' ? Colors.white : Colors.black87,
                                 prefixWidget: Icon(
@@ -173,8 +171,7 @@ class _LanguageState extends State<Language> {
                               ),
                               LanguageItem(
                                 title: Locales.string(context, 'lang_hindi'),
-                                bgColor:
-                                    Locales.currentLocale(context)!.languageCode == 'hi' ? Static.themeColor[500]! : Static.dashboardCard,
+                                bgColor: Locales.currentLocale(context)!.languageCode == 'hi' ? secondryColor : Static.dashboardCard,
                                 iconColor: Locales.currentLocale(context)!.languageCode == 'hi' ? Colors.white : Colors.black87,
                                 textColor: Locales.currentLocale(context)!.languageCode == 'hi' ? Colors.white : Colors.black87,
                                 prefixWidget: Icon(
@@ -188,8 +185,7 @@ class _LanguageState extends State<Language> {
                               ),
                               LanguageItem(
                                 title: Locales.string(context, 'lang_urdu'),
-                                bgColor:
-                                    Locales.currentLocale(context)!.languageCode == 'ur' ? Static.themeColor[500]! : Static.dashboardCard,
+                                bgColor: Locales.currentLocale(context)!.languageCode == 'ur' ? secondryColor : Static.dashboardCard,
                                 iconColor: Locales.currentLocale(context)!.languageCode == 'ur' ? Colors.white : Colors.black87,
                                 textColor: Locales.currentLocale(context)!.languageCode == 'ur' ? Colors.white : Colors.black87,
                                 prefixWidget: Icon(
@@ -203,8 +199,7 @@ class _LanguageState extends State<Language> {
                               ),
                               LanguageItem(
                                 title: Locales.string(context, 'lang_indonesian'),
-                                bgColor:
-                                    Locales.currentLocale(context)!.languageCode == 'id' ? Static.themeColor[500]! : Static.dashboardCard,
+                                bgColor: Locales.currentLocale(context)!.languageCode == 'id' ? secondryColor : Static.dashboardCard,
                                 iconColor: Locales.currentLocale(context)!.languageCode == 'id' ? Colors.white : Colors.black87,
                                 textColor: Locales.currentLocale(context)!.languageCode == 'id' ? Colors.white : Colors.black87,
                                 prefixWidget: Icon(
@@ -218,8 +213,7 @@ class _LanguageState extends State<Language> {
                               ),
                               LanguageItem(
                                 title: Locales.string(context, 'lang_japanese'),
-                                bgColor:
-                                    Locales.currentLocale(context)!.languageCode == 'ja' ? Static.themeColor[500]! : Static.dashboardCard,
+                                bgColor: Locales.currentLocale(context)!.languageCode == 'ja' ? secondryColor : Static.dashboardCard,
                                 iconColor: Locales.currentLocale(context)!.languageCode == 'ja' ? Colors.white : Colors.black87,
                                 textColor: Locales.currentLocale(context)!.languageCode == 'ja' ? Colors.white : Colors.black87,
                                 prefixWidget: Icon(
@@ -233,8 +227,7 @@ class _LanguageState extends State<Language> {
                               ),
                               LanguageItem(
                                 title: Locales.string(context, 'lang_dutch'),
-                                bgColor:
-                                    Locales.currentLocale(context)!.languageCode == 'nl' ? Static.themeColor[500]! : Static.dashboardCard,
+                                bgColor: Locales.currentLocale(context)!.languageCode == 'nl' ? secondryColor : Static.dashboardCard,
                                 iconColor: Locales.currentLocale(context)!.languageCode == 'nl' ? Colors.white : Colors.black87,
                                 textColor: Locales.currentLocale(context)!.languageCode == 'nl' ? Colors.white : Colors.black87,
                                 prefixWidget: Icon(
@@ -248,8 +241,7 @@ class _LanguageState extends State<Language> {
                               ),
                               LanguageItem(
                                 title: Locales.string(context, 'lang_portuguese'),
-                                bgColor:
-                                    Locales.currentLocale(context)!.languageCode == 'pt' ? Static.themeColor[500]! : Static.dashboardCard,
+                                bgColor: Locales.currentLocale(context)!.languageCode == 'pt' ? secondryColor : Static.dashboardCard,
                                 iconColor: Locales.currentLocale(context)!.languageCode == 'pt' ? Colors.white : Colors.black87,
                                 textColor: Locales.currentLocale(context)!.languageCode == 'pt' ? Colors.white : Colors.black87,
                                 prefixWidget: Icon(
@@ -263,8 +255,7 @@ class _LanguageState extends State<Language> {
                               ),
                               LanguageItem(
                                 title: Locales.string(context, 'lang_turkish'),
-                                bgColor:
-                                    Locales.currentLocale(context)!.languageCode == 'tr' ? Static.themeColor[500]! : Static.dashboardCard,
+                                bgColor: Locales.currentLocale(context)!.languageCode == 'tr' ? secondryColor : Static.dashboardCard,
                                 iconColor: Locales.currentLocale(context)!.languageCode == 'tr' ? Colors.white : Colors.black87,
                                 textColor: Locales.currentLocale(context)!.languageCode == 'tr' ? Colors.white : Colors.black87,
                                 prefixWidget: Icon(
@@ -278,8 +269,7 @@ class _LanguageState extends State<Language> {
                               ),
                               LanguageItem(
                                 title: Locales.string(context, 'lang_italian'),
-                                bgColor:
-                                    Locales.currentLocale(context)!.languageCode == 'it' ? Static.themeColor[500]! : Static.dashboardCard,
+                                bgColor: Locales.currentLocale(context)!.languageCode == 'it' ? secondryColor : Static.dashboardCard,
                                 iconColor: Locales.currentLocale(context)!.languageCode == 'it' ? Colors.white : Colors.black87,
                                 textColor: Locales.currentLocale(context)!.languageCode == 'it' ? Colors.white : Colors.black87,
                                 prefixWidget: Icon(
@@ -293,8 +283,7 @@ class _LanguageState extends State<Language> {
                               ),
                               LanguageItem(
                                 title: Locales.string(context, 'lang_korean'),
-                                bgColor:
-                                    Locales.currentLocale(context)!.languageCode == 'ko' ? Static.themeColor[500]! : Static.dashboardCard,
+                                bgColor: Locales.currentLocale(context)!.languageCode == 'ko' ? secondryColor : Static.dashboardCard,
                                 iconColor: Locales.currentLocale(context)!.languageCode == 'ko' ? Colors.white : Colors.black87,
                                 textColor: Locales.currentLocale(context)!.languageCode == 'ko' ? Colors.white : Colors.black87,
                                 prefixWidget: Icon(
@@ -308,8 +297,7 @@ class _LanguageState extends State<Language> {
                               ),
                               LanguageItem(
                                 title: Locales.string(context, 'lang_nepali'),
-                                bgColor:
-                                    Locales.currentLocale(context)!.languageCode == 'ne' ? Static.themeColor[500]! : Static.dashboardCard,
+                                bgColor: Locales.currentLocale(context)!.languageCode == 'ne' ? secondryColor : Static.dashboardCard,
                                 iconColor: Locales.currentLocale(context)!.languageCode == 'ne' ? Colors.white : Colors.black87,
                                 textColor: Locales.currentLocale(context)!.languageCode == 'ne' ? Colors.white : Colors.black87,
                                 prefixWidget: Icon(
@@ -323,8 +311,7 @@ class _LanguageState extends State<Language> {
                               ),
                               LanguageItem(
                                 title: Locales.string(context, 'lang_russian'),
-                                bgColor:
-                                    Locales.currentLocale(context)!.languageCode == 'ru' ? Static.themeColor[500]! : Static.dashboardCard,
+                                bgColor: Locales.currentLocale(context)!.languageCode == 'ru' ? secondryColor : Static.dashboardCard,
                                 iconColor: Locales.currentLocale(context)!.languageCode == 'ru' ? Colors.white : Colors.black87,
                                 textColor: Locales.currentLocale(context)!.languageCode == 'ru' ? Colors.white : Colors.black87,
                                 prefixWidget: Icon(
@@ -338,8 +325,7 @@ class _LanguageState extends State<Language> {
                               ),
                               LanguageItem(
                                 title: Locales.string(context, 'lang_vietnamese'),
-                                bgColor:
-                                    Locales.currentLocale(context)!.languageCode == 'vi' ? Static.themeColor[500]! : Static.dashboardCard,
+                                bgColor: Locales.currentLocale(context)!.languageCode == 'vi' ? secondryColor : Static.dashboardCard,
                                 iconColor: Locales.currentLocale(context)!.languageCode == 'vi' ? Colors.white : Colors.black87,
                                 textColor: Locales.currentLocale(context)!.languageCode == 'vi' ? Colors.white : Colors.black87,
                                 prefixWidget: Icon(
@@ -353,8 +339,7 @@ class _LanguageState extends State<Language> {
                               ),
                               LanguageItem(
                                 title: Locales.string(context, 'lang_hebrew'),
-                                bgColor:
-                                    Locales.currentLocale(context)!.languageCode == 'he' ? Static.themeColor[500]! : Static.dashboardCard,
+                                bgColor: Locales.currentLocale(context)!.languageCode == 'he' ? secondryColor : Static.dashboardCard,
                                 iconColor: Locales.currentLocale(context)!.languageCode == 'he' ? Colors.white : Colors.black87,
                                 textColor: Locales.currentLocale(context)!.languageCode == 'he' ? Colors.white : Colors.black87,
                                 prefixWidget: Icon(
@@ -368,8 +353,7 @@ class _LanguageState extends State<Language> {
                               ),
                               LanguageItem(
                                 title: Locales.string(context, 'lang_thai'),
-                                bgColor:
-                                    Locales.currentLocale(context)!.languageCode == 'th' ? Static.themeColor[500]! : Static.dashboardCard,
+                                bgColor: Locales.currentLocale(context)!.languageCode == 'th' ? secondryColor : Static.dashboardCard,
                                 iconColor: Locales.currentLocale(context)!.languageCode == 'th' ? Colors.white : Colors.black87,
                                 textColor: Locales.currentLocale(context)!.languageCode == 'th' ? Colors.white : Colors.black87,
                                 prefixWidget: Icon(
@@ -380,7 +364,7 @@ class _LanguageState extends State<Language> {
                                 onTap: () async {
                                   Locales.change(context, 'th');
                                 },
-                              ),
+                              ),*/
                             ],
                           ),
                         ],

@@ -332,7 +332,7 @@ class _RegistrationProfessionalPageState extends State<RegistrationProfessionalP
             SizedBox(
               height: 10,
             ),
-            Text("Licencias"),
+            Text(Locales.string(context, 'lang_licencia')),
             SizedBox(
               height: 5,
             ),
@@ -436,7 +436,7 @@ class _RegistrationProfessionalPageState extends State<RegistrationProfessionalP
             SizedBox(
               height: 10,
             ),
-            Text("Background check"),
+            Text(Locales.string(context, 'lang_background')),
             fileBackgroundCheck.length == 0
                 ? SizedBox()
                 : Container(
@@ -530,7 +530,7 @@ class _RegistrationProfessionalPageState extends State<RegistrationProfessionalP
             SizedBox(
               height: 10,
             ),
-            Text("Registro legal w9"),
+            Text(Locales.string(context, 'lang_registerlegal')),
             fileRegistroLegal.length == 0
                 ? SizedBox()
                 : Container(
@@ -630,7 +630,8 @@ class _RegistrationProfessionalPageState extends State<RegistrationProfessionalP
         key: _formKey1,
         child: Column(
           children: [
-            AppWidget().texfieldFormat(title: "Nombre completo", controller: fullNameController, urlIcon: "images/icons/user.svg"),
+            AppWidget().texfieldFormat(
+                title: Locales.string(context, 'lbl_fullname'), controller: fullNameController, urlIcon: "images/icons/user.svg"),
             /*  Padding(
                   padding: EdgeInsets.only(
                     right: 20,
@@ -699,7 +700,10 @@ class _RegistrationProfessionalPageState extends State<RegistrationProfessionalP
                   _showIOS_DatePicker(context);
                 },
                 child: AppWidget().texfieldFormat(
-                    title: "Fecha de nacimiento", controller: dateController, urlIcon: "images/icons/calendar.svg", enabled: true)),
+                    title: Locales.string(context, 'lang_datebirt'),
+                    controller: dateController,
+                    urlIcon: "images/icons/calendar.svg",
+                    enabled: true)),
 
             SizedBox(
               height: 10,
@@ -777,8 +781,11 @@ class _RegistrationProfessionalPageState extends State<RegistrationProfessionalP
             //
             //  Password
 
-            AppWidget()
-                .texfieldFormat(title: "Password", controller: passwordController, urlIcon: "images/icons/password.svg", password: true),
+            AppWidget().texfieldFormat(
+                title: Locales.string(context, 'lbl_password'),
+                controller: passwordController,
+                urlIcon: "images/icons/password.svg",
+                password: true),
             /* Padding(
                   padding: EdgeInsets.only(
                     right: 20,
@@ -863,12 +870,12 @@ class _RegistrationProfessionalPageState extends State<RegistrationProfessionalP
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              "Registro Profesional",
+                              Locales.string(context, 'lang_createprofessional'),
                               textAlign: TextAlign.center,
                               style: AppStyle().boldText(18),
                             ),
                             Text(
-                              "Datos personales",
+                              Locales.string(context, 'lang_datapersonal'),
                               textAlign: TextAlign.center,
                               style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: secondryColor),
                             ),

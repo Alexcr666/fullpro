@@ -145,7 +145,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> with TickerProvider
                       width: 20,
                     ),
                     Text(
-                      "Resumen",
+                      Locales.string(context, 'lbl_overview'),
                       style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 26),
                     ),
                     Expanded(child: SizedBox()),
@@ -224,7 +224,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> with TickerProvider
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Total a pagar".toString(),
+                          Locales.string(context, 'lang_totalpay').toString(),
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 16,
@@ -509,7 +509,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> with TickerProvider
                 children: [
                   Expanded(
                       child: Text(
-                    orderDetailsItemsList.isNotEmpty ? "Hora de servicio" : '',
+                    orderDetailsItemsList.isNotEmpty ? Locales.string(context, 'lang_timeservice') : '',
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: secondryColor),
                   )),
                   Text(

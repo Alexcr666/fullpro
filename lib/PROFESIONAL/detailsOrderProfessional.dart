@@ -598,7 +598,7 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
                             width: 20,
                           ),
                           Text(
-                            "Resumen",
+                            Locales.string(context, 'lbl_overview'),
                             style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 26),
                           ),
                           Expanded(child: SizedBox()),
@@ -775,7 +775,7 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
                               child: Row(
                                 children: [
                                   Text(
-                                    "Hora de servicio".toString(),
+                                    Locales.string(context, 'lang_timeservice').toString(),
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 16,
@@ -785,7 +785,7 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
                                   Expanded(child: SizedBox()),
                                   Text(
                                     widget.dataList.child("time").value == null
-                                        ? "No disponible"
+                                        ? Locales.string(context, 'lang_nodisponible')
                                         : widget.dataList.child("time").value.toString(),
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
@@ -812,7 +812,7 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
                           child: Row(
                             children: [
                               Text(
-                                "Fecha de servicio".toString(),
+                                Locales.string(context, 'lang_dateservice').toString(),
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 16,
@@ -822,7 +822,7 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
                               Expanded(child: SizedBox()),
                               Text(
                                 widget.dataList.child("date").value == null
-                                    ? "No disponible"
+                                    ? Locales.string(context, 'lang_nodisponible')
                                     : widget.dataList.child("date").value.toString(),
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
@@ -849,7 +849,7 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
                           child: Row(
                             children: [
                               Text(
-                                "Hora de servicio final".toString(),
+                                Locales.string(context, 'lang_hourservicefinal').toString(),
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 16,
@@ -859,7 +859,7 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
                               Expanded(child: SizedBox()),
                               Text(
                                 widget.dataList.child("timeFinal").value == null
-                                    ? "No disponible"
+                                    ? Locales.string(context, 'lang_nodisponible')
                                     : widget.dataList.child("timeFinal").value.toString(),
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
@@ -886,7 +886,7 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
                           child: Row(
                             children: [
                               Text(
-                                "Fecha de servicio final".toString(),
+                                Locales.string(context, 'lang_dateservicefinal').toString(),
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 16,
@@ -896,7 +896,7 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
                               Expanded(child: SizedBox()),
                               Text(
                                 widget.dataList.child("dateFinal").value == null
-                                    ? "No disponible"
+                                    ? Locales.string(context, 'lang_nodisponible')
                                     : widget.dataList.child("dateFinal").value.toString(),
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
@@ -1092,7 +1092,7 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Servicios".toString(),
+                  Locales.string(context, 'lang_services').toString(),
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
@@ -1148,7 +1148,7 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
         Container(
             margin: EdgeInsets.only(left: 10),
             child: Text(
-              "Resumen",
+              Locales.string(context, 'lbl_overview'),
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 16,
@@ -1161,7 +1161,7 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
         ),
 
         itemMoney(
-            "Costo del servicio",
+            Locales.string(context, 'lang_costservice'),
             '\$' +
                 MoneyFormatter(amount: double.parse(((getTotalPay() - (int.parse(getTotalPay().toString())) / 10)).toString()))
                     .output
@@ -1169,7 +1169,7 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
                     .toString()),
 
         itemMoney(
-            "Tarifa del servicio",
+            Locales.string(context, 'lang_tarifaservice'),
             '\$' +
                 MoneyFormatter(amount: double.parse((int.parse(getTotalPay().toString()) / 10).toString()))
                     .output
@@ -1269,7 +1269,7 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
                         Container(
                             width: 110,
                             height: 60,
-                            child: AppWidget().buttonFormColor(context, "Enviar", secondryColor, tap: () {
+                            child: AppWidget().buttonFormColor(context, Locales.string(context, 'lbl_send'), secondryColor, tap: () {
                               widget.dataList.ref.update({'comment': _descriptionCommentController.text}).then((value) {
                                 AppWidget().itemMessage("Actualizado", context);
                               });
@@ -1393,7 +1393,8 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
                     width: 200,
                     child: getCancelButton() == false
                         ? SizedBox()
-                        : AppWidget().buttonFormLine(context, "Cancelar", true, urlIcon: "images/icons/closeCircle.svg", tap: () {
+                        : AppWidget().buttonFormLine(context, Locales.string(context, 'lang_cancel'), true,
+                            urlIcon: "images/icons/closeCircle.svg", tap: () {
                             Navigator.pop(context);
 
                             widget.dataList.ref.update({'state': 4}).then((value) {
@@ -1817,7 +1818,7 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
         Container(
             margin: EdgeInsets.only(left: 10),
             child: Text(
-              "Dirección de entrega",
+              Locales.string(context, 'lang_addressentrega'),
               style: TextStyle(color: secondryColor, fontSize: 14),
             )),
         Padding(
@@ -1837,14 +1838,14 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
                 Expanded(
                   child: Text(
                     dataListObjectGeneral!.child("address").value == null
-                        ? "No disponible"
+                        ? Locales.string(context, 'lang_nodisponible')
                         : dataListObjectGeneral!.child("address").value.toString()
                     /*
                     /*dataListObjectGeneral == null ? "" : dataListObjectGeneral!.child("address").value.toString()*/ widget.dataList
                                 .child("address")
                                 .value ==
                             null
-                        ? "No disponible"
+                        ? Locales.string(context, 'lang_nodisponible')
                         : widget.dataList.child("address").value.toString()*/
                     ,
                     style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 16),
@@ -1862,7 +1863,7 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
 
                     child: Text(
 
-                      'Cambiar',
+                      Locales.string(context, 'lang_change'),
 
                       style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 16),
 
@@ -1920,7 +1921,7 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "Resumen",
+                        Locales.string(context, 'lbl_overview'),
                         style: TextStyle(color: secondryColor, fontSize: 15, fontWeight: FontWeight.bold),
                       ),
                       SizedBox(

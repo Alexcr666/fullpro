@@ -56,7 +56,7 @@ class _ListSupportPageState extends State<ListSupportPage> {
               return response == null
                   ? AppWidget().loading()
                   : response.snapshot.children.length == 0
-                      ? AppWidget().noResult()
+                      ? AppWidget().noResult(context)
                       : ListView.builder(
                           itemCount: response.snapshot.children.length,
                           shrinkWrap: true,
@@ -72,10 +72,12 @@ class _ListSupportPageState extends State<ListSupportPage> {
                                           mainAxisSize: MainAxisSize.min,
                                           children: <Widget>[
                                             ListTile(
-                                              title: new Text('Eliminar'),
+                                              title: new Text(Locales.string(context, 'lang_location')),
                                               onTap: () {
                                                 Navigator.pop(context);
-                                                AppWidget().optionsEnabled("¿Estas seguro que quieres eliminar?", context, tap: () {
+                                                AppWidget().optionsEnabled(
+                                                    "¿Estas seguro que quieres Locales.string(context, 'lang_location')?", context,
+                                                    tap: () {
                                                   dataList.ref.remove().then((value) {
                                                     Navigator.pop(context);
                                                     setState(() {});
@@ -100,7 +102,7 @@ class _ListSupportPageState extends State<ListSupportPage> {
                                           },
                                         ),*/
                                             ListTile(
-                                              title: new Text('Cancelar'),
+                                              title: new Text(Locales.string(context, 'lang_cancel')),
                                               onTap: () {
                                                 Navigator.pop(context);
                                               },
@@ -156,7 +158,7 @@ class _ListSupportPageState extends State<ListSupportPage> {
                                                         ),
                                                         Text(
                                                           dataList.child("date").value == null
-                                                              ? "No disponible"
+                                                              ? Locales.string(context, 'lang_nodisponible')
                                                               : dataList.child("date").value.toString(),
                                                           textAlign: TextAlign.center,
                                                           style: TextStyle(fontSize: 12, color: secondryColor),

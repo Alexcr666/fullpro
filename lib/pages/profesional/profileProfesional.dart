@@ -185,7 +185,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
             //return Text(dataListObject!.child("name").value.toString());
 
             return response.snapshot.children.toList().length == 0
-                ? AppWidget().noResult()
+                ? AppWidget().noResult(context)
                 : Container(
                     width: double.infinity,
                     height: 120,
@@ -235,7 +235,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                                   ),
                                                   Text(
                                                     dataList.child("description").value == null
-                                                        ? "No disponible"
+                                                        ? Locales.string(context, 'lang_nodisponible')
                                                         : dataList.child("description").value.toString(),
                                                     style: TextStyle(color: Colors.grey, fontSize: 13, fontWeight: FontWeight.bold),
                                                   ),
@@ -297,7 +297,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
             return response == null
                 ? AppWidget().loading()
                 : response.snapshot.children.toList().length == 0
-                    ? AppWidget().noResult()
+                    ? AppWidget().noResult(context)
                     : Container(
 
                         // width: double.infinity,
@@ -335,7 +335,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                           Flexible(
                                               child: Text(
                                             dataList.child("name").value == null
-                                                ? "No disponible"
+                                                ? Locales.string(context, 'lang_nodisponible')
                                                 : dataList.child("name").value.toString().capitalize(),
                                             style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 14),
                                             maxLines: 1,
@@ -371,7 +371,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                           Flexible(
                                               child: Text(
                                             dataList.child("address").value == null
-                                                ? "No disponible"
+                                                ? Locales.string(context, 'lang_nodisponible')
                                                 : dataList.child("address").value.toString().capitalize(),
                                             maxLines: 1,
                                             style: TextStyle(color: secondryColor, fontSize: 12),
@@ -637,7 +637,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                     width: 170,
                                     child: AppWidget().buttonFormLine(
                                         context,
-                                        FirebaseAuth.instance.currentUser!.uid.toString() == widget.id ? "Editar perfil" : "Solicitar",
+                                        FirebaseAuth.instance.currentUser!.uid.toString() == widget.id ? "Editar perfil" : Locales.string(context,'lang_solicitudtext'),
                                         false, tap: () {
                                       if (FirebaseAuth.instance.currentUser!.uid.toString() == widget.id) {
                                         stateIndicator = 4;
@@ -891,7 +891,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                               SizedBox(
                                 width: 10,
                               ),
-                              AppWidget().buttonShandowRounded("Review", stateIndicator != 1, tap: () {
+                              AppWidget().buttonShandowRounded(Locales.string(context, 'lang_review'), stateIndicator != 1, tap: () {
                                 stateIndicator = 1;
 
                                 setState(() {});
@@ -899,7 +899,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                               SizedBox(
                                 width: 10,
                               ),
-                              AppWidget().buttonShandowRounded("Portafolio", stateIndicator != 2, tap: () {
+                              AppWidget().buttonShandowRounded(Locales.string(context, 'lang_portafolio'), stateIndicator != 2, tap: () {
                                 stateIndicator = 2;
 
                                 setState(() {});
@@ -909,7 +909,8 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                               ),
                               FirebaseAuth.instance.currentUser!.uid.toString() != widget.id
                                   ? SizedBox()
-                                  : AppWidget().buttonShandowRounded("Historial", stateIndicator != 3, tap: () {
+                                  : AppWidget().buttonShandowRounded(Locales.string(context, 'lang_history_tex'), stateIndicator != 3,
+                                      tap: () {
                                       stateIndicator = 3;
 
                                       setState(() {});
@@ -919,7 +920,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                   : SizedBox(
                                       width: 10,
                                     ),
-                              AppWidget().buttonShandowRounded("Información", stateIndicator != 4, tap: () {
+                              AppWidget().buttonShandowRounded(Locales.string(context, 'lang_info'), stateIndicator != 4, tap: () {
                                 stateIndicator = 4;
 
                                 setState(() {});
@@ -948,7 +949,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
     return dataListObjectOrdens == null
         ? AppWidget().loading()
         : dataListObjectOrdens!.length == 0
-            ? AppWidget().noResult()
+            ? AppWidget().noResult(context)
             : ListView.builder(
                 itemCount: dataListObjectOrdens!.length,
                 shrinkWrap: true,
@@ -965,7 +966,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                           ? SizedBox()
                           : emptyResult == false
                               ? SizedBox()
-                              : AppWidget().noResult()
+                              : AppWidget().noResult(context)
                       : Container(
                           margin: EdgeInsets.only(left: 20, right: 20, top: 10),
                           decoration: AppWidget().boxShandowGreyRectangule(),
@@ -1013,7 +1014,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                                           children: [
                                                             Text(
                                                               response.snapshot.child("fullname").value == null
-                                                                  ? "No disponible"
+                                                                  ? Locales.string(context, 'lang_nodisponible')
                                                                   : response.snapshot.child("fullname").value.toString(),
                                                               style: TextStyle(
                                                                   color: secondryColor, fontSize: 17, fontWeight: FontWeight.bold),
@@ -1206,7 +1207,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
       SizedBox(
         height: 20,
       ),
-      AppWidget().textFieldForm(context, nameController, "Nombre completo"),
+      AppWidget().textFieldForm(context, nameController, Locales.string(context, 'lbl_fullname')),
       SizedBox(
         height: 10,
       ),
@@ -1222,7 +1223,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
       SizedBox(
         height: 10,
       ),
-      AppWidget().textFieldForm(context, passwordController, "Contraseña"),
+      AppWidget().textFieldForm(context, passwordController, "Locales.string(context, 'lbl_password')"),
       SizedBox(
         height: 20,
       ),*/
@@ -1269,7 +1270,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                   ),
                   AppWidget().texfieldFormat(
                       controller: nameController,
-                      title: "Nombre Completo",
+                      title: Locales.string(context, 'lbl_fullname'),
                       enabled: FirebaseAuth.instance.currentUser!.uid == widget.id ? false : true),
                   SizedBox(
                     height: 10,
@@ -1305,7 +1306,8 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
 
                         _showIOS_DatePicker(context);
                       },
-                      child: AppWidget().texfieldFormat(title: "Fecha de nacimiento", controller: dateController, enabled: true)),
+                      child: AppWidget()
+                          .texfieldFormat(title: Locales.string(context, 'lang_datebirt'), controller: dateController, enabled: true)),
                   SizedBox(
                     height: 10,
                   ),
@@ -1359,7 +1361,10 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                 SizedBox(
                   height: 10,
                 ),
-                Container(margin: EdgeInsets.only(left: 20), alignment: Alignment.centerLeft, child: Text("Licencias")),
+                Container(
+                    margin: EdgeInsets.only(left: 20),
+                    alignment: Alignment.centerLeft,
+                    child: Text(Locales.string(context, 'lang_licencia'))),
 
                 SizedBox(
                   height: 10,
@@ -1368,7 +1373,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                 // getDataUser().child("licence") == null
 
                 getDataUser()!.child("license").value == null
-                    ? AppWidget().noResult()
+                    ? AppWidget().noResult(context)
                     : Container(
                         height: 40,
                         child: ListView.builder(
@@ -1399,7 +1404,8 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                         ),
                                         GestureDetector(
                                             onTap: () {
-                                              AppWidget().optionsEnabled("¿Seguro quieres eliminar?", context, tap: () {
+                                              AppWidget().optionsEnabled(
+                                                  "¿Seguro quieres Locales.string(context, 'lang_location')?", context, tap: () {
                                                 getDataUser()!.ref.child("license").remove().then((value) {
                                                   setState(() {});
                                                 }).catchError((onError) {
@@ -1512,12 +1518,15 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                         SizedBox(
                           height: 10,
                         ),
-                        Container(margin: EdgeInsets.only(left: 3), alignment: Alignment.centerLeft, child: Text("Background check")),
+                        Container(
+                            margin: EdgeInsets.only(left: 3),
+                            alignment: Alignment.centerLeft,
+                            child: Text(Locales.string(context, 'lang_background'))),
                         SizedBox(
                           height: 10,
                         ),
                         getDataUser()!.child("background").value == null
-                            ? AppWidget().noResult()
+                            ? AppWidget().noResult(context)
                             : Container(
                                 height: 40,
                                 child: ListView.builder(
@@ -1545,7 +1554,8 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                             ),
                                             GestureDetector(
                                                 onTap: () {
-                                                  AppWidget().optionsEnabled("¿Seguro quieres eliminar?", context, tap: () {
+                                                  AppWidget().optionsEnabled(
+                                                      "¿Seguro quieres Locales.string(context, 'lang_location')?", context, tap: () {
                                                     Navigator.pop(context);
                                                     getDataUser()!.ref.child("background").remove().then((value) {
                                                       setState(() {});
@@ -1625,12 +1635,15 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                         SizedBox(
                           height: 10,
                         ),
-                        Container(margin: EdgeInsets.only(left: 3), alignment: Alignment.centerLeft, child: Text("Registro legal w9")),
+                        Container(
+                            margin: EdgeInsets.only(left: 3),
+                            alignment: Alignment.centerLeft,
+                            child: Text(Locales.string(context, 'lang_registerlegal'))),
                         SizedBox(
                           height: 10,
                         ),
                         getDataUser()!.child("legal").value == null
-                            ? AppWidget().noResult()
+                            ? AppWidget().noResult(context)
                             : Container(
                                 height: 40,
                                 child: ListView.builder(
@@ -1658,7 +1671,8 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                             ),
                                             GestureDetector(
                                                 onTap: () {
-                                                  AppWidget().optionsEnabled("¿Seguro quieres eliminar?", context, tap: () {
+                                                  AppWidget().optionsEnabled(
+                                                      "¿Seguro quieres Locales.string(context, 'lang_location')?", context, tap: () {
                                                     Navigator.pop(context);
                                                     getDataUser()!.ref.child("legal").remove().then((value) {
                                                       setState(() {});
@@ -1828,9 +1842,9 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
 
         children: [
 
-          Flexible(child: AppWidget().textFieldForm(context, passwordController, "Contraseña")),
+          Flexible(child: AppWidget().textFieldForm(context, passwordController, "Locales.string(context, 'lbl_password')")),
 
-          Flexible(child: AppWidget().textFieldForm(context, passwordController, "Contraseña")),
+          Flexible(child: AppWidget().textFieldForm(context, passwordController, "Locales.string(context, 'lbl_password')")),
 
         ],
 
@@ -2014,7 +2028,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
             return response == null
                 ? AppWidget().loading()
                 : response.snapshot.children.toList().length == 0
-                    ? AppWidget().noResult()
+                    ? AppWidget().noResult(context)
                     : Container(
                         width: double.infinity,
                         height: 300,
@@ -2057,7 +2071,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                                     Container(
                                                         width: double.infinity,
                                                         child: Text(
-                                                          "Información del servicio",
+                                                          Locales.string(context, 'lang_infoservicio'),
                                                           style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 17),
                                                           textAlign: TextAlign.center,
                                                         )),
@@ -2100,7 +2114,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                                                 ),
                                                                 Text(
                                                                   dataList.child("category").value == null
-                                                                      ? "No disponible"
+                                                                      ? Locales.string(context, 'lang_nodisponible')
                                                                       : dataList.child("category").value.toString(),
                                                                   style: TextStyle(
                                                                       color: Colors.black, fontWeight: FontWeight.bold, fontSize: 13),
@@ -2129,7 +2143,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                                               height: 10,
                                                             ),
                                                             Text(
-                                                              "Costo del servicio",
+                                                              Locales.string(context, 'lang_costservice'),
                                                               style: TextStyle(
                                                                   color: secondryColor, fontWeight: FontWeight.bold, fontSize: 15),
                                                             ),
@@ -2161,7 +2175,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                                         margin: EdgeInsets.only(left: 20, right: 20),
                                                         child: Text(
                                                           dataList.child("name").value == null
-                                                              ? "No disponible"
+                                                              ? Locales.string(context, 'lang_nodisponible')
                                                               : dataList.child("name").value.toString(),
                                                           style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 12),
                                                         )),
@@ -2173,14 +2187,16 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                                         child: Row(
                                                           children: [
                                                             Flexible(
-                                                                child: AppWidget().buttonFormLine(context, "Cancelar", true, tap: () {
+                                                                child: AppWidget().buttonFormLine(
+                                                                    context, Locales.string(context, 'lang_cancel'), true, tap: () {
                                                               Navigator.pop(context);
                                                             })),
                                                             SizedBox(
                                                               width: 10,
                                                             ),
                                                             Flexible(
-                                                                child: AppWidget().buttonFormLine(context, "Solicitar", false, tap: () {
+                                                                child: AppWidget().buttonFormLine(
+                                                                    context, Locales.string(context, 'lang_solicitudtext'), false, tap: () {
                                                               Navigator.pop(context);
 
                                                               queryFirebase.Query historyRef = FirebaseDatabase.instance
@@ -2273,7 +2289,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                                   },
                                                 ),
                                                 ListTile(
-                                                  title: new Text('Cancelar'),
+                                                  title: new Text(Locales.string(context, 'lang_cancel')),
                                                   onTap: () {},
                                                 ),
                                               ],
@@ -2321,19 +2337,19 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                             ),
                                             Text(
                                               dataList.child("name").value == null
-                                                  ? "No disponible"
+                                                  ? Locales.string(context, 'lang_nodisponible')
                                                   : dataList.child("name").value.toString().capitalize(),
                                               style: TextStyle(color: secondryColor, fontSize: 12, fontWeight: FontWeight.bold),
                                             ),
                                             Text(
                                               dataList.child("category").value == null
-                                                  ? "No disponible"
+                                                  ? Locales.string(context, 'lang_nodisponible')
                                                   : dataList.child("category").value.toString().capitalize(),
                                               style: TextStyle(color: secondryColor, fontSize: 11),
                                             ),
                                             Text(
                                               dataList.child("price").value == null
-                                                  ? "No disponible"
+                                                  ? Locales.string(context, 'lang_nodisponible')
                                                   : '\$' +
                                                       MoneyFormatter(amount: double.parse(dataList.child("price").value.toString()))
                                                           .output
@@ -2346,7 +2362,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                           },
                         ));
           } else {
-            return AppWidget().noResult();
+            return AppWidget().noResult(context);
           }
 
           ;

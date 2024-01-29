@@ -204,7 +204,7 @@ class _MyOrdersState extends State<MyOrdersProfile> with TickerProviderStateMixi
                                       style: TextStyle(color: secondryColor, fontSize: 17, fontWeight: FontWeight.bold),
                                     ),
                                     Text(
-                                      "Opiniones clientes",
+                                      Locales.string(context, 'lang_solicitudtext'),
                                       style: TextStyle(color: Colors.black, fontSize: 10),
                                     ),
                                     RatingBarIndicator(
@@ -261,9 +261,9 @@ class _MyOrdersState extends State<MyOrdersProfile> with TickerProviderStateMixi
               DatabaseEvent response = snapshot.data;
 
               return response == null
-                  ? AppWidget().noResult()
+                  ? AppWidget().noResult(context)
                   : response.snapshot.children.length == 0
-                      ? AppWidget().noResult()
+                      ? AppWidget().noResult(context)
                       : ListView.builder(
                           itemCount: response.snapshot.children.length,
                           shrinkWrap: true,
@@ -295,7 +295,7 @@ class _MyOrdersState extends State<MyOrdersProfile> with TickerProviderStateMixi
                                           style: TextStyle(color: secondryColor, fontSize: 17, fontWeight: FontWeight.bold),
                                         ),
                                         Text(
-                                          "Opiniones clientes",
+                                          Locales.string(context, 'lang_solicitudtext'),
                                           style: TextStyle(color: Colors.black, fontSize: 10),
                                         ),
                                         RatingBarIndicator(
@@ -376,7 +376,7 @@ class _MyOrdersState extends State<MyOrdersProfile> with TickerProviderStateMixi
             //return Text(dataListObject!.child("name").value.toString());
 
             return response.snapshot.children.toList().length == 0
-                ? AppWidget().noResult()
+                ? AppWidget().noResult(context)
                 : ListView.builder(
                     padding: EdgeInsets.only(left: 10.0),
                     itemCount: response.snapshot.children.toList().length,
@@ -407,7 +407,7 @@ class _MyOrdersState extends State<MyOrdersProfile> with TickerProviderStateMixi
                           /*   positionFilter.toString() != dataList.child("state").value.toString()
                               ? response.snapshot.children.toList().length != i
                                   ? result != true
-                                      ? AppWidget().noResult()
+                                      ? AppWidget().noResult(context)
                                       : SizedBox()
                                   : SizedBox()
                               : */
@@ -509,7 +509,7 @@ class _MyOrdersState extends State<MyOrdersProfile> with TickerProviderStateMixi
                                                     ),
                                                     Text(
                                                       dataList.child("nameProfessional").value == null
-                                                          ? "No disponible"
+                                                          ? Locales.string(context, 'lang_nodisponible')
                                                           : dataList.child("nameProfessional").value.toString(),
                                                       style: TextStyle(
                                                         color: secondryColor,
@@ -568,7 +568,8 @@ class _MyOrdersState extends State<MyOrdersProfile> with TickerProviderStateMixi
                                                     : Container(
                                                         width: 134,
                                                         height: 40,
-                                                        child: AppWidget().buttonFormColor(context, "Cancelar", Colors.red, tap: () {
+                                                        child: AppWidget().buttonFormColor(
+                                                            context, Locales.string(context, 'lang_cancel'), Colors.red, tap: () {
                                                           dataList.ref.update({'state': 3}).then((value) {
                                                             AppWidget().itemMessage("Actualizado", context);
                                                           });
@@ -773,7 +774,7 @@ class _MyOrdersState extends State<MyOrdersProfile> with TickerProviderStateMixi
               ),
               itemAdd(
                 "images/icons/userCircle.svg",
-                "Servicios",
+                Locales.string(context, 'lang_services'),
                 serviceCheck,
                 tap: () {
                   profesionalCheck = false;
@@ -831,7 +832,7 @@ class _MyOrdersState extends State<MyOrdersProfile> with TickerProviderStateMixi
               margin: EdgeInsets.only(left: 20, right: 20),
               child: AppWidget().texfieldFormat(
                   controller: _searchController,
-                  title: "Buscar",
+                  title: Locales.string(context, 'lang_search'),
                   execute: () {
                     searchText = _searchController.text.toString();
                     setState(() {});
@@ -1005,7 +1006,7 @@ class _MyOrdersState extends State<MyOrdersProfile> with TickerProviderStateMixi
                                               style: TextStyle(color: secondryColor, fontSize: 17, fontWeight: FontWeight.bold),
                                             ),
                                             Text(
-                                              "Opiniones clientes",
+                                              Locales.string(context, 'lang_solicitudtext'),
                                               style: TextStyle(color: Colors.black, fontSize: 10),
                                             ),
                                             RatingBarIndicator(

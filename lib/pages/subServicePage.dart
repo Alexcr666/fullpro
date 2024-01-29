@@ -173,7 +173,7 @@ class _subServicePageState extends State<subServicePage> {
             return response == null
                 ? AppWidget().loading()
                 : response.snapshot.children.length == 0
-                    ? AppWidget().noResult()
+                    ? AppWidget().noResult(context)
                     : ListView.builder(
                         itemCount: response.snapshot.children.length,
                         shrinkWrap: true,
@@ -191,7 +191,7 @@ class _subServicePageState extends State<subServicePage> {
                                           mainAxisSize: MainAxisSize.min,
                                           children: <Widget>[
                                             ListTile(
-                                              title: new Text('Ver portafolio'),
+                                              title: new Text(Locales.string(context, 'lang_watchportafolio')),
                                               onTap: () async {
                                                 Navigator.pop(context);
                                                 final Uri url = Uri.parse(dataList.child("foto").value.toString());
@@ -201,7 +201,7 @@ class _subServicePageState extends State<subServicePage> {
                                               },
                                             ),
                                             ListTile(
-                                              title: new Text('Ver perfil'),
+                                              title: new Text(Locales.string(context, 'lang_watchprofile')),
                                               onTap: () {
                                                 Navigator.pop(context);
                                                 Navigator.push(
@@ -213,7 +213,7 @@ class _subServicePageState extends State<subServicePage> {
                                               },
                                             ),
                                             ListTile(
-                                              title: new Text('Cancelar'),
+                                              title: new Text(Locales.string(context, 'lang_cancel')),
                                               onTap: () {
                                                 Navigator.pop(context);
                                               },
@@ -278,7 +278,7 @@ class _subServicePageState extends State<subServicePage> {
                                                                       Container(
                                                                           width: double.infinity,
                                                                           child: Text(
-                                                                            "Información del servicio",
+                                                                            Locales.string(context, 'lang_infoservicio'),
                                                                             style: TextStyle(
                                                                                 color: secondryColor,
                                                                                 fontWeight: FontWeight.bold,
@@ -316,7 +316,7 @@ class _subServicePageState extends State<subServicePage> {
                                                                                 crossAxisAlignment: CrossAxisAlignment.start,
                                                                                 children: [
                                                                                   Text(
-                                                                                    "Nombre del servicio",
+                                                                                    Locales.string(context, 'lang_nameservice'),
                                                                                     style: TextStyle(
                                                                                         color: secondryColor,
                                                                                         fontWeight: FontWeight.bold,
@@ -383,7 +383,7 @@ class _subServicePageState extends State<subServicePage> {
                                                                             crossAxisAlignment: CrossAxisAlignment.start,
                                                                             children: [
                                                                               Text(
-                                                                                "Costo del servicio",
+                                                                                Locales.string(context, 'lang_costservice'),
                                                                                 style: TextStyle(
                                                                                     color: secondryColor,
                                                                                     fontWeight: FontWeight.bold,
@@ -426,16 +426,18 @@ class _subServicePageState extends State<subServicePage> {
                                                                           child: Row(
                                                                             children: [
                                                                               Flexible(
-                                                                                  child: AppWidget()
-                                                                                      .buttonFormLine(context, "Cancelar", true, tap: () {
+                                                                                  child: AppWidget().buttonFormLine(
+                                                                                      context, Locales.string(context, 'lang_cancel'), true,
+                                                                                      tap: () {
                                                                                 Navigator.pop(context);
                                                                               })),
                                                                               SizedBox(
                                                                                 width: 10,
                                                                               ),
                                                                               Flexible(
-                                                                                  child: AppWidget()
-                                                                                      .buttonFormLine(context, "Aceptar", false, tap: () {
+                                                                                  child: AppWidget().buttonFormLine(
+                                                                                      context, Locales.string(context, 'lbl_accept'), false,
+                                                                                      tap: () {
                                                                                 //  Navigator.pop(context);
 
                                                                                 Navigator.pop(context);
@@ -540,7 +542,7 @@ class _subServicePageState extends State<subServicePage> {
                                                       child: Row(
                                                         children: [
                                                           Text(
-                                                            "Solicitar",
+                                                            Locales.string(context, 'lang_solicitudtext'),
                                                             style: const TextStyle(
                                                               color: Colors.white,
                                                             ),
@@ -553,7 +555,7 @@ class _subServicePageState extends State<subServicePage> {
                                             ],
                                           ),
                                           Text(
-                                            "Opiniones clientes",
+                                            Locales.string(context, 'lang_solicitudtext'),
                                             style: TextStyle(color: Colors.black, fontSize: 10),
                                           ),
                                           FutureBuilder(
@@ -615,7 +617,7 @@ class _subServicePageState extends State<subServicePage> {
 
                             return getInspections() != dataList.child("type").value
                                 ? ((index + 1) == response.snapshot.children.length)
-                                    ? AppWidget().noResult()
+                                    ? AppWidget().noResult(context)
                                     : SizedBox()
                                 : itemList();
                           }
@@ -640,7 +642,7 @@ class _subServicePageState extends State<subServicePage> {
               return response == null
                   ? AppWidget().loading()
                   : response.snapshot.children.length == 0
-                      ? AppWidget().noResult()
+                      ? AppWidget().noResult(context)
                       : ListView.builder(
                           itemCount: response.snapshot.children.length,
                           shrinkWrap: true,
@@ -707,7 +709,7 @@ class _subServicePageState extends State<subServicePage> {
                                                         child: Row(
                                                           children: [
                                                             Text(
-                                                              "Solicitar",
+                                                              Locales.string(context,'lang_solicitudtext'),
                                                               style: const TextStyle(
                                                                 color: Colors.white,
                                                               ),
@@ -720,7 +722,7 @@ class _subServicePageState extends State<subServicePage> {
                                               ],
                                             ),
                                             Text(
-                                              "Opiniones clientes",
+                                              Locales.string(context,'lang_solicitudtext'),
                                               style: TextStyle(color: Colors.black, fontSize: 10),
                                             ),
                                             RatingBarIndicator(
@@ -869,7 +871,7 @@ class _subServicePageState extends State<subServicePage> {
                       width: 20,
                     ),
                     Text(
-                      "Solicitudes",
+                      Locales.string(context, 'lang_solicitud'),
                       style: TextStyle(color: secondryColor, fontSize: 20, fontWeight: FontWeight.bold),
                     ),
                     Expanded(child: SizedBox()),
@@ -890,7 +892,7 @@ class _subServicePageState extends State<subServicePage> {
                       width: 10,
                     ),
                     Flexible(
-                        child: AppWidget().buttonFormLine(context, "Servicio", inspeccion != false, tap: () {
+                        child: AppWidget().buttonFormLine(context, Locales.string(context, 'lang_services'), inspeccion != false, tap: () {
                       inspeccion = false;
                       setState(() {});
                     })),
@@ -898,7 +900,8 @@ class _subServicePageState extends State<subServicePage> {
                       width: 10,
                     ),
                     Flexible(
-                        child: AppWidget().buttonFormLine(context, "Inspección", inspeccion != true, tap: () {
+                        child:
+                            AppWidget().buttonFormLine(context, Locales.string(context, 'lang_inspections'), inspeccion != true, tap: () {
                       inspeccion = true;
                       setState(() {});
                     })),
@@ -947,7 +950,7 @@ class _subServicePageState extends State<subServicePage> {
                                   _showIOS_DatePicker(context);
                                 },
                                 child: AppWidget().texfieldFormat(
-                                    title: "Fecha de servicio",
+                                    title: Locales.string(context, 'lang_dateservice'),
                                     urlIcon: "images/icons/calendar.svg",
                                     enabled: true,
                                     controller: dateService)),
@@ -986,7 +989,7 @@ class _subServicePageState extends State<subServicePage> {
                                   _showIOS_DatePicker(context);
                                 },
                                 child: AppWidget().texfieldFormat(
-                                    title: "Hora de servicio",
+                                    title: Locales.string(context, 'lang_timeservice'),
                                     urlIcon: "images/icons/calendar.svg",
                                     enabled: true,
                                     controller: hourService)),
@@ -1076,7 +1079,7 @@ class _subServicePageState extends State<subServicePage> {
                                                   Container(
                                                       width: double.infinity,
                                                       child: Text(
-                                                        "Información del servicio",
+                                                        Locales.string(context, 'lang_infoservicio'),
                                                         style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 17),
                                                         textAlign: TextAlign.center,
                                                       )),
@@ -1110,7 +1113,7 @@ class _subServicePageState extends State<subServicePage> {
                                                             crossAxisAlignment: CrossAxisAlignment.start,
                                                             children: [
                                                               Text(
-                                                                "Nombre del servicio",
+                                                                Locales.string(context, 'lang_nameservice'),
                                                                 style: TextStyle(
                                                                     color: secondryColor, fontWeight: FontWeight.bold, fontSize: 12),
                                                               ),
@@ -1143,7 +1146,7 @@ class _subServicePageState extends State<subServicePage> {
                                                         crossAxisAlignment: CrossAxisAlignment.start,
                                                         children: [
                                                           Text(
-                                                            "Costo del servicio",
+                                                            Locales.string(context, 'lang_costservice'),
                                                             style:
                                                                 TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 16),
                                                           ),
@@ -1179,14 +1182,16 @@ class _subServicePageState extends State<subServicePage> {
                                                       child: Row(
                                                         children: [
                                                           Flexible(
-                                                              child: AppWidget().buttonFormLine(context, "Cancelar", true, tap: () {
+                                                              child: AppWidget().buttonFormLine(
+                                                                  context, Locales.string(context, 'lang_cancel'), true, tap: () {
                                                             Navigator.pop(context);
                                                           })),
                                                           SizedBox(
                                                             width: 10,
                                                           ),
                                                           Flexible(
-                                                              child: AppWidget().buttonFormLine(context, "Aceptar", false, tap: () {
+                                                              child: AppWidget().buttonFormLine(
+                                                                  context, Locales.string(context, 'lbl_accept'), false, tap: () {
                                                             Navigator.pop(context);
                                                           })),
                                                         ],
@@ -1211,7 +1216,7 @@ class _subServicePageState extends State<subServicePage> {
                                   child: Row(
                                     children: [
                                       Text(
-                                        "Solicitar",
+                                        Locales.string(context, 'lang_solicitudtext'),
                                         style: const TextStyle(
                                           color: Colors.white,
                                         ),

@@ -150,7 +150,7 @@ class _WallletPageState extends State<WallletPage> {
                         //return Text(dataListObject!.child("name").value.toString());
 
                         return response.snapshot.children.toList().length == 0
-                            ? AppWidget().noResult()
+                            ? AppWidget().noResult(context)
                             : Container(
                                 width: double.infinity,
                                 height: 140,
@@ -245,7 +245,7 @@ class _WallletPageState extends State<WallletPage> {
             //return Text(dataListObject!.child("name").value.toString());
 
             return response.snapshot.children.toList().length == 0
-                ? AppWidget().noResult()
+                ? AppWidget().noResult(context)
                 : ListView.builder(
                     padding: EdgeInsets.only(left: 10.0),
                     itemCount: response.snapshot.children.toList().length,

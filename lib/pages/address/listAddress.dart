@@ -1,6 +1,7 @@
 import 'package:firebase_database/firebase_database.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
@@ -145,7 +146,7 @@ class _ListAddressPageState extends State<ListAddressPage> {
               children: [
                 Container(
                     child: Text(
-                  "Agregar o escoge una dirección",
+                  Locales.string(context, 'lang_addlocation'),
                   style: TextStyle(
                     color: secondryColor,
                     fontSize: 20,

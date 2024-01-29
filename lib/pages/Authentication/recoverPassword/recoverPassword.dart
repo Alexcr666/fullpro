@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_locales/flutter_locales.dart';
 
 import 'package:fullpro/pages/Authentication/recoverPassword/firebaseAuth.dart';
 
@@ -61,7 +62,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                 AppWidget().back(context),
                 const SizedBox(height: 70),
                 const Text(
-                  "Recuperar contraseña",
+                  "Recuperar Locales.string(context, 'lbl_password')",
                   style: TextStyle(
                     fontSize: 25,
                     fontWeight: FontWeight.bold,
@@ -80,14 +81,15 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                 AppWidget().texfieldFormat(controller: _emailController, title: "Correo electronico"),
                 const SizedBox(height: 16),
                 const Expanded(child: SizedBox()),
-                AppWidget().buttonFormColor(context, "Recuperar contraseña", secondryColor, tap: () async {
+                AppWidget().buttonFormColor(context, Locales.string(context, 'lang_recoverpassword'), secondryColor, tap: () async {
                   if (_key.currentState!.validate()) {
                     final _status = await resetPassword(email: _emailController.text.trim());
 
                     if (_status == AuthStatus.successful) {
                       Navigator.pop(context);
 
-                      AppWidget().itemMessage("Hemos enviado un correo electronico para el cambio de tu contraseña", context);
+                      AppWidget().itemMessage(
+                          "Hemos enviado un correo electronico para el cambio de tu Locales.string(context, 'lbl_password')", context);
 
                       //your logic
                     } else {

@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_locales/flutter_locales.dart';
 
 import 'package:fullpro/pages/Authentication/recoverPassword/firebaseAuth.dart';
 
@@ -80,8 +81,8 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
               children: [
                 AppWidget().back(context),
                 const SizedBox(height: 70),
-                const Text(
-                  "Recuperar contraseña",
+                Text(
+                  Locales.string(context, 'lang_recoverpassword'),
                   style: TextStyle(
                     fontSize: 25,
                     fontWeight: FontWeight.bold,
@@ -90,22 +91,23 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                 ),
                 const SizedBox(height: 10),
                 const SizedBox(height: 40),
-                AppWidget().texfieldFormat(controller: _newPasswordController, title: "Contraseña nueva"),
+                AppWidget().texfieldFormat(controller: _newPasswordController, title: "Locales.string(context, 'lbl_password') nueva"),
                 SizedBox(
                   height: 7,
                 ),
-                AppWidget().texfieldFormat(controller: _repeatNewPasswordController, title: "Repite contraseña nueva"),
+                AppWidget().texfieldFormat(
+                    controller: _repeatNewPasswordController, title: "Repite Locales.string(context, 'lbl_password') nueva"),
                 SizedBox(
                   height: 7,
                 ),
-                AppWidget().texfieldFormat(controller: _actualPasswordController, title: "Contraseña actual"),
+                AppWidget().texfieldFormat(controller: _actualPasswordController, title: "Locales.string(context, 'lbl_password') actual"),
                 const Expanded(child: SizedBox()),
                 AppWidget().buttonFormColor(context, "Guardar", secondryColor, tap: () async {
                   if (_key.currentState!.validate()) {
                     if (_newPasswordController.text.toString() == _repeatNewPasswordController.text.toString()) {
                       _changePassword(_actualPasswordController.text, _newPasswordController.text);
                     } else {
-                      AppWidget().itemMessage("Las contraseña no coinciden", context);
+                      AppWidget().itemMessage("Las Locales.string(context, 'lbl_password') no coinciden", context);
                     }
                   }
                 }),

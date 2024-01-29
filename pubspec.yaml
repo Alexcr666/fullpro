@@ -52,6 +52,8 @@ dependencies:
   firebase_analytics: ^10.1.6
   firebase_messaging: ^14.3.0
   flutter_credit_card: ^4.0.1
+  #apple_sign_in: ^0.1.0
+  device_info_plus: ^9.1.1
 
   # Authentication
   flutter_otp_text_field: ^1.0.0
@@ -105,7 +107,7 @@ dependencies:
   flutter_rating_bar: ^4.0.1
   google_sign_in: ^6.1.6
   #apple_sign_in: ^0.1.0
-  apple_sign_in_safety: ^0.0.6
+  #apple_sign_in_safety: ^0.0.6
   autocomplete_textfield: ^2.0.1
   string_similarity: ^2.0.0
 

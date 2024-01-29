@@ -382,7 +382,7 @@ class _AccountProfessionalState extends State<AccountProfessional> with TickerPr
       ),*/
 
       body: userProfileData == null
-          ? AppWidget().noResult()
+          ? AppWidget().noResult(context)
           : SafeArea(
               child: Padding(
               padding: EdgeInsets.only(
@@ -541,7 +541,7 @@ class _AccountProfessionalState extends State<AccountProfessional> with TickerPr
                                                   height: 10,
                                                 ),
 
-                                                /* itemOptionProfile("Eliminar cuenta", "images/icons/profileCircle.svg", tap: () {
+                                                /* itemOptionProfile("Locales.string(context, 'lang_location') cuenta", "images/icons/profileCircle.svg", tap: () {
 
                                                  
 

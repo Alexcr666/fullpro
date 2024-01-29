@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_locales/flutter_locales.dart';
 import 'package:fullpro/Chat/chatPage.dart';
 import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
 
@@ -24,10 +25,10 @@ class Matches extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 Text(
-                  'New Matches'.toString(),
+                  Locales.string(context, 'lang_new_result'),
                   style: TextStyle(
                     color: secondryColor,
-                    fontSize: 18.0,
+                    fontSize: 15.0,
                     fontWeight: FontWeight.bold,
                     letterSpacing: 1.0,
                   ),

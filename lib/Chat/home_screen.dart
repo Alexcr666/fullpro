@@ -1,21 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_locales/flutter_locales.dart';
 import 'package:fullpro/Chat/recent_chats.dart';
 import 'package:fullpro/pages/INTEGRATION/models/user_model.dart';
 import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
 
 import 'Matches.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreenChat extends StatefulWidget {
   final User currentUser;
   final List<User> matches;
   final List<User> newmatches;
-  HomeScreen(this.currentUser, this.matches, this.newmatches);
+  HomeScreenChat(this.currentUser, this.matches, this.newmatches);
 
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreenChat> {
   @override
   void initState() {
     Future.delayed(Duration(milliseconds: 500), () {
@@ -42,7 +43,7 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: secondryColor,
         automaticallyImplyLeading: false,
         title: Text(
-          'Messages'.toString(),
+          Locales.string(context, 'lang_messages'),
           style: TextStyle(
             color: Colors.white,
             fontSize: 18.0,
@@ -68,7 +69,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 Padding(
                   padding: const EdgeInsets.all(20),
                   child: Text(
-                    'Recent messages'.toString(),
+                    Locales.string(context, 'lang_recentmessage'),
                     style: TextStyle(
                       color: secondryColor,
                       fontSize: 18.0,

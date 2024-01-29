@@ -71,7 +71,7 @@ class AppWidget {
                     //   Navigator.pushNamedAndRemoveUntil(context, RegistrationPage.id, (route) => false);
                   },
                   child: Text(
-                    "Create new account user",
+                    Locales.string(context, 'lbl_create_free_account'),
                     style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
                   ),
                 ),
@@ -85,7 +85,7 @@ class AppWidget {
           color: primaryColor,
           margin: EdgeInsets.only(left: 35, right: 35),
         ),
-        SizedBox(
+        /* SizedBox(
           height: 50.0,
           width: double.infinity,
           child: TextButton(
@@ -97,15 +97,48 @@ class AppWidget {
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
+        ),*/
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Expanded(child: SizedBox()),
+            SizedBox(
+              width: 20,
+            ),
+            Image.asset(
+              "images/google.png",
+              width: 50,
+              height: 50,
+            ),
+            Platform.isIOS == false ? SizedBox() : Expanded(child: SizedBox()),
+            Platform.isIOS == false
+                ? SizedBox()
+                : Image.asset(
+                    "images/apple.png",
+                    width: 50,
+                    height: 50,
+                  ),
+            Expanded(child: SizedBox()),
+            Image.asset(
+              "images/facebook.png",
+              width: 50,
+              height: 50,
+            ),
+            SizedBox(
+              width: 20,
+            ),
+            Expanded(child: SizedBox()),
+          ],
         ),
-        GestureDetector(
+        /* GestureDetector(
             onTap: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) => SignInDemo()));
             },
             child: Image.asset(
               "images/redsocial1.png",
               height: 45,
-            )),
+            )),*/
       ],
     );
   }
@@ -133,7 +166,7 @@ class AppWidget {
                 height: 20,
               ),
               ListTile(
-                title: new Text('Eliminar'),
+                title: new Text(Locales.string(context, 'lang_location')),
                 onTap: () {
                   // Navigator.pop(context);
 
@@ -141,7 +174,7 @@ class AppWidget {
                 },
               ),
               ListTile(
-                title: new Text('Cancelar'),
+                title: new Text(Locales.string(context, 'lang_cancel')),
                 onTap: () {
                   Navigator.pop(context);
 
@@ -208,7 +241,7 @@ class AppWidget {
     return ((bytes / pow(1024, i)).toStringAsFixed(decimals)) + ' ' + suffixes[i];
   }
 
-  Widget noResult() {
+  Widget noResult(BuildContext context) {
     return Column(
       children: [
         SizedBox(
@@ -218,7 +251,7 @@ class AppWidget {
           children: [
             Expanded(child: SizedBox()),
             Text(
-              "No hay resultados",
+              Locales.string(context, 'lang_no_result'),
               style: TextStyle(color: secondryColor, fontSize: 20),
             ),
             Expanded(child: SizedBox()),
@@ -674,17 +707,61 @@ class AppWidget {
                 width: double.infinity,
                 child: TextButton(
                   onPressed: () async {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => RegistrationPage()));
+                    showModalBottomSheet(
+                        context: context,
+                        builder: (context) {
+                          return Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              SizedBox(
+                                height: 20,
+                              ),
+                              Container(
+                                  margin: EdgeInsets.only(left: 20, right: 20),
+                                  child: Text(
+                                    "¿Que tipo de cuenta desea crear?",
+                                    style: TextStyle(fontWeight: FontWeight.bold),
+                                  )),
+                              SizedBox(
+                                height: 20,
+                              ),
+                              SizedBox(
+                                height: 20,
+                              ),
+                              ListTile(
+                                title: new Text('Cliente'),
+                                onTap: () {
+                                  Navigator.pop(context);
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => RegistrationPage()));
+                                },
+                              ),
+                              ListTile(
+                                title: new Text('Professional'),
+                                onTap: () {
+                                  Navigator.pop(context);
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => RegistrationProfessionalPage()));
+                                },
+                              ),
+                              ListTile(
+                                title: new Text(Locales.string(context, 'lang_cancel')),
+                                onTap: () {
+                                  Navigator.pop(context);
+                                },
+                              ),
+                            ],
+                          );
+                        });
 
                     //   Navigator.pushNamedAndRemoveUntil(context, RegistrationPage.id, (route) => false);
                   },
                   child: Text(
-                    "Create new account user",
+                    Locales.string(context, 'lbl_create_free_account'),
                     style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
                   ),
                 ),
               ),
-        SizedBox(
+
+        /* SizedBox(
           height: 50.0,
           width: double.infinity,
           child: TextButton(
@@ -701,7 +778,7 @@ class AppWidget {
               style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
             ),
           ),
-        ),
+        ),*/
         SizedBox(
           height: 10,
         ),
@@ -719,19 +796,52 @@ class AppWidget {
               Navigator.pushNamedAndRemoveUntil(context, RegistrationPage.id, (route) => false);
             },
             child: Text(
-              "Or continue with",
+              Locales.string(context, 'lang_ocontinue'),
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
         ),
-        GestureDetector(
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Expanded(child: SizedBox()),
+            SizedBox(
+              width: 30,
+            ),
+            Image.asset(
+              "images/google.png",
+              width: 50,
+              height: 50,
+            ),
+            Platform.isIOS == false ? SizedBox() : Expanded(child: SizedBox()),
+            Platform.isIOS == false
+                ? SizedBox()
+                : Image.asset(
+                    "images/apple.png",
+                    width: 50,
+                    height: 50,
+                  ),
+            Expanded(child: SizedBox()),
+            Image.asset(
+              "images/facebook.png",
+              width: 50,
+              height: 50,
+            ),
+            SizedBox(
+              width: 30,
+            ),
+            Expanded(child: SizedBox()),
+          ],
+        ),
+        /* GestureDetector(
             onTap: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) => SignInDemo()));
             },
             child: Image.asset(
               "images/redsocial1.png",
               height: 45,
-            )),
+            )),*/
       ],
     );
   }

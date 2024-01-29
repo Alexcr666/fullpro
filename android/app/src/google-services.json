@@ -15,6 +15,43 @@
       },
       "oauth_client": [
         {
+          "client_id": "712445507283-vdsm3tjbi628begjtdum85ndlegrsf6m.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.app.fullpro",
+            "certificate_hash": "c13479d9ff79211123a5a88b0bc2917c66c5b815"
+          }
+        },
+        {
+          "client_id": "712445507283-e883uf4pdui3svdvrr8kh0f174m43p47.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAYG2GjpYpY-er2QVq7QHUXT-_9O-15YYA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "712445507283-e883uf4pdui3svdvrr8kh0f174m43p47.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:712445507283:android:c8d82e1802409fb3634626",
+        "android_client_info": {
+          "package_name": "com.deligenceTech.hookup4u"
+        }
+      },
+      "oauth_client": [
+        {
           "client_id": "712445507283-e883uf4pdui3svdvrr8kh0f174m43p47.apps.googleusercontent.com",
           "client_type": 3
         }

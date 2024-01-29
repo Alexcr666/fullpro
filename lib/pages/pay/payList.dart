@@ -97,7 +97,7 @@ class _PayListPageState extends State<PayListPage> {
             return response == null
                 ? AppWidget().loading()
                 : response.snapshot.children.length == 0
-                    ? AppWidget().noResult()
+                    ? AppWidget().noResult(context)
                     : ListView.builder(
                         itemCount: response.snapshot.children.length,
                         shrinkWrap: true,
@@ -113,7 +113,7 @@ class _PayListPageState extends State<PayListPage> {
                                       mainAxisSize: MainAxisSize.min,
                                       children: <Widget>[
                                         ListTile(
-                                          title: new Text('Eliminar'),
+                                          title: new Text(Locales.string(context, 'lang_location')),
                                           onTap: () {
                                             dataList.ref.remove().then((value) {
                                               AppWidget().itemMessage("Eliminado", context);
@@ -137,7 +137,7 @@ class _PayListPageState extends State<PayListPage> {
                                           },
                                         ),
                                         ListTile(
-                                          title: new Text('Cancelar'),
+                                          title: new Text(Locales.string(context, 'lang_cancel')),
                                           onTap: () {
                                             Navigator.pop(context);
                                           },
@@ -159,11 +159,11 @@ class _PayListPageState extends State<PayListPage> {
                               backCardBorder: Border.all(color: Colors.grey),
                               showBackView: false,
                               obscureCardNumber: true,
-                              obscureCardCvv: true,
+                              obscureCardCvv: false,
                               isHolderNameVisible: true,
                               cardBgColor: secondryColor,
                               backgroundImage: 'assets/card_bg.png',
-                              isSwipeGestureEnabled: true,
+                              isSwipeGestureEnabled: false,
                               onCreditCardWidgetChange: (CreditCardBrand creditCardBrand) {},
                               customCardTypeIcons: <CustomCardTypeIcon>[
                                 CustomCardTypeIcon(
@@ -223,7 +223,7 @@ class _PayListPageState extends State<PayListPage> {
               children: [
                 Container(
                     child: Text(
-                  "Tus metodos de pago",
+                  Locales.string(context, 'lang_methodpay'),
                   style: TextStyle(
                     color: secondryColor,
                     fontSize: 20,

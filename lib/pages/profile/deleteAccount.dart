@@ -55,7 +55,7 @@ class _DeleteAccountPageState extends State<DeleteAccountPage> {
                 height: 20,
               ),
               ListTile(
-                title: new Text('Eliminar'),
+                title: new Text(Locales.string(context, 'lang_location')),
                 onTap: () {
                   Navigator.pop(context);
 
@@ -63,7 +63,7 @@ class _DeleteAccountPageState extends State<DeleteAccountPage> {
                 },
               ),
               ListTile(
-                title: new Text('Cancelar'),
+                title: new Text(Locales.string(context, 'lang_cancel')),
                 onTap: () {
                   Navigator.pop(context);
 
@@ -90,7 +90,7 @@ class _DeleteAccountPageState extends State<DeleteAccountPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              /* "¿Desactivar la cuenta en lugar de eliminarla?"*/ title,
+              /* "¿Desactivar la cuenta en lugar de Locales.string(context, 'lang_location')la?"*/ title,
               textAlign: TextAlign.left,
               style: TextStyle(
                 color: secondryColor,
@@ -99,7 +99,7 @@ class _DeleteAccountPageState extends State<DeleteAccountPage> {
               ),
             ),
             Text(
-              /*"¿Desactivar la cuenta en lugar de eliminarla?"*/ subtitle,
+              /*"¿Desactivar la cuenta en lugar de Locales.string(context, 'lang_location')la?"*/ subtitle,
               textAlign: TextAlign.left,
               style: TextStyle(
                 color: secondryColor,
@@ -156,7 +156,7 @@ class _DeleteAccountPageState extends State<DeleteAccountPage> {
               Container(
                   margin: EdgeInsets.only(left: 50, right: 50),
                   child: Text(
-                    "Eliminar cuenta",
+                    "Locales.string(context, 'lang_location') cuenta",
                     style: TextStyle(
                       color: secondryColor,
                       fontSize: 20,
@@ -178,7 +178,7 @@ class _DeleteAccountPageState extends State<DeleteAccountPage> {
               ),
 
               Text(
-                "¿Desactivar la cuenta en lugar de eliminarla?",
+                "¿Desactivar la cuenta en lugar de Locales.string(context, 'lang_location')la?",
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: secondryColor,
@@ -199,7 +199,7 @@ class _DeleteAccountPageState extends State<DeleteAccountPage> {
               ),
 
               item1("images/icons/delete.svg", "La eliminación de la cuenta es definitiva",
-                  "se eliminara el perfil,las fotos,los comentarios y los datos personales")
+                  "se Locales.string(context, 'lang_location')a el perfil,las fotos,los comentarios y los datos personales")
 
               /*Text(
 
@@ -231,15 +231,15 @@ class _DeleteAccountPageState extends State<DeleteAccountPage> {
 
                   //   margin: EdgeInsets.only(left: 70, right: 70),
 
-                  child: AppWidget().buttonForm(context, "Eliminar cuenta", tap: () {
-                optionsEnabled("Estas seguro que quieres eliminar tu cuenta de forma definitiva", tap: () {
+                  child: AppWidget().buttonForm(context, "Locales.string(context, 'lang_location') cuenta", tap: () {
+                optionsEnabled("Estas seguro que quieres Locales.string(context, 'lang_location') tu cuenta de forma definitiva", tap: () {
                   userDataProfile!.ref.update({'stateUser': 4}).then((value) {
                     log("errordelete2");
                     AppWidget().itemMessage("Cuenta eliminada", context);
                     Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_) => LoginPage()), (route) => false);
                   }).catchError((onError) {
                     log("errordelete1");
-                    AppWidget().itemMessage("Error al eliminar cuenta", context);
+                    AppWidget().itemMessage("Error al Locales.string(context, 'lang_location') cuenta", context);
                   });
                 }, tap2: () {});
               })),

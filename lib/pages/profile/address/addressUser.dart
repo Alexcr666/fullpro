@@ -472,7 +472,7 @@ class _AddressesState extends State<AddressesUser> {
             //return Text(dataListObject!.child("name").value.toString());
 
             return response.snapshot.children.toList().length == 0
-                ? AppWidget().noResult()
+                ? AppWidget().noResult(context)
                 : ListView.builder(
                     padding: EdgeInsets.only(left: 10.0),
                     itemCount: response.snapshot.children.toList().length,
@@ -535,7 +535,7 @@ class _AddressesState extends State<AddressesUser> {
                                             mainAxisSize: MainAxisSize.min,
                                             children: <Widget>[
                                               ListTile(
-                                                title: new Text('Eliminar'),
+                                                title: new Text(Locales.string(context, 'lang_location')),
                                                 onTap: () {
                                                   dataList.ref.remove().then((value) {
                                                     AppWidget().itemMessage("Eliminado", context);
@@ -555,7 +555,7 @@ class _AddressesState extends State<AddressesUser> {
                                             },
                                           ),*/
                                               ListTile(
-                                                title: new Text('Cancelar'),
+                                                title: new Text(Locales.string(context, 'lang_cancel')),
                                                 onTap: () {
                                                   Navigator.pop(context);
                                                 },
@@ -639,7 +639,7 @@ class _AddressesState extends State<AddressesUser> {
                               child: Container(
                                   width: 200,
                                   child: Text(
-                                    "Agregar o escoge una dirección",
+                                    Locales.string(context, 'lang_addlocation'),
                                     style: TextStyle(fontSize: 19, color: secondryColor, fontWeight: FontWeight.bold),
                                   ))),
                           Expanded(child: SizedBox()),
@@ -663,7 +663,7 @@ class _AddressesState extends State<AddressesUser> {
                       ),
                       const SizedBox(height: 20),
                       AppWidget().texfieldFormat(
-                        title: "Ingresa una nueva ubicación",
+                        title: Locales.string(context, 'lang_addnewlocation'),
                         controller: searchTextController,
                         execute: () async {
                           //  await Future.delayed(Duration(milliseconds: 1000)); //   setState(() {});
@@ -672,7 +672,7 @@ class _AddressesState extends State<AddressesUser> {
                         },
                       ),
                       dataPlace == []
-                          ? AppWidget().noResult()
+                          ? AppWidget().noResult(context)
                           : ListView.builder(
                               padding: EdgeInsets.only(left: 10.0),
                               itemCount: dataPlace.length,
@@ -742,7 +742,7 @@ class _AddressesState extends State<AddressesUser> {
                         children: [
                           const SizedBox(height: 10),
                           Text(
-                            "Ubicaciones Guardadas",
+                            Locales.string(context, 'lang_locationsaved'),
                             style: TextStyle(fontWeight: FontWeight.bold, color: secondryColor),
                           ),
                           /* SizedBox(
@@ -809,7 +809,7 @@ class _AddressesState extends State<AddressesUser> {
 
             // The end action pane is the one at the right or the bottom side.
 
-            endActionPane: const ActionPane(
+            endActionPane: ActionPane(
               motion: ScrollMotion(),
               children: [
                 SlidableAction(
@@ -825,7 +825,7 @@ class _AddressesState extends State<AddressesUser> {
 
                   icon: Icons.delete,
 
-                  label: 'Eliminar',
+                  label: Locales.string(context, 'lang_location'),
                 ),
               ],
             ),

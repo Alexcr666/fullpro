@@ -256,6 +256,9 @@ class _SignInDemoState extends State<SignInDemo> {
           // This method is used to separate mobile from web code with conditional exports.
 
           // See: src/sign_in_button.dart
+          FloatingActionButton(
+            onPressed: _handleSignIn,
+          ),
 
           FloatingActionButton(
             onPressed: _handleSignIn,

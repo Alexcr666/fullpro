@@ -447,7 +447,7 @@ class _CartPageState extends State<CartPage> {
               return response == null
                   ? AppWidget().loading()
                   : response.snapshot.children.length == 0
-                      ? AppWidget().noResult()
+                      ? AppWidget().noResult(context)
                       : DropdownButton<DataSnapshot>(
                           items: response.snapshot.children.map((DataSnapshot value) {
                             return DropdownMenuItem<DataSnapshot>(
@@ -503,7 +503,7 @@ class _CartPageState extends State<CartPage> {
         ),
       ),*/
         body: dataListObjectGeneral == null
-            ? AppWidget().noResult()
+            ? AppWidget().noResult(context)
             : ListView(
                 children: [
                   SizedBox(
@@ -519,7 +519,7 @@ class _CartPageState extends State<CartPage> {
                         width: 20,
                       ),
                       Text(
-                        "Resumen",
+                        Locales.string(context, 'lbl_overview'),
                         style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 26),
                       ),
                       Expanded(child: SizedBox()),
@@ -660,7 +660,7 @@ class _CartPageState extends State<CartPage> {
                           child: Row(
                             children: [
                               Text(
-                                "Fecha de servicio".toString(),
+                                Locales.string(context, 'lang_dateservice').toString(),
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 16,
@@ -673,7 +673,7 @@ class _CartPageState extends State<CartPage> {
                               ? ""
                               :*/
                                 dataListObjectGeneral!.child("date").value == null
-                                    ? "No disponible"
+                                    ? Locales.string(context, 'lang_nodisponible')
                                     : dataListObjectGeneral!.child("date").value.toString(),
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
@@ -737,7 +737,7 @@ class _CartPageState extends State<CartPage> {
                           child: Row(
                             children: [
                               Text(
-                                "Hora de servicio".toString(),
+                                Locales.string(context, 'lang_timeservice').toString(),
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 16,
@@ -750,7 +750,7 @@ class _CartPageState extends State<CartPage> {
                               ? ""
                               :*/
                                 dataListObjectGeneral!.child("time").value == null
-                                    ? "No disponible"
+                                    ? Locales.string(context, 'lang_nodisponible')
                                     : dataListObjectGeneral!.child("time").value.toString(),
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
@@ -814,7 +814,7 @@ class _CartPageState extends State<CartPage> {
                           child: Row(
                             children: [
                               Text(
-                                "Fecha de servicio final".toString(),
+                                Locales.string(context, 'lang_dateservicefinal').toString(),
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 16,
@@ -827,7 +827,7 @@ class _CartPageState extends State<CartPage> {
                               ? ""
                               :*/
                                 dataListObjectGeneral!.child("dateFinal").value == null
-                                    ? "No disponible"
+                                    ? Locales.string(context, 'lang_nodisponible')
                                     : dataListObjectGeneral!.child("dateFinal").value.toString(),
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
@@ -891,7 +891,7 @@ class _CartPageState extends State<CartPage> {
                           child: Row(
                             children: [
                               Text(
-                                "Hora de servicio final".toString(),
+                                Locales.string(context, 'lang_hourservicefinal').toString(),
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 16,
@@ -904,7 +904,7 @@ class _CartPageState extends State<CartPage> {
                               ? ""
                               :*/
                                 dataListObjectGeneral!.child("timeFinal").value == null
-                                    ? "No disponible"
+                                    ? Locales.string(context, 'lang_nodisponible')
                                     : dataListObjectGeneral!.child("timeFinal").value.toString(),
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
@@ -933,7 +933,7 @@ class _CartPageState extends State<CartPage> {
                       radius: 30,
                     ),
                     title: Text(dataListObjectGeneral!.child("professionalName").value == null
-                        ? "No disponible"
+                        ? Locales.string(context, 'lang_nodisponible')
                         : dataListObjectGeneral!.child("professionalName").value.toString()),
                   ),*/
                   SizedBox(
@@ -946,7 +946,7 @@ class _CartPageState extends State<CartPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "Servicios".toString(),
+                            Locales.string(context, 'lang_services').toString(),
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 16,
@@ -971,7 +971,8 @@ class _CartPageState extends State<CartPage> {
                               leading: AppWidget().circleProfile(data.child("foto").value.toString(), size: 50),
                               trailing: GestureDetector(
                                   onTap: () {
-                                    AppWidget().optionsEnabled("¿Estas seguro que quieres eliminar?", context, tap2: () {
+                                    AppWidget().optionsEnabled(
+                                        "¿Estas seguro que quieres Locales.string(context, 'lang_location')?", context, tap2: () {
                                       Navigator.pop(context);
                                     }, tap: () {
                                       data.ref.remove().then((value) {
@@ -1012,9 +1013,9 @@ class _CartPageState extends State<CartPage> {
                   SizedBox(
                     height: 10,
                   ),
-                  itemMoney("Costo del servicio",
+                  itemMoney(Locales.string(context, 'lang_costservice'),
                       '\$' + MoneyFormatter(amount: double.parse(getTotalPay().toString())).output.withoutFractionDigits.toString()),
-                  itemMoney("Tarifa del servicio",
+                  itemMoney(Locales.string(context, 'lang_tarifaservice'),
                       '\$' + MoneyFormatter(amount: (int.parse(getTotalPay().toString()) / 10)).output.withoutFractionDigits.toString()),
 
                   //  itemMoney("Costo del domicilio",
@@ -1037,7 +1038,7 @@ class _CartPageState extends State<CartPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "Metodos de pago".toString(),
+                            Locales.string(context, 'lang_methodpay').toString(),
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 16,
@@ -1117,7 +1118,7 @@ class _CartPageState extends State<CartPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Total a pagar".toString(),
+                  Locales.string(context, 'lang_totalpay').toString(),
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
@@ -1145,7 +1146,8 @@ class _CartPageState extends State<CartPage> {
               children: [
                 Container(
                     width: 200,
-                    child: AppWidget().buttonFormLine(context, "Solicitar", false, urlIcon: "images/icons/userDone.svg", tap: () {
+                    child: AppWidget().buttonFormLine(context, Locales.string(context, 'lang_solicitudtext'), false,
+                        urlIcon: "images/icons/userDone.svg", tap: () {
                       payOrden() {
                         int value = int.parse((getTotalPay() + ((getTotalPay() / 10))).round().toString());
                         AppStripe().makePayment(value, context, execute: () {
@@ -1178,7 +1180,8 @@ class _CartPageState extends State<CartPage> {
                 ),
                 Container(
                     width: 200,
-                    child: AppWidget().buttonFormLine(context, "Cancelar", true, urlIcon: "images/icons/closeCircle.svg", tap: () {
+                    child: AppWidget().buttonFormLine(context, Locales.string(context, 'lang_cancel'), true,
+                        urlIcon: "images/icons/closeCircle.svg", tap: () {
                       //  Navigator.pop(context);
 
                       AppWidget().optionsEnabled("Seguro quiere cancelar", context, tap2: () {}, tap: () {
@@ -1565,7 +1568,7 @@ class _CartPageState extends State<CartPage> {
         Container(
             margin: EdgeInsets.only(left: 10),
             child: Text(
-              "Dirección de entrega",
+              Locales.string(context, 'lang_addressentrega'),
               style: TextStyle(color: secondryColor, fontSize: 14),
             )),
         Padding(
@@ -1596,7 +1599,7 @@ class _CartPageState extends State<CartPage> {
                       //  Loader.page(context, Addresses(dataListObjectGeneral: dataListObjectGeneral));
                     },
                     child: Text(
-                      'Cambiar',
+                      Locales.string(context, 'lang_change'),
                       style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 16),
                     )),
 
@@ -1647,7 +1650,7 @@ class _CartPageState extends State<CartPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "Resumen",
+                        Locales.string(context, 'lbl_overview'),
                         style: TextStyle(color: secondryColor, fontSize: 15, fontWeight: FontWeight.bold),
                       ),
                       SizedBox(

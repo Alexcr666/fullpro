@@ -175,7 +175,7 @@ class _MyOrdersState extends State<MyOrders> with TickerProviderStateMixin {
               return response == null
                   ? AppWidget().loading()
                   : response.snapshot.children.length == 0
-                      ? AppWidget().noResult()
+                      ? AppWidget().noResult(context)
                       : ListView.builder(
                           itemCount: response.snapshot.children.length,
                           shrinkWrap: true,
@@ -204,12 +204,12 @@ class _MyOrdersState extends State<MyOrders> with TickerProviderStateMixin {
                                         ),
                                         Text(
                                           dataList.child("fullname").value == null
-                                              ? "No disponible"
+                                              ? Locales.string(context, 'lang_nodisponible')
                                               : dataList.child("fullname").value.toString(),
                                           style: TextStyle(color: secondryColor, fontSize: 17, fontWeight: FontWeight.bold),
                                         ),
                                         Text(
-                                          "Opiniones clientes",
+                                          Locales.string(context, 'lang_solicitudtext'),
                                           style: TextStyle(color: Colors.black, fontSize: 10),
                                         ),
                                         RatingBarIndicator(
@@ -307,7 +307,7 @@ class _MyOrdersState extends State<MyOrders> with TickerProviderStateMixin {
                                           style: TextStyle(color: secondryColor, fontSize: 17, fontWeight: FontWeight.bold),
                                         ),
                                         Text(
-                                          "Opiniones clientes",
+                                          Locales.string(context, 'lang_solicitudtext'),
                                           style: TextStyle(color: Colors.black, fontSize: 10),
                                         ),
                                         RatingBarIndicator(
@@ -375,7 +375,7 @@ class _MyOrdersState extends State<MyOrders> with TickerProviderStateMixin {
             //return Text(dataListObject!.child("name").value.toString());
 
             return response.snapshot.children.toList().length == 0
-                ? AppWidget().noResult()
+                ? AppWidget().noResult(context)
                 : ListView.builder(
                     padding: EdgeInsets.only(left: 10.0),
                     itemCount: response.snapshot.children.toList().length,
@@ -402,7 +402,7 @@ class _MyOrdersState extends State<MyOrders> with TickerProviderStateMixin {
                       return /* dataList.child("state").value.toString() != positionFilter.toString()
                           ? response.snapshot.children.toList().length != i
                               ? result != true
-                                  ? AppWidget().noResult()
+                                  ? AppWidget().noResult(context)
                                   : SizedBox()
                               : SizedBox()
                           :*/
@@ -412,7 +412,7 @@ class _MyOrdersState extends State<MyOrders> with TickerProviderStateMixin {
                                   ? SizedBox()
                                   : emptyResult == false
                                       ? SizedBox()
-                                      : AppWidget().noResult()
+                                      : AppWidget().noResult(context)
                               : Padding(
                                   padding: const EdgeInsets.all(5),
                                   child: GestureDetector(
@@ -491,7 +491,7 @@ class _MyOrdersState extends State<MyOrders> with TickerProviderStateMixin {
                                                   //  width: MediaQuery.of(context).size.width * .6,
                                                   child: Text(
                                                     dataList.child("name").value == null
-                                                        ? "No disponible"
+                                                        ? Locales.string(context, 'lang_nodisponible')
                                                         : dataList.child("name").value.toString(),
                                                     overflow: TextOverflow.ellipsis,
                                                     style: TextStyle(
@@ -598,7 +598,8 @@ class _MyOrdersState extends State<MyOrders> with TickerProviderStateMixin {
                                                     : Container(
                                                         width: 134,
                                                         height: 40,
-                                                        child: AppWidget().buttonFormColor(context, "Cancelar", Colors.red, tap: () {
+                                                        child: AppWidget().buttonFormColor(
+                                                            context, Locales.string(context, 'lang_cancel'), Colors.red, tap: () {
                                                           dataList.ref.update({'state': 3}).then((value) {
                                                             AppWidget().itemMessage("Actualizado", context);
                                                           });
@@ -774,7 +775,7 @@ class _MyOrdersState extends State<MyOrders> with TickerProviderStateMixin {
           Container(
               margin: EdgeInsets.only(left: 30),
               child: Text(
-                "Buscar: ",
+                Locales.string(context, 'lang_search'),
                 style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 20),
               )),
           SizedBox(
@@ -783,7 +784,7 @@ class _MyOrdersState extends State<MyOrders> with TickerProviderStateMixin {
           Row(
             children: [
               Expanded(child: SizedBox()),
-              itemAdd("images/icons/shoping.svg", "Usuario", userCheck, tap: () {
+              itemAdd("images/icons/shoping.svg", Locales.string(context, 'lang_user'), userCheck, tap: () {
                 userCheck = !userCheck;
                 profesionalCheck = false;
                 serviceCheck = false;
@@ -792,7 +793,7 @@ class _MyOrdersState extends State<MyOrders> with TickerProviderStateMixin {
               SizedBox(
                 width: 10,
               ),
-              itemAdd("images/icons/profesional.svg", "Profesional", profesionalCheck, tap: () {
+              itemAdd("images/icons/profesional.svg", Locales.string(context, 'lang_professional'), profesionalCheck, tap: () {
                 profesionalCheck = !profesionalCheck;
                 serviceCheck = false;
                 userCheck = false;
@@ -803,7 +804,7 @@ class _MyOrdersState extends State<MyOrders> with TickerProviderStateMixin {
               ),
               itemAdd(
                 "images/icons/userCircle.svg",
-                "Servicios",
+                Locales.string(context, 'lang_services'),
                 serviceCheck,
                 tap: () {
                   profesionalCheck = false;
@@ -826,7 +827,7 @@ class _MyOrdersState extends State<MyOrders> with TickerProviderStateMixin {
               Container(
                   margin: EdgeInsets.only(left: 30),
                   child: Text(
-                    "Historial: ",
+                    Locales.string(context, 'lang_history_tex') + ": ",
                     style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 20),
                   )),
               Expanded(child: SizedBox()),
@@ -861,7 +862,7 @@ class _MyOrdersState extends State<MyOrders> with TickerProviderStateMixin {
               margin: EdgeInsets.only(left: 20, right: 20),
               child: AppWidget().texfieldFormat(
                 controller: _searchController,
-                title: "Buscar",
+                title: Locales.string(context, 'lang_search'),
                 execute: () {
                   searchText = _searchController.text.toString();
                   setState(() {});
@@ -997,7 +998,7 @@ class _MyOrdersState extends State<MyOrders> with TickerProviderStateMixin {
               return response == null
                   ? AppWidget().loading()
                   : response.snapshot.children.length == 0
-                      ? AppWidget().noResult()
+                      ? AppWidget().noResult(context)
                       : ListView.builder(
                           itemCount: response.snapshot.children.length,
                           shrinkWrap: true,
@@ -1044,7 +1045,7 @@ class _MyOrdersState extends State<MyOrders> with TickerProviderStateMixin {
                                                   style: TextStyle(color: secondryColor, fontSize: 17, fontWeight: FontWeight.bold),
                                                 ),
                                                 Text(
-                                                  "Opiniones clientes",
+                                                  Locales.string(context, 'lang_solicitudtext'),
                                                   style: TextStyle(color: Colors.black, fontSize: 10),
                                                 ),
                                                 RatingBarIndicator(

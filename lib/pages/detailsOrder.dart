@@ -424,7 +424,7 @@ class _DetailsOrderPageState extends State<DetailsOrderPage> {
                   width: 20,
                 ),
                 Text(
-                  "Resumen",
+                  Locales.string(context, 'lbl_overview'),
                   style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 26),
                 ),
                 Expanded(child: SizedBox()),
@@ -565,7 +565,7 @@ class _DetailsOrderPageState extends State<DetailsOrderPage> {
                     child: Row(
                       children: [
                         Text(
-                          "Hora de servicio".toString(),
+                          Locales.string(context, 'lang_timeservice').toString(),
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 16,
@@ -599,7 +599,7 @@ class _DetailsOrderPageState extends State<DetailsOrderPage> {
                 child: Row(
                   children: [
                     Text(
-                      "Hora de servicio".toString(),
+                      Locales.string(context, 'lang_timeservice').toString(),
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 16,
@@ -649,7 +649,7 @@ class _DetailsOrderPageState extends State<DetailsOrderPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Total a pagar".toString(),
+                  Locales.string(context, 'lang_totalpay').toString(),
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
@@ -716,7 +716,8 @@ class _DetailsOrderPageState extends State<DetailsOrderPage> {
                 ),
                 Container(
                     width: 200,
-                    child: AppWidget().buttonFormLine(context, "Cancelar", true, urlIcon: "images/icons/closeCircle.svg", tap: () {
+                    child: AppWidget().buttonFormLine(context, Locales.string(context, 'lang_cancel'), true,
+                        urlIcon: "images/icons/closeCircle.svg", tap: () {
                       Navigator.pop(context);
                     })),
               ],
@@ -1097,7 +1098,7 @@ class _DetailsOrderPageState extends State<DetailsOrderPage> {
         Container(
             margin: EdgeInsets.only(left: 10),
             child: Text(
-              "Dirección de entrega",
+              Locales.string(context, 'lang_addressentrega'),
               style: TextStyle(color: secondryColor, fontSize: 14),
             )),
         Padding(
@@ -1149,7 +1150,7 @@ class _DetailsOrderPageState extends State<DetailsOrderPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "Resumen",
+                        Locales.string(context, 'lbl_overview'),
                         style: TextStyle(color: secondryColor, fontSize: 15, fontWeight: FontWeight.bold),
                       ),
                       SizedBox(

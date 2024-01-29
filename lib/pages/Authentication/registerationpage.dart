@@ -284,7 +284,10 @@ class _RegistrationPageState extends State<RegistrationPage> {
                     //  Password
 
                     AppWidget().texfieldFormat(
-                        controller: passwordController, title: "Password", urlIcon: "images/icons/password.svg", password: true),
+                        controller: passwordController,
+                        title: Locales.string(context, 'lbl_password'),
+                        urlIcon: "images/icons/password.svg",
+                        password: true),
                     /*Padding(
                   padding: EdgeInsets.only(
                     right: 20,
@@ -439,7 +442,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                     ),
                   ),
                 ),*/
-                    AppWidget().buttonForm(context, "Register", tap: () {
+                    AppWidget().buttonForm(context, Locales.string(context, 'lbl_register'), tap: () {
                       /*  var connectivityResult = await (Connectivity().checkConnectivity());
                   if (connectivityResult != ConnectivityResult.wifi && connectivityResult != ConnectivityResult.mobile) {
                     ScaffoldMessenger.of(context).showSnackBar(
