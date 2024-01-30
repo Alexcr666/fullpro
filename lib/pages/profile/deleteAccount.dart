@@ -231,8 +231,9 @@ class _DeleteAccountPageState extends State<DeleteAccountPage> {
 
                   //   margin: EdgeInsets.only(left: 70, right: 70),
 
-                  child: AppWidget().buttonForm(context, "Locales.string(context, 'lang_location') cuenta", tap: () {
-                optionsEnabled("Estas seguro que quieres Locales.string(context, 'lang_location') tu cuenta de forma definitiva", tap: () {
+                  child: AppWidget().buttonForm(context, Locales.string(context, 'lang_location'), tap: () {
+                optionsEnabled("Estas seguro que quieres" + Locales.string(context, 'lang_location') + "tu cuenta de forma definitiva",
+                    tap: () {
                   userDataProfile!.ref.update({'stateUser': 4}).then((value) {
                     log("errordelete2");
                     AppWidget().itemMessage("Cuenta eliminada", context);

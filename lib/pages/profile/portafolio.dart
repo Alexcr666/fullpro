@@ -74,7 +74,9 @@ class _PortafolioPageState extends State<PortafolioPage> {
                                             Navigator.pop(context);
 
                                             AppWidget().optionsEnabled(
-                                                "¿Estas seguro que quieres Locales.string(context, 'lang_location')?", context, tap: () {
+                                                "¿Estas seguro que quieres " + Locales.string(context, 'lang_location') + "?", context,
+                                                tap: () {
+                                              Navigator.pop(context);
                                               dataList.ref.remove().then((value) {
                                                 AppWidget().itemMessage("Eliminado", context);
 
@@ -206,7 +208,7 @@ class _PortafolioPageState extends State<PortafolioPage> {
   @override
   void initState() {
     super.initState();
-    DatabaseReference ref = FirebaseDatabase.instance.ref(Locales.string(context, 'lang_portafolio'));
+    DatabaseReference ref = FirebaseDatabase.instance.ref("portafolios");
 
 // Get the Stream
     Stream<DatabaseEvent> stream = ref.onValue;

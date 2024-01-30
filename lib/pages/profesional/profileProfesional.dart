@@ -526,7 +526,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
 
         AppWidget().itemMessage("Foto actualizada", context);
       }).catchError((onError) {
-        AppWidget().itemMessage("Error al actualizar foto", context);
+        // AppWidget().itemMessage("Error al actualizar foto", context);
       });
 
       //   _sendImage(messageText: 'Photo', imageUrl: fileUrl);
@@ -966,7 +966,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                           ? SizedBox()
                           : emptyResult == false
                               ? SizedBox()
-                              : AppWidget().noResult(context)
+                              : SizedBox()
                       : Container(
                           margin: EdgeInsets.only(left: 20, right: 20, top: 10),
                           decoration: AppWidget().boxShandowGreyRectangule(),
@@ -1799,9 +1799,9 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                     margin: EdgeInsets.only(left: 20, right: 20),
                     child: AppWidget().buttonFormColor(context, "Guardar", secondryColor, tap: () {
                       if (getDataUser()!.child("legal") == null && getDataUser()!.child("background") == null) {
-                        AppWidget().itemMessage("Error al actualizar foto", context);
+                        //  AppWidget().itemMessage("Error al actualizar foto", context);
                       } else {
-                        AppWidget().itemMessage("Error al actualizar foto", context);
+                        //      AppWidget().itemMessage("Error al actualizar foto", context);
                       }
 
                       if (formkey.currentState!.validate()) {
@@ -1819,7 +1819,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                           AppWidget().itemMessage("Información actualizada", context);
                         }).catchError((onError) {
                           print("error: " + onError.toString());
-                          AppWidget().itemMessage("Error al actualizar foto", context);
+                          // AppWidget().itemMessage("Error al actualizar foto", context);
                         });
                       } else {
                         AppWidget().itemMessage("Faltan campos", context);

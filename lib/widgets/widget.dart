@@ -5,6 +5,8 @@ import 'dart:math';
 import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 import 'package:flutter/material.dart';
 
@@ -28,6 +30,7 @@ import 'package:fullpro/styles/statics.dart' as Static;
 import 'package:flutter_locales/flutter_locales.dart';
 
 import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class AppWidget {
   showAlertDialogLoading(BuildContext context) {
@@ -66,9 +69,50 @@ class AppWidget {
                 width: double.infinity,
                 child: TextButton(
                   onPressed: () async {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => RegistrationProfessionalPage()));
-
-                    //   Navigator.pushNamedAndRemoveUntil(context, RegistrationPage.id, (route) => false);
+                    showModalBottomSheet(
+                        context: context,
+                        builder: (context) {
+                          return Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              SizedBox(
+                                height: 20,
+                              ),
+                              Container(
+                                  margin: EdgeInsets.only(left: 20, right: 20),
+                                  child: Text(
+                                    Locales.string(context, 'lang_createaccount_message'),
+                                    style: TextStyle(fontWeight: FontWeight.bold),
+                                  )),
+                              SizedBox(
+                                height: 20,
+                              ),
+                              SizedBox(
+                                height: 20,
+                              ),
+                              ListTile(
+                                title: new Text(Locales.string(context, 'lang_client')),
+                                onTap: () {
+                                  Navigator.pop(context);
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => RegistrationPage()));
+                                },
+                              ),
+                              ListTile(
+                                title: new Text(Locales.string(context, 'lang_professional')),
+                                onTap: () {
+                                  Navigator.pop(context);
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => RegistrationProfessionalPage()));
+                                },
+                              ),
+                              ListTile(
+                                title: new Text(Locales.string(context, 'lang_cancel')),
+                                onTap: () {
+                                  Navigator.pop(context);
+                                },
+                              ),
+                            ],
+                          );
+                        });
                   },
                   child: Text(
                     Locales.string(context, 'lbl_create_free_account'),
@@ -84,6 +128,9 @@ class AppWidget {
           height: 1,
           color: primaryColor,
           margin: EdgeInsets.only(left: 35, right: 35),
+        ),
+        SizedBox(
+          height: 20,
         ),
         /* SizedBox(
           height: 50.0,
@@ -106,11 +153,55 @@ class AppWidget {
             SizedBox(
               width: 20,
             ),
-            Image.asset(
-              "images/google.png",
-              width: 50,
-              height: 50,
-            ),
+            GestureDetector(
+                onTap: () {
+                  GoogleSignInAccount? _currentUser;
+                  const List<String> scopes = <String>[
+                    'email',
+                    'https://www.googleapis.com/auth/contacts.readonly',
+                  ];
+
+                  GoogleSignIn _googleSignIn = GoogleSignIn(
+                    // Optional clientId
+
+                    // clientId: 'your-client_id.apps.googleusercontent.com',
+
+                    scopes: scopes,
+                  );
+
+                  bool _isAuthorized = false; // has granted permissions?
+
+                  String _contactText = '';
+
+                  Future<void> _handleSignIn() async {
+                    // try {
+                    _googleSignIn.signIn().then((value) {
+                      FirebaseDatabase.instance
+                          .ref()
+                          .child('partners')
+                          .orderByChild("email")
+                          .equalTo(value!.email.toString())
+                          .get()
+                          .then((value) {})
+                          .catchError((onError) {});
+
+                      print("objecto: " + value!.email.toString());
+                    }).catchError((onError) {});
+                    //} catch (error) {
+                    //   print("firebase: " + error.toString());
+                    //  }
+                  }
+
+                  _handleSignIn();
+
+                  //  Navigator.push(context, MaterialPageRoute(builder: (context) => SignInDemo()));
+                  //  Navigator.pushNamedAndRemoveUntil(context, RegistrationPage.id, (route) => false);
+                },
+                child: Image.asset(
+                  "images/google.png",
+                  width: 50,
+                  height: 50,
+                )),
             Platform.isIOS == false ? SizedBox() : Expanded(child: SizedBox()),
             Platform.isIOS == false
                 ? SizedBox()
@@ -119,12 +210,12 @@ class AppWidget {
                     width: 50,
                     height: 50,
                   ),
-            Expanded(child: SizedBox()),
-            Image.asset(
+            //  Expanded(child: SizedBox()),
+            /* Image.asset(
               "images/facebook.png",
               width: 50,
               height: 50,
-            ),
+            ),*/
             SizedBox(
               width: 20,
             ),

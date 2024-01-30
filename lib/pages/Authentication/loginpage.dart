@@ -42,14 +42,23 @@ class _LoginPageState extends State<LoginPage> {
 
   set errorMessage(String errorMessage) {}
 
-  void login(BuildContext context) async {
+  void login(BuildContext context, {String? emailText, String? passwordText}) async {
     AppWidget().showAlertDialogLoading(context);
+    final User;
     try {
-      final User = (await _auth.signInWithEmailAndPassword(
-        email: emailController.text,
-        password: passwordController.text,
-      ))
-          .user;
+      if (emailText == null) {
+        User = (await _auth.signInWithEmailAndPassword(
+          email: emailController.text,
+          password: passwordController.text,
+        ))
+            .user;
+      } else {
+        User = (await _auth.signInWithEmailAndPassword(
+          email: emailText.toString(),
+          password: passwordText.toString(),
+        ))
+            .user;
+      }
 
       showDialog(
         barrierDismissible: false,

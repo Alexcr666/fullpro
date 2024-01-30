@@ -972,7 +972,7 @@ class _CartPageState extends State<CartPage> {
                               trailing: GestureDetector(
                                   onTap: () {
                                     AppWidget().optionsEnabled(
-                                        "¿Estas seguro que quieres Locales.string(context, 'lang_location')?", context, tap2: () {
+                                        "¿Estas seguro que quieres" + Locales.string(context, 'lang_location') + "?", context, tap2: () {
                                       Navigator.pop(context);
                                     }, tap: () {
                                       data.ref.remove().then((value) {

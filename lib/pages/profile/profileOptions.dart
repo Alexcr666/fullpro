@@ -271,7 +271,7 @@ class _ProfileOptionsPageState extends State<ProfileOptionsPage> {
                       const Divider(color: Colors.black12),
 
                       ProfileButton(
-                        buttonName: /*Locales.string(context, 'lbl_address')*/ Locales.string(context, 'lang_notifications'),
+                        buttonName: /*Locales.string(context, 'lbl_address')*/ Locales.string(context, 'lang_notificaciones_text'),
                         onCLicked: () {
                           //  Navigator.pop(context);
 

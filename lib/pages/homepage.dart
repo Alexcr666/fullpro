@@ -719,7 +719,7 @@ class _kHomePageState extends State<kHomePage> {
                             }
                           }
 
-                          return dataList.child("primary").value != true ? getNoResult() : itemProfile();
+                          return dataList.child("primary").value != true ? SizedBox() : itemProfile();
                           /* dataList.child("primary").value != true ? SizedBox() :*/
 
                           /* dataList.child("latitude").value == null
