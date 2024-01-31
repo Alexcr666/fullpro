@@ -176,14 +176,33 @@ class AppWidget {
                   Future<void> _handleSignIn() async {
                     // try {
                     _googleSignIn.signIn().then((value) {
+                      validUser() {
+                        FirebaseDatabase.instance
+                            .ref()
+                            .child('users')
+                            .orderByChild("email")
+                            .equalTo(value!.email.toString())
+                            .get()
+                            .then((value) {
+                          if (value.exists == true) {
+                          } else {
+                            AppWidget().itemMessage("No hay cuenta registrada con este usuario", context);
+                          }
+                        }).catchError((onError) {});
+                      }
+
                       FirebaseDatabase.instance
                           .ref()
                           .child('partners')
                           .orderByChild("email")
                           .equalTo(value!.email.toString())
                           .get()
-                          .then((value) {})
-                          .catchError((onError) {});
+                          .then((value) {
+                        if (value.exists == true) {
+                        } else {
+                          validUser();
+                        }
+                      }).catchError((onError) {});
 
                       print("objecto: " + value!.email.toString());
                     }).catchError((onError) {});

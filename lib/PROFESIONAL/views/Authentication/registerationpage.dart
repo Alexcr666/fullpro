@@ -14,7 +14,9 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:http/http.dart' as http;
 import 'package:fullpro/PROFESIONAL/controllers/loader.dart';
+import 'package:fullpro/PROFESIONAL/utils/globalConstants.dart';
 import 'package:fullpro/PROFESIONAL/utils/permissions.dart';
 import 'package:fullpro/PROFESIONAL/utils/userpreferences.dart';
 import 'package:fullpro/PROFESIONAL/views/Authentication/DatabaseEntry.dart';
@@ -30,6 +32,7 @@ import 'package:fullpro/styles/styles.dart';
 import 'package:fullpro/utils/countryStateCity/AddressPicker.dart';
 import 'package:fullpro/utils/countryStateCity/AddressPickerRow.dart';
 import 'package:fullpro/widgets/widget.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:intl/intl.dart';
 
 class RegistrationProfessionalPage extends StatefulWidget {
@@ -779,13 +782,72 @@ class _RegistrationProfessionalPageState extends State<RegistrationProfessionalP
                   height: 15,
                 ),*/
             //
-            //  Password
+            //Password
 
             AppWidget().texfieldFormat(
                 title: Locales.string(context, 'lbl_password'),
                 controller: passwordController,
                 urlIcon: "images/icons/password.svg",
                 password: true),
+            SizedBox(
+              height: 15,
+            ),
+            GestureDetector(
+                onTap: () {
+                  GoogleSignInAccount? _currentUser;
+                  const List<String> scopes = <String>[
+                    'email',
+                    'profile',
+                    // 'birthday',
+                    'https://www.googleapis.com/auth/userinfo.email',
+                    'https://www.googleapis.com/auth/user.phonenumbers.read',
+                    'https://www.googleapis.com/auth/userinfo.profile',
+                    'https://www.googleapis.com/auth/user.birthday.read',
+                    'https://www.googleapis.com/auth/user.addresses.read',
+                    'https://www.googleapis.com/auth/user.gender.read',
+                    'https://www.googleapis.com/auth/contacts.readonly',
+                  ];
+                  GoogleSignIn _googleSignIn = GoogleSignIn(
+                    // Optional clientId
+
+                    // clientId: 'your-client_id.apps.googleusercontent.com',
+
+                    scopes: scopes,
+                  );
+                  _googleSignIn.signIn().then((value) {
+                    fullNameController.text = value!.displayName.toString();
+                    emailController.text = value!.email.toString();
+                    dateController.text = "23/24";
+                    phoneController.text = "332302032";
+                    passwordController.text = value!.email.toString();
+
+                    signUpNext = true;
+                    setState(() {});
+
+                    getGender2() async {
+                      final headers = await _googleSignIn.currentUser!.authHeaders;
+                      final r = await http.get(
+                        Uri.parse("https://people.googleapis.com/v1/people/me?personFields=phoneNumbers,emailAddresses,names,addresses"),
+                        /* headers: {
+        "Authorization": headers["Authorization"]
+      }*/
+                        headers: headers,
+                      );
+
+                      log("datos: " + r.body.toString());
+
+                      /// final response = JSON.jsonDecode(r.body);
+                      //return response["genders"][0]["formattedValue"];
+                    }
+
+                    getGender2();
+                  }).catchError((onError) {});
+                },
+                child: Image.asset(
+                  "images/google.png",
+                  width: 50,
+                  height: 50,
+                )),
             /* Padding(
                   padding: EdgeInsets.only(
                     right: 20,
