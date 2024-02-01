@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:firebase_auth/firebase_auth.dart';
@@ -5,7 +6,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 
 import 'package:fullpro/models/placeAutocompleteModel.dart';
-
+import 'package:geocode/geocode.dart';
+import 'package:uuid/uuid.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:flutter/material.dart';
@@ -614,6 +616,34 @@ class _AddressesState extends State<AddressesUser> {
     // }
   }
 
+  var uuid = new Uuid();
+  String? _sessionToken;
+  List<dynamic> _placeList = [];
+
+  _onChanged() {
+    if (_sessionToken == null) {
+      setState(() {
+        _sessionToken = uuid.v4();
+      });
+    }
+    getSuggestion(searchTextController.text);
+  }
+
+  void getSuggestion(String input) async {
+    String kPLACES_API_KEY = "AIzaSyCfsvZ1kjO-mlfDbbu19sJuYKKd7gcfgqw";
+    String type = '(regions,geocode)';
+    String baseURL = 'https://maps.googleapis.com/maps/api/place/autocomplete/json';
+    String request = '$baseURL?input=$input&key=$kPLACES_API_KEY&sessiontoken=$_sessionToken';
+    var response = await http.get(Uri.parse(request));
+    if (response.statusCode == 200) {
+      setState(() {
+        _placeList = json.decode(response.body)['predictions'];
+      });
+    } else {
+      throw Exception('Failed to load predictions');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -668,7 +698,82 @@ class _AddressesState extends State<AddressesUser> {
                         execute: () async {
                           //  await Future.delayed(Duration(milliseconds: 1000)); //   setState(() {});
 
-                          getPlaceLocation();
+                          //  getPlaceLocation();
+
+                          _onChanged();
+                        },
+                      ),
+                      ListView.builder(
+                        physics: NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: _placeList.length,
+                        itemBuilder: (context, index) {
+                          // log("jsongoogle: " + _placeList[index].toString());
+                          return ListTile(
+                            onTap: () async {
+                              GeoCode geoCode = GeoCode();
+
+                              try {
+                                Coordinates coordinates =
+                                    await geoCode.forwardGeocoding(address: _placeList[index]["description"].toString());
+
+                                print("Latitude: ${coordinates.latitude}");
+                                print("Longitude: ${coordinates.longitude}");
+                                userDataProfile.ref.update({
+                                  "latitud": coordinates.latitude,
+                                  "longitude": coordinates.longitude,
+                                  "location": _placeList[index]["description"].toString(),
+                                }).then((value) {
+                                  AppWidget().itemMessage("Ubicación cambiada", context);
+                                }).catchError((onError) {});
+                              } catch (e) {
+                                print(e);
+                              }
+                            },
+                            title: Text(_placeList[index]["description"]),
+                            trailing: GestureDetector(
+                                onTap: () async {
+                                  savedData(String address, String latitude, String longitude) {
+                                    DatabaseReference newUserRef = FirebaseDatabase.instance.ref().child('address').push();
+
+                                    // Prepare data to be saved on users table
+
+                                    Map userMap = {
+                                      'name': address,
+                                      'latitude': latitude,
+                                      'longitude': longitude,
+                                      'user': FirebaseAuth.instance.currentUser!.uid.toString(),
+                                    };
+
+                                    newUserRef.set(userMap).then((value) {
+                                      //   Navigator.pop(context);
+
+                                      setState(() {});
+
+                                      AppWidget().itemMessage("Guardado", context);
+                                    }).catchError((onError) {
+                                      AppWidget().itemMessage("Error al guardar", context);
+                                    });
+                                  }
+
+                                  // savedData();
+
+                                  GeoCode geoCode = GeoCode();
+
+                                  try {
+                                    Coordinates coordinates =
+                                        await geoCode.forwardGeocoding(address: _placeList[index]["description"].toString());
+
+                                    print("Latitude: ${coordinates.latitude}");
+                                    print("Longitude: ${coordinates.longitude}");
+                                    savedData(_placeList[index]["description"].toString(), coordinates.latitude.toString(),
+                                        coordinates.longitude.toString());
+                                  } catch (e) {
+                                    print(e);
+                                  }
+                                },
+                                child: startIndicator(_placeList[index]["description"])),
+                          );
                         },
                       ),
                       dataPlace == []

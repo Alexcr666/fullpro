@@ -114,9 +114,10 @@ void login(BuildContext context, String? emailText, String? passwordText) async 
       AppWidget().itemMessage("Error al iniciar sessión2", context);
     }
   } on FirebaseAuthException catch (ex) {
+    Navigator.pop(context);
     switch (ex.code) {
       case "wrong-password":
-        AppWidget().itemMessage("Locales.string(context, 'lbl_password') incorrecta", context);
+        AppWidget().itemMessage(Locales.string(context, 'lbl_password_incorrect'), context);
         break;
       case "user-not-found":
         AppWidget().itemMessage("Usuario no existe", context);
@@ -246,26 +247,6 @@ class _LoginPageState extends State<LoginPage> {
                     left: 20,
                   ),
                   child: AppWidget().texfieldFormat(title: Locales.string(context, 'lang_email'), controller: emailController),
-                  /*TextField(
-                    controller: emailController,
-                    keyboardType: TextInputType.emailAddress,
-                    decoration: InputDecoration(
-                      contentPadding: EdgeInsets.only(top: 17, bottom: 17, left: 15),
-                      //   filled: true,
-                      // fillColor: Colors.white,
-                      enabledBorder: OutlineInputBorder(
-                          // width: 0.0 produces a thin "hairline" border
-                          borderSide: BorderSide(color: secondryColor, width: 1.0),
-                          borderRadius: BorderRadius.circular(11)),
-                      border: OutlineInputBorder(
-                          borderSide: BorderSide(color: primaryColor, width: 1.0), borderRadius: BorderRadius.circular(10)),
-                      labelText: Locales.string(context, 'lbl_email'),
-                      labelStyle: TextStyle(fontSize: 12.0, color: Colors.black),
-                    ),
-                    style: TextStyle(
-                      fontSize: 14,
-                    ),
-                  ),*/
                 ),
                 //
                 //

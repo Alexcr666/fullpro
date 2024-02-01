@@ -424,7 +424,7 @@ class _ProfileOptionsProfessionalPageState extends State<ProfileOptionsProfessio
 
                           // Navigator.push(context, MaterialPageRoute(builder: (context) => Profile(currentUser!, isPuchased)));
                         },
-                        icon: "images/icons/miprofile2.svg",
+                        icon: "images/icons/internet.svg",
                       ),
                       const Divider(color: Colors.black12),
                       SizedBox(

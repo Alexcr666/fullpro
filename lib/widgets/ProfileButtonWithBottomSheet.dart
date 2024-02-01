@@ -376,6 +376,7 @@ class ProfileButton extends StatelessWidget {
               icon,
               width: 30,
               height: 30,
+              color: secondryColor,
             ),
             SizedBox(
               width: 20,

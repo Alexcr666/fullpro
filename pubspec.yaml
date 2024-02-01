@@ -125,6 +125,7 @@ dependencies:
   flutter_widget_from_html: ^0.9.1
   flutter_cached_pdfview: ^0.4.2
   flutter_local_notifications: ^16.3.0
+  geocode: ^1.0.3
 
 dependency_overrides:
   flutter:

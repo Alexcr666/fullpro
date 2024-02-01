@@ -692,7 +692,7 @@ class _MyOrdersState extends State<MyOrdersProfile> with TickerProviderStateMixi
     return Scaffold(
       key: scaffoldKey,
       resizeToAvoidBottomInset: false,
-      backgroundColor: appcolors.dashboardCard,
+      backgroundColor: Colors.white,
       /* appBar: AppBar(
         iconTheme: const IconThemeData(
           color: Colors.black,
@@ -745,7 +745,8 @@ class _MyOrdersState extends State<MyOrdersProfile> with TickerProviderStateMixi
           Container(
               margin: EdgeInsets.only(left: 30),
               child: Text(
-                "Buscar: ",
+                Locales.string(context, "lang_search") + ": ",
+                textAlign: TextAlign.start,
                 style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 20),
               )),
           SizedBox(

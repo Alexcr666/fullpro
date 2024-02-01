@@ -76,13 +76,13 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
           padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 50.0, bottom: 25.0),
           child: Form(
             key: _key,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            child: ListView(
+              //    crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 AppWidget().back(context),
                 const SizedBox(height: 70),
                 Text(
-                  Locales.string(context, 'lang_recoverpassword'),
+                  Locales.string(context, 'lang_change_password'),
                   style: TextStyle(
                     fontSize: 25,
                     fontWeight: FontWeight.bold,
@@ -91,23 +91,26 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                 ),
                 const SizedBox(height: 10),
                 const SizedBox(height: 40),
-                AppWidget().texfieldFormat(controller: _newPasswordController, title: "Locales.string(context, 'lbl_password') nueva"),
+                AppWidget().texfieldFormat(controller: _newPasswordController, title: Locales.string(context, "lang_new_password")),
                 SizedBox(
                   height: 7,
                 ),
-                AppWidget().texfieldFormat(
-                    controller: _repeatNewPasswordController, title: "Repite Locales.string(context, 'lbl_password') nueva"),
+                AppWidget()
+                    .texfieldFormat(controller: _repeatNewPasswordController, title: Locales.string(context, "lang_repeat_password")),
                 SizedBox(
                   height: 7,
                 ),
-                AppWidget().texfieldFormat(controller: _actualPasswordController, title: "Locales.string(context, 'lbl_password') actual"),
-                const Expanded(child: SizedBox()),
+                AppWidget().texfieldFormat(controller: _actualPasswordController, title: Locales.string(context, "lang_actual_password")),
+                //  const Expanded(child: SizedBox()),
+                SizedBox(
+                  height: 50,
+                ),
                 AppWidget().buttonFormColor(context, "Guardar", secondryColor, tap: () async {
                   if (_key.currentState!.validate()) {
                     if (_newPasswordController.text.toString() == _repeatNewPasswordController.text.toString()) {
                       _changePassword(_actualPasswordController.text, _newPasswordController.text);
                     } else {
-                      AppWidget().itemMessage("Las Locales.string(context, 'lbl_password') no coinciden", context);
+                      AppWidget().itemMessage("Las contraseñas no coinciden", context);
                     }
                   }
                 }),

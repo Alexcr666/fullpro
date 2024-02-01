@@ -20,6 +20,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 
 import 'package:fullpro/PROFESIONAL/views/Authentication/loginpage.dart';
 import 'package:fullpro/PROFESIONAL/views/Authentication/registerationpage.dart';
+import 'package:fullpro/pages/Authentication/loginpage.dart';
 
 import 'package:fullpro/pages/Authentication/redsocial/google.dart';
 
@@ -176,36 +177,33 @@ class AppWidget {
                   Future<void> _handleSignIn() async {
                     // try {
                     _googleSignIn.signIn().then((value) {
+                      String email = value!.email.toString();
+                      print("emailgoogle: " + email.toString());
+
                       validUser() {
-                        FirebaseDatabase.instance
-                            .ref()
-                            .child('users')
-                            .orderByChild("email")
-                            .equalTo(value!.email.toString())
-                            .get()
-                            .then((value) {
-                          if (value.exists == true) {
+                        FirebaseDatabase.instance.ref().child('users').orderByChild("email").equalTo(email).once().then((value) {
+                          if (value.snapshot.exists == true) {
+                            AppWidget().itemMessage("Iniciando sessión", context);
+
+                            login(context, email, email);
                           } else {
                             AppWidget().itemMessage("No hay cuenta registrada con este usuario", context);
                           }
                         }).catchError((onError) {});
                       }
 
-                      FirebaseDatabase.instance
-                          .ref()
-                          .child('partners')
-                          .orderByChild("email")
-                          .equalTo(value!.email.toString())
-                          .get()
-                          .then((value) {
-                        if (value.exists == true) {
+                      FirebaseDatabase.instance.ref().child('partners').orderByChild("email").equalTo(email).once().then((value) {
+                        if (value.snapshot.exists == true) {
+                          AppWidget().itemMessage("Iniciando sessión", context);
                         } else {
                           validUser();
                         }
                       }).catchError((onError) {});
 
                       print("objecto: " + value!.email.toString());
-                    }).catchError((onError) {});
+                    }).catchError((onError) {
+                      AppWidget().itemMessage(onError.toString(), context);
+                    });
                     //} catch (error) {
                     //   print("firebase: " + error.toString());
                     //  }
@@ -276,7 +274,7 @@ class AppWidget {
                 height: 20,
               ),
               ListTile(
-                title: new Text(Locales.string(context, 'lang_location')),
+                title: new Text(Locales.string(context, 'lbl_accept')),
                 onTap: () {
                   // Navigator.pop(context);
 
@@ -916,9 +914,6 @@ class AppWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Expanded(child: SizedBox()),
-            SizedBox(
-              width: 30,
-            ),
             Image.asset(
               "images/google.png",
               width: 50,
@@ -933,7 +928,7 @@ class AppWidget {
                     height: 50,
                   ),
             Expanded(child: SizedBox()),
-            Image.asset(
+            /*   Image.asset(
               "images/facebook.png",
               width: 50,
               height: 50,
@@ -941,7 +936,7 @@ class AppWidget {
             SizedBox(
               width: 30,
             ),
-            Expanded(child: SizedBox()),
+            Expanded(child: SizedBox()),*/
           ],
         ),
         /* GestureDetector(

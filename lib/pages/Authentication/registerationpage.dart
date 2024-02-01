@@ -1,4 +1,6 @@
 // ignore_for_file: prefer_const_constructors
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -7,6 +9,8 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:http/http.dart' as http;
 import 'package:fullpro/controller/loader.dart';
 import 'package:fullpro/pages/Authentication/loginpage.dart';
 import 'package:fullpro/pages/Authentication/register.dart';
@@ -42,7 +46,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
 
   set errorMessage(String errorMessage) {}
 
-  void registerUser() async {
+  void registerUser(BuildContext context, {bool? google}) async {
     try {
       final User = (await _auth.createUserWithEmailAndPassword(
         email: emailController.text,
@@ -66,6 +70,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
           'fullname': fullNameController.text.toString(),
           'email': emailController.text.toString(),
           'phone': phoneController.text.toString(),
+          'google': google == null ? false : true,
           //  'dateUser': "",
           //'date': DateTime.now(),
           'stateUser': 1,
@@ -81,15 +86,15 @@ class _RegistrationPageState extends State<RegistrationPage> {
           );
         }).catchError((onError) {
           print("erroruser: " + onError.toString());
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(Locales.string(context, "Error al crear usuario"))));
+          AppWidget().itemMessage("Error al crear el usuario", context);
         });
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(Locales.string(context, "Error al crear usuario"))));
+        AppWidget().itemMessage("Usuario ya existe", context);
       }
     } on FirebaseAuthException catch (ex) {
       switch (ex.code) {
         case "email-already-in-use":
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(Locales.string(context, "error_email_already_in_use"))));
+          AppWidget().itemMessage("Correo electronico ya existe", context);
           break;
         default:
           errorMessage = Locales.string(context, 'error_undefined');
@@ -212,32 +217,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                         title: Locales.string(context, 'lbl_phone_number'),
                         urlIcon: "images/icons/phone.svg",
                         number: true),
-                    /*  Padding(
-                  padding: EdgeInsets.only(
-                    right: 20,
-                    left: 20,
-                  ),
-                  child: TextField(
-                    controller: phoneController,
-                    keyboardType: TextInputType.phone,
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: Colors.grey.shade200,
-                      border: OutlineInputBorder(borderSide: BorderSide.none, borderRadius: BorderRadius.circular(10)),
-                      labelText: Locales.string(context, 'lbl_phone_number'),
-                      labelStyle: TextStyle(
-                        fontSize: 14.0,
-                      ),
-                      hintStyle: TextStyle(
-                        color: Colors.grey,
-                        fontSize: 10.0,
-                      ),
-                    ),
-                    style: TextStyle(
-                      fontSize: 14,
-                    ),
-                  ),
-                ),*/
+
                     //
                     //
                     SizedBox(
@@ -249,34 +229,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
 
                     AppWidget().texfieldFormat(
                         controller: emailController, title: Locales.string(context, 'lbl_email'), urlIcon: "images/icons/message.svg"),
-                    /*  Padding(
-                  padding: EdgeInsets.only(
-                    right: 20,
-                    left: 20,
-                  ),
-                  child: TextField(
-                    controller: emailController,
-                    keyboardType: TextInputType.emailAddress,
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: Colors.grey.shade200,
-                      border: OutlineInputBorder(borderSide: BorderSide.none, borderRadius: BorderRadius.circular(10)),
-                      labelText: Locales.string(context, 'lbl_email'),
-                      labelStyle: TextStyle(
-                        fontSize: 14.0,
-                      ),
-                      hintStyle: TextStyle(
-                        color: Colors.grey,
-                        fontSize: 10.0,
-                      ),
-                    ),
-                    style: TextStyle(
-                      fontSize: 14,
-                    ),
-                  ),
-                ),*/
-                    //
-                    //
+
                     SizedBox(
                       height: 15,
                     ),
@@ -288,32 +241,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                         title: Locales.string(context, 'lbl_password'),
                         urlIcon: "images/icons/password.svg",
                         password: true),
-                    /*Padding(
-                  padding: EdgeInsets.only(
-                    right: 20,
-                    left: 20,
-                  ),
-                  child: TextField(
-                    controller: passwordController,
-                    obscureText: true,
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: Colors.grey.shade200,
-                      border: OutlineInputBorder(borderSide: BorderSide.none, borderRadius: BorderRadius.circular(10)),
-                      labelText: Locales.string(context, 'lbl_passowrd'),
-                      labelStyle: TextStyle(
-                        fontSize: 14.0,
-                      ),
-                      hintStyle: TextStyle(
-                        color: Colors.grey,
-                        fontSize: 10.0,
-                      ),
-                    ),
-                    style: TextStyle(
-                      fontSize: 14,
-                    ),
-                  ),
-                ),*/
+
                     SizedBox(height: 25),
 
                     //
@@ -358,7 +286,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                         ],
                       ),
                     ),
-                    SizedBox(height: 25),
+                    SizedBox(height: 10),
                     //    Register Button
                     /*  Padding(
                   padding: EdgeInsets.only(
@@ -442,6 +370,68 @@ class _RegistrationPageState extends State<RegistrationPage> {
                     ),
                   ),
                 ),*/
+
+                    GestureDetector(
+                        onTap: () {
+                          GoogleSignInAccount? _currentUser;
+                          const List<String> scopes = <String>[
+                            'email',
+                            'profile',
+                            // 'birthday',
+                            'https://www.googleapis.com/auth/userinfo.email',
+                            'https://www.googleapis.com/auth/user.phonenumbers.read',
+                            'https://www.googleapis.com/auth/userinfo.profile',
+                            'https://www.googleapis.com/auth/user.birthday.read',
+                            'https://www.googleapis.com/auth/user.addresses.read',
+                            'https://www.googleapis.com/auth/user.gender.read',
+                            'https://www.googleapis.com/auth/contacts.readonly',
+                          ];
+                          GoogleSignIn _googleSignIn = GoogleSignIn(
+                            // Optional clientId
+
+                            // clientId: 'your-client_id.apps.googleusercontent.com',
+
+                            scopes: scopes,
+                          );
+                          _googleSignIn.signIn().then((value) {
+                            fullNameController.text = value!.displayName.toString();
+                            emailController.text = value!.email.toString();
+                            //   dateController.text = "23/24";
+                            phoneController.text = "";
+                            passwordController.text = value!.email.toString();
+
+                            setState(() {});
+                            registerUser(context, google: true);
+
+                            /* getGender2() async {
+                              final headers = await _googleSignIn.currentUser!.authHeaders;
+                              final r = await http.get(
+                                Uri.parse(
+                                    "https://people.googleapis.com/v1/people/me?personFields=phoneNumbers,emailAddresses,names,addresses"),
+                                /* headers: {
+        "Authorization": headers["Authorization"]
+      }*/
+                                headers: headers,
+                              );
+
+                              log("datos: " + r.body.toString());
+
+                              /// final response = JSON.jsonDecode(r.body);
+                              //return response["genders"][0]["formattedValue"];
+                            }
+
+                            getGender2();*/
+                          }).catchError((onError) {});
+                        },
+                        child: Image.asset(
+                          "images/google.png",
+                          width: 50,
+                          height: 50,
+                        )),
+                    SizedBox(
+                      height: 10,
+                    ),
+
                     AppWidget().buttonForm(context, Locales.string(context, 'lbl_register'), tap: () {
                       /*  var connectivityResult = await (Connectivity().checkConnectivity());
                   if (connectivityResult != ConnectivityResult.wifi && connectivityResult != ConnectivityResult.mobile) {
@@ -497,7 +487,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                         return;
                       }
                       if (_formKey.currentState!.validate()) {
-                        registerUser();
+                        registerUser(context, google: false);
                       } else {
                         AppWidget().itemMessage("Falta campos", context);
                       }
@@ -509,7 +499,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                     ),
                     //
                     //
-                    SizedBox(
+                    /*SizedBox(
                       height: 50.0,
                       width: double.infinity,
                       child: TextButton(
@@ -518,14 +508,14 @@ class _RegistrationPageState extends State<RegistrationPage> {
                         },
                         child: Text(Locales.string(context, 'lbl_already_have_account')),
                       ),
-                    ),
+                    ),*/
                     //
                     //
                     SizedBox(
                       height: 10,
                     ),
 
-                    AppWidget().redSocial(context, true),
+                    // AppWidget().redSocial(context, true),
                     //
                     //
                     /* Padding(

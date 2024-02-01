@@ -686,6 +686,7 @@ class _RegistrationProfessionalPageState extends State<RegistrationProfessionalP
                                     child: CupertinoDatePicker(
                                         mode: CupertinoDatePickerMode.date,
                                         initialDateTime: DateTime.now(),
+                                        maximumDate: DateTime.now(),
                                         onDateTimeChanged: (val) {
                                           setState(() {
                                             final f = new DateFormat('yyyy-MM-dd');

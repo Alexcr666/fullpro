@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_database/firebase_database.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_locales/flutter_locales.dart';
 
 import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
 
@@ -78,22 +79,32 @@ class _NotificationsState extends State<Notifications> {
                               physics: NeverScrollableScrollPhysics(),
                               shrinkWrap: true,
                               itemBuilder: (BuildContext context, int i) {
-                                DataSnapshot dataList = response.snapshot.children.toList()[i];
+                                DataSnapshot dataList = response.snapshot.children.toList().reversed.toList()[i];
 
-                                return ListTile(
-                                  onTap: () async {
-                                    if (dataList.child("url").value != null) {
-                                      final Uri url = Uri.parse(dataList.child("url").value.toString());
-                                      if (!await launchUrl(url)) {
-                                        throw Exception('Could not launch');
-                                      }
-                                    }
-                                  },
-                                  title: Text(dataList.child("description").value.toString().capitalize()),
-                                  subtitle: Text(
-                                    DateFormat('yyyy-MM-dd – KK:mm a').format(DateTime.parse(dataList.child("date").value.toString())),
-                                    style: TextStyle(fontSize: 11),
-                                  ),
+                                return Column(
+                                  children: [
+                                    ListTile(
+                                      onTap: () async {
+                                        if (dataList.child("url").value != null) {
+                                          final Uri url = Uri.parse(dataList.child("url").value.toString());
+                                          if (!await launchUrl(url)) {
+                                            throw Exception('Could not launch');
+                                          }
+                                        }
+                                      },
+                                      title: Text(dataList.child("description").value.toString().capitalize()),
+                                      subtitle: Text(
+                                        DateFormat('yyyy-MM-dd – KK:mm a').format(DateTime.parse(dataList.child("date").value.toString())),
+                                        style: TextStyle(fontSize: 11),
+                                      ),
+                                    ),
+                                    Container(
+                                      margin: EdgeInsets.only(right: 25, left: 10),
+                                      width: double.infinity,
+                                      height: 0.5,
+                                      color: secondryColor,
+                                    )
+                                  ],
                                 );
                               })));
         });
@@ -152,13 +163,13 @@ class _NotificationsState extends State<Notifications> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Notificaciones push",
+                      Locales.string(context, "lang_notificaciones_text"),
                       style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white),
                     ),
-                    Text(
+                    /*   Text(
                       "Cambios de estados del servicio",
                       style: TextStyle(fontSize: 19, color: Colors.white),
-                    ),
+                    ),*/
                   ],
                 ),
 

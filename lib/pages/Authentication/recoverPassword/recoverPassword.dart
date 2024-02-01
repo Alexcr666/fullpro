@@ -61,8 +61,8 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
               children: [
                 AppWidget().back(context),
                 const SizedBox(height: 70),
-                const Text(
-                  "Recuperar Locales.string(context, 'lbl_password')",
+                Text(
+                  Locales.string(context, 'lang_change_password'),
                   style: TextStyle(
                     fontSize: 25,
                     fontWeight: FontWeight.bold,

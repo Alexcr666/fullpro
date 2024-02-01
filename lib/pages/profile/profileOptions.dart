@@ -7,6 +7,7 @@ import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:fullpro/TESTING/placegoogle.dart';
 
 import 'package:fullpro/config.dart';
 
@@ -166,11 +167,11 @@ class _ProfileOptionsPageState extends State<ProfileOptionsPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "Hola ",
+                        Locales.string(context, "lang_hello"),
                         style: TextStyle(color: secondryColor, fontSize: 25),
                       ),
                       Text(
-                        UserPreferences.getUsername().toString(),
+                        UserPreferences.getUsername().toString().capitalize(),
                         style: TextStyle(color: secondryColor, fontSize: 25, fontWeight: FontWeight.bold),
                       ),
                     ],
@@ -189,7 +190,8 @@ class _ProfileOptionsPageState extends State<ProfileOptionsPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       itemProfile("images/icons/profile1.svg", Locales.string(context, 'lang_dataprofile'), tap: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => const Account()));
+                        //   Navigator.push(context, MaterialPageRoute(builder: (context) => const Account()));
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => MyHomePageGoogle()));
                       }),
 
                       itemProfile("images/icons/profile2.svg", Locales.string(context, 'lang_centerhelp'), tap: () {
@@ -241,7 +243,7 @@ class _ProfileOptionsPageState extends State<ProfileOptionsPage> {
                   child: Column(
                     children: [
                       ProfileButton(
-                        buttonName: Locales.string(context, Locales.string(context, 'lang_profile')),
+                        buttonName: Locales.string(context, 'lang_profile'),
                         onCLicked: () {
                           //
 
@@ -322,7 +324,7 @@ class _ProfileOptionsPageState extends State<ProfileOptionsPage> {
                         onCLicked: () {
                           Loader.page(context, const Language());
                         },
-                        icon: "images/icons/miprofile4.svg",
+                        icon: "images/icons/internet.svg",
                       ),
                       const Divider(color: Colors.black12),
 

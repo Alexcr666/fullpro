@@ -76,8 +76,10 @@ class _ListSupportPageState extends State<ListSupportPage> {
                                               onTap: () {
                                                 Navigator.pop(context);
                                                 AppWidget().optionsEnabled(
-                                                    "¿Estas seguro que quieres" + Locales.string(context, 'lang_location') + "?", context,
-                                                    tap: () {
+                                                    "¿Estas seguro que quieres " +
+                                                        Locales.string(context, 'lang_location').toLowerCase() +
+                                                        "?",
+                                                    context, tap: () {
                                                   dataList.ref.remove().then((value) {
                                                     Navigator.pop(context);
                                                     setState(() {});

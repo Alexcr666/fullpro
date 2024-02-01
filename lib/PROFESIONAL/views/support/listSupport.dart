@@ -77,8 +77,10 @@ class _ListSupportProfessionalPageState extends State<ListSupportProfessionalPag
                                               onTap: () {
                                                 Navigator.pop(context);
                                                 AppWidget().optionsEnabled(
-                                                    "¿Estas seguro que quieres" + Locales.string(context, 'lang_location') + "?", context,
-                                                    tap: () {
+                                                    "¿Estas seguro que quieres " +
+                                                        Locales.string(context, 'lang_location').toLowerCase() +
+                                                        "?",
+                                                    context, tap: () {
                                                   dataList.ref.remove().then((value) {
                                                     setState(() {});
                                                     AppWidget().itemMessage("Eliminado", context);

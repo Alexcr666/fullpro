@@ -89,7 +89,10 @@ class _AccountState extends State<Account> with TickerProviderStateMixin {
         setState(() {});
 
         currentUserInfo = UserData.fromSnapshot(DataSnapshot);
-        _currentSliderValue = double.parse(userDataProfile!.child("radio").value.toString());
+
+        if (userDataProfile!.child("radio").value != null) {
+          _currentSliderValue = double.parse(userDataProfile!.child("radio").value.toString());
+        }
         _dateController.text = AppUtils().noNull(userDataProfile!.child("dateUser").value.toString());
         _emailController.text = AppUtils().noNull(userDataProfile!.child("email").value.toString());
 
@@ -503,6 +506,7 @@ class _AccountState extends State<Account> with TickerProviderStateMixin {
                                                               child: CupertinoDatePicker(
                                                                   mode: CupertinoDatePickerMode.date,
                                                                   initialDateTime: DateTime.now(),
+                                                                  maximumDate: DateTime.now(),
                                                                   onDateTimeChanged: (val) {
                                                                     setState(() {
                                                                       final f = new DateFormat('yyyy-MM-dd');

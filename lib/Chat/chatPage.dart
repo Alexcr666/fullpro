@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_locales/flutter_locales.dart';
 import 'package:fullpro/pages/INTEGRATION/Calling/dial.dart';
 import 'package:fullpro/pages/INTEGRATION/Chat/largeImage.dart';
 import 'package:fullpro/pages/INTEGRATION/information.dart';
@@ -624,7 +625,7 @@ class _ChatPageState extends State<ChatPage> {
                       floatingLabelBehavior: FloatingLabelBehavior.auto,
                       // border: OutlineInputBorder(
                       //     borderRadius: BorderRadius.circular(18)),
-                      hintText: "Send a message...".toString()),
+                      hintText: Locales.string(context, "lang_message")),
                 ),
               ),
               Container(

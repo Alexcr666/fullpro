@@ -156,7 +156,7 @@ class _DeleteAccountPageState extends State<DeleteAccountPage> {
               Container(
                   margin: EdgeInsets.only(left: 50, right: 50),
                   child: Text(
-                    "Locales.string(context, 'lang_location') cuenta",
+                    "Eliminar cuenta",
                     style: TextStyle(
                       color: secondryColor,
                       fontSize: 20,
@@ -178,7 +178,7 @@ class _DeleteAccountPageState extends State<DeleteAccountPage> {
               ),
 
               Text(
-                "¿Desactivar la cuenta en lugar de Locales.string(context, 'lang_location')la?",
+                "¿Desactivar la cuenta ?",
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: secondryColor,
@@ -232,7 +232,7 @@ class _DeleteAccountPageState extends State<DeleteAccountPage> {
                   //   margin: EdgeInsets.only(left: 70, right: 70),
 
                   child: AppWidget().buttonForm(context, Locales.string(context, 'lang_location'), tap: () {
-                optionsEnabled("Estas seguro que quieres" + Locales.string(context, 'lang_location') + "tu cuenta de forma definitiva",
+                optionsEnabled("Estas seguro que quieres " + Locales.string(context, 'lang_location') + "tu cuenta de forma definitiva",
                     tap: () {
                   userDataProfile!.ref.update({'stateUser': 4}).then((value) {
                     log("errordelete2");

@@ -617,7 +617,8 @@ class _subServicePageState extends State<subServicePage> {
 
                             return getInspections() != dataList.child("type").value
                                 ? ((index + 1) == response.snapshot.children.length)
-                                    ? AppWidget().noResult(context)
+                                    ? /* AppWidget().noResult(context)*/
+                                    SizedBox()
                                     : SizedBox()
                                 : itemList();
                           }

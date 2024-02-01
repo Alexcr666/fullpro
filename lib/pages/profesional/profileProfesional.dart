@@ -1290,6 +1290,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                           child: CupertinoDatePicker(
                                               mode: CupertinoDatePickerMode.date,
                                               initialDateTime: DateTime.now(),
+                                              maximumDate: DateTime.now(),
                                               onDateTimeChanged: (val) {
                                                 setState(() {
                                                   final f = new DateFormat('yyyy-MM-dd');

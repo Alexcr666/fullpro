@@ -472,7 +472,9 @@ class _kHomePageState extends State<kHomePage> {
                 style: TextStyle(color: secondryColor, fontSize: 12, fontWeight: FontWeight.bold),
               ),
               Text(
-                "Hola " + '${UserPreferences.getUsername() ?? currentUserInfo?.fullName}',
+                Locales.string(context, "lang_hello") +
+                    " " +
+                    '${UserPreferences.getUsername().toString().capitalize() ?? currentUserInfo?.fullName.toString().capitalize()}',
                 style: const TextStyle(
                   color: Colors.black,
                   fontWeight: FontWeight.bold,
