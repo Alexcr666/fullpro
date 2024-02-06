@@ -78,9 +78,9 @@ class _CartPageState extends State<CartPage> {
 
     var driver = availablePartners[0];
 
-    notifyPartner(driver);
+    //  notifyPartner(driver);
   }
-
+/*
   void notifyPartner(NearbyPartner driver) {
     // Get and notify Partner using token
     DatabaseReference tokenRef = FirebaseDatabase.instance.ref().child('partners').child(driver.key!);
@@ -130,9 +130,10 @@ class _CartPageState extends State<CartPage> {
       //select the next closest partner
       findPartner();
     });
-  }
+  }*/
 
   // Time Selector
+
   List<RadioModel> hourList = [
     RadioModel(true, '7AM - 8AM'),
     RadioModel(false, '8AM - 9AM'),
@@ -328,6 +329,10 @@ class _CartPageState extends State<CartPage> {
         MainController.getUserInfo(context);
       }),
     );*/
+
+    Future.delayed(const Duration(milliseconds: 1300), () {
+      setState(() {});
+    });
   }
 
   @override

@@ -711,12 +711,36 @@ class _AddressesState extends State<AddressesUser> {
                           // log("jsongoogle: " + _placeList[index].toString());
                           return ListTile(
                             onTap: () async {
+                              savedData(String address, String latitude, String longitude) {
+                                DatabaseReference newUserRef = FirebaseDatabase.instance.ref().child('address').push();
+
+                                // Prepare data to be saved on users table
+
+                                Map userMap = {
+                                  'name': address,
+                                  'latitude': latitude,
+                                  'longitude': longitude,
+                                  'user': FirebaseAuth.instance.currentUser!.uid.toString(),
+                                };
+
+                                newUserRef.set(userMap).then((value) {
+                                  //   Navigator.pop(context);
+
+                                  setState(() {});
+
+                                  AppWidget().itemMessage("Guardado", context);
+                                }).catchError((onError) {
+                                  AppWidget().itemMessage("Error al guardar", context);
+                                });
+                              }
+
                               GeoCode geoCode = GeoCode();
 
                               try {
                                 Coordinates coordinates =
                                     await geoCode.forwardGeocoding(address: _placeList[index]["description"].toString());
-
+                                savedData(_placeList[index]["description"].toString(), coordinates.latitude.toString(),
+                                    coordinates.longitude.toString());
                                 print("Latitude: ${coordinates.latitude}");
                                 print("Longitude: ${coordinates.longitude}");
                                 userDataProfile.ref.update({
@@ -724,6 +748,7 @@ class _AddressesState extends State<AddressesUser> {
                                   "longitude": coordinates.longitude,
                                   "location": _placeList[index]["description"].toString(),
                                 }).then((value) {
+                                  Navigator.pop(context);
                                   AppWidget().itemMessage("Ubicación cambiada", context);
                                 }).catchError((onError) {});
                               } catch (e) {
@@ -731,33 +756,12 @@ class _AddressesState extends State<AddressesUser> {
                               }
                             },
                             title: Text(_placeList[index]["description"]),
-                            trailing: GestureDetector(
+                            /*  trailing: GestureDetector(
                                 onTap: () async {
-                                  savedData(String address, String latitude, String longitude) {
-                                    DatabaseReference newUserRef = FirebaseDatabase.instance.ref().child('address').push();
-
-                                    // Prepare data to be saved on users table
-
-                                    Map userMap = {
-                                      'name': address,
-                                      'latitude': latitude,
-                                      'longitude': longitude,
-                                      'user': FirebaseAuth.instance.currentUser!.uid.toString(),
-                                    };
-
-                                    newUserRef.set(userMap).then((value) {
-                                      //   Navigator.pop(context);
-
-                                      setState(() {});
-
-                                      AppWidget().itemMessage("Guardado", context);
-                                    }).catchError((onError) {
-                                      AppWidget().itemMessage("Error al guardar", context);
-                                    });
-                                  }
+                                
 
                                   // savedData();
-
+/*
                                   GeoCode geoCode = GeoCode();
 
                                   try {
@@ -770,9 +774,9 @@ class _AddressesState extends State<AddressesUser> {
                                         coordinates.longitude.toString());
                                   } catch (e) {
                                     print(e);
-                                  }
+                                  }*/
                                 },
-                                child: startIndicator(_placeList[index]["description"])),
+                                child: startIndicator(_placeList[index]["description"]))*/
                           );
                         },
                       ),

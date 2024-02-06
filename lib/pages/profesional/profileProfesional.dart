@@ -538,7 +538,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: appbarProfessional(context, true),
+        appBar: appbarProfessional(context, getDataUser(), true),
         backgroundColor: Colors.white,
         body: getDataUser() == null
             ? AppWidget().loading()
@@ -2018,7 +2018,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
 
   Widget portafolio() {
     return FutureBuilder(
-        initialData: 1,
+        // initialData: 1,
         future: FirebaseDatabase.instance.ref().child('portafolio').orderByChild("user").equalTo(widget.id.toString()).once(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (snapshot.hasData && snapshot.data != null) {

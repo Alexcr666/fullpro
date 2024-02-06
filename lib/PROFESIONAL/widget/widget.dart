@@ -1,3 +1,4 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 
 import 'package:flutter/material.dart';
@@ -12,7 +13,7 @@ import 'package:fullpro/PROFESIONAL/views/profile/menuProfile.dart';
 import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
 import 'package:fullpro/pages/profile/address/addressUser.dart';
 
-appbarProfessional(BuildContext context, bool activeColor) {
+appbarProfessional(BuildContext context, DataSnapshot dataUser, bool activeColor) {
   String dayTime = "";
 
   TimeOfDay day = TimeOfDay.now();
@@ -42,7 +43,7 @@ appbarProfessional(BuildContext context, bool activeColor) {
           style: TextStyle(color: activeColor ? Colors.white : secondryColor, fontSize: 12, fontWeight: FontWeight.bold),
         ),
         Text(
-          userInfoPartners == null ? "Hola " : "Hola " + userInfoPartners!.child("fullname").value.toString(),
+          "Hola" + dataUser!.child("fullname").value.toString(),
           style: TextStyle(
             color: activeColor ? Colors.white : Colors.black,
             fontSize: 15,
@@ -53,11 +54,11 @@ appbarProfessional(BuildContext context, bool activeColor) {
               Navigator.push(context, MaterialPageRoute(builder: (context) => AddressesUser("partners")));
             },
             child: Text(
-              userInfoPartners == null
+              dataUser! == null
                   ? "Selecciona ubicación"
-                  : userInfoPartners!.child("location").value == null
+                  : dataUser!.child("location").value == null
                       ? "Seleccionar ubicación"
-                      : userInfoPartners!.child("location").value.toString(),
+                      : dataUser!.child("location").value.toString(),
               style: TextStyle(
                 color: activeColor ? Colors.white : Colors.black,
                 fontSize: 12,

@@ -49,6 +49,7 @@ import 'package:fullpro/widgets/bottomNav.dart';
 import 'package:page_indicator/page_indicator.dart';
 
 DataSnapshot? userDataProfile;
+GlobalKey<AutoCompleteTextFieldState<String>> key = GlobalKey();
 
 class kHomePage extends StatefulWidget {
   kHomePage({Key? key}) : super(key: key);
@@ -59,7 +60,6 @@ class kHomePage extends StatefulWidget {
 }
 
 TextEditingController _searchHome = TextEditingController();
-GlobalKey<AutoCompleteTextFieldState<String>> key = GlobalKey();
 
 class _kHomePageState extends State<kHomePage> {
   late FirebaseMessaging messaging;
@@ -827,7 +827,7 @@ class _kHomePageState extends State<kHomePage> {
             : SimpleAutoCompleteTextField(
                 key: key,
                 decoration: InputDecoration(
-                  errorText: "Ingresar servicio valido",
+                  // errorText: "Ingresar servicio valido",
                   contentPadding: EdgeInsets.only(top: 17, bottom: 17, left: 15),
                   enabledBorder:
                       OutlineInputBorder(borderSide: BorderSide(color: secondryColor, width: 1.0), borderRadius: BorderRadius.circular(11)),
@@ -869,6 +869,9 @@ class _kHomePageState extends State<kHomePage> {
             child: AppWidget().buttonForm(context, "hola", tap: () {
               _searchHome.text = "hola";
             })),*/
+        SizedBox(
+          height: 10,
+        ),
         Text("Resultados de " + _searchHome.text.toString()),
         // buildSearch(),
         SizedBox(
