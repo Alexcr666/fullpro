@@ -538,7 +538,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: appbarProfessional(context, getDataUser(), true),
+        appBar: AppWidget().appbar(context),
         backgroundColor: Colors.white,
         body: getDataUser() == null
             ? AppWidget().loading()
@@ -2098,6 +2098,29 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                                     SizedBox(
                                                       height: 20,
                                                     ),
+                                                    Container(
+                                                      margin: EdgeInsets.only(left: 10),
+                                                      child: Text(
+                                                        "Descripción",
+                                                        style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 15),
+                                                      ),
+                                                      alignment: Alignment.centerLeft,
+                                                    ),
+                                                    SizedBox(
+                                                      height: 4,
+                                                    ),
+                                                    Container(
+                                                        alignment: Alignment.centerLeft,
+                                                        margin: EdgeInsets.only(left: 10, right: 20),
+                                                        child: Text(
+                                                          dataList.child("name").value == null
+                                                              ? Locales.string(context, 'lang_nodisponible')
+                                                              : dataList.child("name").value.toString(),
+                                                          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 12),
+                                                        )),
+                                                    SizedBox(
+                                                      height: 10,
+                                                    ),
                                                     Row(
                                                       children: [
                                                         Container(
@@ -2123,14 +2146,24 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                                                 SizedBox(
                                                                   height: 10,
                                                                 ),
-                                                                /* RatingBarIndicator(
-                                                                                        rating: 2.5,
-                                                                                        itemCount: 5,
-                                                                                        itemSize: 30.0,
-                                                                                        itemBuilder: (context, _) => Icon(
-                                                                                              Icons.star_border_rounded,
-                                                                                              color: secondryColor,
-                                                                                            )),*/
+                                                                Text(
+                                                                  "Calificación",
+                                                                  style: TextStyle(
+                                                                      color: secondryColor, fontWeight: FontWeight.bold, fontSize: 15),
+                                                                ),
+                                                                SizedBox(
+                                                                  height: 2,
+                                                                ),
+                                                                RatingBarIndicator(
+                                                                    rating: dataList.child("rating").value == null
+                                                                        ? 0
+                                                                        : double.parse(dataList.child("rating").value.toString()),
+                                                                    itemCount: 5,
+                                                                    itemSize: 25.0,
+                                                                    itemBuilder: (context, _) => Icon(
+                                                                          Icons.star_border_rounded,
+                                                                          color: secondryColor,
+                                                                        )),
                                                                 SizedBox(
                                                                   height: 10,
                                                                 ),
@@ -2148,7 +2181,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                                               style: TextStyle(
                                                                   color: secondryColor, fontWeight: FontWeight.bold, fontSize: 15),
                                                             ),
-                                                            /*  Text(
+                                                            Text(
                                                               dataList.child("price").value == null
                                                                   ? '\$' + "0"
                                                                   : '\$' +
@@ -2160,7 +2193,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                                                           .toString(),
                                                               style:
                                                                   TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 16),
-                                                            ),*/
+                                                            ),
                                                             SizedBox(
                                                               height: 40,
                                                             ),
@@ -2171,15 +2204,6 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                                         ),
                                                       ],
                                                     ),
-                                                    Container(
-                                                        alignment: Alignment.centerLeft,
-                                                        margin: EdgeInsets.only(left: 20, right: 20),
-                                                        child: Text(
-                                                          dataList.child("name").value == null
-                                                              ? Locales.string(context, 'lang_nodisponible')
-                                                              : dataList.child("name").value.toString(),
-                                                          style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 12),
-                                                        )),
                                                     SizedBox(
                                                       height: 20,
                                                     ),

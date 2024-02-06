@@ -666,7 +666,9 @@ class _kHomePageState extends State<kHomePage> {
                                           Row(
                                             children: [
                                               RatingBarIndicator(
-                                                  rating: 2.5,
+                                                  rating: dataList.child("rating").value == null
+                                                      ? 0
+                                                      : double.parse(dataList.child("rating").value.toString()),
                                                   itemCount: 5,
                                                   itemSize: 16.0,
                                                   itemBuilder: (context, _) => Icon(

@@ -17,23 +17,135 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/svg.dart';
 
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:fullpro/PROFESIONAL/utils/userpreferences.dart';
 
 import 'package:fullpro/PROFESIONAL/views/Authentication/loginpage.dart';
 import 'package:fullpro/PROFESIONAL/views/Authentication/registerationpage.dart';
+import 'package:fullpro/PROFESIONAL/views/homepage.dart';
 import 'package:fullpro/pages/Authentication/loginpage.dart';
 
 import 'package:fullpro/pages/Authentication/redsocial/google.dart';
 
 import 'package:fullpro/pages/Authentication/registerationpage.dart';
+import 'package:fullpro/pages/cartPage.dart';
+import 'package:fullpro/pages/homepage.dart';
+import 'package:fullpro/pages/profile/address/addressUser.dart';
 
 import 'package:fullpro/styles/statics.dart' as Static;
 
 import 'package:flutter_locales/flutter_locales.dart';
 
 import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
+import 'package:fullpro/utils/globalConstants.dart';
+import 'package:fullpro/utils/utils.dart';
+import 'package:fullpro/widgets/ProfileButtonWithBottomSheet.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class AppWidget {
+  appbar(BuildContext context) {
+    return AppBar(
+      centerTitle: false,
+      title: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        //  crossAxisAlignment: CrossAxisAlignment.start,
+        // mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            '$dayTime',
+            style: TextStyle(color: secondryColor, fontSize: 12, fontWeight: FontWeight.bold),
+          ),
+          Text(
+            Locales.string(context, "lang_hello") + " " + userDataProfile!.child("fullname").value.toString().capitalize(),
+            style: const TextStyle(
+              color: Colors.black,
+              fontWeight: FontWeight.bold,
+              fontSize: 15,
+            ),
+          ),
+          GestureDetector(
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => AddressesUser("users")));
+              },
+              child: Text(
+                userDataProfile == null
+                    ? "Selecciona ubicación"
+                    : userDataProfile!.child("location").value == null
+                        ? "Seleccionar ubicación"
+                        : userDataProfile!.child("location").value.toString(),
+                style: const TextStyle(
+                  color: Colors.black,
+                  fontSize: 12,
+                ),
+              )),
+        ],
+      ),
+      actions: [
+        Image.asset(
+          "images/logo.png",
+          width: 70,
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          child: MaterialButton(
+              elevation: 0.0,
+              hoverElevation: 0.0,
+              focusElevation: 0.0,
+              highlightElevation: 0.0,
+              minWidth: 50,
+              height: 60,
+              color: Colors.transparent,
+              onPressed: () {
+                if (userDataProfile!.child("cart").value != null) {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => CartPage(
+                                id: userDataProfile!.child("cart").value.toString(),
+                              )));
+                }
+                // Loader.page(context, const CartPage());
+              },
+              shape: const CircleBorder(),
+              child: Opacity(
+                  opacity: userDataProfile == null
+                      ? 1
+                      : userDataProfile!.child("cart").value != null
+                          ? 1
+                          : 0.4,
+                  child: SvgPicture.asset(
+                    "images/icons/cart.svg",
+                    width: 35,
+                  ))),
+        ),
+      ],
+      backgroundColor: Static.dashboardBG,
+      elevation: 0.0,
+      toolbarHeight: 70,
+      leadingWidth: 80,
+      leading: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const SizedBox(width: 20),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Column(
+                children: [
+                  ProfileButtonWithBottomSheet(
+                    getUserName: currentUserInfo?.fullName,
+                    getuserPhone: currentUserInfo?.phone,
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
   showAlertDialogLoading(BuildContext context) {
     AlertDialog alert = AlertDialog(
       content: Row(

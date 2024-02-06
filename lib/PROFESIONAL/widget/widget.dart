@@ -43,7 +43,7 @@ appbarProfessional(BuildContext context, DataSnapshot dataUser, bool activeColor
           style: TextStyle(color: activeColor ? Colors.white : secondryColor, fontSize: 12, fontWeight: FontWeight.bold),
         ),
         Text(
-          "Hola" + dataUser!.child("fullname").value.toString(),
+          "Hola " + dataUser!.child("fullname").value.toString(),
           style: TextStyle(
             color: activeColor ? Colors.white : Colors.black,
             fontSize: 15,

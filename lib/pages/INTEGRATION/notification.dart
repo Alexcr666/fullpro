@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 
 import 'package:flutter/material.dart';
@@ -80,32 +81,50 @@ class _NotificationsState extends State<Notifications> {
                               shrinkWrap: true,
                               itemBuilder: (BuildContext context, int i) {
                                 DataSnapshot dataList = response.snapshot.children.toList().reversed.toList()[i];
+                                bool noView = false;
 
-                                return Column(
-                                  children: [
-                                    ListTile(
-                                      onTap: () async {
-                                        if (dataList.child("url").value != null) {
-                                          final Uri url = Uri.parse(dataList.child("url").value.toString());
-                                          if (!await launchUrl(url)) {
-                                            throw Exception('Could not launch');
-                                          }
-                                        }
-                                      },
-                                      title: Text(dataList.child("description").value.toString().capitalize()),
-                                      subtitle: Text(
-                                        DateFormat('yyyy-MM-dd – KK:mm a').format(DateTime.parse(dataList.child("date").value.toString())),
-                                        style: TextStyle(fontSize: 11),
-                                      ),
-                                    ),
-                                    Container(
-                                      margin: EdgeInsets.only(right: 25, left: 10),
-                                      width: double.infinity,
-                                      height: 0.5,
-                                      color: secondryColor,
-                                    )
-                                  ],
-                                );
+                                dataList.ref.child("view").child(FirebaseAuth.instance.currentUser!.uid.toString()).once().then((value) {
+                                  if (value.snapshot.exists == false) {
+                                    noView = true;
+                                    dataList.ref
+                                        .child("view")
+                                        .child(FirebaseAuth.instance.currentUser!.uid.toString())
+                                        .update({"date": DateTime.now().toString()})
+                                        .then((value) {})
+                                        .catchError((onError) {
+                                          print("errornotification :" + onError.toString());
+                                        });
+                                  }
+                                });
+
+                                return noView == false
+                                    ? SizedBox()
+                                    : Column(
+                                        children: [
+                                          ListTile(
+                                            onTap: () async {
+                                              if (dataList.child("url").value != null) {
+                                                final Uri url = Uri.parse(dataList.child("url").value.toString());
+                                                if (!await launchUrl(url)) {
+                                                  throw Exception('Could not launch');
+                                                }
+                                              }
+                                            },
+                                            title: Text(dataList.child("description").value.toString().capitalize()),
+                                            subtitle: Text(
+                                              DateFormat('yyyy-MM-dd – KK:mm a')
+                                                  .format(DateTime.parse(dataList.child("date").value.toString())),
+                                              style: TextStyle(fontSize: 11),
+                                            ),
+                                          ),
+                                          Container(
+                                            margin: EdgeInsets.only(right: 25, left: 10),
+                                            width: double.infinity,
+                                            height: 0.5,
+                                            color: secondryColor,
+                                          )
+                                        ],
+                                      );
                               })));
         });
   }
