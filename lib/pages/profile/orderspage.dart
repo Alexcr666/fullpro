@@ -172,7 +172,7 @@ class _MyOrdersState extends State<MyOrdersProfile> with TickerProviderStateMixi
               DatabaseEvent response = snapshot.data;
 
               return response == null
-                  ? Text("Cargando")
+                  ? AppWidget().loading()
                   : ListView.builder(
                       itemCount: response.snapshot.children.length,
                       shrinkWrap: true,
@@ -485,9 +485,9 @@ class _MyOrdersState extends State<MyOrdersProfile> with TickerProviderStateMixi
                                                   ),
                                                 ),
                                                 RatingBarIndicator(
-                                                    rating: dataList.child("rating").value == null
+                                                    rating: dataList.child("ratingClient").value == null
                                                         ? 0
-                                                        : double.parse(dataList.child("rating").value.toString()),
+                                                        : double.parse(dataList.child("ratingClient").value.toString()),
                                                     itemCount: 5,
                                                     itemSize: 18.0,
                                                     itemBuilder: (context, _) => Icon(
@@ -508,9 +508,9 @@ class _MyOrdersState extends State<MyOrdersProfile> with TickerProviderStateMixi
                                                       width: 5,
                                                     ),
                                                     Text(
-                                                      dataList.child("nameProfessional").value == null
+                                                      dataList.child("professionalName").value == null
                                                           ? Locales.string(context, 'lang_nodisponible')
-                                                          : dataList.child("nameProfessional").value.toString(),
+                                                          : dataList.child("professionalName").value.toString(),
                                                       style: TextStyle(
                                                         color: secondryColor,
                                                         fontWeight: FontWeight.bold,
@@ -557,7 +557,7 @@ class _MyOrdersState extends State<MyOrdersProfile> with TickerProviderStateMixi
                                                     height: 40,
                                                     child: AppWidget().buttonFormColor(
                                                         context,
-                                                        stateOrder[int.parse(dataList!.child("state").value.toString())],
+                                                        getStateOrder(context, int.parse(dataList!.child("state").value.toString())),
                                                         stateOrderColor[int.parse(dataList!.child("state").value.toString())],
                                                         tap: () {})),
                                                 SizedBox(
@@ -755,7 +755,7 @@ class _MyOrdersState extends State<MyOrdersProfile> with TickerProviderStateMixi
           Row(
             children: [
               Expanded(child: SizedBox()),
-              itemAdd("images/icons/shoping.svg", "Usuario", userCheck, tap: () {
+              /* itemAdd("images/icons/shoping.svg", "Usuario", userCheck, tap: () {
                 userCheck = !userCheck;
                 profesionalCheck = false;
                 serviceCheck = false;
@@ -763,7 +763,7 @@ class _MyOrdersState extends State<MyOrdersProfile> with TickerProviderStateMixi
               }),
               SizedBox(
                 width: 10,
-              ),
+              ),*/
               itemAdd("images/icons/profesional.svg", "Profesional", profesionalCheck, tap: () {
                 profesionalCheck = !profesionalCheck;
                 serviceCheck = false;
@@ -960,7 +960,7 @@ class _MyOrdersState extends State<MyOrdersProfile> with TickerProviderStateMixi
               DatabaseEvent response = snapshot.data;
 
               return response == null
-                  ? Text("Cargando")
+                  ? AppWidget().loading()
                   : ListView.builder(
                       itemCount: response.snapshot.children.length,
                       shrinkWrap: true,

@@ -16,6 +16,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:fullpro/PROFESIONAL/views/homepage.dart';
 
 import 'package:fullpro/config.dart';
 
@@ -340,7 +341,7 @@ class _PortafolioPageState extends State<NewPortafolioPage> {
                     children: [
                       Container(
                           child: Text(
-                        "Nuevo portafolio",
+                        Locales.string(context, "lang_new_portafolio"),
                         style: TextStyle(
                           color: secondryColor,
                           fontSize: 20,
@@ -358,7 +359,9 @@ class _PortafolioPageState extends State<NewPortafolioPage> {
                     height: 20,
                   ),
                   AppWidget().texfieldFormat(
-                      title: "Nombre de portafolio", urlIcon: "images/icons/maletin.svg", controller: _namePortafolioController),
+                      title: Locales.string(context, "lang_name"),
+                      urlIcon: "images/icons/maletin.svg",
+                      controller: _namePortafolioController),
                   SizedBox(
                     height: 20,
                   ),
@@ -419,7 +422,8 @@ class _PortafolioPageState extends State<NewPortafolioPage> {
                   SizedBox(
                     height: 20,
                   ),
-                  SimpleAutoCompleteTextField(
+                  /* SimpleAutoCompleteTextField(
+                    
                       key: key,
                       decoration: InputDecoration(
                         // errorText: "Ingresar servicio valido",
@@ -435,7 +439,7 @@ class _PortafolioPageState extends State<NewPortafolioPage> {
                         border: OutlineInputBorder(
                             borderSide: BorderSide(color: secondryColor, width: 1.0), borderRadius: BorderRadius.circular(10)),
 
-                        labelText: "Profesión",
+                        labelText: Locales.string(context, "lang_profesion"),
 
                         labelStyle: TextStyle(fontSize: 12.0, color: Colors.black),
                       ),
@@ -455,15 +459,17 @@ class _PortafolioPageState extends State<NewPortafolioPage> {
 
                       // added.add(text);
 
-                      ),
+                      ),*/
+
+                  AppWidget().texfieldFormat(title: Locales.string(context, "lang_profesion"), controller: _searchHome),
                   SizedBox(
                     height: 20,
                   ),
-                  AppWidget().texfieldFormat(title: "Precio", controller: _priceController, number: true),
+                  AppWidget().texfieldFormat(title: Locales.string(context, "lang_price"), controller: _priceController, number: true),
                   SizedBox(
                     height: 20,
                   ),
-                  Text("Fotos portafolio"),
+                  Text(Locales.string(context, "lang_photo")),
                   SizedBox(
                     height: 10,
                   ),
@@ -495,7 +501,7 @@ class _PortafolioPageState extends State<NewPortafolioPage> {
                           child: Container(
                             height: 40,
                             width: double.infinity,
-                            child: Center(child: Text("Drag & Drop your files or Mobile")),
+                            child: Center(child: Text(Locales.string(context, "lang_upload_file"))),
                           ),
                         ),
                       )),
@@ -513,7 +519,8 @@ class _PortafolioPageState extends State<NewPortafolioPage> {
                         width: 5,
                       ),
                       Flexible(
-                          child: AppWidget().buttonFormLine(context, "Guardar", false, urlIcon: "images/icons/saved.svg", tap: () {
+                          child: AppWidget().buttonFormLine(context, Locales.string(context, "lang_saved"), false,
+                              urlIcon: "images/icons/saved.svg", tap: () {
                         savedData(String fileUrl) {
                           AppWidget().showAlertDialogLoading(context);
                           DatabaseReference newUserRef = FirebaseDatabase.instance
@@ -534,8 +541,9 @@ class _PortafolioPageState extends State<NewPortafolioPage> {
                           newUserRef.set(userMap).then((value) {
                             Navigator.pop(context);
                             Navigator.pop(context);
+                            //    Navigator.pop(context);
 
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => PortafolioPage()));
+                            //  Navigator.push(context, MaterialPageRoute(builder: (context) => PortafolioPage()));
 
                             AppWidget().itemMessage("Guardado", context);
                           }).catchError((onError) {
@@ -643,6 +651,7 @@ class _PortafolioPageState extends State<NewPortafolioPage> {
 
     if (widget.data != null) {
       _namePortafolioController.text = widget.data!.child("name").value.toString();
+
       _priceController.text = widget.data!.child("price").value == null ? "" : widget.data!.child("price").value.toString();
       _searchHome.text = widget.data!.child("category").value.toString();
 
@@ -652,5 +661,6 @@ class _PortafolioPageState extends State<NewPortafolioPage> {
         checkInspeccion = false;
       }
     }
+    _searchHome.text = userInfoPartners!.child("profesion").value.toString();
   }
 }

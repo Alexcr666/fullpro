@@ -78,7 +78,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                   ),
                 ),
                 const SizedBox(height: 40),
-                AppWidget().texfieldFormat(controller: _emailController, title: "Correo electronico"),
+                AppWidget().texfieldFormat(controller: _emailController, title: Locales.string(context, "lang_email")),
                 const SizedBox(height: 16),
                 const Expanded(child: SizedBox()),
                 AppWidget().buttonFormColor(context, Locales.string(context, 'lang_recoverpassword'), secondryColor, tap: () async {
@@ -88,12 +88,11 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                     if (_status == AuthStatus.successful) {
                       Navigator.pop(context);
 
-                      AppWidget().itemMessage(
-                          "Hemos enviado un correo electronico para el cambio de tu Locales.string(context, 'lbl_password')", context);
+                      AppWidget().itemMessage(Locales.string(context, "lang_send_email_exit"), context);
 
                       //your logic
                     } else {
-                      AppWidget().itemMessage("Error al envio del correo electronico", context);
+                      AppWidget().itemMessage(Locales.string(context, "lang_error"), context);
 
                       //your logic or show snackBar with error message
                     }

@@ -24,6 +24,7 @@ import 'package:fullpro/pages/profesional/profileProfesional.dart';
 import 'dart:async';
 import 'package:fullpro/styles/statics.dart' as appcolors;
 import 'package:fullpro/styles/statics.dart';
+import 'package:fullpro/utils/utils.dart';
 import 'package:fullpro/widgets/widget.dart';
 
 class MyOrders extends StatefulWidget {
@@ -492,7 +493,7 @@ class _MyOrdersState extends State<MyOrders> with TickerProviderStateMixin {
                                                   child: Text(
                                                     dataList.child("name").value == null
                                                         ? Locales.string(context, 'lang_nodisponible')
-                                                        : dataList.child("name").value.toString(),
+                                                        : dataList.child("name").value.toString().capitalize(),
                                                     overflow: TextOverflow.ellipsis,
                                                     style: TextStyle(
                                                       color: secondryColor,
@@ -502,9 +503,9 @@ class _MyOrdersState extends State<MyOrders> with TickerProviderStateMixin {
                                                   ),
                                                 ),
                                                 RatingBarIndicator(
-                                                    rating: dataList.child("rating").value == null
+                                                    rating: dataList.child("ratingProfessional").value == null
                                                         ? 0
-                                                        : double.parse(dataList.child("rating").value.toString()),
+                                                        : double.parse(dataList.child("ratingProfessional").value.toString()),
                                                     itemCount: 5,
                                                     itemSize: 18.0,
                                                     itemBuilder: (context, _) => Icon(
@@ -537,7 +538,7 @@ class _MyOrdersState extends State<MyOrders> with TickerProviderStateMixin {
                                                             return Text(
                                                               response!.snapshot.child("fullname").value == null
                                                                   ? "Sin Asignar"
-                                                                  : response!.snapshot.child("fullname").value.toString(),
+                                                                  : response!.snapshot.child("fullname").value.toString().capitalize(),
                                                               style: TextStyle(
                                                                 color: secondryColor,
                                                                 fontWeight: FontWeight.bold,
@@ -587,7 +588,7 @@ class _MyOrdersState extends State<MyOrders> with TickerProviderStateMixin {
                                                     height: 40,
                                                     child: AppWidget().buttonFormColor(
                                                         context,
-                                                        stateOrder[int.parse(dataList!.child("state").value.toString())],
+                                                        getStateOrder(context, int.parse(dataList!.child("state").value.toString())),
                                                         stateOrderColor[int.parse(dataList!.child("state").value.toString())],
                                                         tap: () {})),
                                                 SizedBox(
@@ -773,18 +774,18 @@ class _MyOrdersState extends State<MyOrders> with TickerProviderStateMixin {
           AppWidget().back(context),
 
           Container(
-              margin: EdgeInsets.only(left: 30),
+              // margin: EdgeInsets.only(left: 30),
               child: Text(
-                Locales.string(context, 'lang_search'),
-                style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 20),
-              )),
+            Locales.string(context, 'lang_search'),
+            style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 20),
+          )),
           SizedBox(
             height: 20,
           ),
-          Row(
+          /* Row(
             children: [
               Expanded(child: SizedBox()),
-              itemAdd("images/icons/shoping.svg", Locales.string(context, 'lang_user'), userCheck, tap: () {
+              /* itemAdd("images/icons/shoping.svg", Locales.string(context, 'lang_user'), userCheck, tap: () {
                 userCheck = !userCheck;
                 profesionalCheck = false;
                 serviceCheck = false;
@@ -792,7 +793,7 @@ class _MyOrdersState extends State<MyOrders> with TickerProviderStateMixin {
               }),
               SizedBox(
                 width: 10,
-              ),
+              ),*/
               itemAdd("images/icons/profesional.svg", Locales.string(context, 'lang_professional'), profesionalCheck, tap: () {
                 profesionalCheck = !profesionalCheck;
                 serviceCheck = false;
@@ -815,8 +816,8 @@ class _MyOrdersState extends State<MyOrders> with TickerProviderStateMixin {
               ),
               Expanded(child: SizedBox()),
             ],
-          ),
-          SizedBox(
+          ),*/
+          /* SizedBox(
             height: 20,
           ),
           Row(
@@ -853,7 +854,7 @@ class _MyOrdersState extends State<MyOrders> with TickerProviderStateMixin {
                 width: 50,
               ),
             ],
-          ),
+          ),*/
           SizedBox(
             height: 20,
           ),

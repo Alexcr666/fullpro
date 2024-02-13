@@ -81,8 +81,10 @@ class _ListSupportProfessionalPageState extends State<ListSupportProfessionalPag
                                                         Locales.string(context, 'lang_location').toLowerCase() +
                                                         "?",
                                                     context, tap: () {
+                                                  Navigator.pop(context);
                                                   dataList.ref.remove().then((value) {
                                                     setState(() {});
+
                                                     AppWidget().itemMessage("Eliminado", context);
                                                   });
                                                 }, tap2: () {
@@ -181,7 +183,7 @@ class _ListSupportProfessionalPageState extends State<ListSupportProfessionalPag
 
                                                     Text(dataList.child("response").value != null
                                                         ? "Resuelto"
-                                                        : stateOrder[int.parse(dataList.child("state").value.toString())]),
+                                                        : getStateOrder(context, int.parse(dataList.child("state").value.toString()))),
 
                                                     // Expanded(child: SizedBox()),
                                                   ],
@@ -266,7 +268,7 @@ class _ListSupportProfessionalPageState extends State<ListSupportProfessionalPag
                   ),
                   Container(
                       child: Text(
-                    "Lista de soporte",
+                    Locales.string(context, "lang_list_support"),
                     style: TextStyle(
                       color: secondryColor,
                       fontSize: 20,
@@ -300,7 +302,7 @@ class _ListSupportProfessionalPageState extends State<ListSupportProfessionalPag
   @override
   void initState() {
     super.initState();
-    DatabaseReference ref = FirebaseDatabase.instance.ref("portafolios");
+    DatabaseReference ref = FirebaseDatabase.instance.ref("support");
 
 // Get the Stream
     Stream<DatabaseEvent> stream = ref.onValue;

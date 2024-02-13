@@ -156,7 +156,9 @@ Widget pageOrdensWidget(int state) {
                                             ),
                                           ),
                                           RatingBarIndicator(
-                                              rating: 2.5,
+                                              rating: dataList.child("ratingProfessional").value == null
+                                                  ? 0
+                                                  : double.parse(dataList.child("ratingProfessional").value.toString()),
                                               itemCount: 5,
                                               itemSize: 18.0,
                                               itemBuilder: (context, _) => Icon(
@@ -176,16 +178,30 @@ Widget pageOrdensWidget(int state) {
                                               SizedBox(
                                                 width: 5,
                                               ),
-                                              Text(
-                                                dataList.child("nameProfessional").value == null
-                                                    ? "Sin asignar"
-                                                    : dataList.child("nameProfessional").value.toString(),
-                                                style: TextStyle(
-                                                  color: Colors.grey,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 12,
-                                                ),
-                                              ),
+                                              FutureBuilder(
+                                                  future: FirebaseDatabase.instance
+                                                      .ref()
+                                                      .child('users')
+                                                      .child(dataList.child("user").value.toString())
+                                                      .once(),
+                                                  builder: (BuildContext context, AsyncSnapshot snapshot) {
+                                                    if (snapshot.hasData) {
+                                                      DatabaseEvent response = snapshot.data;
+
+                                                      return Text(
+                                                        response.snapshot.child("fullname").value == null
+                                                            ? "Sin asignar"
+                                                            : response.snapshot.child("fullname").value.toString(),
+                                                        style: TextStyle(
+                                                          color: Colors.grey,
+                                                          fontWeight: FontWeight.bold,
+                                                          fontSize: 12,
+                                                        ),
+                                                      );
+                                                    } else {
+                                                      return SizedBox();
+                                                    }
+                                                  }),
                                             ],
                                           ),
                                           SizedBox(
@@ -230,7 +246,7 @@ Widget pageOrdensWidget(int state) {
                                                   tap: () {})),*/
 
                                           Text(
-                                            stateOrder[int.parse(dataList!.child("state").value.toString())].toString(),
+                                            getStateOrder(context, int.parse(dataList!.child("state").value.toString())),
                                             style: TextStyle(
                                                 color: stateOrderColor[int.parse(dataList!.child("state").value.toString())],
                                                 fontWeight: FontWeight.bold),
@@ -405,7 +421,7 @@ class _SolicitudListState extends State<SolicitudList> with TickerProviderStateM
               DatabaseEvent response = snapshot.data;
 
               return response == null
-                  ? Text("Cargando")
+                  ? AppWidget().loading()
                   : ListView.builder(
                       itemCount: response.snapshot.children.length,
                       shrinkWrap: true,
@@ -496,7 +512,7 @@ class _SolicitudListState extends State<SolicitudList> with TickerProviderStateM
               DatabaseEvent response = snapshot.data;
 
               return response == null
-                  ? Text("Cargando")
+                  ? AppWidget().loading()
                   : ListView.builder(
                       itemCount: response.snapshot.children.length,
                       shrinkWrap: true,
@@ -731,7 +747,7 @@ class _SolicitudListState extends State<SolicitudList> with TickerProviderStateM
               DatabaseEvent response = snapshot.data;
 
               return response == null
-                  ? Text("Cargando")
+                  ? AppWidget().loading()
                   : ListView.builder(
                       itemCount: response.snapshot.children.length,
                       shrinkWrap: true,

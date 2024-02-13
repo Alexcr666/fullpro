@@ -1,6 +1,18 @@
 import 'dart:ui';
 
-List stateOrder = ["Pendiente", "Pendiente", "En Proceso", "Terminado", "Cancelado"];
+import 'package:flutter/material.dart';
+import 'package:flutter_locales/flutter_locales.dart';
+
+getStateOrder(BuildContext context, int position) {
+  List stateOrder = [
+    Locales.string(context, "lang_pending"),
+    Locales.string(context, "lang_pending"),
+    Locales.string(context, "lang_process"),
+    Locales.string(context, "lang_finish"),
+    Locales.string(context, "lang_cancelstate")
+  ];
+  return stateOrder[position];
+}
 
 List stateOrderColor = [
   Color.fromARGB(255, 199, 209, 0),

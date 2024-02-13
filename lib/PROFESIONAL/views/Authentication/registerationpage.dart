@@ -432,7 +432,7 @@ class _RegistrationProfessionalPageState extends State<RegistrationProfessionalP
                     child: Container(
                       height: 40,
                       width: double.infinity,
-                      child: Center(child: Text("Drag & Drop your files or Mobile")),
+                      child: Center(child: Text(Locales.string(context, "lang_upload_file"))),
                     ),
                   ),
                 )),
@@ -526,7 +526,7 @@ class _RegistrationProfessionalPageState extends State<RegistrationProfessionalP
                     child: Container(
                       height: 40,
                       width: double.infinity,
-                      child: Center(child: Text("Drag & Drop your files or Mobile")),
+                      child: Center(child: Text(Locales.string(context, "lang_upload_file"))),
                     ),
                   ),
                 )),
@@ -620,7 +620,7 @@ class _RegistrationProfessionalPageState extends State<RegistrationProfessionalP
                     child: Container(
                       height: 40,
                       width: double.infinity,
-                      child: Center(child: Text("Drag & Drop your files or Mobile")),
+                      child: Center(child: Text(Locales.string(context, "lang_upload_file"))),
                     ),
                   ),
                 )),
@@ -712,11 +712,13 @@ class _RegistrationProfessionalPageState extends State<RegistrationProfessionalP
             SizedBox(
               height: 10,
             ),
-            AppWidget().texfieldFormat(title: "Correo electronico", controller: emailController, urlIcon: "images/icons/message.svg"),
+            AppWidget().texfieldFormat(
+                title: Locales.string(context, "lang_email"), controller: emailController, urlIcon: "images/icons/message.svg"),
             SizedBox(
               height: 10,
             ),
-            AppWidget().texfieldFormat(title: "Celular", controller: phoneController, urlIcon: "images/icons/phone.svg"),
+            AppWidget().texfieldFormat(
+                title: Locales.string(context, "lang_phone"), controller: phoneController, urlIcon: "images/icons/phone.svg", number: true),
             /* Padding(
                   padding: EdgeInsets.only(
                     right: 20,

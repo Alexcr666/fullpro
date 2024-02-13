@@ -153,7 +153,7 @@ class AppWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            "Cargando",
+            Locales.string(context, "lang_loading"),
             style: TextStyle(color: secondryColor, fontSize: 26),
           ),
           SizedBox(
@@ -421,7 +421,7 @@ class AppWidget {
             placeholder: (context, url) => new CircularProgressIndicator(),
             errorWidget: (context, url, error) => new Icon(
               Icons.error,
-              color: Colors.black.withOpacity(0.2),
+              color: Colors.black.withOpacity(0.0),
             ),
           ),
         ));

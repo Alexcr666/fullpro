@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -9,6 +10,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 
 import 'package:flutter/material.dart';
+import 'package:firebase_database/firebase_database.dart' as cloud;
 
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 
@@ -83,6 +85,9 @@ class DetailsOrderProfessionalPage extends StatefulWidget {
   @override
   _DetailsOrderProfessionalPageState createState() => _DetailsOrderProfessionalPageState();
 }
+
+DataSnapshot? dataUser;
+DataSnapshot? dataProfessional;
 
 class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalPage> {
   String hourService = "";
@@ -286,90 +291,20 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
 
     DatabaseReference ref = FirebaseDatabase.instance.ref("ordens/" + widget.dataList.key.toString());
 
-// Get the Stream
-
     Stream<DatabaseEvent> stream = ref.onValue;
 
-// Subscribe to the stream!
+    getData();
 
     stream.listen((DatabaseEvent event) {
-      getData();
       widget.dataList = event.snapshot;
-
-      setState(() {});
+      try {
+        setState(() {});
+      } catch (e) {}
     });
 
-    //print("dataorden: " + widget.dataList.value.toString());
-
-    //startGeofireListener();
-
-    // Get Time & Date
-
-    DateTime now = DateTime.now();
-
-    String formattedDate = '${DateFormat.MMMd().format(now)}, ${DateFormat.y().format(now)}';
-
-    kSelectedDate = formattedDate;
-
-    // kselectedTime = '7AM - 8AM';
-
-    // CHeck if Cart Data is Loaded
-
-    if (cartDataLoaded == true && cartItemsList.isEmpty) {
-      //  CartController.userCart(context);
-    }
-
-    /* if (mounted) {
-
-    //  CartController.checkCart();
-
-
-      setState(() {
-
-        if (cartDataLoaded == false && cartItemsList.isEmpty) {
-
-          setState(() {
-
-            CartController.userCart(context);
-
-          });
-
-        }
-
-
-        if (cartDataLoaded == true && cartItemsList.isEmpty) {
-
-          setState(() {
-
-            cartItemsList = Provider.of<AppData>(context, listen: false).userCartData;
-
-          });
-
-        }
-
-      });
-
-    }*/
-
-    // Repeating Function
-
-    /* timer = Timer.periodic(
-
-      repeatTime,
-
-      (Timer t) => setState(() {
-
-        CartController.checkCart();
-
-
-        CartController.getToatlPrice();
-
-
-        MainController.getUserInfo(context);
-
-      }),
-
-    );*/
+    Future.delayed(const Duration(seconds: 2), () {
+      setState(() {});
+    });
   }
 
   @override
@@ -421,7 +356,7 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
                     itemBuilder: (BuildContext context, int index) {
                       return ListTile(
                         onTap: () {
-                          widget.dataList.ref.update({'address': widget.dataList.child("nameProfessional").value.toString()}).then((value) {
+                          widget.dataList.ref.update({'address': widget.dataList.child("professionalName").value.toString()}).then((value) {
                             Navigator.pop(context);
 
                             AppWidget().itemMessage("Dirección actualizada", context);
@@ -433,7 +368,7 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
                           backgroundColor: Colors.grey.withOpacity(0.3),
                           radius: 30,
                         ),
-                        title: Text(widget.dataList.child("nameProfessional").value.toString()),
+                        title: Text(widget.dataList.child("professionalName").value.toString()),
                       );
                     });
               }
@@ -447,7 +382,7 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
   }
 
   getData() {
-    Query historyRef = FirebaseDatabase.instance.ref().child('ordens').child(widget.dataList.key.toString());
+    cloud.Query historyRef = FirebaseDatabase.instance.ref().child('ordens').child(widget.dataList.key.toString());
 
     historyRef.once().then((e) async {
       final snapshot = e.snapshot;
@@ -455,8 +390,15 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
         dataListObjectGeneral = snapshot;
         dataListObjectGeneral!.child("comment").value.toString();
 
-        _descriptionCommentController.text =
-            dataListObjectGeneral!.child("comment").value == null ? "" : dataListObjectGeneral!.child("comment").value.toString();
+        if (widget.dataList.child("professional").value.toString() == FirebaseAuth.instance.currentUser!.uid.toString()) {
+          _descriptionCommentController.text = dataListObjectGeneral!.child("commentProfessional").value == null
+              ? ""
+              : dataListObjectGeneral!.child("commentProfessional").value.toString();
+        } else {
+          _descriptionCommentController.text = dataListObjectGeneral!.child("commentClient").value == null
+              ? ""
+              : dataListObjectGeneral!.child("commentClient").value.toString();
+        }
         _descriptionController.text =
             dataListObjectGeneral!.child("description").value == null ? "" : dataListObjectGeneral!.child("description").value.toString();
         MarkerId markerId = MarkerId(dataListObjectGeneral!.key.toString());
@@ -499,9 +441,10 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
             builder: (BuildContext context, AsyncSnapshot snapshot) {
               if (snapshot.hasData) {
                 DatabaseEvent response = snapshot.data;
+                dataProfessional = response.snapshot;
 
                 return ListTile(
-                  leading: AppWidget().circleProfile(response.snapshot.child("photo").value.toString()),
+                  leading: AppWidget().circleProfile(response.snapshot.child("photo").value.toString(), size: 50),
                   title: Text(response.snapshot.child("fullname").value.toString().capitalize()),
                   subtitle: RatingBarIndicator(
                       rating: response.snapshot.child("rating").value == null
@@ -528,9 +471,10 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
             builder: (BuildContext context, AsyncSnapshot snapshot) {
               if (snapshot.hasData) {
                 DatabaseEvent response = snapshot.data;
+                dataUser = response.snapshot;
 
                 return ListTile(
-                  leading: AppWidget().circleProfile(response.snapshot.child("photo").value.toString()),
+                  leading: AppWidget().circleProfile(response.snapshot.child("photo").value.toString(), size: 60),
                   title: Text(response.snapshot.child("fullname").value.toString().capitalize()),
                   subtitle: RatingBarIndicator(
                       rating: response.snapshot.child("rating").value == null
@@ -641,7 +585,7 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
                           ),
                           Flexible(
                               child: AppWidget().texfieldFormat(
-                            title: "Apt 501",
+                            title: Locales.string(context, "lang_description"),
                             controller: _descriptionController,
                           )),
                           SizedBox(
@@ -925,7 +869,9 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                "Usuario".toString(),
+                                widget.dataList.child("professional").value.toString() != FirebaseAuth.instance.currentUser!.uid.toString()
+                                    ? "Profesional"
+                                    : "Usuario".toString(),
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 16,
@@ -1036,7 +982,6 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
       var data = widget.dataList!.child("services").children.toList()[i];
       total += int.parse(data.child("price").value.toString());
     }
-    total += (total / 10).round();
 
     // total += (int.parse(dataListObjectGeneral!.child("price").value.toString()) / 10).round();
     /* if (dataListObjectGeneral != null) {
@@ -1189,31 +1134,37 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
             Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                      margin: EdgeInsets.only(left: 20),
-                      child: Text(
-                        "Evidencias".toString(),
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18,
-                          color: secondryColor,
-                        ),
-                      )),
                   SizedBox(
                     height: 10,
                   ),
-                  Container(
-                      height: 120,
-                      child: SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Row(
-                            children: [
-                              imageEvidencia(0),
-                              imageEvidencia(1),
-                              imageEvidencia(2),
-                              imageEvidencia(3),
-                            ],
-                          ))),
+                  widget.dataList.child("state").value.toString() != "3"
+                      ? SizedBox()
+                      : Column(
+                          children: [
+                            Container(
+                                margin: EdgeInsets.only(left: 20),
+                                child: Text(
+                                  Locales.string(context, "lang_evidence"),
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18,
+                                    color: secondryColor,
+                                  ),
+                                )),
+                            Container(
+                                height: 120,
+                                child: SingleChildScrollView(
+                                    scrollDirection: Axis.horizontal,
+                                    child: Row(
+                                      children: [
+                                        imageEvidencia(0),
+                                        imageEvidencia(1),
+                                        imageEvidencia(2),
+                                        imageEvidencia(3),
+                                      ],
+                                    )))
+                          ],
+                        ),
                 ],
               ),
 
@@ -1242,9 +1193,14 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
                       height: 10,
                     ),
                     RatingBar.builder(
-                      initialRating: widget.dataList.child("rating").value == null
-                          ? 0
-                          : double.parse(widget.dataList.child("rating").value.toString()),
+                      initialRating:
+                          widget.dataList.child("professional").value.toString() != FirebaseAuth.instance.currentUser!.uid.toString()
+                              ? widget.dataList.child("ratingClient").value == null
+                                  ? 0
+                                  : double.parse(widget.dataList.child("ratingClient").value.toString())
+                              : widget.dataList.child("ratingProfessional").value == null
+                                  ? 0
+                                  : double.parse(widget.dataList.child("ratingProfessional").value.toString()),
                       minRating: 1,
                       direction: Axis.horizontal,
                       allowHalfRating: true,
@@ -1258,21 +1214,56 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
                       onRatingUpdate: (rating) {
                         print(rating);
 
-                        widget.dataList.ref.update({'rating': rating});
+                        /*   if (widget.dataList.child("professional").value.toString() == FirebaseAuth.instance.currentUser!.uid.toString()) {
+                          double totalFun = rating;
+                          if (dataProfessional!.child("rating").value != null) {
+                            double total = double.parse((dataProfessional!.child("rating").value.toString()));
+                            totalFun = (total + rating) / 2;
+                          }
+                          dataProfessional!.ref.update({'rating': totalFun});
+                          log("prueba12:");
+                        } else {
+                          double totalFun = rating;
+                          if (dataUser!.child("rating").value != null) {
+                            double total = double.parse(dataUser!.child("rating").value.toString());
+                            totalFun = (total + rating) / 2;
+                          }
+                          dataUser!.ref.update({'rating': totalFun});
+                          log("prueba12:");
+                        }*/
+                        Future.delayed(const Duration(seconds: 1), () {});
+
+                        if (widget.dataList.child("professional").value.toString() == FirebaseAuth.instance.currentUser!.uid.toString()) {
+                          double totalFun = rating;
+
+                          widget.dataList.ref.update({'ratingProfessional': totalFun});
+                        } else {
+                          double totalFun = rating;
+
+                          widget.dataList.ref.update({'ratingClient': totalFun});
+                        }
                       },
                     ),
                     Row(
                       children: [
                         Flexible(
-                          child: AppWidget().texfieldFormat(title: "Comentario", controller: _descriptionCommentController),
+                          child: AppWidget().texfieldFormat(
+                              title: Locales.string(context, "lang_description"), controller: _descriptionCommentController),
                         ),
                         Container(
                             width: 110,
                             height: 60,
                             child: AppWidget().buttonFormColor(context, Locales.string(context, 'lbl_send'), secondryColor, tap: () {
-                              widget.dataList.ref.update({'comment': _descriptionCommentController.text}).then((value) {
-                                AppWidget().itemMessage("Actualizado", context);
-                              });
+                              if (widget.dataList.child("professional").value.toString() ==
+                                  FirebaseAuth.instance.currentUser!.uid.toString()) {
+                                widget.dataList.ref.update({'commentProfessional': _descriptionCommentController.text}).then((value) {
+                                  AppWidget().itemMessage("Actualizado", context);
+                                });
+                              } else {
+                                widget.dataList.ref.update({'commentClient': _descriptionCommentController.text}).then((value) {
+                                  AppWidget().itemMessage("Actualizado", context);
+                                });
+                              }
                             })),
                       ],
                     ),
@@ -1330,7 +1321,9 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
               children: [
                 Container(
                     width: 220,
-                    child: AppWidget().buttonFormColor(context, stateOrder[int.parse(widget.dataList.child("state").value.toString())],
+                    child: AppWidget().buttonFormColor(
+                        context,
+                        getStateOrder(context, int.parse(widget.dataList.child("state").value.toString())),
                         stateOrderColor[int.parse(widget.dataList.child("state").value.toString())], tap: () {
                       showAlertDialog() {
                         // set up the AlertDialog
@@ -1362,17 +1355,47 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
                                   /* AppWidget().buttonFormColor(context, stateOrder[0], stateOrderColor[0], tap: () {
                                     changeState(0);
                                   }),*/
-                                  AppWidget().buttonFormColor(context, stateOrder[1], stateOrderColor[1], tap: () {
+                                  AppWidget().buttonFormColor(context, getStateOrder(context, 1), stateOrderColor[1], tap: () {
                                     changeState(1);
                                   }),
-                                  AppWidget().buttonFormColor(context, stateOrder[2], stateOrderColor[2], tap: () {
+                                  AppWidget().buttonFormColor(context, getStateOrder(context, 2), stateOrderColor[2], tap: () {
                                     changeState(2);
                                   }),
-                                  AppWidget().buttonFormColor(context, stateOrder[3], stateOrderColor[3], tap: () {
+                                  AppWidget().buttonFormColor(context, getStateOrder(context, 3), stateOrderColor[3], tap: () {
                                     changeState(3);
                                   }),
-                                  AppWidget().buttonFormColor(context, stateOrder[4], stateOrderColor[4], tap: () {
+                                  AppWidget().buttonFormColor(context, getStateOrder(context, 4), stateOrderColor[4], tap: () {
                                     changeState(4);
+
+                                    CollectionReference docRef = FirebaseFirestore.instance.collection('Users');
+
+                                    twoReference() {
+                                      docRef
+                                          .doc(FirebaseAuth.instance.currentUser!.uid.toString())
+                                          .collection("Matches")
+                                          .doc(widget.dataList.child("user").value.toString())
+                                          .get()
+                                          .then((value) {
+                                        if (value.exists) {
+                                          value.reference.delete().then((value) {});
+                                        }
+                                      });
+                                    }
+
+                                    oneReference() {
+                                      docRef
+                                          .doc(FirebaseAuth.instance.currentUser!.uid.toString())
+                                          .collection("Matches")
+                                          .doc(widget.dataList.child("professional").value.toString())
+                                          .get()
+                                          .then((value) {
+                                        if (value.exists) {
+                                          value.reference.delete().then((value) {
+                                            twoReference();
+                                          });
+                                        }
+                                      });
+                                    }
                                   }),
                                 ],
                               ),

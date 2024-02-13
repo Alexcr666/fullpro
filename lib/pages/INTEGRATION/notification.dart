@@ -31,9 +31,18 @@ class _NotificationsState extends State<Notifications> {
 
   @override
   void initState() {
-    matchReference = db.collection("Users").doc("Mkoc6GZaIWMf6yO2mDAHlZucj9V2").collection('Matches');
+    // matchReference = db.collection("Users").doc("Mkoc6GZaIWMf6yO2mDAHlZucj9V2").collection('Matches');
 
     super.initState();
+    /*Future.delayed(Duration(seconds: 3), () {
+      FirebaseDatabase.instance.ref().child('notifications').once().then((value) {
+        for (var i = 0; i < value.snapshot.children.length; i++) {
+          DataSnapshot data = value.snapshot.children.toList()[i];
+
+          data.ref.child("view").child(FirebaseAuth.instance.currentUser!.uid.toString()).set({"date", DateTime.now().toString()});
+        }
+      });
+    });*/
 
     // Future.delayed(Duration(seconds: 1), () {
 
@@ -83,21 +92,15 @@ class _NotificationsState extends State<Notifications> {
                                 DataSnapshot dataList = response.snapshot.children.toList().reversed.toList()[i];
                                 bool noView = false;
 
-                                dataList.ref.child("view").child(FirebaseAuth.instance.currentUser!.uid.toString()).once().then((value) {
+                                /* dataList.ref.child("view").child(FirebaseAuth.instance.currentUser!.uid.toString()).once().then((value) {
                                   if (value.snapshot.exists == false) {
+                                    noView = false;
+                                  } else {
                                     noView = true;
-                                    dataList.ref
-                                        .child("view")
-                                        .child(FirebaseAuth.instance.currentUser!.uid.toString())
-                                        .update({"date": DateTime.now().toString()})
-                                        .then((value) {})
-                                        .catchError((onError) {
-                                          print("errornotification :" + onError.toString());
-                                        });
                                   }
-                                });
+                                });*/
 
-                                return noView == false
+                                return dataList.child("view").value != null
                                     ? SizedBox()
                                     : Column(
                                         children: [
@@ -116,6 +119,13 @@ class _NotificationsState extends State<Notifications> {
                                                   .format(DateTime.parse(dataList.child("date").value.toString())),
                                               style: TextStyle(fontSize: 11),
                                             ),
+                                            trailing: GestureDetector(
+                                                onTap: () {
+                                                  dataList.ref.update({"view": true}).then((value) {
+                                                    setState(() {});
+                                                  });
+                                                },
+                                                child: Icon(Icons.delete)),
                                           ),
                                           Container(
                                             margin: EdgeInsets.only(right: 25, left: 10),

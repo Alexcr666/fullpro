@@ -13,6 +13,7 @@ import 'package:fullpro/pages/profesional/profileProfesional.dart';
 import 'package:fullpro/utils/utils.dart';
 import 'package:fullpro/widgets/widget.dart';
 import 'package:intl/intl.dart';
+import 'package:money_formatter/money_formatter.dart';
 import 'package:provider/provider.dart';
 import 'package:fullpro/animation/fadeTop.dart';
 import 'package:fullpro/config.dart';
@@ -252,23 +253,19 @@ class _subServicePageState extends State<subServicePage> {
                                                   width: 80,
                                                   child: GestureDetector(
                                                     onTap: () {
-                                                      /* Navigator.push(
-                                                          context,
-                                                          MaterialPageRoute(
-                                                              builder: (context) => ProfileProfesionalPage(
-                                                                    id: dataList.key.toString(),
-                                                                  )));*/
-
                                                       showDialog(
                                                           context: context,
-                                                          builder: (BuildContext context) {
+                                                          builder: (BuildContext contextAlert) {
                                                             DataSnapshot? dataPartners;
                                                             return AlertDialog(
                                                               backgroundColor: Colors.white,
                                                               insetPadding: EdgeInsets.all(0),
                                                               contentPadding: EdgeInsets.all(0),
                                                               content: Container(
-                                                                  color: Colors.white,
+                                                                  decoration: BoxDecoration(
+                                                                    borderRadius: BorderRadius.circular(10),
+                                                                    color: Colors.white,
+                                                                  ),
                                                                   child: Column(
                                                                     mainAxisSize: MainAxisSize.min,
                                                                     children: [
@@ -291,7 +288,9 @@ class _subServicePageState extends State<subServicePage> {
                                                                       ClipRRect(
                                                                         borderRadius: BorderRadius.circular(25),
                                                                         child: Image.network(
-                                                                          dataList.child("foto").value.toString(),
+                                                                          dataList.child("foto").value == null
+                                                                              ? ""
+                                                                              : dataList.child("foto").value.toString(),
                                                                           errorBuilder: (BuildContext? context, Object? exception,
                                                                               StackTrace? stackTrace) {
                                                                             return Container(
@@ -308,6 +307,35 @@ class _subServicePageState extends State<subServicePage> {
                                                                       SizedBox(
                                                                         height: 20,
                                                                       ),
+                                                                      Container(
+                                                                        margin: EdgeInsets.only(left: 10),
+                                                                        child: Text(
+                                                                          "Descripción",
+                                                                          style: TextStyle(
+                                                                              color: secondryColor,
+                                                                              fontWeight: FontWeight.bold,
+                                                                              fontSize: 15),
+                                                                        ),
+                                                                        alignment: Alignment.centerLeft,
+                                                                      ),
+                                                                      SizedBox(
+                                                                        height: 4,
+                                                                      ),
+                                                                      Container(
+                                                                          alignment: Alignment.centerLeft,
+                                                                          margin: EdgeInsets.only(left: 10, right: 20),
+                                                                          child: Text(
+                                                                            dataList.child("name").value == null
+                                                                                ? Locales.string(context, 'lang_nodisponible')
+                                                                                : dataList.child("name").value.toString(),
+                                                                            style: TextStyle(
+                                                                                color: Colors.black,
+                                                                                fontWeight: FontWeight.bold,
+                                                                                fontSize: 12),
+                                                                          )),
+                                                                      SizedBox(
+                                                                        height: 10,
+                                                                      ),
                                                                       Row(
                                                                         children: [
                                                                           Container(
@@ -316,21 +344,19 @@ class _subServicePageState extends State<subServicePage> {
                                                                                 crossAxisAlignment: CrossAxisAlignment.start,
                                                                                 children: [
                                                                                   Text(
-                                                                                    Locales.string(context, 'lang_nameservice'),
+                                                                                    "Categoria",
                                                                                     style: TextStyle(
                                                                                         color: secondryColor,
                                                                                         fontWeight: FontWeight.bold,
-                                                                                        fontSize: 14),
+                                                                                        fontSize: 16),
                                                                                   ),
                                                                                   SizedBox(
                                                                                     height: 2,
                                                                                   ),
                                                                                   Text(
-                                                                                    dataList
-                                                                                        .child("category")
-                                                                                        .value
-                                                                                        .toString()
-                                                                                        .capitalize(),
+                                                                                    dataList.child("category").value == null
+                                                                                        ? Locales.string(context, 'lang_nodisponible')
+                                                                                        : dataList.child("category").value.toString(),
                                                                                     style: TextStyle(
                                                                                         color: Colors.black,
                                                                                         fontWeight: FontWeight.bold,
@@ -338,6 +364,16 @@ class _subServicePageState extends State<subServicePage> {
                                                                                   ),
                                                                                   SizedBox(
                                                                                     height: 10,
+                                                                                  ),
+                                                                                  Text(
+                                                                                    "Calificación",
+                                                                                    style: TextStyle(
+                                                                                        color: secondryColor,
+                                                                                        fontWeight: FontWeight.bold,
+                                                                                        fontSize: 15),
+                                                                                  ),
+                                                                                  SizedBox(
+                                                                                    height: 2,
                                                                                   ),
                                                                                   Text(dataPartners == null
                                                                                       ? ""
@@ -382,15 +418,28 @@ class _subServicePageState extends State<subServicePage> {
                                                                           Column(
                                                                             crossAxisAlignment: CrossAxisAlignment.start,
                                                                             children: [
+                                                                              SizedBox(
+                                                                                height: 10,
+                                                                              ),
                                                                               Text(
                                                                                 Locales.string(context, 'lang_costservice'),
                                                                                 style: TextStyle(
                                                                                     color: secondryColor,
                                                                                     fontWeight: FontWeight.bold,
-                                                                                    fontSize: 14),
+                                                                                    fontSize: 15),
                                                                               ),
                                                                               Text(
-                                                                                '\$' + dataList.child("price").value.toString(),
+                                                                                dataList.child("price").value == null
+                                                                                    ? '\$' + "0"
+                                                                                    : '\$' +
+                                                                                        MoneyFormatter(
+                                                                                                amount: double.parse(dataList
+                                                                                                    .child("price")
+                                                                                                    .value
+                                                                                                    .toString()))
+                                                                                            .output
+                                                                                            .withoutFractionDigits
+                                                                                            .toString(),
                                                                                 style: TextStyle(
                                                                                     color: Colors.black,
                                                                                     fontWeight: FontWeight.bold,
@@ -411,18 +460,6 @@ class _subServicePageState extends State<subServicePage> {
                                                                       ),
                                                                       Container(
                                                                           margin: EdgeInsets.only(left: 20, right: 20),
-                                                                          child: Text(
-                                                                            "",
-                                                                            style: TextStyle(
-                                                                                color: secondryColor,
-                                                                                fontWeight: FontWeight.bold,
-                                                                                fontSize: 12),
-                                                                          )),
-                                                                      SizedBox(
-                                                                        height: 20,
-                                                                      ),
-                                                                      Container(
-                                                                          margin: EdgeInsets.only(left: 20, right: 20),
                                                                           child: Row(
                                                                             children: [
                                                                               Flexible(
@@ -436,10 +473,9 @@ class _subServicePageState extends State<subServicePage> {
                                                                               ),
                                                                               Flexible(
                                                                                   child: AppWidget().buttonFormLine(
-                                                                                      context, Locales.string(context, 'lbl_accept'), false,
-                                                                                      tap: () {
-                                                                                //  Navigator.pop(context);
-
+                                                                                      context,
+                                                                                      Locales.string(context, 'lang_solicitudtext'),
+                                                                                      false, tap: () {
                                                                                 Navigator.pop(context);
 
                                                                                 Query historyRef = FirebaseDatabase.instance

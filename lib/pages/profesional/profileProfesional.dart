@@ -12,6 +12,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 
 import 'package:dotted_border/dotted_border.dart';
+import 'package:firebase_database/firebase_database.dart' as userFirebase;
 import 'package:fullpro/pages/INTEGRATION/models/user_model.dart' as userD;
 import 'package:file_picker/file_picker.dart';
 
@@ -170,6 +171,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
 
   // TextEditingController passwordController = TextEditingController();
   double _currentSliderValue = 20;
+  double ratingProfessional = 0;
   Widget pageOrdens() {
     return FutureBuilder(
         future: FirebaseDatabase.instance.ref().child('ordens').orderByChild("professional").equalTo(widget.id.toString()).once(),
@@ -180,7 +182,15 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
             dataListObjectOrdens = response.snapshot.children;
             DataSnapshot? dataListObject = null;
 
-            //   for (var i = 0; i < response.snapshot.children.toList().length; i++) {
+            for (var i = 0; i < response.snapshot.children.toList().length; i++) {
+              double sum = 0;
+              sum += double.parse(response.snapshot.children.toList()[i].child("ratingClient").value.toString());
+              ratingProfessional = sum / (response.snapshot.children.toList().length + 1);
+            }
+
+            Timer.run(() {
+              setState(() {});
+            });
 
             //return Text(dataListObject!.child("name").value.toString());
 
@@ -613,9 +623,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                     height: 5,
                                   ),
                                   RatingBarIndicator(
-                                      rating: getDataUser()!.child("rating").value == null
-                                          ? 0
-                                          : double.parse(getDataUser()!.child("rating").value.toString()),
+                                      rating: ratingProfessional,
                                       itemCount: 5,
                                       itemSize: 30.0,
                                       itemBuilder: (context, _) => Icon(
@@ -957,16 +965,17 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                 itemBuilder: (BuildContext context, int index) {
                   DataSnapshot dataList = dataListObjectOrdens!.toList().reversed.toList()[index];
 
-                  if (dataList.child("rating").value == 0) {
+                  if (dataList.child("ratingClient").value == 0) {
                     emptyResult = true;
                   }
 
-                  return dataList.child("rating").value == 0
-                      ? (index == dataListObjectOrdens!.length)
+                  return dataList.child("ratingClient").value == 0
+                      ? /*(index == dataListObjectOrdens!.length)
                           ? SizedBox()
                           : emptyResult == false
                               ? SizedBox()
-                              : SizedBox()
+                              : SizedBox()*/
+                      SizedBox()
                       : Container(
                           margin: EdgeInsets.only(left: 20, right: 20, top: 10),
                           decoration: AppWidget().boxShandowGreyRectangule(),
@@ -1015,14 +1024,14 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                                             Text(
                                                               response.snapshot.child("fullname").value == null
                                                                   ? Locales.string(context, 'lang_nodisponible')
-                                                                  : response.snapshot.child("fullname").value.toString(),
+                                                                  : response.snapshot.child("fullname").value.toString().capitalize(),
                                                               style: TextStyle(
-                                                                  color: secondryColor, fontSize: 17, fontWeight: FontWeight.bold),
+                                                                  color: secondryColor, fontSize: 15, fontWeight: FontWeight.bold),
                                                             ),
                                                             RatingBarIndicator(
-                                                                rating: response.snapshot.child("rating").value == null
+                                                                rating: dataList.child("ratingClient").value == null
                                                                     ? 0
-                                                                    : double.parse(response.snapshot.child("rating").value.toString()),
+                                                                    : double.parse(dataList.child("ratingClient").value.toString()),
                                                                 itemCount: 5,
                                                                 itemSize: 16.0,
                                                                 itemBuilder: (context, _) => Icon(
@@ -1314,21 +1323,21 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                   ),
                   AppWidget().texfieldFormat(
                       controller: emailController,
-                      title: "Correo electronico",
+                      title: Locales.string(context, "lang_email"),
                       enabled: FirebaseAuth.instance.currentUser!.uid == widget.id ? false : true),
                   SizedBox(
                     height: 10,
                   ),
                   AppWidget().texfieldFormat(
                       controller: phoneController,
-                      title: "Celular",
+                      title: Locales.string(context, "lang_phone"),
                       enabled: FirebaseAuth.instance.currentUser!.uid == widget.id ? false : true),
                   SizedBox(
                     height: 10,
                   ),
                   AppWidget().texfieldFormat(
                       controller: professionController,
-                      title: "Profesión",
+                      title: Locales.string(context, "lang_profesion"),
                       enabled: FirebaseAuth.instance.currentUser!.uid == widget.id ? false : true),
                   SizedBox(
                     height: 10,
@@ -1512,7 +1521,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                     child: Container(
                                       height: 40,
                                       width: double.infinity,
-                                      child: Center(child: Text("Drag & Drop your files or Mobile")),
+                                      child: Center(child: Text(Locales.string(context, "lang_upload_file"))),
                                     ),
                                   ),
                                 )),
@@ -1629,7 +1638,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                     child: Container(
                                       height: 40,
                                       width: double.infinity,
-                                      child: Center(child: Text("Drag & Drop your files or Mobile")),
+                                      child: Center(child: Text(Locales.string(context, "lang_upload_file"))),
                                     ),
                                   ),
                                 )),
@@ -1769,7 +1778,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                 child: Container(
                                   height: 40,
                                   width: double.infinity,
-                                  child: Center(child: Text("Drag & Drop your files or Mobile")),
+                                  child: Center(child: Text(Locales.string(context, "lang_upload_file"))),
                                 ),
                               ),
                             ))),
@@ -1973,8 +1982,9 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
         country.text = dataSnapshot.child("country").value.toString();
 
         city.text = dataSnapshot.child("city").value.toString();
-
-        setState(() {});
+        try {
+          setState(() {});
+        } catch (e) {}
       } else {}
     });
 
@@ -2050,10 +2060,11 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                     }
                                   }
 
-                                  if (FirebaseAuth.instance.currentUser!.uid != widget.id) {
+                                  openAlert() {
                                     showDialog(
                                         context: context,
                                         builder: (BuildContext contextAlert) {
+                                          DataSnapshot? dataPartners;
                                           return AlertDialog(
                                             backgroundColor: Colors.white,
                                             insetPadding: EdgeInsets.all(0),
@@ -2154,16 +2165,35 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                                                 SizedBox(
                                                                   height: 2,
                                                                 ),
-                                                                RatingBarIndicator(
-                                                                    rating: dataList.child("rating").value == null
-                                                                        ? 0
-                                                                        : double.parse(dataList.child("rating").value.toString()),
-                                                                    itemCount: 5,
-                                                                    itemSize: 25.0,
-                                                                    itemBuilder: (context, _) => Icon(
-                                                                          Icons.star_border_rounded,
-                                                                          color: secondryColor,
-                                                                        )),
+                                                                Text(dataPartners == null
+                                                                    ? ""
+                                                                    : dataPartners!.child("fullname").value.toString()),
+                                                                FutureBuilder(
+                                                                    future: FirebaseDatabase.instance
+                                                                        .ref()
+                                                                        .child('partners')
+                                                                        .child(dataList.child("user").value.toString())
+                                                                        .once(),
+                                                                    builder: (BuildContext context, AsyncSnapshot snapshot) {
+                                                                      if (snapshot.hasData) {
+                                                                        DatabaseEvent response = snapshot.data;
+                                                                        DataSnapshot dataRating = response.snapshot;
+                                                                        dataPartners = dataRating;
+
+                                                                        return RatingBarIndicator(
+                                                                            rating: dataRating.child("rating").value == null
+                                                                                ? 0
+                                                                                : double.parse(dataRating.child("rating").value.toString()),
+                                                                            itemCount: 5,
+                                                                            itemSize: 16.0,
+                                                                            itemBuilder: (context, _) => Icon(
+                                                                                  Icons.star,
+                                                                                  color: secondryColor,
+                                                                                ));
+                                                                      } else {
+                                                                        return AppWidget().loading();
+                                                                      }
+                                                                    }),
                                                                 SizedBox(
                                                                   height: 10,
                                                                 ),
@@ -2224,10 +2254,10 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                                                     context, Locales.string(context, 'lang_solicitudtext'), false, tap: () {
                                                               Navigator.pop(context);
 
-                                                              queryFirebase.Query historyRef = FirebaseDatabase.instance
+                                                              userFirebase.Query historyRef = FirebaseDatabase.instance
                                                                   .ref()
                                                                   .child('ordens')
-                                                                  .child(getDataUser()!.child("cart").value.toString());
+                                                                  .child(userDataProfile!.child("cart").value.toString());
 
                                                               createService(DataSnapshot snapshot) {
                                                                 snapshot.ref.child("services").push().set({
@@ -2241,29 +2271,50 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                                                 });
                                                               }
 
-                                                              historyRef.once().then((e) async {
-                                                                final snapshot = e.snapshot;
-                                                                if (snapshot.value != null) {
-                                                                  if (snapshot.child("professional").value.toString() ==
-                                                                      getDataUser()!.key.toString()) {
-                                                                    createService(snapshot);
+                                                              if (userDataProfile!.child("cart").value != null) {
+                                                                historyRef.once().then((e) async {
+                                                                  final snapshot = e.snapshot;
+                                                                  if (snapshot.value != null) {
+                                                                    if (snapshot.child("professional").value.toString() ==
+                                                                        userDataProfile!.key.toString()) {
+                                                                      createService(snapshot);
+                                                                    } else {
+                                                                      AppWidget().itemMessage(
+                                                                          "No se puede seleccionar otro professional", context);
+                                                                    }
                                                                   } else {
-                                                                    AppWidget()
-                                                                        .itemMessage("No se puede seleccionar otro professional", context);
-                                                                  }
-                                                                } else {
-                                                                  createOrdens(context,
-                                                                      name: dataList.child("name").value.toString(),
-                                                                      inspections: dataList.child("inspections").value.toString(),
-                                                                      profesionalName: dataList.child("fullname").value.toString(),
-                                                                      profesional: getDataUser()!.key.toString(),
-                                                                      price: int.parse(dataList.child("price").value.toString()));
+                                                                    createOrdens(context,
+                                                                        name: dataList.child("name").value.toString(),
+                                                                        inspections: dataList.child("inspections").value.toString(),
+                                                                        profesionalName: dataPartners!.child("fullname").value.toString(),
+                                                                        profesional: dataPartners!.key,
+                                                                        price: int.parse(dataList.child("price").value.toString()));
 
-                                                                  Future.delayed(const Duration(milliseconds: 1000), () {
-                                                                    createService(snapshot);
+                                                                    Future.delayed(const Duration(milliseconds: 1000), () {
+                                                                      createService(snapshot);
+                                                                    });
+                                                                  }
+                                                                });
+                                                              } else {
+                                                                createOrdens(context,
+                                                                    name: dataList.child("name").value.toString(),
+                                                                    inspections: dataList.child("inspections").value.toString(),
+                                                                    profesionalName: dataPartners!.child("fullname").value.toString(),
+                                                                    profesional: dataPartners!.key.toString(),
+                                                                    price: int.parse(dataList.child("price").value.toString()));
+
+                                                                Future.delayed(const Duration(milliseconds: 1000), () {
+                                                                  // createService(snapshot);
+
+                                                                  userFirebase.Query historyRef = FirebaseDatabase.instance
+                                                                      .ref()
+                                                                      .child('ordens')
+                                                                      .child(userDataProfile!.child("cart").value.toString());
+                                                                  historyRef.once().then((value) {
+                                                                    createService(value.snapshot);
                                                                   });
-                                                                }
-                                                              });
+                                                                });
+                                                              }
                                                             })),
                                                           ],
                                                         )),
@@ -2274,52 +2325,10 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                                 )),
                                           );
                                         });
-                                    /* showModalBottomSheet(
-                                          context: context,
-                                          builder: (context) {
-                                            return Column(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: <Widget>[
-                                                ListTile(
-                                                  title: new Text('Ver portafolio'),
-                                                  onTap: () {
-                                                    Navigator.pop(context);
-                                                    watchService((dataList!.child("foto").value.toString()));
-                                                  },
-                                                ),
-                                                ListTile(
-                                                  title: new Text('Agregar servicio'),
-                                                  onTap: () {
-                                                    Query historyRef = FirebaseDatabase.instance
-                                                        .ref()
-                                                        .child('ordens')
-                                                        .child(getDataUser()!.child("cart").value.toString());
+                                  }
 
-                                                    historyRef.once().then((e) async {
-                                                      final snapshot = e.snapshot;
-                                                      if (snapshot.value != null) {
-                                                        snapshot.ref.child("services").push().set({
-                                                          "foto": dataList.child("foto").value.toString(),
-                                                          "name": dataList.child("name").value,
-                                                          "price": dataList.child("price").value
-                                                        }).then((value) {
-                                                          AppWidget().itemMessage("Agregado", context);
-                                                        }).catchError((onError) {
-                                                          AppWidget().itemMessage("Ha ocurrido un error", context);
-                                                        });
-                                                      } else {
-                                                       
-                                                      }
-                                                    });
-                                                  },
-                                                ),
-                                                ListTile(
-                                                  title: new Text(Locales.string(context, 'lang_cancel')),
-                                                  onTap: () {},
-                                                ),
-                                              ],
-                                            );
-                                          });*/
+                                  if (FirebaseAuth.instance.currentUser!.uid != widget.id) {
+                                    openAlert();
                                   } else {
                                     watchService((dataList.child("foto").value.toString()));
                                   }

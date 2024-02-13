@@ -156,23 +156,12 @@ class _SupportAppPageState extends State<SupportAppPage> {
                           child: Row(
                         children: [
                           Text(
-                            "Creación de",
+                            Locales.string(context, "lang_creation_support"),
                             style: TextStyle(
                               color: secondryColor,
                               fontSize: 20,
                             ),
                           ),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          Text(
-                            "solicitud",
-                            style: TextStyle(
-                              color: secondryColor,
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          )
                         ],
                       )),
                     ],
@@ -184,13 +173,13 @@ class _SupportAppPageState extends State<SupportAppPage> {
 
                   SizedBox(height: 10),
 
-                  AppWidget().texfieldFormat(
-                      title: Locales.string(context, 'lbl_fullname'), urlIcon: "images/icons/support1.svg", controller: _nameController),
+                  //  AppWidget().texfieldFormat(
+                  //    title: Locales.string(context, 'lbl_fullname'), urlIcon: "images/icons/support1.svg", controller: _nameController),
 
                   SizedBox(height: 10),
 
-                  AppWidget().texfieldFormat(
-                      title: "Teléfono de contacto", urlIcon: "images/icons/support2.svg", controller: _phoneController, number: true),
+                  //   AppWidget().texfieldFormat(
+                  //     title: "Teléfono de contacto", urlIcon: "images/icons/support2.svg", controller: _phoneController, number: true),
 
                   SizedBox(height: 10),
                   GestureDetector(
@@ -229,9 +218,20 @@ class _SupportAppPageState extends State<SupportAppPage> {
                           title: "Fecha de solicitud", controller: _dateController, urlIcon: "images/icons/calendar.svg", enabled: true)),
 
                   SizedBox(height: 10),
+                  Container(
+                      decoration: BoxDecoration(
+                          border: Border.all(color: secondryColor, width: 1), borderRadius: BorderRadius.all(Radius.circular(10))),
+                      child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: TextField(
+                          controller: _descriptionController,
+                          maxLines: 8, //or null
+                          decoration: InputDecoration.collapsed(hintText: Locales.string(context, "lang_description")),
+                        ),
+                      )),
 
-                  AppWidget()
-                      .texfieldFormat(title: "Descripción", urlIcon: "images/icons/support4.svg", controller: _descriptionController),
+                  // AppWidget()
+                  //   .texfieldFormat(title: "Descripción", urlIcon: "images/icons/support4.svg", controller: _descriptionController),
 
                   SizedBox(height: 10),
 
@@ -256,8 +256,8 @@ class _SupportAppPageState extends State<SupportAppPage> {
                       // Prepare data to be saved on users table
 
                       Map userMap = {
-                        'name': _nameController.text,
-                        'phone': _phoneController.text,
+                        'name': userDataProfile!.child("fullname").value.toString(),
+                        'phone': userDataProfile!.child("phone").value.toString(),
                         'user': FirebaseAuth.instance.currentUser!.uid.toString(),
                         'date': _dateController.text,
                         'description': _descriptionController.text,

@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:fullpro/PROFESIONAL/views/homepage.dart';
 
 import 'package:fullpro/PROFESIONAL/views/support/listSupport.dart';
 
@@ -161,23 +162,12 @@ class _SupportAppProfessionalPageState extends State<SupportAppProfessionalPage>
                           child: Row(
                         children: [
                           Text(
-                            "Creación de",
+                            Locales.string(context, "lang_creation_support"),
                             style: TextStyle(
                               color: secondryColor,
                               fontSize: 20,
                             ),
                           ),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          Text(
-                            "solicitud",
-                            style: TextStyle(
-                              color: secondryColor,
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          )
                         ],
                       )),
                     ],
@@ -189,13 +179,13 @@ class _SupportAppProfessionalPageState extends State<SupportAppProfessionalPage>
 
                   SizedBox(height: 10),
 
-                  AppWidget().texfieldFormat(
-                      title: Locales.string(context, 'lbl_fullname'), urlIcon: "images/icons/support1.svg", controller: _nameController),
+                  //   AppWidget().texfieldFormat(
+                  //     title: Locales.string(context, 'lbl_fullname'), urlIcon: "images/icons/support1.svg", controller: _nameController),
 
-                  SizedBox(height: 10),
+                  //SizedBox(height: 10),
 
-                  AppWidget().texfieldFormat(
-                      title: "Teléfono de contacto", urlIcon: "images/icons/support2.svg", controller: _phoneController, number: true),
+                  //   AppWidget().texfieldFormat(
+                  //     title: "Teléfono de contacto", urlIcon: "images/icons/support2.svg", controller: _phoneController, number: true),
 
                   SizedBox(height: 10),
 
@@ -239,9 +229,19 @@ class _SupportAppProfessionalPageState extends State<SupportAppProfessionalPage>
                   //    .texfieldFormat(title: "Fecha de solicitud", urlIcon: "images/icons/support3.svg", controller: _dateController),
 
                   SizedBox(height: 10),
-
-                  AppWidget()
-                      .texfieldFormat(title: "Descripción", urlIcon: "images/icons/support4.svg", controller: _descriptionController),
+                  Container(
+                      decoration: BoxDecoration(
+                          border: Border.all(color: secondryColor, width: 1), borderRadius: BorderRadius.all(Radius.circular(10))),
+                      child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: TextField(
+                          controller: _descriptionController,
+                          maxLines: 8, //or null
+                          decoration: InputDecoration.collapsed(hintText: Locales.string(context, "lang_description")),
+                        ),
+                      )),
+                  //    AppWidget()
+                  //      .texfieldFormat(title: "Descripción", urlIcon: "images/icons/support4.svg", controller: _descriptionController),
 
                   SizedBox(height: 10),
 
@@ -266,8 +266,8 @@ class _SupportAppProfessionalPageState extends State<SupportAppProfessionalPage>
                       // Prepare data to be saved on users table
 
                       Map userMap = {
-                        'name': _nameController.text,
-                        'phone': _phoneController.text,
+                        'name': userInfoPartners!.child("fullname").value.toString(),
+                        'phone': userInfoPartners!.child("phone").value.toString(),
                         'date': _dateController.text,
                         'user': FirebaseAuth.instance.currentUser!.uid.toString(),
                         'description': _descriptionController.text,
@@ -277,7 +277,7 @@ class _SupportAppProfessionalPageState extends State<SupportAppProfessionalPage>
                       newUserRef.set(userMap).then((value) {
                         Navigator.pop(context);
 
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => ListSupportProfessionalPage()));
+                        // Navigator.push(context, MaterialPageRoute(builder: (context) => ListSupportProfessionalPage()));
 
                         AppWidget().itemMessage("Guardado", context);
                       }).catchError((onError) {

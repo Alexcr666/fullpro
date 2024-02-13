@@ -125,7 +125,7 @@ class _PayListPageState extends State<PayListPage> {
                                           },
                                         ),
                                         ListTile(
-                                          title: new Text('Actualizar'),
+                                          title: Text(Locales.string(context, "lang_update")),
                                           onTap: () {
                                             Navigator.pop(context);
                                             Navigator.push(

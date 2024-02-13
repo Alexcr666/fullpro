@@ -500,7 +500,7 @@ class _AddressesState extends State<AddressesUser> {
                                 GestureDetector(
                                     onTap: () {
                                       userDataProfile.ref.update({
-                                        "latitud": double.parse(dataList.child("latitude").value.toString()),
+                                        "latitude": double.parse(dataList.child("latitude").value.toString()),
                                         "longitude": double.parse(dataList.child("longitude").value.toString()),
                                         "location": dataList.child("name").value.toString()
                                       }).then((value) {
@@ -633,7 +633,7 @@ class _AddressesState extends State<AddressesUser> {
     String kPLACES_API_KEY = "AIzaSyCfsvZ1kjO-mlfDbbu19sJuYKKd7gcfgqw";
     String type = '(regions,geocode)';
     String baseURL = 'https://maps.googleapis.com/maps/api/place/autocomplete/json';
-    String request = '$baseURL?input=$input&key=$kPLACES_API_KEY&sessiontoken=$_sessionToken';
+    String request = '$baseURL?input=$input&key=$kPLACES_API_KEY&sessiontoken=$_sessionToken&fields=all';
     var response = await http.get(Uri.parse(request));
     if (response.statusCode == 200) {
       setState(() {
@@ -734,9 +734,8 @@ class _AddressesState extends State<AddressesUser> {
                                 });
                               }
 
-                              GeoCode geoCode = GeoCode();
-
                               try {
+                                GeoCode geoCode = GeoCode();
                                 Coordinates coordinates =
                                     await geoCode.forwardGeocoding(address: _placeList[index]["description"].toString());
                                 savedData(_placeList[index]["description"].toString(), coordinates.latitude.toString(),
@@ -744,7 +743,7 @@ class _AddressesState extends State<AddressesUser> {
                                 print("Latitude: ${coordinates.latitude}");
                                 print("Longitude: ${coordinates.longitude}");
                                 userDataProfile.ref.update({
-                                  "latitud": coordinates.latitude,
+                                  "latitude": coordinates.latitude,
                                   "longitude": coordinates.longitude,
                                   "location": _placeList[index]["description"].toString(),
                                 }).then((value) {
@@ -796,7 +795,7 @@ class _AddressesState extends State<AddressesUser> {
                                       contentPadding: EdgeInsets.all(0),
                                       onTap: () {
                                         userDataProfile.ref.update({
-                                          "latitud": data.lat,
+                                          "latitude": data.lat,
                                           "longitude": data.lon,
                                           "location": data.displayName,
                                         }).then((value) {

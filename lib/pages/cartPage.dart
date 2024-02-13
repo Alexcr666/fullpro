@@ -13,6 +13,7 @@ import 'package:fullpro/pages/homepage.dart';
 import 'package:fullpro/pages/profesional/profileProfesional.dart';
 import 'package:fullpro/pages/profile/address/addressUser.dart';
 import 'package:fullpro/stripe/stripe.dart';
+import 'package:fullpro/utils/utils.dart';
 import 'package:fullpro/widgets/widget.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:money_formatter/money_formatter.dart';
@@ -256,7 +257,7 @@ class _CartPageState extends State<CartPage> {
             value.animateCamera(CameraUpdate.newCameraPosition(
               CameraPosition(
                 bearing: 0,
-                target: LatLng(double.parse(userDataProfile!.child("latitud").value.toString()),
+                target: LatLng(double.parse(userDataProfile!.child("latitude").value.toString()),
                     double.parse(userDataProfile!.child("longitude").value.toString())),
                 zoom: 14.0,
               ),
@@ -265,7 +266,7 @@ class _CartPageState extends State<CartPage> {
         });
         dataListObjectGeneral!.ref.update({
           'address': DataSnapshot.child("location").value.toString(),
-          'latitude': DataSnapshot.child("latitud").value.toString(),
+          'latitude': DataSnapshot.child("latitude").value.toString(),
           'longitude': DataSnapshot.child("longitude").value.toString()
         }).then((value) {
           // AppWidget().itemMessage("Actualizado", context);
@@ -348,6 +349,7 @@ class _CartPageState extends State<CartPage> {
     target: LatLng(37.42796133580664, -122.085749655962),
     zoom: 14.4746,
   );
+  String professionalName = "";
 
   Widget getUserProfesional() {
     return FutureBuilder(
@@ -356,6 +358,7 @@ class _CartPageState extends State<CartPage> {
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (snapshot.hasData) {
             DatabaseEvent response = snapshot.data;
+            professionalName = response.snapshot.child("fullname").value.toString().capitalize();
 
             return ListTile(
               onTap: () {
@@ -366,8 +369,8 @@ class _CartPageState extends State<CartPage> {
                               id: response.snapshot.key.toString(),
                             )));
               },
-              leading: AppWidget().circleProfile(response.snapshot.child("photo").value.toString()),
-              title: Text(response.snapshot.child("fullname").value.toString()),
+              leading: AppWidget().circleProfile(response.snapshot.child("photo").value.toString(), size: 60),
+              title: Text(response.snapshot.child("fullname").value.toString().capitalize()),
               subtitle: RatingBarIndicator(
                   rating: response.snapshot.child("rating").value == null
                       ? 0
@@ -413,7 +416,7 @@ class _CartPageState extends State<CartPage> {
         ));
   }
 
-  getTotalPay() {
+  int getTotalPay() {
     int total = 0;
 
     for (var i = 0; i < dataListObjectGeneral!.child("services").children.toList().length; i++) {
@@ -566,7 +569,7 @@ class _CartPageState extends State<CartPage> {
                       Flexible(
                           child: AppWidget().texfieldFormat(
                               controller: _descriptionLocationController,
-                              title: "Apt 501",
+                              title: Locales.string(context, "lang_description"),
                               execute: () {
                                 dataListObjectGeneral!.ref
                                     .update({'description': _descriptionLocationController.text.toString()}).then((value) {});
@@ -1020,8 +1023,8 @@ class _CartPageState extends State<CartPage> {
                   ),
                   itemMoney(Locales.string(context, 'lang_costservice'),
                       '\$' + MoneyFormatter(amount: double.parse(getTotalPay().toString())).output.withoutFractionDigits.toString()),
-                  itemMoney(Locales.string(context, 'lang_tarifaservice'),
-                      '\$' + MoneyFormatter(amount: (int.parse(getTotalPay().toString()) / 10)).output.withoutFractionDigits.toString()),
+                  //  itemMoney(Locales.string(context, 'lang_tarifaservice'),
+                  //    '\$' + MoneyFormatter(amount: (int.parse(getTotalPay().toString()) / 10)).output.withoutFractionDigits.toString()),
 
                   //  itemMoney("Costo del domicilio",
                   //    '\$' + (int.parse(dataListObjectGeneral!.child("price").value.toString()) / 10).round().toString()),
@@ -1133,11 +1136,7 @@ class _CartPageState extends State<CartPage> {
                 Text(
                   /* currencyPos == 'left' ? '$currencySymbol' : '$ktotalprice'*/ dataListObjectGeneral!.child("price").value == null
                       ? '\$' + "0"
-                      : '\$' +
-                          MoneyFormatter(amount: (int.parse(getTotalPay().toString()) + int.parse(getTotalPay().toString()) / 10))
-                              .output
-                              .withoutFractionDigits
-                              .toString(),
+                      : '\$' + MoneyFormatter(amount: double.parse(getTotalPay().toString())).output.withoutFractionDigits.toString(),
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 22,
@@ -1154,8 +1153,9 @@ class _CartPageState extends State<CartPage> {
                     child: AppWidget().buttonFormLine(context, Locales.string(context, 'lang_solicitudtext'), false,
                         urlIcon: "images/icons/userDone.svg", tap: () {
                       payOrden() {
-                        int value = int.parse((getTotalPay() + ((getTotalPay() / 10))).round().toString());
+                        int value = getTotalPay();
                         AppStripe().makePayment(value, context, execute: () {
+                          dataListObjectGeneral!.ref.update({'professionalName': professionalName});
                           dataListObjectGeneral!.ref.update({'state': 1}).then((value) {
                             // setState(() {});
                             userDataProfile!.ref.child("cart").remove().then((value) {

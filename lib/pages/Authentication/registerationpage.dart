@@ -94,7 +94,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
     } on FirebaseAuthException catch (ex) {
       switch (ex.code) {
         case "email-already-in-use":
-          AppWidget().itemMessage("Correo electronico ya existe", context);
+          AppWidget().itemMessage(Locales.string(context, "lang_exist_email"), context);
           break;
         default:
           errorMessage = Locales.string(context, 'error_undefined');

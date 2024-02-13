@@ -394,7 +394,7 @@ class _DetailsOrderPageState extends State<DetailsOrderPage> {
                           backgroundColor: Colors.grey.withOpacity(0.3),
                           radius: 30,
                         ),
-                        title: Text(dataList.child("nameProfessional").value.toString()),
+                        title: Text(dataList.child("professionalName").value.toString()),
                       );
                     });
               }
@@ -675,7 +675,8 @@ class _DetailsOrderPageState extends State<DetailsOrderPage> {
                     width: 200,
                     child: AppWidget().buttonFormColor(
                         context,
-                        stateOrder[dataListObjectGeneral == null ? 0 : int.parse(dataListObjectGeneral!.child("state").value.toString())],
+                        getStateOrder(
+                            context, dataListObjectGeneral == null ? 0 : int.parse(dataListObjectGeneral!.child("state").value.toString())),
                         stateOrderColor[dataListObjectGeneral == null
                             ? 0
                             : int.parse(dataListObjectGeneral!.child("state").value.toString())], tap: () {

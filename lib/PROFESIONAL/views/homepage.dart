@@ -432,7 +432,7 @@ class _HomePageState extends State<HomePage> {
         resizeToAvoidBottomInset: false,
         backgroundColor: appcolors.dashboardCard,
         bottomNavigationBar: const BottomNav(),
-        //   appBar: appbarProfessional(context, getD,false),
+        appBar: appbarProfessional(context, userInfoPartners!, false),
         /*  appBar: AppBar(
           centerTitle: false,
           title: Column(

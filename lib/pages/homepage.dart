@@ -22,6 +22,7 @@ import 'package:fullpro/utils/utils.dart';
 import 'package:fullpro/widgets/widget.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:money_formatter/money_formatter.dart';
 import 'package:provider/provider.dart';
 import 'package:fullpro/animation/fadeBottom.dart';
 import 'package:fullpro/animation/fadeRight.dart';
@@ -96,28 +97,28 @@ class _kHomePageState extends State<kHomePage> {
   void _initMarkers() {
     _marker.clear();
 
-    FirebaseDatabase.instance.ref().child("partners").orderByChild("profesion").equalTo(_searchHome.text).once().then((value) {
-      DatabaseEvent response = value;
+    profesion(DatabaseEvent data) {
+      DatabaseEvent response = data;
 
       for (var i = 0; i < response.snapshot.children.length; i++) {
         DataSnapshot dataList = response.snapshot.children.toList()[i];
 
         //  if (dataList.child("professional").value.toString() == _searchHome.text.toString()) {
-        if (dataList.child("latitud").value != null && dataList.child("longitude").value != null) {
+        if (dataList.child("latitude").value != null && dataList.child("longitude").value != null) {
           MarkerId markerId = new MarkerId(dataList.key.toString());
           _marker.add(
             new Marker(
               markerId: markerId,
               infoWindow: InfoWindow(title: dataList.child("fullname").value.toString()),
               position: LatLng(
-                  double.parse(dataList.child("latitud").value.toString()), double.parse(dataList.child("longitude").value.toString())),
+                  double.parse(dataList.child("latitude").value.toString()), double.parse(dataList.child("longitude").value.toString())),
               onTap: () {
-                /*Navigator.push(
+                Navigator.push(
                     context,
                     MaterialPageRoute(
                         builder: (context) => ProfileProfesionalPage(
                               id: markerId.toString(),
-                            )));*/
+                            )));
                 // Handle on marker tap
               },
               icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
@@ -127,7 +128,17 @@ class _kHomePageState extends State<kHomePage> {
         //}
       }
       setState(() {});
-    });
+    }
+
+    if (_searchHome.text.isEmpty) {
+      FirebaseDatabase.instance.ref().child("partners").once().then((value) {
+        profesion(value);
+      });
+    } else {
+      FirebaseDatabase.instance.ref().child("partners").orderByChild("profesion").equalTo(_searchHome.text).once().then((value) {
+        profesion(value);
+      });
+    }
 
 /*    UserRef.once().then((e) async {
       final dataSnapshot = e.snapshot;
@@ -373,7 +384,7 @@ class _kHomePageState extends State<kHomePage> {
           value.animateCamera(CameraUpdate.newCameraPosition(
             CameraPosition(
               bearing: 0,
-              target: LatLng(double.parse(userDataProfile!.child("latitud").value.toString()),
+              target: LatLng(double.parse(userDataProfile!.child("latitude").value.toString()),
                   double.parse(userDataProfile!.child("longitude").value.toString())),
               zoom: 14.0,
             ),
@@ -586,7 +597,9 @@ class _kHomePageState extends State<kHomePage> {
   Widget pageProfessional() {
     return FutureBuilder(
         // initialData: 1,
-        future: FirebaseDatabase.instance.ref().child('partners').orderByChild("profesion").equalTo(_searchHome.text).once(),
+        future: _searchHome.text.isEmpty
+            ? FirebaseDatabase.instance.ref().child('partners').once()
+            : FirebaseDatabase.instance.ref().child('partners').orderByChild("profesion").equalTo(_searchHome.text).once(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           bool resultPrimary = false;
           if (snapshot.hasData) {
@@ -615,10 +628,10 @@ class _kHomePageState extends State<kHomePage> {
                               _distanceInMeters = await Geolocator.distanceBetween(
                                 double.parse(dataList.child("latitude").value.toString()),
                                 double.parse(dataList.child("longitude").value.toString()),
-                                userDataProfile!.child("latitud").value == null
+                                userDataProfile!.child("latitude").value == null
                                     ? double.parse(dataList.child("latitude").value.toString())
-                                    : double.parse(userDataProfile!.child("latitud").value.toString()),
-                                userDataProfile!.child("latitud").value == null
+                                    : double.parse(userDataProfile!.child("latitude").value.toString()),
+                                userDataProfile!.child("latitude").value == null
                                     ? double.parse(dataList.child("longitude").value.toString())
                                     : double.parse(userDataProfile!.child("longitude").value.toString()),
                               );
@@ -945,16 +958,307 @@ class _kHomePageState extends State<kHomePage> {
 
               for (var i = 0; i < response.snapshot.children.toList().length; i++) {
                 DataSnapshot dataList = response.snapshot.children.toList()[i];
-                pageView.add(Container(
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: NetworkImage(dataList.child("foto").value.toString()),
-                      fit: BoxFit.cover,
-                    ),
-                    color: Static.dashboardCard,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ));
+                pageView.add(GestureDetector(
+                    onTap: () {
+                      //  DataSnapshot dataList = response.snapshot.children.toList()[value];
+                      if (dataList.child("type").value.toString() == "profile") {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ProfileProfesionalPage(
+                                      id: dataList.child("idBanner").value.toString(),
+                                    )));
+                      }
+
+                      if (dataList.child("type").value.toString() == "portafolio") {
+                        openAlert(DataSnapshot dataList) {
+                          showDialog(
+                              context: context,
+                              builder: (BuildContext contextAlert) {
+                                DataSnapshot? dataPartners;
+                                return AlertDialog(
+                                  backgroundColor: Colors.white,
+                                  insetPadding: EdgeInsets.all(0),
+                                  contentPadding: EdgeInsets.all(0),
+                                  content: Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                        color: Colors.white,
+                                      ),
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          SizedBox(
+                                            height: 20,
+                                          ),
+                                          Container(
+                                              width: double.infinity,
+                                              child: Text(
+                                                Locales.string(context, 'lang_infoservicio'),
+                                                style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 17),
+                                                textAlign: TextAlign.center,
+                                              )),
+                                          SizedBox(
+                                            height: 20,
+                                          ),
+                                          ClipRRect(
+                                            borderRadius: BorderRadius.circular(25),
+                                            child: Image.network(
+                                              dataList.child("foto").value == null ? "" : dataList.child("foto").value.toString(),
+                                              errorBuilder: (BuildContext? context, Object? exception, StackTrace? stackTrace) {
+                                                return Container(
+                                                  width: 200,
+                                                  height: 100,
+                                                  color: Colors.grey.withOpacity(0.3),
+                                                );
+                                              },
+                                              width: 220,
+                                              height: 100,
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            height: 20,
+                                          ),
+                                          Container(
+                                            margin: EdgeInsets.only(left: 10),
+                                            child: Text(
+                                              "Descripción",
+                                              style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 15),
+                                            ),
+                                            alignment: Alignment.centerLeft,
+                                          ),
+                                          SizedBox(
+                                            height: 4,
+                                          ),
+                                          Container(
+                                              alignment: Alignment.centerLeft,
+                                              margin: EdgeInsets.only(left: 10, right: 20),
+                                              child: Text(
+                                                dataList.child("name").value == null
+                                                    ? Locales.string(context, 'lang_nodisponible')
+                                                    : dataList.child("name").value.toString(),
+                                                style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 12),
+                                              )),
+                                          SizedBox(
+                                            height: 10,
+                                          ),
+                                          Row(
+                                            children: [
+                                              Container(
+                                                  margin: EdgeInsets.only(left: 10),
+                                                  child: Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: [
+                                                      Text(
+                                                        "Categoria",
+                                                        style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 16),
+                                                      ),
+                                                      SizedBox(
+                                                        height: 2,
+                                                      ),
+                                                      Text(
+                                                        dataList.child("category").value == null
+                                                            ? Locales.string(context, 'lang_nodisponible')
+                                                            : dataList.child("category").value.toString(),
+                                                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 13),
+                                                      ),
+                                                      SizedBox(
+                                                        height: 10,
+                                                      ),
+                                                      Text(
+                                                        "Calificación",
+                                                        style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 15),
+                                                      ),
+                                                      SizedBox(
+                                                        height: 2,
+                                                      ),
+                                                      Text(dataPartners == null ? "" : dataPartners!.child("fullname").value.toString()),
+                                                      FutureBuilder(
+                                                          future: FirebaseDatabase.instance
+                                                              .ref()
+                                                              .child('partners')
+                                                              .child(dataList.child("user").value.toString())
+                                                              .once(),
+                                                          builder: (BuildContext context, AsyncSnapshot snapshot) {
+                                                            if (snapshot.hasData) {
+                                                              DatabaseEvent response = snapshot.data;
+                                                              DataSnapshot dataRating = response.snapshot;
+                                                              dataPartners = dataRating;
+
+                                                              return RatingBarIndicator(
+                                                                  rating: dataRating.child("rating").value == null
+                                                                      ? 0
+                                                                      : double.parse(dataRating.child("rating").value.toString()),
+                                                                  itemCount: 5,
+                                                                  itemSize: 16.0,
+                                                                  itemBuilder: (context, _) => Icon(
+                                                                        Icons.star,
+                                                                        color: secondryColor,
+                                                                      ));
+                                                            } else {
+                                                              return AppWidget().loading();
+                                                            }
+                                                          }),
+                                                      SizedBox(
+                                                        height: 10,
+                                                      ),
+                                                    ],
+                                                  )),
+                                              Expanded(child: SizedBox()),
+                                              Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  SizedBox(
+                                                    height: 10,
+                                                  ),
+                                                  Text(
+                                                    Locales.string(context, 'lang_costservice'),
+                                                    style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 15),
+                                                  ),
+                                                  Text(
+                                                    dataList.child("price").value == null
+                                                        ? '\$' + "0"
+                                                        : '\$' +
+                                                            MoneyFormatter(amount: double.parse(dataList.child("price").value.toString()))
+                                                                .output
+                                                                .withoutFractionDigits
+                                                                .toString(),
+                                                    style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 16),
+                                                  ),
+                                                  SizedBox(
+                                                    height: 40,
+                                                  ),
+                                                ],
+                                              ),
+                                              SizedBox(
+                                                width: 20,
+                                              ),
+                                            ],
+                                          ),
+                                          SizedBox(
+                                            height: 20,
+                                          ),
+                                          Container(
+                                              margin: EdgeInsets.only(left: 20, right: 20),
+                                              child: Row(
+                                                children: [
+                                                  Flexible(
+                                                      child: AppWidget()
+                                                          .buttonFormLine(context, Locales.string(context, 'lang_cancel'), true, tap: () {
+                                                    Navigator.pop(context);
+                                                  })),
+                                                  SizedBox(
+                                                    width: 10,
+                                                  ),
+                                                  Flexible(
+                                                      child: AppWidget().buttonFormLine(
+                                                          context, Locales.string(context, 'lang_solicitudtext'), false, tap: () {
+                                                    Navigator.pop(context);
+
+                                                    Query historyRef = FirebaseDatabase.instance
+                                                        .ref()
+                                                        .child('ordens')
+                                                        .child(userDataProfile!.child("cart").value.toString());
+
+                                                    createService(DataSnapshot snapshot) {
+                                                      snapshot.ref.child("services").push().set({
+                                                        "foto": dataList.child("foto").value.toString(),
+                                                        "name": dataList.child("name").value,
+                                                        "price": dataList.child("price").value
+                                                      }).then((value) {
+                                                        AppWidget().itemMessage("Agregado", context);
+                                                      }).catchError((onError) {
+                                                        AppWidget().itemMessage("Ha ocurrido un error", context);
+                                                      });
+                                                    }
+
+                                                    if (userDataProfile!.child("cart").value != null) {
+                                                      historyRef.once().then((e) async {
+                                                        final snapshot = e.snapshot;
+                                                        if (snapshot.value != null) {
+                                                          if (snapshot.child("professional").value.toString() ==
+                                                              userDataProfile!.key.toString()) {
+                                                            createService(snapshot);
+                                                          } else {
+                                                            AppWidget().itemMessage("No se puede seleccionar otro professional", context);
+                                                          }
+                                                        } else {
+                                                          createOrdens(context,
+                                                              name: dataList.child("name").value.toString(),
+                                                              inspections: dataList.child("inspections").value.toString(),
+                                                              profesionalName: dataPartners!.child("fullname").value.toString(),
+                                                              profesional: dataPartners!.key,
+                                                              price: int.parse(dataList.child("price").value.toString()));
+
+                                                          Future.delayed(const Duration(milliseconds: 1000), () {
+                                                            createService(snapshot);
+                                                          });
+                                                        }
+                                                      });
+                                                    } else {
+                                                      createOrdens(context,
+                                                          name: dataList.child("name").value.toString(),
+                                                          inspections: dataList.child("inspections").value.toString(),
+                                                          profesionalName: dataPartners!.child("fullname").value.toString(),
+                                                          profesional: dataPartners!.key.toString(),
+                                                          price: int.parse(dataList.child("price").value.toString()));
+
+                                                      Future.delayed(const Duration(milliseconds: 1000), () {
+                                                        // createService(snapshot);
+
+                                                        Query historyRef = FirebaseDatabase.instance
+                                                            .ref()
+                                                            .child('ordens')
+                                                            .child(userDataProfile!.child("cart").value.toString());
+                                                        historyRef.once().then((value) {
+                                                          createService(value.snapshot);
+                                                        });
+                                                      });
+                                                    }
+                                                  })),
+                                                ],
+                                              )),
+                                          SizedBox(
+                                            height: 20,
+                                          ),
+                                        ],
+                                      )),
+                                );
+                              });
+                        }
+
+                        FirebaseDatabase.instance
+                            .ref()
+                            .child('portafolio')
+                            .child(dataList.child("idBanner").value.toString())
+                            .once()
+                            .then((value) {
+                          openAlert(value.snapshot);
+                        });
+                      }
+
+                      if (dataList.child("type").value.toString() == "categorie") {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => subServicePage(
+                                      title: "Categoria",
+                                      urlImage: dataList.child("photo").value.toString(),
+                                      idPage: dataList.child("idBanner").value.toString(),
+                                    )));
+                      }
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: NetworkImage(dataList.child("foto").value.toString()),
+                          fit: BoxFit.cover,
+                        ),
+                        color: Static.dashboardCard,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    )));
               }
 
               return Padding(
@@ -1123,7 +1427,7 @@ class _kHomePageState extends State<kHomePage> {
                                             height: 10,
                                           ),
                                           Text(
-                                            dataList.child("name").value.toString(),
+                                            dataList.child("name").value.toString().capitalize(),
                                             style: TextStyle(color: secondryColor, fontSize: 12, fontWeight: FontWeight.bold),
                                           ),
                                           SizedBox(
@@ -1202,7 +1506,7 @@ class _kHomePageState extends State<kHomePage> {
                   Svg
             ],
           ),*/
-          AppWidget().title("Categorias", tap: () {}),
+          AppWidget().title(Locales.string(context, "lang_category"), tap: () {}),
           SizedBox(
             height: 20,
           ),

@@ -18,6 +18,7 @@ import 'package:fullpro/controller/loader.dart';
 import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
 
 import 'package:fullpro/pages/homepage.dart';
+import 'package:fullpro/pages/support/listMessageSupport.dart';
 
 import 'package:fullpro/pages/support/newSupport.dart';
 
@@ -103,6 +104,21 @@ class _ListSupportPageState extends State<ListSupportPage> {
                                                         )));
                                           },
                                         ),*/
+
+                                            ListTile(
+                                              title: new Text(Locales.string(context, 'Ver')),
+                                              onTap: () {
+                                                Navigator.pop(context);
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) => ListMessageSupportPage(
+                                                        id: dataList.key.toString(),
+                                                        title: dataList.child("name").value.toString(),
+                                                      ),
+                                                    ));
+                                              },
+                                            ),
                                             ListTile(
                                               title: new Text(Locales.string(context, 'lang_cancel')),
                                               onTap: () {
@@ -173,7 +189,7 @@ class _ListSupportPageState extends State<ListSupportPage> {
 
                                                     Text(dataList.child("response").value != null
                                                         ? "Resuelto"
-                                                        : stateOrder[int.parse(dataList.child("state").value.toString())]),
+                                                        : getStateOrder(context, int.parse(dataList.child("state").value.toString()))),
 
                                                     // Expanded(child: SizedBox()),
                                                   ],
@@ -255,7 +271,7 @@ class _ListSupportPageState extends State<ListSupportPage> {
                   ),
                   Container(
                       child: Text(
-                    "Lista de soporte",
+                    Locales.string(context, "lang_list_support"),
                     style: TextStyle(
                       color: secondryColor,
                       fontSize: 20,
