@@ -240,39 +240,40 @@ class _CartPageState extends State<CartPage> {
     });
   }
 
-  late DataSnapshot userDataProfile;
+  // late DataSnapshot userDataProfile;
 
   void getUserInfo(context) async {
-    currentFirebaseUser = FirebaseAuth.instance.currentUser;
+    /* currentFirebaseUser = FirebaseAuth.instance.currentUser;
     String? userid = currentFirebaseUser?.uid;
 
     final UserRef = FirebaseDatabase.instance.ref().child("users").child(userid!);
     UserRef.once().then((e) async {
       final DataSnapshot = e.snapshot;
-      userDataProfile = e.snapshot;
+      userDataProfile = e.snapshot;*/
 
-      if (DataSnapshot != null) {
-        _controller.future.then((value) {
-          if (userDataProfile != null) {
-            value.animateCamera(CameraUpdate.newCameraPosition(
-              CameraPosition(
-                bearing: 0,
-                target: LatLng(double.parse(userDataProfile!.child("latitude").value.toString()),
-                    double.parse(userDataProfile!.child("longitude").value.toString())),
-                zoom: 14.0,
-              ),
-            ));
-          }
-        });
-        dataListObjectGeneral!.ref.update({
-          'address': DataSnapshot.child("location").value.toString(),
-          'latitude': DataSnapshot.child("latitude").value.toString(),
-          'longitude': DataSnapshot.child("longitude").value.toString()
-        }).then((value) {
-          // AppWidget().itemMessage("Actualizado", context);
-        });
+    //  if (DataSnapshot != null) {
+    _controller.future.then((value) {
+      if (userDataProfile != null) {
+        value.animateCamera(CameraUpdate.newCameraPosition(
+          CameraPosition(
+            bearing: 0,
+            target: LatLng(double.parse(userDataProfile!.child("latitude").value.toString()),
+                double.parse(userDataProfile!.child("longitude").value.toString())),
+            zoom: 14.0,
+          ),
+        ));
+        setState(() {});
       }
     });
+    dataListObjectGeneral!.ref.update({
+      'address': userDataProfile!.child("location").value.toString(),
+      'latitude': userDataProfile!..child("latitude").value.toString(),
+      'longitude': userDataProfile!.child("longitude").value.toString()
+    }).then((value) {});
+    // AppWidget().itemMessage("Actualizado", context);
+    // });
+    //  }
+    //   });
   }
 
   @override
@@ -1154,16 +1155,16 @@ class _CartPageState extends State<CartPage> {
                         urlIcon: "images/icons/userDone.svg", tap: () {
                       payOrden() {
                         int value = getTotalPay();
-                        AppStripe().makePayment(value, context, execute: () {
-                          dataListObjectGeneral!.ref.update({'professionalName': professionalName});
-                          dataListObjectGeneral!.ref.update({'state': 1}).then((value) {
-                            // setState(() {});
-                            userDataProfile!.ref.child("cart").remove().then((value) {
-                              Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_) => kHomePage()), (route) => false);
+                        //   AppStripe().makePayment(value, context, execute: () {
+                        dataListObjectGeneral!.ref.update({'professionalName': professionalName});
+                        dataListObjectGeneral!.ref.update({'state': 1}).then((value) {
+                          // setState(() {});
+                          userDataProfile!.ref.child("cart").remove().then((value) {
+                            Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_) => kHomePage()), (route) => false);
 
-                              AppWidget().itemMessage("Orden creada", context);
-                            });
+                            AppWidget().itemMessage("Orden creada", context);
                           });
+                          //  });
                         });
                       }
 
@@ -1190,7 +1191,7 @@ class _CartPageState extends State<CartPage> {
                       //  Navigator.pop(context);
 
                       AppWidget().optionsEnabled("Seguro quiere cancelar", context, tap2: () {}, tap: () {
-                        userDataProfile.ref.child("cart").remove().then((value) {
+                        userDataProfile!.ref.child("cart").remove().then((value) {
                           dataListObjectGeneral!.ref.remove().then((value) {
                             Navigator.pop(context);
                             Navigator.pop(context);

@@ -631,7 +631,7 @@ class _AddressesState extends State<AddressesUser> {
 
   void getSuggestion(String input) async {
     String kPLACES_API_KEY = "AIzaSyCfsvZ1kjO-mlfDbbu19sJuYKKd7gcfgqw";
-    String type = '(regions,geocode)';
+    String type = '(regions,geocode,location)';
     String baseURL = 'https://maps.googleapis.com/maps/api/place/autocomplete/json';
     String request = '$baseURL?input=$input&key=$kPLACES_API_KEY&sessiontoken=$_sessionToken&fields=all';
     var response = await http.get(Uri.parse(request));
@@ -736,25 +736,26 @@ class _AddressesState extends State<AddressesUser> {
 
                               try {
                                 GeoCode geoCode = GeoCode();
-                                Coordinates coordinates =
-                                    await geoCode.forwardGeocoding(address: _placeList[index]["description"].toString());
-                                savedData(_placeList[index]["description"].toString(), coordinates.latitude.toString(),
-                                    coordinates.longitude.toString());
-                                print("Latitude: ${coordinates.latitude}");
-                                print("Longitude: ${coordinates.longitude}");
-                                userDataProfile.ref.update({
-                                  "latitude": coordinates.latitude,
-                                  "longitude": coordinates.longitude,
-                                  "location": _placeList[index]["description"].toString(),
-                                }).then((value) {
-                                  Navigator.pop(context);
-                                  AppWidget().itemMessage("Ubicación cambiada", context);
-                                }).catchError((onError) {});
+
+                                geoCode.forwardGeocoding(address: _placeList[index]["description"].toString()).then((coordinates) {
+                                  savedData(_placeList[index]["description"].toString(), coordinates.latitude.toString(),
+                                      coordinates.longitude.toString());
+                                  print("Latitude: ${coordinates.latitude}");
+                                  print("Longitude: ${coordinates.longitude}");
+                                  userDataProfile.ref.update({
+                                    "latitude": coordinates.latitude,
+                                    "longitude": coordinates.longitude,
+                                    "location": _placeList[index]["description"].toString(),
+                                  }).then((value) {
+                                    Navigator.pop(context);
+                                    AppWidget().itemMessage("Ubicación cambiada", context);
+                                  }).catchError((onError) {});
+                                });
                               } catch (e) {
                                 print(e);
                               }
                             },
-                            title: Text(_placeList[index]["description"]),
+                            title: Text(_placeList[index]["description"].toString()),
                             /*  trailing: GestureDetector(
                                 onTap: () async {
                                 

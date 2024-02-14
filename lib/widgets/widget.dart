@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:flutter/widgets.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 import 'package:flutter_svg/svg.dart';
 
@@ -42,6 +43,36 @@ import 'package:fullpro/widgets/ProfileButtonWithBottomSheet.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class AppWidget {
+  Widget ratingBarProfessional(String id) {
+    return FutureBuilder(
+        future: FirebaseDatabase.instance.ref().child('ordens').orderByChild("professional").equalTo(id).once(),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          double ratingProfessional = 0;
+          if (snapshot.hasData) {
+            DatabaseEvent response = snapshot.data;
+
+            DataSnapshot? dataListObject = null;
+            int totalRating = 0;
+            for (var i = 0; i < response.snapshot.children.toList().length; i++) {
+              if (response.snapshot.children.toList()[i].child("ratingClient").value != null) {
+                totalRating += 1;
+                double sum = 0;
+                sum += double.parse(response.snapshot.children.toList()[i].child("ratingClient").value.toString());
+                ratingProfessional = sum / (totalRating);
+              }
+            }
+          }
+          return RatingBarIndicator(
+              rating: ratingProfessional,
+              itemCount: 5,
+              itemSize: 16.0,
+              itemBuilder: (context, _) => Icon(
+                    Icons.star,
+                    color: secondryColor,
+                  ));
+        });
+  }
+
   appbar(BuildContext context) {
     return AppBar(
       centerTitle: false,

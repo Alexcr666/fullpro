@@ -391,24 +391,16 @@ class _subServicePageState extends State<subServicePage> {
                                                                                           DataSnapshot dataRating = response.snapshot;
                                                                                           dataPartners = dataRating;
 
-                                                                                          return RatingBarIndicator(
-                                                                                              rating:
-                                                                                                  dataRating.child("rating").value == null
-                                                                                                      ? 0
-                                                                                                      : double.parse(dataRating
-                                                                                                          .child("rating")
-                                                                                                          .value
-                                                                                                          .toString()),
-                                                                                              itemCount: 5,
-                                                                                              itemSize: 16.0,
-                                                                                              itemBuilder: (context, _) => Icon(
-                                                                                                    Icons.star,
-                                                                                                    color: secondryColor,
-                                                                                                  ));
+                                                                                          return SizedBox();
                                                                                         } else {
                                                                                           return AppWidget().loading();
                                                                                         }
                                                                                       }),
+                                                                                  Text(dataPartners == null
+                                                                                      ? ""
+                                                                                      : dataPartners!.child("fullname").value.toString()),
+                                                                                  AppWidget().ratingBarProfessional(
+                                                                                      dataList.child("user").value.toString()),
                                                                                   SizedBox(
                                                                                     height: 10,
                                                                                   ),
@@ -594,7 +586,8 @@ class _subServicePageState extends State<subServicePage> {
                                             Locales.string(context, 'lang_solicitudtext'),
                                             style: TextStyle(color: Colors.black, fontSize: 10),
                                           ),
-                                          FutureBuilder(
+                                          AppWidget().ratingBarProfessional(dataList.child("user").value.toString()),
+                                          /* FutureBuilder(
                                               future: FirebaseDatabase.instance
                                                   .ref()
                                                   .child('partners')
@@ -618,7 +611,7 @@ class _subServicePageState extends State<subServicePage> {
                                                 } else {
                                                   return AppWidget().loading();
                                                 }
-                                              }),
+                                              }),*/
                                           SizedBox(
                                             height: 5,
                                           ),
@@ -1165,14 +1158,16 @@ class _subServicePageState extends State<subServicePage> {
                                                               SizedBox(
                                                                 height: 10,
                                                               ),
-                                                              RatingBarIndicator(
+                                                              // AppWidget()
+                                                              //   .ratingBarProfessional(data.child("professional").value.toString()),
+                                                              /*   RatingBarIndicator(
                                                                   rating: 2.5,
                                                                   itemCount: 5,
                                                                   itemSize: 30.0,
                                                                   itemBuilder: (context, _) => Icon(
                                                                         Icons.star_border_rounded,
                                                                         color: secondryColor,
-                                                                      )),
+                                                                      )),*/
                                                               SizedBox(
                                                                 height: 10,
                                                               ),

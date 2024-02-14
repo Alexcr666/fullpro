@@ -379,6 +379,7 @@ class _kHomePageState extends State<kHomePage> {
       // getData();
       event.snapshot;
       userDataProfile = event.snapshot;
+
       _controller.future.then((value) {
         if (userDataProfile != null) {
           value.animateCamera(CameraUpdate.newCameraPosition(
@@ -669,7 +670,7 @@ class _kHomePageState extends State<kHomePage> {
                                             height: 14,
                                           ),
                                           Text(
-                                            dataList.child("fullname").value.toString(),
+                                            dataList.child("fullname").value.toString().capitalize(),
                                             style: TextStyle(color: secondryColor, fontSize: 17, fontWeight: FontWeight.bold),
                                           ),
                                           Text(
@@ -678,16 +679,43 @@ class _kHomePageState extends State<kHomePage> {
                                           ),
                                           Row(
                                             children: [
-                                              RatingBarIndicator(
-                                                  rating: dataList.child("rating").value == null
-                                                      ? 0
-                                                      : double.parse(dataList.child("rating").value.toString()),
-                                                  itemCount: 5,
-                                                  itemSize: 16.0,
-                                                  itemBuilder: (context, _) => Icon(
-                                                        Icons.star,
-                                                        color: secondryColor,
-                                                      )),
+                                              FutureBuilder(
+                                                  future: FirebaseDatabase.instance
+                                                      .ref()
+                                                      .child('ordens')
+                                                      .orderByChild("professional")
+                                                      .equalTo(dataList.key.toString())
+                                                      .once(),
+                                                  builder: (BuildContext context, AsyncSnapshot snapshot) {
+                                                    double ratingProfessional = 0;
+                                                    if (snapshot.hasData) {
+                                                      DatabaseEvent response = snapshot.data;
+
+                                                      dataListObjectOrdens = response.snapshot.children;
+                                                      DataSnapshot? dataListObject = null;
+                                                      int totalRating = 0;
+                                                      for (var i = 0; i < response.snapshot.children.toList().length; i++) {
+                                                        if (response.snapshot.children.toList()[i].child("ratingClient").value != null) {
+                                                          totalRating += 1;
+                                                          double sum = 0;
+                                                          sum += double.parse(response.snapshot.children
+                                                              .toList()[i]
+                                                              .child("ratingClient")
+                                                              .value
+                                                              .toString());
+                                                          ratingProfessional = sum / (totalRating);
+                                                        }
+                                                      }
+                                                    }
+                                                    return RatingBarIndicator(
+                                                        rating: ratingProfessional,
+                                                        itemCount: 5,
+                                                        itemSize: 16.0,
+                                                        itemBuilder: (context, _) => Icon(
+                                                              Icons.star,
+                                                              color: secondryColor,
+                                                            ));
+                                                  }),
                                               Expanded(child: SizedBox()),
                                               FutureBuilder(
                                                   // initialData: 1,

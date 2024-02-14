@@ -6,7 +6,7 @@ import 'package:flutter_locales/flutter_locales.dart';
 getStateOrder(BuildContext context, int position) {
   List stateOrder = [
     Locales.string(context, "lang_pending"),
-    Locales.string(context, "lang_pending"),
+    Locales.string(context, "lang_process"),
     Locales.string(context, "lang_process"),
     Locales.string(context, "lang_finish"),
     Locales.string(context, "lang_cancelstate")
@@ -25,4 +25,5 @@ List stateOrderColor = [
 //STATE USER
 
 List stateOrderUser = ["Aprobrado", "Suspendido", "Eliminado"];
+List stateSupport = ["Pendiente", "Resuelto", "Suspendido", "Eliminado"];
 List stateOrderProfessional = ["Pendiente", "Aprobrado", "Suspendido", "Eliminado"];

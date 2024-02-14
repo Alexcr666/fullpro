@@ -31,10 +31,11 @@ import 'package:intl/intl.dart';
 import '../styles/statics.dart' as Static;
 
 class ListMessageSupportPage extends StatefulWidget {
-  ListMessageSupportPage({Key? key, this.id, this.title}) : super(key: key);
+  ListMessageSupportPage({Key? key, this.id, this.title, this.state}) : super(key: key);
 
   String? id;
   String? title;
+  bool? state;
 
   @override
   State<ListMessageSupportPage> createState() => _ListMessageSupportPageState();
@@ -170,36 +171,38 @@ class _ListMessageSupportPageState extends State<ListMessageSupportPage> {
               height: 50,
             ),
             Expanded(child: stateIndicator0()),
-            Row(
-              children: [
-                Flexible(child: AppWidget().texfieldFormat(title: "Mensaje", controller: _messageController)),
-                SizedBox(
-                  width: 20,
-                ),
-                GestureDetector(
-                  child: Icon(
-                    Icons.send_outlined,
-                    color: _messageController.text.toString().trim() == 0 ? Colors.grey : secondryColor,
-                  ),
-                  onTap: () {
-                    if (_messageController.text.isNotEmpty) {
-                      FirebaseDatabase.instance.ref().child('support').child(widget.id.toString()).child("message").push().set({
-                        "description": _messageController.text,
-                        "date": DateFormat('yyyy-MM-dd').format(DateTime.now()).toString(),
-                        "nameUser": userDataProfile!.child("fullname").value.toString(),
-                        "user": FirebaseAuth.instance.currentUser!.uid.toString()
-                      }).then((value) {
-                        _messageController.clear();
+            widget.state == true
+                ? SizedBox()
+                : Row(
+                    children: [
+                      Flexible(child: AppWidget().texfieldFormat(title: "Mensaje", controller: _messageController)),
+                      SizedBox(
+                        width: 20,
+                      ),
+                      GestureDetector(
+                        child: Icon(
+                          Icons.send_outlined,
+                          color: _messageController.text.toString().trim() == 0 ? Colors.grey : secondryColor,
+                        ),
+                        onTap: () {
+                          if (_messageController.text.isNotEmpty) {
+                            FirebaseDatabase.instance.ref().child('support').child(widget.id.toString()).child("message").push().set({
+                              "description": _messageController.text,
+                              "date": DateFormat('yyyy-MM-dd').format(DateTime.now()).toString(),
+                              "nameUser": userDataProfile!.child("fullname").value.toString(),
+                              "user": FirebaseAuth.instance.currentUser!.uid.toString()
+                            }).then((value) {
+                              _messageController.clear();
 
-                        AppWidget().itemMessage("Enviado", context);
-                      }).catchError((onError) {
-                        AppWidget().itemMessage(Locales.string(context, "lang_error"), context);
-                      });
-                    }
-                  },
-                ),
-              ],
-            )
+                              AppWidget().itemMessage("Enviado", context);
+                            }).catchError((onError) {
+                              AppWidget().itemMessage(Locales.string(context, "lang_error"), context);
+                            });
+                          }
+                        },
+                      ),
+                    ],
+                  )
           ],
         ),
       ),

@@ -62,7 +62,7 @@ class _ListSupportPageState extends State<ListSupportPage> {
                           itemCount: response.snapshot.children.length,
                           shrinkWrap: true,
                           itemBuilder: (BuildContext context, int index) {
-                            DataSnapshot dataList = response.snapshot.children.toList()[index];
+                            DataSnapshot dataList = response.snapshot.children.toList().reversed.toList()[index];
 
                             return GestureDetector(
                                 onTap: () {
@@ -72,7 +72,7 @@ class _ListSupportPageState extends State<ListSupportPage> {
                                         return Column(
                                           mainAxisSize: MainAxisSize.min,
                                           children: <Widget>[
-                                            ListTile(
+                                            /*ListTile(
                                               title: new Text(Locales.string(context, 'lang_location')),
                                               onTap: () {
                                                 Navigator.pop(context);
@@ -90,7 +90,7 @@ class _ListSupportPageState extends State<ListSupportPage> {
                                                   Navigator.pop(context);
                                                 });
                                               },
-                                            ),
+                                            ),*/
                                             /*ListTile(
                                           title: new Text('Actualizar'),
                                           onTap: () {
@@ -114,6 +114,7 @@ class _ListSupportPageState extends State<ListSupportPage> {
                                                     MaterialPageRoute(
                                                       builder: (context) => ListMessageSupportPage(
                                                         id: dataList.key.toString(),
+                                                        state: int.parse(dataList.child("state").value.toString()) == 0 ? false : true,
                                                         title: dataList.child("name").value.toString(),
                                                       ),
                                                     ));
@@ -172,6 +173,11 @@ class _ListSupportPageState extends State<ListSupportPage> {
                                                         Text(
                                                           dataList.child("name").value.toString(),
                                                           textAlign: TextAlign.center,
+                                                          style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.grey),
+                                                        ),
+                                                        Text(
+                                                          dataList.child("description").value.toString(),
+                                                          textAlign: TextAlign.center,
                                                           style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: secondryColor),
                                                         ),
                                                         Text(
@@ -189,7 +195,7 @@ class _ListSupportPageState extends State<ListSupportPage> {
 
                                                     Text(dataList.child("response").value != null
                                                         ? "Resuelto"
-                                                        : getStateOrder(context, int.parse(dataList.child("state").value.toString()))),
+                                                        : stateSupport[int.parse(dataList.child("state").value.toString())]),
 
                                                     // Expanded(child: SizedBox()),
                                                   ],
