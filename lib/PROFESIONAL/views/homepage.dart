@@ -377,30 +377,6 @@ class _HomePageState extends State<HomePage> {
 
     // Total Orders
     checkTotalOrders();
-
-    // Repeating Function
-    /*  timer = Timer.periodic(
-      const Duration(seconds: 5),
-      (Timer t) => setState(() {
-        //  Get User Info
-        locationPermision();
-      }),
-    );
-
-    getOrdersHome();
-
-    // Repeating Function
-    timer = Timer.periodic(
-      repeatTime,
-      (Timer t) => setState(() {
-        //  Get User Info
-        // MainController.checkEarning();
-        // MainController.dueBalance();
-        checkAvailability(context);
-        checkTotalOrders();
-        MainControllerProfesional.getSettings();
-      }),
-    );*/
   }
 
   Future<void> refreshList() async {
@@ -432,7 +408,7 @@ class _HomePageState extends State<HomePage> {
         resizeToAvoidBottomInset: false,
         backgroundColor: appcolors.dashboardCard,
         bottomNavigationBar: const BottomNav(),
-        appBar: appbarProfessional(context, userInfoPartners!, false),
+        appBar: appbarProfessional(context!, false),
         /*  appBar: AppBar(
           centerTitle: false,
           title: Column(

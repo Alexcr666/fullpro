@@ -1927,6 +1927,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
     // TODO: implement initState
 
     super.initState();
+
     getProfile(widget.id.toString());
 
     DatabaseReference ref = FirebaseDatabase.instance.ref("partners/" + widget.id.toString());

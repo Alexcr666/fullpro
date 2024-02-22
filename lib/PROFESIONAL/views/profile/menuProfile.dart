@@ -10,6 +10,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:fullpro/PROFESIONAL/views/Orders/orders.dart';
 import 'package:fullpro/PROFESIONAL/views/homepage.dart';
+import 'package:fullpro/PROFESIONAL/views/payMethod/payMethod.dart';
 
 import 'package:fullpro/PROFESIONAL/views/support/listSupport.dart';
 
@@ -175,7 +176,7 @@ class _ProfileOptionsProfessionalPageState extends State<ProfileOptionsProfessio
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        userInfoPartners == null ? "Hola " : "Hola " + userInfoPartners!.child("fullname").value.toString(),
+                        userInfoPartners == null ? "Hola " : "Hola " + userInfoPartners!.child("fullname").value.toString().capitalize(),
                         style: TextStyle(color: secondryColor, fontSize: 25),
                       ),
 
@@ -222,7 +223,9 @@ class _ProfileOptionsProfessionalPageState extends State<ProfileOptionsProfessio
                       }),
 
                       itemProfile("images/icons/profile4.svg", Locales.string(context, 'lang_methodpay'), tap: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => const PayListPage()));
+                        //  Navigator.push(context, MaterialPageRoute(builder: (context) => PayListPage()));
+
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => PayMethodProfessionalPage()));
                       }),
 
                       //  "images/icons/profile1.svg"

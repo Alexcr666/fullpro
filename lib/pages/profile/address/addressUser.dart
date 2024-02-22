@@ -63,6 +63,8 @@ class AddressesUser extends StatefulWidget {
   _AddressesState createState() => _AddressesState();
 }
 
+List<dynamic> _placeList = [];
+
 class _AddressesState extends State<AddressesUser> {
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -618,7 +620,6 @@ class _AddressesState extends State<AddressesUser> {
 
   var uuid = new Uuid();
   String? _sessionToken;
-  List<dynamic> _placeList = [];
 
   _onChanged() {
     if (_sessionToken == null) {
@@ -631,13 +632,14 @@ class _AddressesState extends State<AddressesUser> {
 
   void getSuggestion(String input) async {
     String kPLACES_API_KEY = "AIzaSyCfsvZ1kjO-mlfDbbu19sJuYKKd7gcfgqw";
-    String type = '(regions,geocode,location)';
+    String type = '(regions)';
     String baseURL = 'https://maps.googleapis.com/maps/api/place/autocomplete/json';
-    String request = '$baseURL?input=$input&key=$kPLACES_API_KEY&sessiontoken=$_sessionToken&fields=all';
+    String request = '$baseURL?input=$input&key=$kPLACES_API_KEY&sessiontoken=$_sessionToken';
     var response = await http.get(Uri.parse(request));
     if (response.statusCode == 200) {
       setState(() {
         _placeList = json.decode(response.body)['predictions'];
+        log("placelist: " + response.body.toString() + " " + Uri.parse(request).toString());
       });
     } else {
       throw Exception('Failed to load predictions');

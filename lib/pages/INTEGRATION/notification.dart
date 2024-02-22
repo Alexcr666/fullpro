@@ -86,7 +86,7 @@ class _NotificationsState extends State<Notifications> {
                           child: ListView.builder(
                               padding: EdgeInsets.only(left: 10.0),
                               itemCount: response.snapshot.children.toList().length,
-                              physics: NeverScrollableScrollPhysics(),
+                              //physics: NeverScrollableScrollPhysics(),
                               shrinkWrap: true,
                               itemBuilder: (BuildContext context, int i) {
                                 DataSnapshot dataList = response.snapshot.children.toList().reversed.toList()[i];
@@ -226,9 +226,7 @@ class _NotificationsState extends State<Notifications> {
 
                 // ),
 
-                pageOrdensHistory(),
-
-                Expanded(child: SizedBox()),
+                Expanded(child: pageOrdensHistory()),
 
                 SizedBox(
                   height: 20,

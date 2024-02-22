@@ -53,6 +53,9 @@ createOrdens(BuildContext context, {String? name, String? inspections, String? p
       'professionalName': profesional,
       'professional': profesional,
       'user': currentFirebaseUser!.uid.toString(),
+      "address": userDataProfile!.child("location").value.toString(),
+      "longitude": userDataProfile!.child("longitude").value.toString(),
+      "latitude": userDataProfile!.child("latitude").value.toString(),
       'state': 0,
       'price': price
     };

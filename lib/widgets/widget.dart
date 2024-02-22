@@ -86,7 +86,9 @@ class AppWidget {
             style: TextStyle(color: secondryColor, fontSize: 12, fontWeight: FontWeight.bold),
           ),
           Text(
-            Locales.string(context, "lang_hello") + " " + userDataProfile!.child("fullname").value.toString().capitalize(),
+            userDataProfile == null
+                ? Locales.string(context, "lang_hello")
+                : Locales.string(context, "lang_hello") + " " + userDataProfile!.child("fullname").value.toString().capitalize(),
             style: const TextStyle(
               color: Colors.black,
               fontWeight: FontWeight.bold,

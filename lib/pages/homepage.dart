@@ -915,7 +915,7 @@ class _kHomePageState extends State<kHomePage> {
         SizedBox(
           height: 10,
         ),
-        Text("Resultados de " + _searchHome.text.toString()),
+        Text(Locales.string(context, "lang_resultsof") + _searchHome.text.toString()),
         // buildSearch(),
         SizedBox(
           height: 20,

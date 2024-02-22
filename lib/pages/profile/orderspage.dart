@@ -843,7 +843,9 @@ class _MyOrdersState extends State<MyOrdersProfile> with TickerProviderStateMixi
           ),
 
           Container(
-              margin: EdgeInsets.only(left: 20), alignment: Alignment.centerLeft, child: Text("Resultados de :" + searchText.toString())),
+              margin: EdgeInsets.only(left: 20),
+              alignment: Alignment.centerLeft,
+              child: Text(Locales.string(context, "lang_resultsof") + searchText.toString())),
           SizedBox(
             height: 20,
           ),

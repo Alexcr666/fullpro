@@ -13,7 +13,7 @@ import 'package:fullpro/PROFESIONAL/views/profile/menuProfile.dart';
 import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
 import 'package:fullpro/pages/profile/address/addressUser.dart';
 
-appbarProfessional(BuildContext context, DataSnapshot dataUser, bool activeColor) {
+appbarProfessional(BuildContext context, bool activeColor) {
   String dayTime = "";
 
   TimeOfDay day = TimeOfDay.now();
@@ -43,13 +43,17 @@ appbarProfessional(BuildContext context, DataSnapshot dataUser, bool activeColor
           style: TextStyle(color: activeColor ? Colors.white : secondryColor, fontSize: 12, fontWeight: FontWeight.bold),
         ),
         Text(
-          "Hola " + dataUser!.child("fullname").value.toString(),
+          userInfoPartners == null
+              ? "Hola"
+              : userInfoPartners!.child("fullname").value == null
+                  ? "Hola"
+                  : "Hola " + userInfoPartners!.child("fullname").value.toString(),
           style: TextStyle(
             color: activeColor ? Colors.white : Colors.black,
             fontSize: 15,
           ),
         ),
-        GestureDetector(
+        /*  GestureDetector(
             onTap: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) => AddressesUser("partners")));
             },
@@ -63,7 +67,7 @@ appbarProfessional(BuildContext context, DataSnapshot dataUser, bool activeColor
                 color: activeColor ? Colors.white : Colors.black,
                 fontSize: 12,
               ),
-            )),
+            )),*/
       ],
     ),
     actions: [
