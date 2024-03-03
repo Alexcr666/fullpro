@@ -400,7 +400,7 @@ class _DetailsOrderPageState extends State<DetailsOrderPage> {
               }
             }
 
-            return Text("hola");
+            return AppWidget().loading();
           } else {
             return SizedBox();
           }
@@ -538,7 +538,7 @@ class _DetailsOrderPageState extends State<DetailsOrderPage> {
                                           hourService = DateFormat('hh:mm:ss').format(val).toString();
                                         }),
                                   ),
-                                  AppWidget().buttonForm(context, "Guardar", tap: () {
+                                  AppWidget().buttonForm(context, Locales.string(context, "lang_saved"), tap: () {
                                     setState(() {
                                       //    final f = new DateFormat('yyyy-MM-dd');
 
@@ -978,6 +978,11 @@ class _DetailsOrderPageState extends State<DetailsOrderPage> {
                               width: 200,
                               height: 200,
                               color: Colors.grey.withOpacity(0.3),
+                              child: Icon(
+                                Icons.image_not_supported_outlined,
+                                size: 30,
+                                color: Colors.black.withOpacity(0.2),
+                              ),
                             );
                           },
                           width: 80,

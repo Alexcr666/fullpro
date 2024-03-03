@@ -65,7 +65,7 @@ class _ListMessageSupportPageState extends State<ListMessageSupportPage> {
                                 onTap: () {},
                                 child: Container(
                                     decoration: AppWidget().boxShandowGrey(),
-                                    margin: EdgeInsets.only(top: 10),
+                                    margin: EdgeInsets.only(top: 10, left: 10, right: 10),
                                     padding: EdgeInsets.only(top: 20, right: 20, bottom: 20),
                                     child: Row(
                                       children: [
@@ -76,7 +76,7 @@ class _ListMessageSupportPageState extends State<ListMessageSupportPage> {
                                           width: 10,
                                         ),
                                         Container(
-                                            width: 320,
+                                            width: 300,
                                             child: Column(
                                               crossAxisAlignment: CrossAxisAlignment.start,
                                               children: [

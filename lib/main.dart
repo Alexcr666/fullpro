@@ -6,6 +6,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:fullpro/PROFESIONAL/controllers/mainController.dart';
 import 'package:fullpro/PROFESIONAL/views/homepage.dart';
+import 'package:fullpro/TESTING/google.dart';
 import 'package:fullpro/TESTING/testing.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:power_file_view/power_file_view.dart';
@@ -34,10 +35,12 @@ final FlutterLocalNotificationsPlugin notificationsPlugin = FlutterLocalNotifica
 bool professionalState = false;
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  Stripe.publishableKey = "pk_test_51MVzfVJD6GFsjF8jq2jnRULZtIPFzMC4dlOpAhyEM4iEdV8OFOU7OozX2TUFqkWueBVnAyUWhFVmYBjn2it8txbC00XmD1ftqH";
+  // Stripe.publishableKey = "pk_test_51MVzfVJD6GFsjF8jq2jnRULZtIPFzMC4dlOpAhyEM4iEdV8OFOU7OozX2TUFqkWueBVnAyUWhFVmYBjn2it8txbC00XmD1ftqH";
+  // Stripe.merchantIdentifier = 'merchant.flutter.stripe.test';
+//  Stripe.urlScheme = 'flutterstripe';
+  Stripe.publishableKey = "pk_test_6D6r0LBYnylG7nm2o4YJXVS3";
   Stripe.merchantIdentifier = 'merchant.flutter.stripe.test';
   Stripe.urlScheme = 'flutterstripe';
-
   await Stripe.instance.applySettings();
   PowerFileViewManager.initEngine();
   await Locales.init(
@@ -131,14 +134,16 @@ class MyApp extends StatelessWidget {
               ),
             ),
           ),
-          initialRoute: currentFirebaseUser != null
-              ? professionalState == true
-                  ? HomePage.id
-                  : kHomePage.id
-              //  FirstPage.id
-              : LoginPage.id,
+          initialRoute: //kHomePage
+              currentFirebaseUser != null
+                  ? professionalState == true
+                      ? HomePage.id
+                      : kHomePage.id
+                  // FirstPage.id
+                  : LoginPage.id,
           routes: {
             kHomePage.id: (context) => kHomePage(),
+            //kHomePage.id: (context) => RoutesWidget(),
             kTrending.id: (context) => kTrending(),
             Onboarding.id: (context) => Onboarding(),
             Register.id: (context) => Register(),

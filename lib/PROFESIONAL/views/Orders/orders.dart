@@ -383,7 +383,7 @@ class _MyOrdersState extends State<MyOrders> with TickerProviderStateMixin {
                     physics: NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
                     itemBuilder: (BuildContext context, int i) {
-                      DataSnapshot dataList = response.snapshot.children.toList()[i];
+                      DataSnapshot dataList = response.snapshot.children.toList().reversed.toList()[i];
                       int lenght = response.snapshot.children.toList().length;
 
                       getCancelButton() {
@@ -1007,7 +1007,7 @@ class _MyOrdersState extends State<MyOrders> with TickerProviderStateMixin {
                           shrinkWrap: true,
                           physics: NeverScrollableScrollPhysics(),
                           itemBuilder: (BuildContext context, int index) {
-                            DataSnapshot dataList = response.snapshot.children.toList()[index];
+                            DataSnapshot dataList = response.snapshot.children.toList().reversed.toList()[index];
                             Widget itemList() {
                               return dataList.child("professional").value != "4HCtFRnu3xYIyl0nZqPhD7LZtyb2"
                                   ? SizedBox()

@@ -313,7 +313,7 @@ class _SettingsState extends State<Settings> {
                           style: TextStyle(fontSize: 18, color: primaryColor, fontWeight: FontWeight.w500),
                         ),
                         trailing: Text(
-                          "$distance Km.",
+                          "$distance miles.",
                           style: TextStyle(fontSize: 16),
                         ),
                         subtitle: Slider(

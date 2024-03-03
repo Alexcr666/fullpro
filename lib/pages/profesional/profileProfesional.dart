@@ -1732,7 +1732,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                 ),
                 Container(
                     margin: EdgeInsets.only(left: 20, right: 20),
-                    child: AppWidget().buttonFormColor(context, "Guardar", secondryColor, tap: () {
+                    child: AppWidget().buttonFormColor(context, Locales.string(context, "lang_saved"), secondryColor, tap: () {
                       if (getDataUser()!.child("legal") == null && getDataUser()!.child("background") == null) {
                         //  AppWidget().itemMessage("Error al actualizar foto", context);
                       } else {
@@ -2025,6 +2025,11 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                                             width: 200,
                                                             height: 100,
                                                             color: Colors.grey.withOpacity(0.3),
+                                                            child: Icon(
+                                                              Icons.image_not_supported_outlined,
+                                                              size: 30,
+                                                              color: Colors.black.withOpacity(0.2),
+                                                            ),
                                                           );
                                                         },
                                                         width: 220,
@@ -2277,6 +2282,11 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                                         width: 120,
                                                         height: 120,
                                                         color: Colors.grey.withOpacity(0.3),
+                                                         child: Icon(
+                                                        Icons.image_not_supported_outlined,
+                                                        size: 30,
+                                                        color: Colors.black.withOpacity(0.2),
+                                                      ),
                                                       );
                                                     },
                                                     width: 80,

@@ -1,6 +1,10 @@
 {
     "lang_pending": "Pendiente",
+    "lang_price_repeat": "Repetir precio",
+    "lang_price_message": "No coinciden las valores en la confirmación de precio",
     "lang_resultsof": "Resultados de: ",
+    "lang_dateinit": "Fecha de inicio",
+    "lang_datefinish": "Fecha final",
     "lang_process": "En proceso",
     "lang_finish": "Terminado",
     "lang_aprobado:": "Aprobado",

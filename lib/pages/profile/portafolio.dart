@@ -22,6 +22,7 @@ import 'package:fullpro/pages/support/newSupport.dart';
 import 'package:fullpro/utils/utils.dart';
 
 import 'package:fullpro/widgets/widget.dart';
+import 'package:money_formatter/money_formatter.dart';
 
 import '../styles/statics.dart' as Static;
 
@@ -133,6 +134,11 @@ class _PortafolioPageState extends State<PortafolioPage> {
                                                 width: 70,
                                                 height: 70,
                                                 color: Colors.grey.withOpacity(0.3),
+                                                child: Icon(
+                                                  Icons.image_not_supported_outlined,
+                                                  size: 30,
+                                                  color: Colors.black.withOpacity(0.2),
+                                                ),
                                               );
                                             },
                                             width: 70,
@@ -162,6 +168,15 @@ class _PortafolioPageState extends State<PortafolioPage> {
                                                         ),
                                                         Text(
                                                           dataList.child("category").value.toString().capitalize(),
+                                                          textAlign: TextAlign.center,
+                                                          style: TextStyle(fontSize: 10, color: secondryColor),
+                                                        ),
+                                                        Text(
+                                                          '\$' +
+                                                              MoneyFormatter(amount: double.parse(dataList.child("price").value.toString()))
+                                                                  .output
+                                                                  .withoutFractionDigits
+                                                                  .toString(),
                                                           textAlign: TextAlign.center,
                                                           style: TextStyle(fontSize: 10, color: secondryColor),
                                                         ),

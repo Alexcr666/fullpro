@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -28,6 +29,7 @@ import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
 import 'package:fullpro/utils/utils.dart';
 
 import 'package:fullpro/widgets/widget.dart';
+import 'package:geolocator/geolocator.dart';
 
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
@@ -88,6 +90,10 @@ class DetailsOrderProfessionalPage extends StatefulWidget {
 
 DataSnapshot? dataUser;
 DataSnapshot? dataProfessional;
+Set<Marker> _marker = <Marker>{};
+String distanceInMeter = "0";
+String timeDistance = "0";
+const kGoogleApiKey = "AIzaSyDBes8BJVASNyCE0hLJjt0Rcaz6BodoKJU";
 
 class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalPage> {
   String hourService = "";
@@ -285,6 +291,34 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
     });
   }
 
+  void _initMarkers(String title, double lat, double long) {
+    _marker.clear();
+
+    _marker.add(
+      new Marker(
+        markerId: MarkerId("professional"),
+        infoWindow: InfoWindow(title: title),
+        position: LatLng(lat, long),
+        onTap: () {},
+        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
+      ),
+    );
+
+    MarkerId markerId = MarkerId(dataListObjectGeneral!.key.toString());
+    _marker.add(
+      new Marker(
+        markerId: markerId,
+        position: LatLng(double.parse(dataListObjectGeneral!.child("latitude").value.toString()),
+            double.parse(dataListObjectGeneral!.child("longitude").value.toString())),
+        onTap: () {
+          // Handle on marker tap
+        },
+        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
+      ),
+    );
+    setState(() {});
+  }
+
   @override
   void initState() {
     super.initState();
@@ -297,9 +331,43 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
 
     stream.listen((DatabaseEvent event) {
       widget.dataList = event.snapshot;
+
       try {
         setState(() {});
       } catch (e) {}
+
+      DatabaseReference refClient = FirebaseDatabase.instance.ref("partners/" + widget.dataList.child("professional").value.toString());
+
+      Stream<DatabaseEvent> streamClient = refClient.onValue;
+
+      streamClient.listen((DatabaseEvent event) async {
+        DataSnapshot dataProfessional = event.snapshot;
+        _initMarkers(dataProfessional.child("name").value.toString(), double.parse(dataProfessional.child("latitude").value.toString()),
+            double.parse(dataProfessional.child("longitude").value.toString()));
+
+        distanceInMeter = await Geolocator.distanceBetween(
+                double.parse(widget.dataList.child("latitude").value.toString()),
+                double.parse(widget.dataList.child("longitude").value.toString()),
+                double.parse(dataProfessional.child("latitude").value.toString()),
+                double.parse(dataProfessional.child("longitude").value.toString()))
+            .toString();
+
+        getTime() async {
+          String latitude1 = widget.dataList.child("latitude").value.toString();
+          String longitude1 = widget.dataList.child("longitude").value.toString();
+          String latitude2 = dataProfessional.child("latitude").value.toString();
+          String longitude2 = dataProfessional.child("longitude").value.toString();
+
+          Dio dio = new Dio();
+          Response response = await dio.get(
+              "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=$latitude1,$longitude1&destinations=$latitude2%2C,$longitude2&key=$_kGooglePlex");
+          print("timehour: " + response.data.toString());
+        }
+
+        Future.delayed(const Duration(seconds: 2), () {
+          setState(() {});
+        });
+      });
     });
 
     Future.delayed(const Duration(seconds: 2), () {
@@ -374,7 +442,7 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
               }
             }
 
-            return Text("hola");
+            return AppWidget().loading();
           } else {
             return SizedBox();
           }
@@ -401,18 +469,6 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
         }
         _descriptionController.text =
             dataListObjectGeneral!.child("description").value == null ? "" : dataListObjectGeneral!.child("description").value.toString();
-        MarkerId markerId = MarkerId(dataListObjectGeneral!.key.toString());
-        _marker.add(
-          new Marker(
-            markerId: markerId,
-            position: LatLng(double.parse(dataListObjectGeneral!.child("latitude").value.toString()),
-                double.parse(dataListObjectGeneral!.child("longitude").value.toString())),
-            onTap: () {
-              // Handle on marker tap
-            },
-            icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
-          ),
-        );
 
         _controller.future.then((value) {
           value.animateCamera(CameraUpdate.newCameraPosition(
@@ -562,12 +618,11 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
                       SizedBox(
                         height: 20,
                       ),
-                      Row(
-                        children: [
-                          SizedBox(
-                            width: 10,
-                          ),
-                          ClipRRect(
+                      Container(
+                          width: double.infinity,
+                          margin: EdgeInsets.only(left: 20, right: 20),
+                          height: 250,
+                          child: ClipRRect(
                               borderRadius: BorderRadius.circular(15),
                               child: Container(
                                   width: 160,
@@ -575,26 +630,32 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
                                   child: GoogleMap(
                                     markers: _marker,
                                     mapType: MapType.normal,
+                                    myLocationEnabled: true,
                                     initialCameraPosition: _kGooglePlex,
                                     onMapCreated: (GoogleMapController controller) {
                                       _controller.complete(controller);
                                     },
-                                  ))),
-                          SizedBox(
-                            width: 20,
-                          ),
-                          Flexible(
-                              child: AppWidget().texfieldFormat(
-                            title: Locales.string(context, "lang_description"),
-                            controller: _descriptionController,
-                          )),
-                          SizedBox(
-                            width: 20,
-                          ),
-                        ],
+                                  )))),
+                      SizedBox(
+                        height: 10,
                       ),
+                      Container(
+                          margin: EdgeInsets.only(left: 20, right: 20),
+                          child: Column(
+                            children: [
+                              Text("Distancia estimada :" + double.parse(distanceInMeter).round().toString() + " Millas"),
+                              Text("Duración estimada :" + double.parse(distanceInMeter).round().toString() + " Millas"),
+                              AppWidget().texfieldFormat(
+                                title: Locales.string(context, "lang_description"),
+                                controller: _descriptionController,
+                              ),
+                            ],
+                          )),
                       SizedBox(
                         height: 20,
+                      ),
+                      SizedBox(
+                        height: 10,
                       ),
 
                       /*  Padding(
@@ -692,7 +753,7 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
                                                     hourService = DateFormat('hh:mm:ss').format(val).toString();
                                                   }),
                                             ),
-                                            AppWidget().buttonForm(context, "Guardar", tap: () {
+                                            AppWidget().buttonForm(context, Locales.string(context, "lang_saved"), tap: () {
                                               setState(() {
                                                 //    final f = new DateFormat('yyyy-MM-dd');
 
@@ -1697,6 +1758,11 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
                               width: 200,
                               height: 200,
                               color: Colors.grey.withOpacity(0.3),
+                              child: Icon(
+                                Icons.image_not_supported_outlined,
+                                size: 30,
+                                color: Colors.black.withOpacity(0.2),
+                              ),
                             );
                           },
                           width: 80,

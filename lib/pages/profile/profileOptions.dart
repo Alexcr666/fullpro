@@ -7,6 +7,7 @@ import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:fullpro/PROFESIONAL/views/stripe.dart';
 import 'package:fullpro/TESTING/placegoogle.dart';
 
 import 'package:fullpro/config.dart';
@@ -242,6 +243,15 @@ class _ProfileOptionsPageState extends State<ProfileOptionsPage> {
                   ),
                   child: Column(
                     children: [
+                      /* ProfileButton(
+                        buttonName: Locales.string(context, 'lang_profile'),
+                        onCLicked: () {
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => const StripeTest()));
+                        },
+                        icon: "images/icons/miprofile1.svg",
+                      ),*/
+
+                      //const Divider(color: Colors.black12),
                       ProfileButton(
                         buttonName: Locales.string(context, 'lang_profile'),
                         onCLicked: () {

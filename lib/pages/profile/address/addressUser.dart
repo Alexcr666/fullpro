@@ -7,6 +7,7 @@ import 'package:firebase_database/firebase_database.dart';
 
 import 'package:fullpro/models/placeAutocompleteModel.dart';
 import 'package:geocode/geocode.dart';
+//import 'package:google_places_autocomplete_text_field/google_places_autocomplete_text_field.dart';
 import 'package:uuid/uuid.dart';
 import 'package:http/http.dart' as http;
 
@@ -52,6 +53,21 @@ import 'dart:async';
 
 import 'package:string_similarity/string_similarity.dart';
 
+import 'dart:async';
+import 'dart:math';
+
+import 'package:fullpro/widgets/widget.dart';
+import 'package:google_api_headers/google_api_headers.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_google_places/flutter_google_places.dart';
+import 'package:google_maps_webservice/places.dart';
+
+import '../../../TESTING/google.dart';
+
+const kGoogleApiKey = "AIzaSyDBes8BJVASNyCE0hLJjt0Rcaz6BodoKJU";
+final homeScaffoldKey = GlobalKey<ScaffoldState>();
+final searchScaffoldKey = GlobalKey<ScaffoldState>();
+
 class AddressesUser extends StatefulWidget {
   AddressesUser(
     this.user, {
@@ -85,7 +101,7 @@ class _AddressesState extends State<AddressesUser> {
   String? cityValue;
 
   var searchTextController = TextEditingController();
-
+  var searchTextGoogleController = TextEditingController();
   void setupPositionLocator() async {
     Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.bestForNavigation);
 
@@ -249,7 +265,7 @@ class _AddressesState extends State<AddressesUser> {
                             height: 20,
                           ),
 
-                          AppWidget().buttonFormColor(context, "Guardar", secondryColor, tap: () {
+                          AppWidget().buttonFormColor(context, Locales.string(context, "lang_saved"), secondryColor, tap: () {
                             savedData() {
                               DatabaseReference newUserRef = FirebaseDatabase.instance.ref().child('address').push();
 
@@ -587,7 +603,7 @@ class _AddressesState extends State<AddressesUser> {
 
           // }
 
-          return Text("hola");
+          return AppWidget().loading();
         });
   }
 
@@ -605,7 +621,7 @@ class _AddressesState extends State<AddressesUser> {
 
     // if (response.statusCode == 201) {
 
-    log("responsecity: " + response.body.toString());
+    //log("responsecity: " + response.body.toString());
 
     dataPlace = placeAutocompleteModelFromJson(response.body.toString());
 
@@ -618,20 +634,20 @@ class _AddressesState extends State<AddressesUser> {
     // }
   }
 
-  var uuid = new Uuid();
+  //var uuid = new Uuid();
   String? _sessionToken;
 
   _onChanged() {
     if (_sessionToken == null) {
       setState(() {
-        _sessionToken = uuid.v4();
+        //_sessionToken = uuid.v4();
       });
     }
     getSuggestion(searchTextController.text);
   }
 
   void getSuggestion(String input) async {
-    String kPLACES_API_KEY = "AIzaSyCfsvZ1kjO-mlfDbbu19sJuYKKd7gcfgqw";
+    String kPLACES_API_KEY = "AIzaSyDBes8BJVASNyCE0hLJjt0Rcaz6BodoKJU";
     String type = '(regions)';
     String baseURL = 'https://maps.googleapis.com/maps/api/place/autocomplete/json';
     String request = '$baseURL?input=$input&key=$kPLACES_API_KEY&sessiontoken=$_sessionToken';
@@ -639,7 +655,7 @@ class _AddressesState extends State<AddressesUser> {
     if (response.statusCode == 200) {
       setState(() {
         _placeList = json.decode(response.body)['predictions'];
-        log("placelist: " + response.body.toString() + " " + Uri.parse(request).toString());
+        // log("placelist: " + response.body.toString() + " " + Uri.parse(request).toString());
       });
     } else {
       throw Exception('Failed to load predictions');
@@ -694,94 +710,21 @@ class _AddressesState extends State<AddressesUser> {
                         ],
                       ),
                       const SizedBox(height: 20),
-                      AppWidget().texfieldFormat(
-                        title: Locales.string(context, 'lang_addnewlocation'),
-                        controller: searchTextController,
-                        execute: () async {
-                          //  await Future.delayed(Duration(milliseconds: 1000)); //   setState(() {});
+                      GestureDetector(
+                          onTap: () {
+                            _handlePressButton(context);
+                          },
+                          child: AppWidget().texfieldFormat(
+                              title: Locales.string(context, 'lang_addnewlocation'),
+                              controller: searchTextController,
+                              execute: () async {
+                                //  await Future.delayed(Duration(milliseconds: 1000)); //   setState(() {});
 
-                          //  getPlaceLocation();
+                                //  getPlaceLocation();
 
-                          _onChanged();
-                        },
-                      ),
-                      ListView.builder(
-                        physics: NeverScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        itemCount: _placeList.length,
-                        itemBuilder: (context, index) {
-                          // log("jsongoogle: " + _placeList[index].toString());
-                          return ListTile(
-                            onTap: () async {
-                              savedData(String address, String latitude, String longitude) {
-                                DatabaseReference newUserRef = FirebaseDatabase.instance.ref().child('address').push();
-
-                                // Prepare data to be saved on users table
-
-                                Map userMap = {
-                                  'name': address,
-                                  'latitude': latitude,
-                                  'longitude': longitude,
-                                  'user': FirebaseAuth.instance.currentUser!.uid.toString(),
-                                };
-
-                                newUserRef.set(userMap).then((value) {
-                                  //   Navigator.pop(context);
-
-                                  setState(() {});
-
-                                  AppWidget().itemMessage("Guardado", context);
-                                }).catchError((onError) {
-                                  AppWidget().itemMessage("Error al guardar", context);
-                                });
-                              }
-
-                              try {
-                                GeoCode geoCode = GeoCode();
-
-                                geoCode.forwardGeocoding(address: _placeList[index]["description"].toString()).then((coordinates) {
-                                  savedData(_placeList[index]["description"].toString(), coordinates.latitude.toString(),
-                                      coordinates.longitude.toString());
-                                  print("Latitude: ${coordinates.latitude}");
-                                  print("Longitude: ${coordinates.longitude}");
-                                  userDataProfile.ref.update({
-                                    "latitude": coordinates.latitude,
-                                    "longitude": coordinates.longitude,
-                                    "location": _placeList[index]["description"].toString(),
-                                  }).then((value) {
-                                    Navigator.pop(context);
-                                    AppWidget().itemMessage("Ubicación cambiada", context);
-                                  }).catchError((onError) {});
-                                });
-                              } catch (e) {
-                                print(e);
-                              }
-                            },
-                            title: Text(_placeList[index]["description"].toString()),
-                            /*  trailing: GestureDetector(
-                                onTap: () async {
-                                
-
-                                  // savedData();
-/*
-                                  GeoCode geoCode = GeoCode();
-
-                                  try {
-                                    Coordinates coordinates =
-                                        await geoCode.forwardGeocoding(address: _placeList[index]["description"].toString());
-
-                                    print("Latitude: ${coordinates.latitude}");
-                                    print("Longitude: ${coordinates.longitude}");
-                                    savedData(_placeList[index]["description"].toString(), coordinates.latitude.toString(),
-                                        coordinates.longitude.toString());
-                                  } catch (e) {
-                                    print(e);
-                                  }*/
-                                },
-                                child: startIndicator(_placeList[index]["description"]))*/
-                          );
-                        },
-                      ),
+                                //_onChanged();
+                              },
+                              enabled: true)),
                       dataPlace == []
                           ? AppWidget().noResult(context)
                           : ListView.builder(
@@ -1166,5 +1109,95 @@ class _AddressesState extends State<AddressesUser> {
         );
       });
     }
+  }
+
+  Future<Null> displayPrediction(BuildContext context, Prediction p, ScaffoldState scaffold) async {
+    if (p != null) {
+      // get detail (lat/lng)
+      GoogleMapsPlaces _places = GoogleMapsPlaces(
+        apiKey: kGoogleApiKey,
+        apiHeaders: await GoogleApiHeaders().getHeaders(),
+      );
+      PlacesDetailsResponse detail = await _places.getDetailsByPlaceId(p.placeId.toString());
+      final lat = detail.result.geometry!.location.lat;
+      final lng = detail.result.geometry!.location.lng;
+      print("NEW RESULT: " + "${p.description} - $lat/$lng");
+
+      savedData(String address, String latitude, String longitude) {
+        DatabaseReference newUserRef = FirebaseDatabase.instance.ref().child('address').push();
+
+        // Prepare data to be saved on users table
+
+        Map userMap = {
+          'name': address,
+          'latitude': latitude,
+          'longitude': longitude,
+          'user': FirebaseAuth.instance.currentUser!.uid.toString(),
+        };
+
+        newUserRef.set(userMap).then((value) {
+          //   Navigator.pop(context);
+
+          setState(() {});
+
+          AppWidget().itemMessage("Guardado", context);
+        }).catchError((onError) {
+          AppWidget().itemMessage("Error al guardar", context);
+        });
+      }
+
+      savedData(p.description.toString(), detail.result.geometry!.location.lat.toString(), detail.result.geometry!.location.lng.toString());
+
+      userDataProfile.ref.update({
+        "latitude": detail.result.geometry!.location.lat,
+        "longitude": detail.result.geometry!.location.lng,
+        "location": p.description.toString(),
+      }).then((value) {
+        Navigator.pop(context);
+        AppWidget().itemMessage("Ubicación cambiada", context);
+      }).catchError((onError) {});
+
+      // scaffold.showSnackBar(
+      // SnackBar(content: Text("${p.description} - $lat/$lng")),
+      //);
+    }
+  }
+
+  void onError(PlacesAutocompleteResponse response) {
+    // homeScaffoldKey.currentState.showSnackBar(
+    // SnackBar(content: Text(response.errorMessage)),
+    //);
+  }
+  Future<void> _handlePressButton(BuildContext context) async {
+    // show input autocomplete with selected mode
+    // then get the Prediction selected
+    Prediction? p = await PlacesAutocomplete.show(
+      context: context,
+      apiKey: kGoogleApiKey,
+      onError: onError,
+      // mode: _mode,
+      language: "es",
+      decoration: InputDecoration(
+        hintText: 'Search',
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(20),
+          borderSide: BorderSide(
+            color: Colors.white,
+          ),
+        ),
+      ),
+
+      offset: 0,
+      radius: 1000,
+      types: [],
+      strictbounds: false,
+      // region: "ar",
+
+      mode: Mode.overlay, // Mode.fullscreen
+
+      components: [Component(Component.country, "co")] /* components: [Component(Component.country, "fr")]*/,
+    );
+
+    displayPrediction(context, p!, homeScaffoldKey.currentState!);
   }
 }

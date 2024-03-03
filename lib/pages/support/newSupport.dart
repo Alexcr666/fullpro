@@ -53,6 +53,7 @@ TextEditingController _searchHome = TextEditingController();
 
 class _PortafolioPageState extends State<NewPortafolioPage> {
   TextEditingController _priceController = TextEditingController();
+  TextEditingController _priceRepeatController = TextEditingController();
   TextEditingController _profesionController = TextEditingController();
 
   TextEditingController _namePortafolioController = TextEditingController();
@@ -467,6 +468,11 @@ class _PortafolioPageState extends State<NewPortafolioPage> {
                   ),
                   AppWidget().texfieldFormat(title: Locales.string(context, "lang_price"), controller: _priceController, number: true),
                   SizedBox(
+                    height: 10,
+                  ),
+                  AppWidget()
+                      .texfieldFormat(title: Locales.string(context, "lang_price_repeat"), controller: _priceController, number: true),
+                  SizedBox(
                     height: 20,
                   ),
                   Text(Locales.string(context, "lang_photo")),
@@ -608,7 +614,11 @@ class _PortafolioPageState extends State<NewPortafolioPage> {
 
                         if (_formKey.currentState!.validate()) {
                           if (fileLicense.length != 0) {
-                            uploadFile();
+                            if (_priceRepeatController.text == _priceController.text) {
+                              uploadFile();
+                            } else {
+                              AppWidget().itemMessage(Locales.string(context, "lang_price_message"), context);
+                            }
 
                             licenceCheck = false;
                           } else {

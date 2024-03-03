@@ -169,7 +169,7 @@ class _AddressesState extends State<Addresses> {
                           SizedBox(
                             height: 20,
                           ),
-                          AppWidget().buttonFormColor(context, "Guardar", secondryColor, tap: () {
+                          AppWidget().buttonFormColor(context, Locales.string(context, "lang_saved"), secondryColor, tap: () {
                             savedData() {
                               DatabaseReference newUserRef = FirebaseDatabase.instance.ref().child('address').push();
                               String placeName = '${street.text}, ${city.text}, ${state.text}, ${country.text}';
@@ -379,7 +379,7 @@ class _AddressesState extends State<Addresses> {
 
           // }
 
-          return Text("hola");
+          return AppWidget().loading();
         });
   }
 

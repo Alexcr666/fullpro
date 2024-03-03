@@ -357,6 +357,7 @@ class _kHomePageState extends State<kHomePage> {
     messaging = FirebaseMessaging.instance;
     messaging.getToken().then((value) {
       print("token: " + value.toString());
+
       deviceToken = value!;
     });
 
@@ -379,6 +380,11 @@ class _kHomePageState extends State<kHomePage> {
       // getData();
       event.snapshot;
       userDataProfile = event.snapshot;
+      userDataProfile!.ref.update({"tokenNotification": deviceToken}).then((value) {
+        print("funciono");
+      }).catchError((onError) {
+        print("error: " + onError.toString());
+      });
 
       _controller.future.then((value) {
         if (userDataProfile != null) {
@@ -725,7 +731,7 @@ class _kHomePageState extends State<kHomePage> {
                                                       return Text(snapshot.data.toString() == "0"
                                                           ? "no"
                                                           : (double.parse(snapshot.data.toString()).round() / 1000).round().toString() +
-                                                              " Km");
+                                                              " miles");
                                                     } else {
                                                       return SizedBox();
                                                     }
@@ -1038,6 +1044,11 @@ class _kHomePageState extends State<kHomePage> {
                                                   width: 200,
                                                   height: 100,
                                                   color: Colors.grey.withOpacity(0.3),
+                                                  child: Icon(
+                                                    Icons.image_not_supported_outlined,
+                                                    size: 30,
+                                                    color: Colors.black.withOpacity(0.2),
+                                                  ),
                                                 );
                                               },
                                               width: 220,
@@ -1442,6 +1453,11 @@ class _kHomePageState extends State<kHomePage> {
                                                       width: 110,
                                                       height: 110,
                                                       color: Colors.grey.withOpacity(0.3),
+                                                      child: Icon(
+                                                        Icons.image_not_supported_outlined,
+                                                        size: 30,
+                                                        color: Colors.black.withOpacity(0.2),
+                                                      ),
                                                     );
                                                   },
                                                   width: 110,
@@ -1652,6 +1668,11 @@ class _kHomePageState extends State<kHomePage> {
                       width: 90,
                       height: 90,
                       color: Colors.grey.withOpacity(0.3),
+                      child: Icon(
+                        Icons.image_not_supported_outlined,
+                        size: 30,
+                        color: Colors.black.withOpacity(0.2),
+                      ),
                     );
                   },
                   fit: BoxFit.cover,

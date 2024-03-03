@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:fullpro/PROFESIONAL/config.dart';
@@ -23,13 +24,28 @@ class _StripeTestState extends State<StripeTest> {
         title: const Text('Stripe Payment'),
       ),
       body: Center(
-        child: TextButton(
-          child: const Text('Make Payment'),
-          onPressed: () async {
-            await makePayment();
-          },
-        ),
-      ),
+          child: Column(
+        children: [
+          TextButton(
+            child: const Text('Make Payment'),
+            onPressed: () async {
+              await makePayment();
+            },
+          ),
+          TextButton(
+            child: const Text('Create Payment'),
+            onPressed: () async {
+              await createClient();
+            },
+          ),
+          TextButton(
+            child: const Text('Create Transfers'),
+            onPressed: () async {
+              await createTransfers();
+            },
+          ),
+        ],
+      )),
     );
   }
 
@@ -45,7 +61,7 @@ class _StripeTestState extends State<StripeTest> {
                   // googlePay: const PaymentSheetGooglePay(testEnv: true, currencyCode: "US", merchantCountryCode: "+92"),
                   style: ThemeMode.light,
                   merchantDisplayName: 'Adnan'))
-          .then((value) {});
+          .then((value) async {});
 
       ///now finally display payment sheeet
       displayPaymentSheet();
@@ -105,6 +121,70 @@ class _StripeTestState extends State<StripeTest> {
       );
       // ignore: avoid_print
       print('Payment Intent Body->>> ${response.body.toString()}');
+      return jsonDecode(response.body);
+    } catch (err) {
+      // ignore: avoid_print
+      print('err charging user: ${err.toString()}');
+    }
+  }
+
+  createClient() async {
+    try {
+      Map<String, dynamic> body = {
+        // 'type': 'custom',
+        //'country': 'US',
+        'name': 'alex enrique',
+        'email': 'alexecr66@gmail.com',
+        /* 'capabilities': {
+          'card_payments': {
+            'requested': true,
+          },
+          'transfers': {
+            'requested': true,
+          },
+        },*/
+      };
+
+      var response = await http.post(
+        Uri.parse('https://api.stripe.com/v1/customers'),
+        headers: {'Authorization': 'Bearer $stripeSecretKey', 'Content-Type': 'application/x-www-form-urlencoded'},
+        body: body,
+      );
+      // ignore: avoid_print
+      log('Payment Intent Body->>> ${response.body.toString()}');
+      return jsonDecode(response.body);
+    } catch (err) {
+      // ignore: avoid_print
+      print('err charging user: ${err.toString()}');
+    }
+  }
+
+  createTransfers() async {
+    try {
+      Map<String, dynamic> body = {
+        // 'type': 'custom',
+        //'country': 'US',
+        'amount': '50000',
+        'currency': 'usd',
+        'destination': 'acct_1OoSilGheOR3kQ6y',
+        'source_transaction': 'ch_3OoA5bGnUWGQvfrC0r0WLPY5'
+        /* 'capabilities': {
+          'card_payments': {
+            'requested': true,
+          },
+          'transfers': {
+            'requested': true,
+          },
+        },*/
+      };
+
+      var response = await http.post(
+        Uri.parse('https://api.stripe.com/v1/transfers'),
+        headers: {'Authorization': 'Bearer $stripeSecretKey', 'Content-Type': 'application/x-www-form-urlencoded'},
+        body: body,
+      );
+      // ignore: avoid_print
+      log('Payment Intent Body->>> ${response.body.toString()}');
       return jsonDecode(response.body);
     } catch (err) {
       // ignore: avoid_print

@@ -367,6 +367,11 @@ class _HomePageState extends State<HomePage> {
 
 // Subscribe to the stream!
     stream2.listen((DatabaseEvent event) {
+      event.snapshot!.ref.update({"tokenNotification": deviceToken}).then((value) {
+        print("funciono");
+      }).catchError((onError) {
+        print("error: " + onError.toString());
+      });
       getUserInfo();
     });
     //  getUserInfo();

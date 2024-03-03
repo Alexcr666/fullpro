@@ -44,6 +44,7 @@ class RegistrationProfessionalPage extends StatefulWidget {
 
 GlobalKey<AutoCompleteTextFieldState<String>> key = GlobalKey();
 TextEditingController _searchHome = TextEditingController();
+TextEditingController _zipcodeController = TextEditingController();
 
 class _RegistrationProfessionalPageState extends State<RegistrationProfessionalPage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -143,6 +144,7 @@ class _RegistrationProfessionalPageState extends State<RegistrationProfessionalP
               'email': emailController.text,
               'history': "0",
               'earnings': 0,
+              'zipcode': _zipcodeController.text,
               'profesion': _searchHome.text,
               'date': DateFormat('yyyy-MM-dd').format(DateTime.now()).toString(),
 
@@ -335,6 +337,10 @@ class _RegistrationProfessionalPageState extends State<RegistrationProfessionalP
             SizedBox(
               height: 10,
             ),
+            AppWidget().texfieldFormat(title: "Zipcode", controller: _zipcodeController, number: true),
+            SizedBox(
+              height: 10,
+            ),
             Text(Locales.string(context, 'lang_licencia')),
             SizedBox(
               height: 5,
@@ -501,6 +507,35 @@ class _RegistrationProfessionalPageState extends State<RegistrationProfessionalP
                             ),
                           );
                         })),
+            SizedBox(
+              height: 5,
+            ),
+            RichText(
+              text: TextSpan(
+                children: [
+                  TextSpan(
+                    text: "No tengo el documento de background check",
+                    style: TextStyle(color: Colors.black),
+                  ),
+                  TextSpan(
+                    text: /* Locales.string(context, 'lbl_terms_and_conditions')*/ "Generar documento",
+                    style: TextStyle(color: secondryColor),
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => TermsPage(
+                                      state: 2,
+                                    )));
+
+                        // Loader.page(context, TermsPage());
+                      },
+                  ),
+                ],
+              ),
+            ),
+
             SizedBox(
               height: 5,
             ),

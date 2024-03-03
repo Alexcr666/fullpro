@@ -134,6 +134,8 @@ class _CartPageState extends State<CartPage> {
   }*/
 
   // Time Selector
+  DateTime? dateInit = null;
+  DateTime? dateFinish = null;
 
   List<RadioModel> hourList = [
     RadioModel(true, '7AM - 8AM'),
@@ -212,6 +214,10 @@ class _CartPageState extends State<CartPage> {
       final snapshot = e.snapshot;
       if (snapshot.value != null) {
         dataListObjectGeneral = snapshot;
+
+        if (dataListObjectGeneral!.child("date").value != null) {
+          dateInit = DateTime.now();
+        }
 
         DatabaseReference ref = FirebaseDatabase.instance.ref("users/" + dataListObjectGeneral!.child("user").value.toString());
 
@@ -629,6 +635,8 @@ class _CartPageState extends State<CartPage> {
                   ),
                   GestureDetector(
                       onTap: () {
+                        String date = "";
+                        String time = "";
                         void _showIOS_DatePicker(ctx) {
                           showCupertinoModalPopup(
                               context: ctx,
@@ -638,25 +646,77 @@ class _CartPageState extends State<CartPage> {
                                     child: Column(
                                       children: [
                                         Container(
-                                          height: 180,
-                                          child: CupertinoDatePicker(
-                                              mode: CupertinoDatePickerMode.date,
-                                              initialDateTime: DateTime.now(),
-                                              onDateTimeChanged: (val) {
-                                                setState(() {
-                                                  final f = new DateFormat('yyyy-MM-dd');
+                                            height: 180,
+                                            child: Column(
+                                              children: [
+                                                Expanded(
+                                                    child: CupertinoDatePicker(
+                                                        mode: CupertinoDatePickerMode.date,
+                                                        initialDateTime: dateInit == null ? DateTime.now() : dateInit,
+                                                        onDateTimeChanged: (val) {
+                                                          setState(() {
+                                                            final f = new DateFormat('yyyy-MM-dd');
+                                                            date = f.format(val).toString();
+                                                            dateInit = val;
 
-                                                  //  hourService = DateFormat('hh:mm:ss').format(val).toString();
-                                                  dataListObjectGeneral!.ref.update({'date': f.format(val).toString()}).then((value) {
-                                                    //  setState(() {});
-                                                    //   getData();
-                                                    // AppWidget().itemMessage("Actualizado", context);
-                                                  });
+                                                            //  hourService = DateFormat('hh:mm:ss').format(val).toString();
 
-                                                  //  dateSelected = val.toString();
-                                                });
-                                              }),
-                                        ),
+                                                            //  dateSelected = val.toString();
+                                                          });
+                                                        })),
+                                                AppWidget().buttonFormColor(context, Locales.string(context, "lang_saved"), secondryColor,
+                                                    tap: () {
+                                                  Navigator.pop(context);
+                                                  void _showIOS_DatePicker(ctx) {
+                                                    showCupertinoModalPopup(
+                                                        context: ctx,
+                                                        builder: (_) => Container(
+                                                              height: 190,
+                                                              color: Color.fromARGB(255, 255, 255, 255),
+                                                              child: Column(
+                                                                children: [
+                                                                  Expanded(
+                                                                    child: CupertinoDatePicker(
+                                                                        mode: CupertinoDatePickerMode.time,
+                                                                        initialDateTime: dateInit,
+                                                                        onDateTimeChanged: (val) {
+                                                                          setState(() {
+                                                                            dateInit = val;
+                                                                            //    final f = new DateFormat('yyyy-MM-dd');
+
+                                                                            hourService = DateFormat('hh:mm:ss').format(val).toString();
+                                                                            time = hourService.toString();
+                                                                            //   dataListObjectGeneral!.ref
+                                                                            //     .update({'time': hourService.toString()}).then((value) {
+                                                                            //  setState(() {});
+                                                                            //getData();
+                                                                            // AppWidget().itemMessage("Actualizado", context);
+                                                                            //   });
+
+                                                                            //  dateSelected = val.toString();
+                                                                          });
+                                                                        }),
+                                                                  ),
+                                                                  AppWidget().buttonFormColor(
+                                                                      context, Locales.string(context, "lang_saved"), secondryColor,
+                                                                      tap: () {
+                                                                    Navigator.pop(context);
+
+                                                                    dataListObjectGeneral!.ref
+                                                                        .update({'date': date.toString()}).then((value) {
+                                                                      dataListObjectGeneral!.ref
+                                                                          .update({'time': time.toString()}).then((value) {});
+                                                                    });
+                                                                  })
+                                                                ],
+                                                              ),
+                                                            ));
+                                                  }
+
+                                                  _showIOS_DatePicker(context);
+                                                }),
+                                              ],
+                                            )),
                                       ],
                                     ),
                                   ));
@@ -669,7 +729,7 @@ class _CartPageState extends State<CartPage> {
                           child: Row(
                             children: [
                               Text(
-                                Locales.string(context, 'lang_dateservice').toString(),
+                                Locales.string(context, 'lang_dateinit').toString(),
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 16,
@@ -683,7 +743,9 @@ class _CartPageState extends State<CartPage> {
                               :*/
                                 dataListObjectGeneral!.child("date").value == null
                                     ? Locales.string(context, 'lang_nodisponible')
-                                    : dataListObjectGeneral!.child("date").value.toString(),
+                                    : AppUtils().noNull(dataListObjectGeneral!.child("date").value.toString()) +
+                                        " " +
+                                        AppUtils().noNull(dataListObjectGeneral!.child("time").value.toString()),
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 16,
@@ -704,42 +766,10 @@ class _CartPageState extends State<CartPage> {
                   SizedBox(
                     height: 15,
                   ),
+                  /*
                   GestureDetector(
                       onTap: () {
-                        void _showIOS_DatePicker(ctx) {
-                          showCupertinoModalPopup(
-                              context: ctx,
-                              builder: (_) => Container(
-                                    height: 190,
-                                    color: Color.fromARGB(255, 255, 255, 255),
-                                    child: Column(
-                                      children: [
-                                        Container(
-                                          height: 180,
-                                          child: CupertinoDatePicker(
-                                              mode: CupertinoDatePickerMode.time,
-                                              initialDateTime: DateTime.now(),
-                                              onDateTimeChanged: (val) {
-                                                setState(() {
-                                                  //    final f = new DateFormat('yyyy-MM-dd');
-
-                                                  hourService = DateFormat('hh:mm:ss').format(val).toString();
-                                                  dataListObjectGeneral!.ref.update({'time': hourService.toString()}).then((value) {
-                                                    //  setState(() {});
-                                                    //getData();
-                                                    // AppWidget().itemMessage("Actualizado", context);
-                                                  });
-
-                                                  //  dateSelected = val.toString();
-                                                });
-                                              }),
-                                        ),
-                                      ],
-                                    ),
-                                  ));
-                        }
-
-                        _showIOS_DatePicker(context);
+                       
                       },
                       child: Container(
                           margin: EdgeInsets.only(left: 20, right: 20),
@@ -768,8 +798,8 @@ class _CartPageState extends State<CartPage> {
                                 ),
                               )
                             ],
-                          ))),
-                  SizedBox(
+                          ))),*/
+                  /*  SizedBox(
                     height: 20,
                   ),
                   Container(
@@ -777,123 +807,153 @@ class _CartPageState extends State<CartPage> {
                     width: double.infinity,
                     height: 1,
                     color: secondryColor,
-                  ),
-                  SizedBox(
-                    height: 15,
-                  ),
-                  GestureDetector(
-                      onTap: () {
-                        void _showIOS_DatePicker(ctx) {
-                          showCupertinoModalPopup(
-                              context: ctx,
-                              builder: (_) => Container(
-                                    height: 190,
-                                    color: Color.fromARGB(255, 255, 255, 255),
-                                    child: Column(
-                                      children: [
-                                        Container(
-                                          height: 180,
-                                          child: CupertinoDatePicker(
-                                              mode: CupertinoDatePickerMode.date,
-                                              initialDateTime: DateTime.now(),
-                                              onDateTimeChanged: (val) {
-                                                setState(() {
-                                                  final f = new DateFormat('yyyy-MM-dd');
+                  ),*/
 
-                                                  //  hourService = DateFormat('hh:mm:ss').format(val).toString();
-                                                  dataListObjectGeneral!.ref.update({'dateFinal': f.format(val).toString()}).then((value) {
-                                                    //  setState(() {});
-                                                    //   getData();
-                                                    // AppWidget().itemMessage("Actualizado", context);
-                                                  });
+                  dateInit == null
+                      ? SizedBox()
+                      : GestureDetector(
+                          onTap: () {
+                            String date = "";
+                            String time = "";
+                            void _showIOS_DatePicker(ctx) {
+                              showCupertinoModalPopup(
+                                  context: ctx,
+                                  builder: (_) => Container(
+                                        height: 190,
+                                        color: Color.fromARGB(255, 255, 255, 255),
+                                        child: Column(
+                                          children: [
+                                            Container(
+                                                height: 180,
+                                                child: Column(
+                                                  children: [
+                                                    Expanded(
+                                                        child: CupertinoDatePicker(
+                                                            mode: CupertinoDatePickerMode.date,
+                                                            initialDateTime: dateFinish,
+                                                            onDateTimeChanged: (val) {
+                                                              setState(() {
+                                                                final f = new DateFormat('yyyy-MM-dd');
+                                                                date = f.format(val).toString();
+                                                                dateFinish = val;
 
-                                                  //  dateSelected = val.toString();
-                                                });
-                                              }),
+                                                                //  hourService = DateFormat('hh:mm:ss').format(val).toString();
+
+                                                                //  dateSelected = val.toString();
+                                                              });
+                                                            })),
+                                                    AppWidget().buttonFormColor(
+                                                        context, Locales.string(context, "lang_saved"), secondryColor, tap: () {
+                                                      Navigator.pop(context);
+                                                      void _showIOS_DatePicker(ctx) {
+                                                        showCupertinoModalPopup(
+                                                            context: ctx,
+                                                            builder: (_) => Container(
+                                                                  height: 190,
+                                                                  color: Color.fromARGB(255, 255, 255, 255),
+                                                                  child: Column(
+                                                                    children: [
+                                                                      Expanded(
+                                                                        child: CupertinoDatePicker(
+                                                                            mode: CupertinoDatePickerMode.time,
+                                                                            initialDateTime: dateFinish,
+                                                                            onDateTimeChanged: (val) {
+                                                                              setState(() {
+                                                                                dateInit = val;
+                                                                                //    final f = new DateFormat('yyyy-MM-dd');
+
+                                                                                hourService = DateFormat('hh:mm:ss').format(val).toString();
+                                                                                time = hourService.toString();
+                                                                                //   dataListObjectGeneral!.ref
+                                                                                //     .update({'time': hourService.toString()}).then((value) {
+                                                                                //  setState(() {});
+                                                                                //getData();
+                                                                                // AppWidget().itemMessage("Actualizado", context);
+                                                                                //   });
+
+                                                                                //  dateSelected = val.toString();
+                                                                              });
+                                                                            }),
+                                                                      ),
+                                                                      AppWidget().buttonFormColor(
+                                                                          context, Locales.string(context, "lang_saved"), secondryColor,
+                                                                          tap: () {
+                                                                        Navigator.pop(context);
+
+                                                                        dataListObjectGeneral!.ref
+                                                                            .update({'dateFinal': date.toString()}).then((value) {
+                                                                          dataListObjectGeneral!.ref
+                                                                              .update({'timeFinal': time.toString()}).then((value) {});
+                                                                        });
+                                                                      })
+                                                                    ],
+                                                                  ),
+                                                                ));
+                                                      }
+
+                                                      _showIOS_DatePicker(context);
+                                                    }),
+                                                  ],
+                                                )),
+                                          ],
                                         ),
-                                      ],
-                                    ),
-                                  ));
-                        }
+                                      ));
+                            }
 
-                        _showIOS_DatePicker(context);
-                      },
-                      child: Container(
-                          margin: EdgeInsets.only(left: 20, right: 20),
-                          child: Row(
-                            children: [
-                              Text(
-                                Locales.string(context, 'lang_dateservicefinal').toString(),
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
-                                  color: secondryColor,
-                                ),
-                              ),
-                              Expanded(child: SizedBox()),
-                              Text(
-                                /* hourService.toString()*/ /*dataListObjectGeneral == null
+                            _showIOS_DatePicker(context);
+                          },
+                          child: Container(
+                              margin: EdgeInsets.only(left: 20, right: 20),
+                              child: Row(
+                                children: [
+                                  Text(
+                                    Locales.string(context, 'lang_datefinal').toString(),
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                      color: secondryColor,
+                                    ),
+                                  ),
+                                  Expanded(child: SizedBox()),
+                                  Text(
+                                    /* hourService.toString()*/ /*dataListObjectGeneral == null
                               ? ""
                               :*/
-                                dataListObjectGeneral!.child("dateFinal").value == null
-                                    ? Locales.string(context, 'lang_nodisponible')
-                                    : dataListObjectGeneral!.child("dateFinal").value.toString(),
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
-                                  color: secondryColor,
-                                ),
-                              )
-                            ],
-                          ))),
-                  SizedBox(
-                    height: 15,
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(left: 20, right: 20),
-                    width: double.infinity,
-                    height: 1,
-                    color: secondryColor,
-                  ),
-                  SizedBox(
-                    height: 15,
-                  ),
-                  GestureDetector(
-                      onTap: () {
-                        void _showIOS_DatePicker(ctx) {
-                          showCupertinoModalPopup(
-                              context: ctx,
-                              builder: (_) => Container(
-                                    height: 190,
-                                    color: Color.fromARGB(255, 255, 255, 255),
-                                    child: Column(
-                                      children: [
-                                        Container(
-                                          height: 180,
-                                          child: CupertinoDatePicker(
-                                              mode: CupertinoDatePickerMode.time,
-                                              initialDateTime: DateTime.now(),
-                                              onDateTimeChanged: (val) {
-                                                setState(() {
-                                                  //    final f = new DateFormat('yyyy-MM-dd');
-
-                                                  hourService = DateFormat('hh:mm:ss').format(val).toString();
-                                                  dataListObjectGeneral!.ref.update({'timeFinal': hourService.toString()}).then((value) {
-                                                    //  setState(() {});
-                                                    //getData();
-                                                    // AppWidget().itemMessage("Actualizado", context);
-                                                  });
-
-                                                  //  dateSelected = val.toString();
-                                                });
-                                              }),
-                                        ),
-                                      ],
+                                    dataListObjectGeneral!.child("dateFinal").value == null
+                                        ? Locales.string(context, 'lang_nodisponible')
+                                        : AppUtils().noNull(dataListObjectGeneral!.child("dateFinal").value.toString()) +
+                                            " " +
+                                            AppUtils().noNull(dataListObjectGeneral!.child("timeFinal").value.toString()),
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                      color: secondryColor,
                                     ),
-                                  ));
-                        }
+                                  )
+                                ],
+                              ))),
+                  dateInit == null
+                      ? SizedBox()
+                      : Column(
+                          children: [
+                            SizedBox(
+                              height: 15,
+                            ),
+                            Container(
+                              margin: EdgeInsets.only(left: 20, right: 20),
+                              width: double.infinity,
+                              height: 1,
+                              color: secondryColor,
+                            ),
+                            SizedBox(
+                              height: 15,
+                            ),
+                          ],
+                        ),
 
-                        _showIOS_DatePicker(context);
+                  /* GestureDetector(
+                      onTap: () {
+                        
                       },
                       child: Container(
                           margin: EdgeInsets.only(left: 20, right: 20),
@@ -922,8 +982,8 @@ class _CartPageState extends State<CartPage> {
                                 ),
                               )
                             ],
-                          ))),
-                  SizedBox(
+                          ))),*/
+                  /*    SizedBox(
                     height: 15,
                   ),
                   Container(
@@ -934,7 +994,7 @@ class _CartPageState extends State<CartPage> {
                   ),
                   SizedBox(
                     height: 15,
-                  ),
+                  ),*/
                   getUserProfesional(),
                   /*  ListTile(
                     leading: CircleAvatar(
@@ -1155,7 +1215,7 @@ class _CartPageState extends State<CartPage> {
                         urlIcon: "images/icons/userDone.svg", tap: () {
                       payOrden() {
                         int value = getTotalPay();
-                        //   AppStripe().makePayment(value, context, execute: () {
+                        // AppStripe().makePayment(value, context, execute: () {
                         dataListObjectGeneral!.ref.update({'professionalName': professionalName});
                         dataListObjectGeneral!.ref.update({'state': 1}).then((value) {
                           // setState(() {});
@@ -1164,8 +1224,8 @@ class _CartPageState extends State<CartPage> {
 
                             AppWidget().itemMessage("Orden creada", context);
                           });
-                          //  });
                         });
+                        // });
                       }
 
                       if (dataListObjectGeneral!.child("date").value != null &&
@@ -1437,6 +1497,11 @@ class _CartPageState extends State<CartPage> {
                               width: 200,
                               height: 200,
                               color: Colors.grey.withOpacity(0.3),
+                              child: Icon(
+                                Icons.image_not_supported_outlined,
+                                size: 30,
+                                color: Colors.black.withOpacity(0.2),
+                              ),
                             );
                           },
                           width: 80,

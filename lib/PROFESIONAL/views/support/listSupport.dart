@@ -21,6 +21,7 @@ import 'package:fullpro/controller/loader.dart';
 import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
 
 import 'package:fullpro/pages/homepage.dart';
+import 'package:fullpro/pages/support/listMessageSupport.dart';
 
 import 'package:fullpro/pages/support/newSupport.dart';
 
@@ -72,7 +73,7 @@ class _ListSupportProfessionalPageState extends State<ListSupportProfessionalPag
                                         return Column(
                                           mainAxisSize: MainAxisSize.min,
                                           children: <Widget>[
-                                            ListTile(
+                                            /*   ListTile(
                                               title: new Text(Locales.string(context, 'lang_location')),
                                               onTap: () {
                                                 Navigator.pop(context);
@@ -91,7 +92,7 @@ class _ListSupportProfessionalPageState extends State<ListSupportProfessionalPag
                                                   Navigator.pop(context);
                                                 });
                                               },
-                                            ),
+                                            ),*/
 
                                             /* ListTile(
 
@@ -117,7 +118,21 @@ class _ListSupportProfessionalPageState extends State<ListSupportProfessionalPag
                                               },
 
                                             ),*/
-
+                                            ListTile(
+                                              title: new Text(Locales.string(context, 'Ver')),
+                                              onTap: () {
+                                                Navigator.pop(context);
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) => ListMessageSupportPage(
+                                                        id: dataList.key.toString(),
+                                                        state: int.parse(dataList.child("state").value.toString()) == 0 ? false : true,
+                                                        title: dataList.child("name").value.toString(),
+                                                      ),
+                                                    ));
+                                              },
+                                            ),
                                             ListTile(
                                               title: new Text(Locales.string(context, 'lang_cancel')),
                                               onTap: () {

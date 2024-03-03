@@ -105,7 +105,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                 SizedBox(
                   height: 50,
                 ),
-                AppWidget().buttonFormColor(context, "Guardar", secondryColor, tap: () async {
+                AppWidget().buttonFormColor(context, Locales.string(context, "lang_saved"), secondryColor, tap: () async {
                   if (_key.currentState!.validate()) {
                     if (_newPasswordController.text.toString() == _repeatNewPasswordController.text.toString()) {
                       _changePassword(_actualPasswordController.text, _newPasswordController.text);

@@ -133,7 +133,7 @@ class _PayMethodProfessionalPageState extends State<PayMethodProfessionalPage> {
             SizedBox(
               height: 50,
             ),
-            AppWidget().buttonFormColor(context, "Guardar", secondryColor, tap: () {
+            AppWidget().buttonFormColor(context, Locales.string(context, "lang_saved"), secondryColor, tap: () {
               userInfoPartners!.ref.update({"numberPay": _numberController.text, "bankPay": selectBack}).then((value) {
                 AppWidget().itemMessage("Datos guardados", context);
               }).catchError((onError) {

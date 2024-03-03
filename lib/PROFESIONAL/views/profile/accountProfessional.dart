@@ -501,7 +501,7 @@ class _AccountProfessionalState extends State<AccountProfessional> with TickerPr
                                         height: 30,
                                       ),
                                       itemOptionProfileOptions("Radio de busqueda", "images/icons/locationCircle.svg",
-                                          subtitle: _currentSliderValue.round().toString() + " KM"),
+                                          subtitle: _currentSliderValue.round().toString() + "miles"),
                                       Slider(
                                         value: _currentSliderValue,
                                         max: 100,
@@ -708,7 +708,7 @@ class _AccountProfessionalState extends State<AccountProfessional> with TickerPr
                                           width: 10,
                                         ),
                                         Text(
-                                          "Guardar",
+                                          Locales.string(context, "lang_saved"),
                                           style: TextStyle(color: secondryColor, fontSize: 20),
                                         ),
                                       ],

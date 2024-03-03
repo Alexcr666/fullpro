@@ -1,6 +1,11 @@
 {
   "lang_pending": "Pending",
+  "lang_price_repeat": "Repeat price",
+  "lang_price_message": "The values in the price confirmation do not match",
+  "lang_change_password": "Change password",
   "lang_resultsof": "Results of: ",
+  "lang_dateinit": "Start date",
+  "lang_datefinish": "Final date",
   "lang_process": "En proceso",
   "lang_evidence": "Evidence",
   "ver": "Watch",

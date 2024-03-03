@@ -749,7 +749,7 @@ class _AccountState extends State<Account> with TickerProviderStateMixin {
                                           width: 10,
                                         ),
                                         Text(
-                                          "Guardar",
+                                          Locales.string(context, "lang_saved"),
                                           style: TextStyle(color: secondryColor, fontSize: 20),
                                         ),
                                       ],

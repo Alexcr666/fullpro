@@ -453,8 +453,8 @@ class AppWidget {
             fit: BoxFit.cover,
             placeholder: (context, url) => new CircularProgressIndicator(),
             errorWidget: (context, url, error) => new Icon(
-              Icons.error,
-              color: Colors.black.withOpacity(0.0),
+              Icons.image_not_supported_outlined,
+              color: Colors.black.withOpacity(0.2),
             ),
           ),
         ));

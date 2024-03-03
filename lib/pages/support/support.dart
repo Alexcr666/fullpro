@@ -265,6 +265,17 @@ class _SupportAppPageState extends State<SupportAppPage> {
                       };
 
                       newUserRef.set(userMap).then((value) {
+                        newUserRef.child("message").push().set({
+                          "description": "Su solicitud ha sido enviada con exito, en un rato se atendera",
+                          "date": DateFormat('yyyy-MM-dd').format(DateTime.now()).toString(),
+                          "nameUser": "Admin",
+                          "user": "admin"
+                        }).then((value) {
+                          AppWidget().itemMessage("Enviado", context);
+                        }).catchError((onError) {
+                          AppWidget().itemMessage(Locales.string(context, "lang_error"), context);
+                        });
+
                         Navigator.pop(context);
 
                         AppWidget().itemMessage("Guardado", context);

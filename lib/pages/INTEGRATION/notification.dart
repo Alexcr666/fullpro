@@ -113,11 +113,23 @@ class _NotificationsState extends State<Notifications> {
                                                 }
                                               }
                                             },
-                                            title: Text(dataList.child("description").value.toString().capitalize()),
-                                            subtitle: Text(
-                                              DateFormat('yyyy-MM-dd – KK:mm a')
-                                                  .format(DateTime.parse(dataList.child("date").value.toString())),
-                                              style: TextStyle(fontSize: 11),
+                                            title: Text(AppUtils().noNull(dataList.child("title").value.toString())),
+                                            subtitle: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  AppUtils().noNull(dataList.child("description").value.toString()),
+                                                  style: TextStyle(fontSize: 11),
+                                                ),
+                                                SizedBox(
+                                                  height: 3,
+                                                ),
+                                                Text(
+                                                  DateFormat('yyyy-MM-dd – KK:mm a')
+                                                      .format(DateTime.parse(dataList.child("date").value.toString())),
+                                                  style: TextStyle(fontSize: 11),
+                                                )
+                                              ],
                                             ),
                                             trailing: GestureDetector(
                                                 onTap: () {

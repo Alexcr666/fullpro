@@ -226,6 +226,11 @@ class _kSearchPageState extends State<kSearchPage> {
                       width: 90,
                       height: 90,
                       color: Colors.grey.withOpacity(0.3),
+                      child: Icon(
+                        Icons.image_not_supported_outlined,
+                        size: 30,
+                        color: Colors.black.withOpacity(0.2),
+                      ),
                     );
                   },
                   width: 85,

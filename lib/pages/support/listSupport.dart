@@ -307,4 +307,17 @@ class _ListSupportPageState extends State<ListSupportPage> {
       ),
     );
   }
+
+  @override
+  void initState() {
+    super.initState();
+    DatabaseReference ref = FirebaseDatabase.instance.ref("support");
+
+// Get the Stream
+    Stream<DatabaseEvent> stream = ref.onValue;
+
+    stream.listen((DatabaseEvent event) {
+      setState(() {});
+    });
+  }
 }
