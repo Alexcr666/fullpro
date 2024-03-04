@@ -792,12 +792,12 @@ class _kHomePageState extends State<kHomePage> {
                                               return itemProfile();
                                             }
                                           } else {
-                                            return AppWidget().loading();
+                                            return AppWidget().loading(context);
                                           }
                                         });*/
                         });
           } else {
-            return AppWidget().loading();
+            return AppWidget().loading(context);
           }
 
           ;
@@ -1136,7 +1136,7 @@ class _kHomePageState extends State<kHomePage> {
                                                                         color: secondryColor,
                                                                       ));
                                                             } else {
-                                                              return AppWidget().loading();
+                                                              return AppWidget().loading(context);
                                                             }
                                                           }),
                                                       SizedBox(
@@ -1319,12 +1319,12 @@ class _kHomePageState extends State<kHomePage> {
                 ),
               );
             } else {
-              return AppWidget().loading();
+              return AppWidget().loading(context);
             }
 
             ;
           } catch (e) {
-            return AppWidget().loading();
+            return AppWidget().loading(context);
           }
         });
 
@@ -1482,12 +1482,12 @@ class _kHomePageState extends State<kHomePage> {
                             },
                           ));
             } else {
-              return AppWidget().loading();
+              return AppWidget().loading(context);
             }
 
             ;
           } catch (e) {
-            return AppWidget().loading();
+            return AppWidget().loading(context);
           }
         });
   }

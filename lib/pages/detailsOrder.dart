@@ -400,7 +400,7 @@ class _DetailsOrderPageState extends State<DetailsOrderPage> {
               }
             }
 
-            return AppWidget().loading();
+            return AppWidget().loading(context);
           } else {
             return SizedBox();
           }

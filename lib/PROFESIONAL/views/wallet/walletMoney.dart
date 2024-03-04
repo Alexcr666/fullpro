@@ -205,7 +205,7 @@ class _WallletPageState extends State<WallletPage> {
 
                       // }
 
-                      return AppWidget().loading();
+                      return AppWidget().loading(context);
                     }),
                 SizedBox(
                   height: 30,
@@ -293,7 +293,7 @@ class _WallletPageState extends State<WallletPage> {
 
           // }
 
-          return AppWidget().loading();
+          return AppWidget().loading(context);
         });
   }
 }

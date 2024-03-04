@@ -379,7 +379,7 @@ class _AddressesState extends State<Addresses> {
 
           // }
 
-          return AppWidget().loading();
+          return AppWidget().loading(context);
         });
   }
 

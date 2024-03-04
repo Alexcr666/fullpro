@@ -271,14 +271,13 @@ class _SupportAppPageState extends State<SupportAppPage> {
                           "nameUser": "Admin",
                           "user": "admin"
                         }).then((value) {
-                          AppWidget().itemMessage("Enviado", context);
+                          Navigator.pop(context);
+
+                          AppWidget().itemMessage("Guardado", context);
+                          //  AppWidget().itemMessage("Enviado", context);
                         }).catchError((onError) {
                           AppWidget().itemMessage(Locales.string(context, "lang_error"), context);
                         });
-
-                        Navigator.pop(context);
-
-                        AppWidget().itemMessage("Guardado", context);
                       }).catchError((onError) {
                         AppWidget().itemMessage("Error al guardar", context);
                       });

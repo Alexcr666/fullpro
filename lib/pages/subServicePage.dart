@@ -401,7 +401,7 @@ class _subServicePageState extends State<subServicePage> {
 
                                                                                           return SizedBox();
                                                                                         } else {
-                                                                                          return AppWidget().loading();
+                                                                                          return AppWidget().loading(context);
                                                                                         }
                                                                                       }),
                                                                                   Text(dataPartners == null
@@ -617,7 +617,7 @@ class _subServicePageState extends State<subServicePage> {
                                                             color: secondryColor,
                                                           ));
                                                 } else {
-                                                  return AppWidget().loading();
+                                                  return AppWidget().loading(context);
                                                 }
                                               }),*/
                                           SizedBox(
@@ -661,7 +661,7 @@ class _subServicePageState extends State<subServicePage> {
                           }
                         });
           } else {
-            return AppWidget().loading();
+            return AppWidget().loading(context);
           }
 
           ;
@@ -797,12 +797,12 @@ class _subServicePageState extends State<subServicePage> {
                             }
                           });
             } else {
-              return AppWidget().loading();
+              return AppWidget().loading(context);
             }
 
             ;
           } catch (e) {
-            return AppWidget().loading();
+            return AppWidget().loading(context);
           }
         });
   }*/

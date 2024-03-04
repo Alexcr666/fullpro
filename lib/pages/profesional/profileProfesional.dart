@@ -283,7 +283,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
           } else {
             // }
 
-            return AppWidget().loading();
+            return AppWidget().loading(context);
           }
         });
   }
@@ -478,7 +478,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                               );
                             }));
           } else {
-            return AppWidget().loading();
+            return AppWidget().loading(context);
           }
 
           // }
@@ -498,12 +498,12 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
 
               return response == null ? AppWidget().loading() : SizedBox();
             } else {
-              return AppWidget().loading();
+              return AppWidget().loading(context);
             }
 
             ;
           } catch (e) {
-            return AppWidget().loading();
+            return AppWidget().loading(context);
           }
         });
   }
@@ -2122,7 +2122,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                                                                   color: secondryColor,
                                                                                 ));
                                                                       } else {
-                                                                        return AppWidget().loading();
+                                                                        return AppWidget().loading(context);
                                                                       }
                                                                     }),
                                                                 SizedBox(
@@ -2282,11 +2282,11 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                                         width: 120,
                                                         height: 120,
                                                         color: Colors.grey.withOpacity(0.3),
-                                                         child: Icon(
-                                                        Icons.image_not_supported_outlined,
-                                                        size: 30,
-                                                        color: Colors.black.withOpacity(0.2),
-                                                      ),
+                                                        child: Icon(
+                                                          Icons.image_not_supported_outlined,
+                                                          size: 30,
+                                                          color: Colors.black.withOpacity(0.2),
+                                                        ),
                                                       );
                                                     },
                                                     width: 80,

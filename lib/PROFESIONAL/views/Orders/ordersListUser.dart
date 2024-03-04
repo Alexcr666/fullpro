@@ -276,7 +276,7 @@ Widget pageOrdensWidget(int state) {
 
         // }
 
-        return AppWidget().loading();
+        return AppWidget().loading(context);
       });
 }
 
@@ -492,12 +492,12 @@ class _SolicitudListState extends State<SolicitudList> with TickerProviderStateM
                         }
                       });
             } else {
-              return AppWidget().loading();
+              return AppWidget().loading(context);
             }
 
             ;
           } catch (e) {
-            return AppWidget().loading();
+            return AppWidget().loading(context);
           }
         });
   }
@@ -583,12 +583,12 @@ class _SolicitudListState extends State<SolicitudList> with TickerProviderStateM
                         }
                       });
             } else {
-              return AppWidget().loading();
+              return AppWidget().loading(context);
             }
 
             ;
           } catch (e) {
-            return AppWidget().loading();
+            return AppWidget().loading(context);
           }
         });
   }
@@ -828,12 +828,12 @@ class _SolicitudListState extends State<SolicitudList> with TickerProviderStateM
                         }
                       });
             } else {
-              return AppWidget().loading();
+              return AppWidget().loading(context);
             }
 
             ;
           } catch (e) {
-            return AppWidget().loading();
+            return AppWidget().loading(context);
           }
         });
   }

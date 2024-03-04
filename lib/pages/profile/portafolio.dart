@@ -210,12 +210,12 @@ class _PortafolioPageState extends State<PortafolioPage> {
                                     )));
                           });
             } else {
-              return AppWidget().loading();
+              return AppWidget().loading(context);
             }
 
             ;
           } catch (e) {
-            return AppWidget().loading();
+            return AppWidget().loading(context);
           }
         });
   }

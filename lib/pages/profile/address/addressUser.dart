@@ -411,7 +411,7 @@ class _AddressesState extends State<AddressesUser> {
   double? _lng;
 
   // write a function to receive the place details callback
-
+/*
   void onSuggestionClick(Place placeDetails) {
     setState(() {
       _streetNumber = placeDetails.streetNumber;
@@ -432,7 +432,7 @@ class _AddressesState extends State<AddressesUser> {
 
       _lng = placeDetails.lng;
     });
-  }
+  }*/
 
   Widget startIndicator(String title) {
     return FutureBuilder(
@@ -603,7 +603,7 @@ class _AddressesState extends State<AddressesUser> {
 
           // }
 
-          return AppWidget().loading();
+          return AppWidget().loading(context);
         });
   }
 
@@ -715,7 +715,7 @@ class _AddressesState extends State<AddressesUser> {
                             _handlePressButton(context);
                           },
                           child: AppWidget().texfieldFormat(
-                              title: Locales.string(context, 'lang_addnewlocation'),
+                              title: Locales.string(context, 'lang_addnewlocation') + "dd",
                               controller: searchTextController,
                               execute: () async {
                                 //  await Future.delayed(Duration(milliseconds: 1000)); //   setState(() {});
@@ -1111,7 +1111,7 @@ class _AddressesState extends State<AddressesUser> {
     }
   }
 
-  Future<Null> displayPrediction(BuildContext context, Prediction p, ScaffoldState scaffold) async {
+  Future<Null> displayPrediction(/*BuildContext context,*/ Prediction p, ScaffoldState scaffold) async {
     if (p != null) {
       // get detail (lat/lng)
       GoogleMapsPlaces _places = GoogleMapsPlaces(
@@ -1155,7 +1155,9 @@ class _AddressesState extends State<AddressesUser> {
       }).then((value) {
         Navigator.pop(context);
         AppWidget().itemMessage("Ubicación cambiada", context);
-      }).catchError((onError) {});
+      }).catchError((onError) {
+        AppWidget().itemMessage("Error al cambiar ubicación", context);
+      });
 
       // scaffold.showSnackBar(
       // SnackBar(content: Text("${p.description} - $lat/$lng")),
@@ -1198,6 +1200,6 @@ class _AddressesState extends State<AddressesUser> {
       components: [Component(Component.country, "co")] /* components: [Component(Component.country, "fr")]*/,
     );
 
-    displayPrediction(context, p!, homeScaffoldKey.currentState!);
+    displayPrediction(/*context,*/ p!, homeScaffoldKey.currentState!);
   }
 }

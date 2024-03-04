@@ -119,7 +119,7 @@ class _ListAddressPageState extends State<ListAddressPage> {
                 });
           }
 
-          return AppWidget().loading();
+          return AppWidget().loading(context);
         });
   }
 

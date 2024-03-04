@@ -6,6 +6,7 @@ import 'package:flutter_locales/flutter_locales.dart';
 import 'package:fullpro/pages/Authentication/recoverPassword/firebaseAuth.dart';
 
 import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
+import 'package:fullpro/utils/utils.dart';
 
 import 'package:fullpro/widgets/widget.dart';
 
@@ -108,7 +109,9 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                 AppWidget().buttonFormColor(context, Locales.string(context, "lang_saved"), secondryColor, tap: () async {
                   if (_key.currentState!.validate()) {
                     if (_newPasswordController.text.toString() == _repeatNewPasswordController.text.toString()) {
-                      _changePassword(_actualPasswordController.text, _newPasswordController.text);
+                      if (await AppUtils().checkInternet(context)) {
+                        _changePassword(_actualPasswordController.text, _newPasswordController.text);
+                      }
                     } else {
                       AppWidget().itemMessage("Las contraseñas no coinciden", context);
                     }

@@ -478,12 +478,12 @@ class _CartPageState extends State<CartPage> {
                           },
                         );
             } else {
-              return AppWidget().loading();
+              return AppWidget().loading(context);
             }
 
             ;
           } catch (e) {
-            return AppWidget().loading();
+            return AppWidget().loading(context);
           }
         });
   }

@@ -43,6 +43,20 @@ import 'package:fullpro/widgets/ProfileButtonWithBottomSheet.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class AppWidget {
+  Widget noInternet() {
+    return Column(
+      children: [
+        SizedBox(
+          height: 20,
+        ),
+        Text("No hay conexión a internet"),
+        SizedBox(
+          height: 20,
+        ),
+      ],
+    );
+  }
+
   Widget ratingBarProfessional(String id) {
     return FutureBuilder(
         future: FirebaseDatabase.instance.ref().child('ordens').orderByChild("professional").equalTo(id).once(),

@@ -116,12 +116,12 @@ class _ListMessageSupportPageState extends State<ListMessageSupportPage> {
                                     )));
                           });
             } else {
-              return AppWidget().loading();
+              return AppWidget().loading(context);
             }
 
             ;
           } catch (e) {
-            return AppWidget().loading();
+            return AppWidget().loading(context);
           }
         });
   }

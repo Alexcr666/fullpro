@@ -241,12 +241,12 @@ class _MyOrdersState extends State<MyOrdersProfile> with TickerProviderStateMixi
                         }
                       });
             } else {
-              return AppWidget().loading();
+              return AppWidget().loading(context);
             }
 
             ;
           } catch (e) {
-            return AppWidget().loading();
+            return AppWidget().loading(context);
           }
         });
   }
@@ -332,12 +332,12 @@ class _MyOrdersState extends State<MyOrdersProfile> with TickerProviderStateMixi
                             }
                           });
             } else {
-              return AppWidget().loading();
+              return AppWidget().loading(context);
             }
 
             ;
           } catch (e) {
-            return AppWidget().loading();
+            return AppWidget().loading(context);
           }
         });
   }
@@ -683,7 +683,7 @@ class _MyOrdersState extends State<MyOrdersProfile> with TickerProviderStateMixi
 
           // }
 
-          return AppWidget().loading();
+          return AppWidget().loading(context);
         });
   }
 
@@ -1042,12 +1042,12 @@ class _MyOrdersState extends State<MyOrdersProfile> with TickerProviderStateMixi
                         }
                       });
             } else {
-              return AppWidget().loading();
+              return AppWidget().loading(context);
             }
 
             ;
           } catch (e) {
-            return AppWidget().loading();
+            return AppWidget().loading(context);
           }
         });
   }

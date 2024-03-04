@@ -9,6 +9,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:fullpro/utils/utils.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 import 'package:fullpro/controller/loader.dart';
@@ -432,7 +433,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                       height: 10,
                     ),
 
-                    AppWidget().buttonForm(context, Locales.string(context, 'lbl_register'), tap: () {
+                    AppWidget().buttonForm(context, Locales.string(context, 'lbl_register'), tap: () async {
                       /*  var connectivityResult = await (Connectivity().checkConnectivity());
                   if (connectivityResult != ConnectivityResult.wifi && connectivityResult != ConnectivityResult.mobile) {
                     ScaffoldMessenger.of(context).showSnackBar(
@@ -487,7 +488,9 @@ class _RegistrationPageState extends State<RegistrationPage> {
                         return;
                       }
                       if (_formKey.currentState!.validate()) {
-                        registerUser(context, google: false);
+                        if (await AppUtils().checkInternet(context)) {
+                          registerUser(context, google: false);
+                        }
                       } else {
                         AppWidget().itemMessage("Falta campos", context);
                       }

@@ -442,7 +442,7 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
               }
             }
 
-            return AppWidget().loading();
+            return AppWidget().loading(context);
           } else {
             return SizedBox();
           }

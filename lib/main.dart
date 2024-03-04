@@ -1,6 +1,8 @@
 // ignore_for_file: prefer_const_constructors
 import 'dart:developer';
+import 'dart:io';
 
+import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
@@ -62,6 +64,12 @@ Future<void> main() async {
   }
 
   FirebaseMessaging.onBackgroundMessage(backgroundHandler);
+
+  FirebaseDatabase database;
+  database = FirebaseDatabase.instance;
+  database.setPersistenceEnabled(true);
+  database.setPersistenceCacheSizeBytes(10000000);
+
   runApp(const MyApp());
 }
 

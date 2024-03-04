@@ -14,6 +14,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:fullpro/utils/utils.dart';
 import 'package:http/http.dart' as http;
 import 'package:fullpro/PROFESIONAL/controllers/loader.dart';
 import 'package:fullpro/PROFESIONAL/utils/globalConstants.dart';
@@ -1123,7 +1124,9 @@ class _RegistrationProfessionalPageState extends State<RegistrationProfessionalP
                         if (signUpNext == true) {
                           if (agree == true) {
                             if (_formKey.currentState!.validate()) {
-                              registerUser(context);
+                              if (await AppUtils().checkInternet(context)) {
+                                registerUser(context);
+                              }
                             }
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Debe aceptar los terminos y condiciones")));
