@@ -16,7 +16,7 @@ import 'package:fullpro/styles/statics.dart' as Static;
 import 'package:fullpro/utils/countryStateCity/AddressPicker.dart';
 import 'package:fullpro/utils/userpreferences.dart';
 import 'package:fullpro/widgets/DataLoadedProgress.dart';
-import 'package:maps_places_autocomplete/maps_places_autocomplete.dart';
+
 import 'dart:async';
 
 import 'package:string_similarity/string_similarity.dart';

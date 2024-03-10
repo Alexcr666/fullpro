@@ -33,7 +33,7 @@ class _StripeTestState extends State<StripeTest> {
             },
           ),
           TextButton(
-            child: const Text('Create Payment'),
+            child: const Text('Create Client'),
             onPressed: () async {
               await createClient();
             },
@@ -51,7 +51,7 @@ class _StripeTestState extends State<StripeTest> {
 
   Future<void> makePayment() async {
     try {
-      paymentIntent = await createPaymentIntent('10', 'USD');
+      paymentIntent = await createPaymentIntent('100000', 'USD');
       //Payment Sheet
       await Stripe.instance
           .initPaymentSheet(
@@ -129,34 +129,62 @@ class _StripeTestState extends State<StripeTest> {
   }
 
   createClient() async {
-    try {
+    // try {
+    /*
       Map<String, dynamic> body = {
-        // 'type': 'custom',
-        //'country': 'US',
-        'name': 'alex enrique',
-        'email': 'alexecr66@gmail.com',
-        /* 'capabilities': {
-          'card_payments': {
-            'requested': true,
-          },
-          'transfers': {
-            'requested': true,
-          },
-        },*/
-      };
+        "country": "US",
+        "type": "custom",
+        "email": "jenny.rosen@example.com",
+        "capabilities": {
+          "card_payments": {"requested": "true"},
+          "transfers": {"requested": "true"}
+        }
+      };*/
 
-      var response = await http.post(
-        Uri.parse('https://api.stripe.com/v1/customers'),
-        headers: {'Authorization': 'Bearer $stripeSecretKey', 'Content-Type': 'application/x-www-form-urlencoded'},
-        body: body,
-      );
-      // ignore: avoid_print
-      log('Payment Intent Body->>> ${response.body.toString()}');
-      return jsonDecode(response.body);
-    } catch (err) {
-      // ignore: avoid_print
-      print('err charging user: ${err.toString()}');
-    }
+    final msg = jsonEncode({
+      "country": "US",
+      "type": "custom",
+      "email": "jenny.rosen@example.com",
+      "capabilities": {
+        "card_payments": {"requested": "true"},
+        "transfers": {"requested": "true"}
+      },
+      "business_type": "individual",
+      "individual": {
+        "address": "",
+        "relationship": {"title": "servicio"},
+        "email": "alexecr66@gmail.com",
+        "first_name": "alex",
+        "gender": "male",
+        "id_number": "12345567",
+        "last_name": "alex enrique",
+        "phone": "3013928129",
+        "political_exposure": "none",
+        "registered_address": {
+          "city": "City",
+          "country": "3232",
+          "postal_code": "77777",
+          "state": "country",
+        }
+      },
+      "business_profile": {"url": "www.fullpro.com"}
+    });
+
+    var response = await http.post(
+      Uri.parse('https://api.stripe.com/v1/accounts'),
+      headers: {'Authorization': 'Bearer $stripeSecretKey', 'Content-Type': 'application/x-www-form-urlencoded'},
+      body:
+          "type=express&country=US&email=jenny22.rosen%40example.com&capabilities%5Bcard_payments%5D%5Brequested%5D=true&capabilities%5Btransfers%5D%5Brequested%5D=true",
+    );
+    log(stripeSecretKey);
+
+    // ignore: avoid_print
+    log(response.statusCode.toString() + 'Payment Intent Body->>> ${response.body.toString()}');
+    return jsonDecode(response.body);
+    // } catch (err) {
+    // ignore: avoid_print
+    // print('err charging user: ${err.toString()}');
+    //}
   }
 
   createTransfers() async {
@@ -164,10 +192,10 @@ class _StripeTestState extends State<StripeTest> {
       Map<String, dynamic> body = {
         // 'type': 'custom',
         //'country': 'US',
-        'amount': '50000',
+        'amount': '5000',
         'currency': 'usd',
-        'destination': 'acct_1OoSilGheOR3kQ6y',
-        'source_transaction': 'ch_3OoA5bGnUWGQvfrC0r0WLPY5'
+        'destination': 'acct_1OstVoGhxnVdPdcz',
+        'source_transaction': 'ch_3OstkeGnUWGQvfrC0Z03KYz3'
         /* 'capabilities': {
           'card_payments': {
             'requested': true,

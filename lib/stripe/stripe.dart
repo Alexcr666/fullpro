@@ -95,4 +95,27 @@ class AppStripe {
     final calculatedAmout = (int.parse(amount)) * 100;
     return calculatedAmout.toString();
   }
+
+  createTransfers(String destination, String sourceTransactions, String amount) async {
+    try {
+      Map<String, dynamic> body = {
+        'amount': amount,
+        'currency': 'usd',
+        'destination': destination,
+        'source_transaction': sourceTransactions,
+      };
+
+      var response = await http.post(
+        Uri.parse('https://api.stripe.com/v1/transfers'),
+        headers: {'Authorization': 'Bearer $stripeSecretKey', 'Content-Type': 'application/x-www-form-urlencoded'},
+        body: body,
+      );
+      // ignore: avoid_print
+      print('Payment Intent Body->>> ${response.body.toString()}');
+      return jsonDecode(response.body);
+    } catch (err) {
+      // ignore: avoid_print
+      print('err charging user: ${err.toString()}');
+    }
+  }
 }

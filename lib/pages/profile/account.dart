@@ -289,7 +289,7 @@ class _AccountState extends State<Account> with TickerProviderStateMixin {
         ),
       ),*/
       body: userDataProfile == null
-          ? AppWidget().loading()
+          ? AppWidget().loading(context)
           : SafeArea(
               child: Padding(
               padding: EdgeInsets.only(

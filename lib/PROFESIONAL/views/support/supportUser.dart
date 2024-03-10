@@ -275,11 +275,25 @@ class _SupportAppProfessionalPageState extends State<SupportAppProfessionalPage>
                       };
 
                       newUserRef.set(userMap).then((value) {
-                        Navigator.pop(context);
+                        // Navigator.pop(context);
+
+                        newUserRef.child("message").push().set({
+                          "description": "Su solicitud ha sido enviada con exito, en un rato se atendera",
+                          "date": DateFormat('yyyy-MM-dd').format(DateTime.now()).toString(),
+                          "nameUser": "Admin",
+                          "user": "admin"
+                        }).then((value) {
+                          Navigator.pop(context);
+
+                          AppWidget().itemMessage("Guardado", context);
+                          //  AppWidget().itemMessage("Enviado", context);
+                        }).catchError((onError) {
+                          AppWidget().itemMessage(Locales.string(context, "lang_error"), context);
+                        });
 
                         // Navigator.push(context, MaterialPageRoute(builder: (context) => ListSupportProfessionalPage()));
 
-                        AppWidget().itemMessage("Guardado", context);
+                        // AppWidget().itemMessage("Guardado", context);
                       }).catchError((onError) {
                         AppWidget().itemMessage("Error al guardar", context);
                       });

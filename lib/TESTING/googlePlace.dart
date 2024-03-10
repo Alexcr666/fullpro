@@ -36,15 +36,15 @@ class RoutesWidget extends StatelessWidget {
       );
 }*/
 
-class MyAppLocation extends StatefulWidget {
+class MyAppLocation2 extends StatefulWidget {
   @override
-  _MyAppLocationState createState() => _MyAppLocationState();
+  _MyAppLocation2State createState() => _MyAppLocation2State();
 }
 
 final homeScaffoldKey = GlobalKey<ScaffoldState>();
 final searchScaffoldKey = GlobalKey<ScaffoldState>();
 
-class _MyAppLocationState extends State<MyAppLocation> {
+class _MyAppLocation2State extends State<MyAppLocation2> {
   Mode _mode = Mode.overlay;
 
   @override
@@ -58,7 +58,6 @@ class _MyAppLocationState extends State<MyAppLocation> {
           child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          _buildDropdownMenu(),
           ElevatedButton(
             onPressed: handlePressButton,
             child: Text("Search places"),
@@ -73,25 +72,6 @@ class _MyAppLocationState extends State<MyAppLocation> {
       )),
     );
   }
-
-  Widget _buildDropdownMenu() => DropdownButton(
-        value: _mode,
-        items: <DropdownMenuItem<Mode>>[
-          DropdownMenuItem<Mode>(
-            child: Text("Overlay"),
-            value: Mode.overlay,
-          ),
-          DropdownMenuItem<Mode>(
-            child: Text("Fullscreen"),
-            value: Mode.fullscreen,
-          ),
-        ],
-        onChanged: (var m) {
-          setState(() {
-            // _mode = m;
-          });
-        },
-      );
 
   void onError(PlacesAutocompleteResponse response) {
     // homeScaffoldKey.currentState.showSnackBar(
@@ -148,64 +128,6 @@ Future<Null> displayPrediction(Prediction p, ScaffoldState scaffold) async {
     // scaffold.showSnackBar(
     // SnackBar(content: Text("${p.description} - $lat/$lng")),
     //);
-  }
-}
-
-// custom scaffold that handle search
-// basically your widget need to extends [GooglePlacesAutocompleteWidget]
-// and your state [GooglePlacesAutocompleteState]
-class CustomSearchScaffold extends PlacesAutocompleteWidget {
-  CustomSearchScaffold()
-      : super(
-            apiKey: kGoogleApiKey,
-            sessionToken: Uuid().generateV4(),
-            offset: 0,
-            radius: 1000,
-            types: [],
-            strictbounds: false,
-            // region: "ar",
-
-            mode: Mode.overlay, // Mode.fullscreen
-
-            components: [Component(Component.country, "co")]);
-
-  @override
-  _CustomSearchScaffoldState createState() => _CustomSearchScaffoldState();
-}
-
-class _CustomSearchScaffoldState extends PlacesAutocompleteState {
-  @override
-  Widget build(BuildContext context) {
-    final appBar = AppBar(title: AppBarPlacesAutoCompleteTextField());
-    final body = PlacesAutocompleteResult(
-      onTap: (p) {
-        displayPrediction(p, searchScaffoldKey.currentState!);
-      },
-      logo: Row(
-        children: [FlutterLogo()],
-        mainAxisAlignment: MainAxisAlignment.center,
-      ),
-    );
-    return Scaffold(key: searchScaffoldKey, appBar: appBar, body: body);
-  }
-
-  @override
-  void onResponseError(PlacesAutocompleteResponse response) {
-    super.onResponseError(response);
-    //   searchScaffoldKey.currentState.showSnackBar(
-    //   SnackBar(content: Text(response.errorMessage)),
-    // );
-  }
-
-  @override
-  void onResponse(PlacesAutocompleteResponse? response) {
-    super.onResponse(response);
-    if (response != null && response.predictions.isNotEmpty) {
-      AppWidget().itemMessage(response.predictions.toList().toString(), context);
-      //searchScaffoldKey.currentState.showSnackBar(
-      // SnackBar(content: Text("Got answer")),
-      //);
-    }
   }
 }
 

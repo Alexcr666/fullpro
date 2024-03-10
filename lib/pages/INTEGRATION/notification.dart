@@ -6,8 +6,10 @@ import 'package:firebase_database/firebase_database.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
+import 'package:fullpro/PROFESIONAL/views/homepage.dart';
 
 import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
+import 'package:fullpro/pages/homepage.dart';
 
 import 'package:fullpro/styles/styles.dart';
 import 'package:fullpro/utils/utils.dart';
@@ -31,9 +33,19 @@ class _NotificationsState extends State<Notifications> {
 
   @override
   void initState() {
+    DatabaseReference ref = FirebaseDatabase.instance.ref("notifications");
+
+// Get the Stream
+    Stream<DatabaseEvent> stream = ref.onValue;
+
+// Subscribe to the stream!
+    stream.listen((DatabaseEvent event) {
+      setState(() {});
+    });
     // matchReference = db.collection("Users").doc("Mkoc6GZaIWMf6yO2mDAHlZucj9V2").collection('Matches');
 
     super.initState();
+
     /*Future.delayed(Duration(seconds: 3), () {
       FirebaseDatabase.instance.ref().child('notifications').once().then((value) {
         for (var i = 0; i < value.snapshot.children.length; i++) {
@@ -77,7 +89,7 @@ class _NotificationsState extends State<Notifications> {
           var response = snapshot.data;
 
           return response == null
-              ? AppWidget().loading()
+              ? AppWidget().loading(context)
               : response.snapshot.children.toList().length == 0
                   ? AppWidget().noResult(context)
                   : Container(
@@ -100,53 +112,74 @@ class _NotificationsState extends State<Notifications> {
                                   }
                                 });*/
 
+                                getView() {
+                                  bool visible = false;
+                                  if (userDataProfile != null) {
+                                    if (dataList.child("publicState").value.toString() == "1" ||
+                                        dataList.child("publicState").value.toString() == "3") {
+                                      visible = true;
+                                    }
+                                  } else {
+                                    if (userInfoPartners != null) {
+                                      if (dataList.child("publicState").value.toString() == "2" ||
+                                          dataList.child("publicState").value.toString() == "3") {
+                                        visible = true;
+                                      }
+                                    }
+                                  }
+
+                                  return visible;
+                                }
+
                                 return dataList.child("view").value != null
                                     ? SizedBox()
-                                    : Column(
-                                        children: [
-                                          ListTile(
-                                            onTap: () async {
-                                              if (dataList.child("url").value != null) {
-                                                final Uri url = Uri.parse(dataList.child("url").value.toString());
-                                                if (!await launchUrl(url)) {
-                                                  throw Exception('Could not launch');
-                                                }
-                                              }
-                                            },
-                                            title: Text(AppUtils().noNull(dataList.child("title").value.toString())),
-                                            subtitle: Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  AppUtils().noNull(dataList.child("description").value.toString()),
-                                                  style: TextStyle(fontSize: 11),
-                                                ),
-                                                SizedBox(
-                                                  height: 3,
-                                                ),
-                                                Text(
-                                                  DateFormat('yyyy-MM-dd – KK:mm a')
-                                                      .format(DateTime.parse(dataList.child("date").value.toString())),
-                                                  style: TextStyle(fontSize: 11),
-                                                )
-                                              ],
-                                            ),
-                                            trailing: GestureDetector(
-                                                onTap: () {
-                                                  dataList.ref.update({"view": true}).then((value) {
-                                                    setState(() {});
-                                                  });
+                                    : getView() == false
+                                        ? SizedBox()
+                                        : Column(
+                                            children: [
+                                              ListTile(
+                                                onTap: () async {
+                                                  if (dataList.child("link").value != null) {
+                                                    final Uri url = Uri.parse(dataList.child("link").value.toString());
+                                                    if (!await launchUrl(url)) {
+                                                      throw Exception('Could not launch');
+                                                    }
+                                                  }
                                                 },
-                                                child: Icon(Icons.delete)),
-                                          ),
-                                          Container(
-                                            margin: EdgeInsets.only(right: 25, left: 10),
-                                            width: double.infinity,
-                                            height: 0.5,
-                                            color: secondryColor,
-                                          )
-                                        ],
-                                      );
+                                                title: Text(AppUtils().noNull(dataList.child("title").value.toString())),
+                                                subtitle: Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      AppUtils().noNull(dataList.child("description").value.toString()),
+                                                      style: TextStyle(fontSize: 11),
+                                                    ),
+                                                    SizedBox(
+                                                      height: 3,
+                                                    ),
+                                                    Text(
+                                                      DateFormat('yyyy-MM-dd – KK:mm a')
+                                                          .format(DateTime.parse(dataList.child("date").value.toString())),
+                                                      style: TextStyle(fontSize: 11),
+                                                    )
+                                                  ],
+                                                ),
+                                                trailing: GestureDetector(
+                                                    onTap: () {
+                                                      dataList.ref.update({"view": true}).then((value) {
+                                                        setState(() {});
+                                                      });
+                                                    },
+                                                    child: Icon(Icons.delete)),
+                                              ),
+                                              Container(
+                                                margin: EdgeInsets.only(right: 25, left: 10),
+                                                width: double.infinity,
+                                                height: 0.5,
+                                                color: secondryColor,
+                                              )
+                                            ],
+                                          );
                               })));
         });
   }

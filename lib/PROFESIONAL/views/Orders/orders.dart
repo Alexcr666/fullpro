@@ -174,7 +174,7 @@ class _MyOrdersState extends State<MyOrders> with TickerProviderStateMixin {
               DatabaseEvent response = snapshot.data;
 
               return response == null
-                  ? AppWidget().loading()
+                  ? AppWidget().loading(context)
                   : response.snapshot.children.length == 0
                       ? AppWidget().noResult(context)
                       : ListView.builder(
@@ -267,7 +267,7 @@ class _MyOrdersState extends State<MyOrders> with TickerProviderStateMixin {
               DatabaseEvent response = snapshot.data;
 
               return response == null
-                  ? AppWidget().loading()
+                  ? AppWidget().loading(context)
                   : ListView.builder(
                       itemCount: response.snapshot.children.length,
                       shrinkWrap: true,
@@ -900,7 +900,7 @@ class _MyOrdersState extends State<MyOrders> with TickerProviderStateMixin {
                           ),
                           Container(
                               width: 110,
-                              child: AppWidget().buttonShandow("En curso",
+                              child: AppWidget().buttonShandow("Aceptado",
                                   color: positionFilter != 2 ? Colors.grey.withOpacity(0.2) : yellowButton,
                                   colorText: Colors.white, tap: () {
                                 positionFilter = 2;
@@ -911,7 +911,7 @@ class _MyOrdersState extends State<MyOrders> with TickerProviderStateMixin {
                           ),
                           Container(
                               width: 110,
-                              child: AppWidget().buttonShandow("Terminado",
+                              child: AppWidget().buttonShandow("En Camino",
                                   color: positionFilter != 3 ? Colors.grey.withOpacity(0.2) : greenButton,
                                   colorText: Colors.white, tap: () {
                                 positionFilter = 3;
@@ -922,9 +922,25 @@ class _MyOrdersState extends State<MyOrders> with TickerProviderStateMixin {
                           ),
                           Container(
                               width: 110,
-                              child: AppWidget().buttonShandow("Cancelado",
-                                  color: positionFilter != 4 ? Colors.grey.withOpacity(0.2) : Colors.red, colorText: Colors.white, tap: () {
+                              child: AppWidget().buttonShandow("En Proceso",
+                                  color: positionFilter != 4 ? Colors.grey.withOpacity(0.2) : Colors.yellow,
+                                  colorText: Colors.white, tap: () {
                                 positionFilter = 4;
+                                setState(() {});
+                              })),
+                          Container(
+                              width: 110,
+                              child: AppWidget().buttonShandow("Terminado",
+                                  color: positionFilter != 5 ? Colors.grey.withOpacity(0.2) : Colors.green,
+                                  colorText: Colors.white, tap: () {
+                                positionFilter = 5;
+                                setState(() {});
+                              })),
+                          Container(
+                              width: 110,
+                              child: AppWidget().buttonShandow("Cancelado",
+                                  color: positionFilter != 6 ? Colors.grey.withOpacity(0.2) : Colors.red, colorText: Colors.white, tap: () {
+                                positionFilter = 6;
                                 setState(() {});
                               })),
                         ],
@@ -999,7 +1015,7 @@ class _MyOrdersState extends State<MyOrders> with TickerProviderStateMixin {
               DatabaseEvent response = snapshot.data;
 
               return response == null
-                  ? AppWidget().loading()
+                  ? AppWidget().loading(context)
                   : response.snapshot.children.length == 0
                       ? AppWidget().noResult(context)
                       : ListView.builder(

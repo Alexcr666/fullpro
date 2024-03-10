@@ -53,21 +53,21 @@ appbarProfessional(BuildContext context, bool activeColor) {
             fontSize: 15,
           ),
         ),
-        /*  GestureDetector(
+        GestureDetector(
             onTap: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) => AddressesUser("partners")));
             },
             child: Text(
-              dataUser! == null
+              userInfoPartners! == null
                   ? "Selecciona ubicación"
-                  : dataUser!.child("location").value == null
+                  : userInfoPartners!.child("location").value == null
                       ? "Seleccionar ubicación"
-                      : dataUser!.child("location").value.toString(),
+                      : userInfoPartners!.child("location").value.toString(),
               style: TextStyle(
                 color: activeColor ? Colors.white : Colors.black,
                 fontSize: 12,
               ),
-            )),*/
+            )),
       ],
     ),
     actions: [

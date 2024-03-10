@@ -1,4 +1,5 @@
 {
+    "lang_todos": "Todos",
     "lang_pending": "Pendiente",
     "lang_price_repeat": "Repetir precio",
     "lang_price_message": "No coinciden las valores en la confirmación de precio",
@@ -8,6 +9,8 @@
     "lang_process": "En proceso",
     "lang_finish": "Terminado",
     "lang_aprobado:": "Aprobado",
+    "lang_datefinal": "Fecha final",
+    "lang_saved": "Guardar",
     "ver": "Ver",
     "lang_suspend": "Suspendido",
     "lang_eliminate": "Eliminado",

@@ -359,6 +359,14 @@ class _kHomePageState extends State<kHomePage> {
       print("token: " + value.toString());
 
       deviceToken = value!;
+      DatabaseReference ref = FirebaseDatabase.instance.ref("users/" + FirebaseAuth.instance.currentUser!.uid.toString());
+      ref.once().then((value) {
+        value.snapshot.ref.update({"tokenNotification": deviceToken}).then((value) {
+          print("funciono");
+        }).catchError((onError) {
+          print("error: " + onError.toString());
+        });
+      });
     });
 
     initialize();
@@ -380,11 +388,11 @@ class _kHomePageState extends State<kHomePage> {
       // getData();
       event.snapshot;
       userDataProfile = event.snapshot;
-      userDataProfile!.ref.update({"tokenNotification": deviceToken}).then((value) {
+      /*userDataProfile!.ref.update({"tokenNotification": deviceToken}).then((value) {
         print("funciono");
       }).catchError((onError) {
         print("error: " + onError.toString());
-      });
+      });*/
 
       _controller.future.then((value) {
         if (userDataProfile != null) {
@@ -613,7 +621,7 @@ class _kHomePageState extends State<kHomePage> {
             DatabaseEvent response = snapshot.data;
 
             return response == null
-                ? AppWidget().loading()
+                ? AppWidget().loading(context)
                 : response.snapshot.children.length == 0
                     ? AppWidget().noResult(context)
                     : ListView.builder(
@@ -1411,7 +1419,7 @@ class _kHomePageState extends State<kHomePage> {
               response = snapshot.data;
 
               return response == null
-                  ? AppWidget().loading()
+                  ? AppWidget().loading(context)
                   : response.snapshot.children.length == 0
                       ? AppWidget().noResult(context)
                       : Container(

@@ -12,6 +12,7 @@ import 'package:fullpro/pages/INTEGRATION/information.dart';
 import 'package:fullpro/pages/INTEGRATION/models/user_model.dart';
 import 'package:fullpro/pages/INTEGRATION/snackbar.dart';
 import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
+import 'package:fullpro/widgets/widget.dart';
 
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
@@ -437,6 +438,7 @@ class _ChatPageState extends State<ChatPage> {
           color: Colors.white,
           onPressed: () => Navigator.pop(context),
         ),
+
         /*  actions: <Widget>[
             IconButton(icon: Icon(Icons.call), onPressed: () => onJoin("AudioCall")),
             IconButton(icon: Icon(Icons.video_call), onPressed: () => onJoin("VideoCall")),

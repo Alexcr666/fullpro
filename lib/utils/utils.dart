@@ -2,7 +2,9 @@ import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fullpro/PROFESIONAL/views/homepage.dart';
 import 'package:fullpro/pages/Authentication/loginpage.dart';
+import 'package:fullpro/pages/homepage.dart';
 import 'package:fullpro/widgets/widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -22,9 +24,9 @@ class AppUtils {
         future: AppUtils().checkInternet(context),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (snapshot.hasData) {
-            return snapshot.data ? AppWidget().loading(context) : AppWidget().noInternet();
+            return snapshot.data ? AppWidget().loadingOther() : AppWidget().noInternet();
           } else {
-            return AppWidget().loading(context);
+            return AppWidget().loadingOther();
           }
         });
   }
@@ -52,9 +54,22 @@ class AppUtils {
   signOut(BuildContext context) async {
     await FirebaseAuth.instance.signOut();
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    executeClear() {
+      prefs.remove("professional").then((value) {
+        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginPage()), (route) => false);
+      });
+    }
 
-    prefs.remove("professional").then((value) {
-      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginPage()), (route) => false);
-    });
+    if (userDataProfile != null) {
+      userDataProfile!.ref.update({"tokenNotification": ""}).then((value) {
+        executeClear();
+      });
+    }
+
+    if (userInfoPartners != null) {
+      userInfoPartners!.ref.update({"tokenNotification": ""}).then((value) {
+        executeClear();
+      });
+    }
   }
 }

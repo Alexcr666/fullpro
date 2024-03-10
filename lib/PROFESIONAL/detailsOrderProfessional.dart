@@ -22,6 +22,8 @@ import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:fullpro/PROFESIONAL/views/homepage.dart';
+import 'package:fullpro/TESTING/locationProfessional.dart';
 
 import 'package:fullpro/const.dart';
 
@@ -88,6 +90,13 @@ class DetailsOrderProfessionalPage extends StatefulWidget {
   _DetailsOrderProfessionalPageState createState() => _DetailsOrderProfessionalPageState();
 }
 
+/////LOCATION
+///
+String longitude = "";
+String latitude = "";
+late StreamSubscription<Position> _positionStream;
+
+////////
 DataSnapshot? dataUser;
 DataSnapshot? dataProfessional;
 Set<Marker> _marker = <Marker>{};
@@ -328,6 +337,21 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
     Stream<DatabaseEvent> stream = ref.onValue;
 
     getData();
+    changeLocationRealtime() {
+      final LocationSettings locationSettings = LocationSettings(
+        accuracy: LocationAccuracy.high,
+        distanceFilter: 100,
+      );
+
+      _positionStream = Geolocator.getPositionStream(locationSettings: locationSettings).listen((Position? position) {
+        setState(() {
+          longitude = position!.longitude.toString();
+          latitude = position.latitude.toString();
+
+          userInfoPartners!.ref.update({"latitude": latitude, "longitude": longitude});
+        });
+      });
+    }
 
     stream.listen((DatabaseEvent event) {
       widget.dataList = event.snapshot;
@@ -342,8 +366,13 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
 
       streamClient.listen((DatabaseEvent event) async {
         DataSnapshot dataProfessional = event.snapshot;
-        _initMarkers(dataProfessional.child("name").value.toString(), double.parse(dataProfessional.child("latitude").value.toString()),
-            double.parse(dataProfessional.child("longitude").value.toString()));
+        if (widget.dataList.child("state").value.toString() == "3") {
+          _initMarkers(dataProfessional.child("name").value.toString(), double.parse(dataProfessional.child("latitude").value.toString()),
+              double.parse(dataProfessional.child("longitude").value.toString()));
+        } else {
+          _marker.clear();
+          _initMarkers("", 0, 0);
+        }
 
         distanceInMeter = await Geolocator.distanceBetween(
                 double.parse(widget.dataList.child("latitude").value.toString()),
@@ -372,6 +401,7 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
 
     Future.delayed(const Duration(seconds: 2), () {
       setState(() {});
+      changeLocationRealtime();
     });
   }
 
@@ -487,7 +517,7 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
 
   Widget getUserProfessional() {
     return dataListObjectGeneral!.child("professional").value == null
-        ? AppWidget().loading()
+        ? AppWidget().loading(context)
         : FutureBuilder(
             future: FirebaseDatabase.instance
                 .ref()
@@ -502,6 +532,7 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
                 return ListTile(
                   leading: AppWidget().circleProfile(response.snapshot.child("photo").value.toString(), size: 50),
                   title: Text(response.snapshot.child("fullname").value.toString().capitalize()),
+                  trailing: GestureDetector(onTap: () {}, child: Icon(Icons.message)),
                   subtitle: RatingBarIndicator(
                       rating: response.snapshot.child("rating").value == null
                           ? 0
@@ -521,7 +552,7 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
 
   Widget getUserUser() {
     return dataListObjectGeneral!.child("user").value == null
-        ? AppWidget().loading()
+        ? AppWidget().loading(context)
         : FutureBuilder(
             future: FirebaseDatabase.instance.ref().child('users').child(dataListObjectGeneral!.child("user").value.toString()).once(),
             builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -580,9 +611,9 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
       ),*/
 
         body: dataListObjectGeneral == null
-            ? Container(margin: EdgeInsets.only(top: 200), child: AppWidget().loading())
+            ? Container(margin: EdgeInsets.only(top: 200), child: AppWidget().loading(context))
             : widget.dataList == null
-                ? AppWidget().loading()
+                ? AppWidget().loading(context)
                 : ListView(
                     children: [
                       SizedBox(
@@ -592,25 +623,34 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
                       SizedBox(
                         height: 20,
                       ),
-                      Row(
-                        children: [
-                          SizedBox(
-                            width: 20,
-                          ),
-                          Text(
-                            Locales.string(context, 'lbl_overview'),
-                            style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 26),
-                          ),
-                          Expanded(child: SizedBox()),
-                          /*   Text(
+                      GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              CupertinoPageRoute(
+                                builder: (_) => LocationPage(),
+                              ),
+                            );
+                          },
+                          child: Row(
+                            children: [
+                              SizedBox(
+                                width: 20,
+                              ),
+                              Text(
+                                Locales.string(context, 'lbl_overview'),
+                                style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 26),
+                              ),
+                              Expanded(child: SizedBox()),
+                              /*   Text(
                         dataListObjectGeneral == null ? "" : "#44",
                         style: TextStyle(color: secondryColor, fontWeight: FontWeight.bold, fontSize: 26),
                       ),*/
-                          SizedBox(
-                            width: 20,
-                          ),
-                        ],
-                      ),
+                              SizedBox(
+                                width: 20,
+                              ),
+                            ],
+                          )),
                       SizedBox(
                         height: 20,
                       ),
@@ -639,18 +679,22 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
                       SizedBox(
                         height: 10,
                       ),
-                      Container(
-                          margin: EdgeInsets.only(left: 20, right: 20),
-                          child: Column(
-                            children: [
-                              Text("Distancia estimada :" + double.parse(distanceInMeter).round().toString() + " Millas"),
-                              Text("Duración estimada :" + double.parse(distanceInMeter).round().toString() + " Millas"),
-                              AppWidget().texfieldFormat(
-                                title: Locales.string(context, "lang_description"),
-                                controller: _descriptionController,
-                              ),
-                            ],
-                          )),
+                      widget.dataList.child("state").value.toString() != "3"
+                          ? SizedBox()
+                          : Container(
+                              margin: EdgeInsets.only(left: 20, right: 20),
+                              child: Column(
+                                children: [
+                                  Text("Distancia estimada :" + double.parse(distanceInMeter).round().toString() + " Millas"),
+                                  Text("Duración estimada :" +
+                                      ((double.parse(distanceInMeter).round() / 50).round() + 2).toString() +
+                                      " Minutos"),
+                                  AppWidget().texfieldFormat(
+                                    title: Locales.string(context, "lang_description"),
+                                    controller: _descriptionController,
+                                  ),
+                                ],
+                              )),
                       SizedBox(
                         height: 20,
                       ),
@@ -1198,7 +1242,7 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
                   SizedBox(
                     height: 10,
                   ),
-                  widget.dataList.child("state").value.toString() != "3"
+                  widget.dataList.child("state").value.toString() != "5"
                       ? SizedBox()
                       : Column(
                           children: [
@@ -1233,7 +1277,7 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
           height: 10,
         ),
 
-        widget.dataList.child("state").value.toString() != "3" /*|| widget.dataList.child("state").value.toString() != "4"*/
+        widget.dataList.child("state").value.toString() != "5" /*|| widget.dataList.child("state").value.toString() != "4"*/
 
             ? SizedBox()
             : Container(
@@ -1465,7 +1509,7 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
                         );
                       }
 
-                      if (widget.dataList.child("state").value.toString() != "3" &&
+                      if (widget.dataList.child("state").value.toString() != "5" &&
                           widget.dataList.child("professional").value.toString() == FirebaseAuth.instance.currentUser!.uid.toString()) {
                         showAlertDialog();
                       }
@@ -1479,16 +1523,20 @@ class _DetailsOrderProfessionalPageState extends State<DetailsOrderProfessionalP
                         ? SizedBox()
                         : AppWidget().buttonFormLine(context, Locales.string(context, 'lang_cancel'), true,
                             urlIcon: "images/icons/closeCircle.svg", tap: () {
-                            Navigator.pop(context);
+                            AppWidget().optionsEnabled("¿Estas seguro que quieres cancelar", context, tap2: () {
+                              Navigator.pop(context);
+                            }, tap: () {
+                              Navigator.pop(context);
 
-                            widget.dataList.ref.update({'state': 4}).then((value) {
-                              setState(() {});
+                              widget.dataList.ref.update({'state': 4}).then((value) {
+                                setState(() {});
 
-                              AppWidget().itemMessage("Actualizado", context);
-                            }).catchError((onError) {
-                              setState(() {});
+                                AppWidget().itemMessage("Actualizado", context);
+                              }).catchError((onError) {
+                                setState(() {});
 
-                              AppWidget().itemMessage("Actualizado", context);
+                                AppWidget().itemMessage("Actualizado", context);
+                              });
                             });
                           })),
               ],

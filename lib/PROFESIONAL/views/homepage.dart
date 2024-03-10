@@ -157,7 +157,7 @@ class _HomePageState extends State<HomePage> {
       final _datasnapshot = e.snapshot;
       userInfoPartners = e.snapshot;
 
-      userInfoPartners!.ref.update({"tokenNotification": deviceToken});
+      //  userInfoPartners!.ref.update({"tokenNotification": deviceToken});
 
       if (_datasnapshot.value != null) {
         currentPartnerInfo = Partner.fromSnapshot(_datasnapshot);
@@ -329,6 +329,19 @@ class _HomePageState extends State<HomePage> {
     messaging.getToken().then((value) {
       print("token: " + value.toString());
       deviceToken = value!;
+
+      final userRef = FirebaseDatabase.instance.ref().child("partners").child(FirebaseAuth.instance.currentUser!.uid.toString());
+      userRef.once().then((e) async {
+        final _datasnapshot = e.snapshot;
+
+        // userInfoPartners = e.snapshot;
+
+        _datasnapshot!.ref.update({"tokenNotification": deviceToken}).then((value) {
+          print("funciono");
+        }).catchError((onError) {
+          print("error: " + onError.toString());
+        });
+      });
     });
 
     initialize();
@@ -367,11 +380,6 @@ class _HomePageState extends State<HomePage> {
 
 // Subscribe to the stream!
     stream2.listen((DatabaseEvent event) {
-      event.snapshot!.ref.update({"tokenNotification": deviceToken}).then((value) {
-        print("funciono");
-      }).catchError((onError) {
-        print("error: " + onError.toString());
-      });
       getUserInfo();
     });
     //  getUserInfo();

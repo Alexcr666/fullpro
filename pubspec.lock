@@ -1197,14 +1197,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.1"
-  maps_places_autocomplete:
-    dependency: "direct main"
-    description:
-      name: maps_places_autocomplete
-      sha256: "8cfe9b7a76b0eaa3d3f8da3327ac06a06a93c8d071997a84ba6ac72ca76d7d1b"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.0.2"
   matcher:
     dependency: transitive
     description:

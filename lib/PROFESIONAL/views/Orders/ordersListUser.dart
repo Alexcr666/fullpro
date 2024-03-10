@@ -421,7 +421,7 @@ class _SolicitudListState extends State<SolicitudList> with TickerProviderStateM
               DatabaseEvent response = snapshot.data;
 
               return response == null
-                  ? AppWidget().loading()
+                  ? AppWidget().loading(context)
                   : ListView.builder(
                       itemCount: response.snapshot.children.length,
                       shrinkWrap: true,
@@ -512,7 +512,7 @@ class _SolicitudListState extends State<SolicitudList> with TickerProviderStateM
               DatabaseEvent response = snapshot.data;
 
               return response == null
-                  ? AppWidget().loading()
+                  ? AppWidget().loading(context)
                   : ListView.builder(
                       itemCount: response.snapshot.children.length,
                       shrinkWrap: true,
@@ -747,7 +747,7 @@ class _SolicitudListState extends State<SolicitudList> with TickerProviderStateM
               DatabaseEvent response = snapshot.data;
 
               return response == null
-                  ? AppWidget().loading()
+                  ? AppWidget().loading(context)
                   : ListView.builder(
                       itemCount: response.snapshot.children.length,
                       shrinkWrap: true,

@@ -470,8 +470,8 @@ class _PortafolioPageState extends State<NewPortafolioPage> {
                   SizedBox(
                     height: 10,
                   ),
-                  AppWidget()
-                      .texfieldFormat(title: Locales.string(context, "lang_price_repeat"), controller: _priceController, number: true),
+                  AppWidget().texfieldFormat(
+                      title: Locales.string(context, "lang_price_repeat"), controller: _priceRepeatController, number: true),
                   SizedBox(
                     height: 20,
                   ),

@@ -474,7 +474,7 @@ class AppWidget {
         ));
   }
 
-  Widget loading() {
+  Widget loadingOther() {
     return Column(
       children: [
         SizedBox(
@@ -492,6 +492,10 @@ class AppWidget {
         ),
       ],
     );
+  }
+
+  Widget loading(BuildContext context) {
+    return AppUtils().getInternet(context);
   }
 
   getFileSize(int bytes, int decimals) {

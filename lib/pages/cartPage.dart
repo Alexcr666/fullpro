@@ -460,7 +460,7 @@ class _CartPageState extends State<CartPage> {
               DatabaseEvent response = snapshot.data;
               // DataSnapshot dataList = response.snapshot.children.toList()[index];
               return response == null
-                  ? AppWidget().loading()
+                  ? AppWidget().loading(context)
                   : response.snapshot.children.length == 0
                       ? AppWidget().noResult(context)
                       : DropdownButton<DataSnapshot>(

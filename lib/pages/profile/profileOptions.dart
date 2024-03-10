@@ -243,13 +243,13 @@ class _ProfileOptionsPageState extends State<ProfileOptionsPage> {
                   ),
                   child: Column(
                     children: [
-                      /* ProfileButton(
+                      ProfileButton(
                         buttonName: Locales.string(context, 'lang_profile'),
                         onCLicked: () {
                           Navigator.push(context, MaterialPageRoute(builder: (context) => const StripeTest()));
                         },
                         icon: "images/icons/miprofile1.svg",
-                      ),*/
+                      ),
 
                       //const Divider(color: Colors.black12),
                       ProfileButton(

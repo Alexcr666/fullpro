@@ -116,7 +116,7 @@ dependencies:
   #flutter_stripe: ^9.0.0+1
   assets_audio_player: ^3.0.4+3
   fluttertoast: ^8.2.4
-  maps_places_autocomplete: ^0.0.2
+  #maps_places_autocomplete: ^0.0.2
   flutter_stripe: ^10.0.0
   webview_flutter: ^4.4.4
   money_formatter: ^0.0.5

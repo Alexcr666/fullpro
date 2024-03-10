@@ -172,7 +172,7 @@ class _MyOrdersState extends State<MyOrdersProfile> with TickerProviderStateMixi
               DatabaseEvent response = snapshot.data;
 
               return response == null
-                  ? AppWidget().loading()
+                  ? AppWidget().loading(context)
                   : ListView.builder(
                       itemCount: response.snapshot.children.length,
                       shrinkWrap: true,
@@ -871,7 +871,7 @@ class _MyOrdersState extends State<MyOrdersProfile> with TickerProviderStateMixi
                           ),
                           Container(
                               width: 110,
-                              child: AppWidget().buttonShandow("En proceso",
+                              child: AppWidget().buttonShandow("Aceptado",
                                   color: positionFilter != 2 ? Colors.grey.withOpacity(0.2) : yellowButton,
                                   colorText: Colors.white, tap: () {
                                 positionFilter = 2;
@@ -882,7 +882,7 @@ class _MyOrdersState extends State<MyOrdersProfile> with TickerProviderStateMixi
                           ),
                           Container(
                               width: 110,
-                              child: AppWidget().buttonShandow("Terminado",
+                              child: AppWidget().buttonShandow("En camino",
                                   color: positionFilter != 3 ? Colors.grey.withOpacity(0.2) : greenButton,
                                   colorText: Colors.white, tap: () {
                                 positionFilter = 3;
@@ -893,9 +893,29 @@ class _MyOrdersState extends State<MyOrdersProfile> with TickerProviderStateMixi
                           ),
                           Container(
                               width: 110,
-                              child: AppWidget().buttonShandow("Cancelado",
+                              child: AppWidget().buttonShandow("En proceso",
                                   color: positionFilter != 4 ? Colors.grey.withOpacity(0.2) : Colors.red, colorText: Colors.white, tap: () {
                                 positionFilter = 4;
+                                setState(() {});
+                              })),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Container(
+                              width: 110,
+                              child: AppWidget().buttonShandow("Terminado",
+                                  color: positionFilter != 5 ? Colors.grey.withOpacity(0.2) : Colors.red, colorText: Colors.white, tap: () {
+                                positionFilter = 5;
+                                setState(() {});
+                              })),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Container(
+                              width: 110,
+                              child: AppWidget().buttonShandow("Cancelado",
+                                  color: positionFilter != 6 ? Colors.grey.withOpacity(0.2) : Colors.red, colorText: Colors.white, tap: () {
+                                positionFilter = 6;
                                 setState(() {});
                               })),
                         ],
@@ -962,7 +982,7 @@ class _MyOrdersState extends State<MyOrdersProfile> with TickerProviderStateMixi
               DatabaseEvent response = snapshot.data;
 
               return response == null
-                  ? AppWidget().loading()
+                  ? AppWidget().loading(context)
                   : ListView.builder(
                       itemCount: response.snapshot.children.length,
                       shrinkWrap: true,

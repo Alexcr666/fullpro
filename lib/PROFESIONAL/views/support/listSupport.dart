@@ -56,14 +56,14 @@ class _ListSupportProfessionalPageState extends State<ListSupportProfessionalPag
               DatabaseEvent response = snapshot.data;
 
               return response == null
-                  ? AppWidget().loading()
+                  ? AppWidget().loading(context)
                   : response.snapshot.children!.length == 0
                       ? AppWidget().noResult(context)
                       : ListView.builder(
                           itemCount: response.snapshot.children.length,
                           shrinkWrap: true,
                           itemBuilder: (BuildContext context, int index) {
-                            DataSnapshot dataList = response.snapshot.children.toList()[index];
+                            DataSnapshot dataList = response.snapshot.children.toList().reversed.toList()[index];
 
                             return GestureDetector(
                                 onTap: () {
@@ -184,8 +184,9 @@ class _ListSupportProfessionalPageState extends State<ListSupportProfessionalPag
                                                       crossAxisAlignment: CrossAxisAlignment.start,
                                                       children: [
                                                         Text(
-                                                          dataList.child("name").value.toString(),
+                                                          dataList.child("description").value.toString(),
                                                           textAlign: TextAlign.center,
+                                                          maxLines: 1,
                                                           style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: secondryColor),
                                                         ),
                                                         Text(

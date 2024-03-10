@@ -10,9 +10,12 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:firebase_auth/firebase_auth.dart' as userFirebaseAuth;
 
 import 'package:dotted_border/dotted_border.dart';
 import 'package:firebase_database/firebase_database.dart' as userFirebase;
+import 'package:fullpro/Chat/chatPage.dart';
+import 'package:fullpro/TESTING/testing.dart';
 import 'package:fullpro/pages/INTEGRATION/models/user_model.dart' as userD;
 import 'package:file_picker/file_picker.dart';
 
@@ -49,9 +52,6 @@ import 'package:fullpro/config.dart';
 
 import 'package:fullpro/controller/loader.dart';
 import 'package:fullpro/pages/INTEGRATION/Chat/Matches.dart';
-import 'package:fullpro/pages/INTEGRATION/Chat/chatPage.dart';
-import 'package:fullpro/pages/INTEGRATION/Chat/home_screen.dart';
-import 'package:fullpro/pages/INTEGRATION/models/user_model.dart';
 
 import 'package:fullpro/pages/INTEGRATION/styles/color.dart';
 
@@ -110,6 +110,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
 
   TextEditingController professionController = TextEditingController();
 
+  TextEditingController zipCodeController = TextEditingController();
   getDataUser() {
     if (FirebaseAuth.instance.currentUser!.uid.toString() == widget.id.toString()) {
       // return userDataProfile;
@@ -305,7 +306,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
             //return Text(dataListObject!.child("name").value.toString());
 
             return response == null
-                ? AppWidget().loading()
+                ? AppWidget().loading(context)
                 : response.snapshot.children.toList().length == 0
                     ? AppWidget().noResult(context)
                     : Container(
@@ -440,7 +441,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                   Column(
                                     children: [
                                       dataList!.child("user").value == null
-                                          ? AppWidget().loading()
+                                          ? AppWidget().loading(context)
                                           : FutureBuilder(
                                               future: FirebaseDatabase.instance
                                                   .ref()
@@ -453,7 +454,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                                   response = snapshot.data;
                                                 }
                                                 return snapshot.hasData != true
-                                                    ? AppWidget().loading()
+                                                    ? AppWidget().loading(context)
                                                     : AppWidget()
                                                         .circleProfile(response.snapshot.child("photo").value.toString(), size: 40);
                                               }),
@@ -496,7 +497,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
             if (snapshot.hasData) {
               DatabaseEvent response = snapshot.data;
 
-              return response == null ? AppWidget().loading() : SizedBox();
+              return response == null ? AppWidget().loading(context) : SizedBox();
             } else {
               return AppWidget().loading(context);
             }
@@ -551,7 +552,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
         appBar: AppWidget().appbar(context),
         backgroundColor: Colors.white,
         body: getDataUser() == null
-            ? AppWidget().loading()
+            ? AppWidget().loading(context)
             : ListView(
                 children: [
                   Stack(
@@ -685,11 +686,13 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                             ? SizedBox()
                                             : GestureDetector(
                                                 onTap: () async {
-                                                  String idUserProfessional = _userDataProfile!.key.toString();
-                                                  print("idprofessional: " + idUserProfessional.toString());
-                                                  String nameUserProfessional = nameProfesional;
-                                                  CollectionReference docRef = FirebaseFirestore.instance.collection('Users');
-                                                  showDialog(
+                                                  List<userD.User> matches = [];
+                                                  functionChat() {
+                                                    String idUserProfessional = _userDataProfile!.key.toString();
+                                                    print("idprofessional: " + idUserProfessional.toString());
+                                                    String nameUserProfessional = nameProfesional;
+                                                    CollectionReference docRef = FirebaseFirestore.instance.collection('Users');
+                                                    /*showDialog(
                                                       context: context,
                                                       builder: (ctx) {
                                                         Future.delayed(Duration(milliseconds: 1700), () {
@@ -714,86 +717,163 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                                                             ),
                                                           ),
                                                         );
-                                                      });
+                                                      });*/
+                                                    AppWidget().itemMessage("context", context);
 
-                                                  createCurrentUser(bool exist) {
-                                                    if (exist) {
-                                                      docRef
-                                                          .doc(FirebaseAuth.instance.currentUser!.uid.toString())
-                                                          .collection("Matches")
-                                                          .doc(idUserProfessional.toString())
-                                                          .set({
-                                                        'Matches': idUserProfessional,
-                                                        'isRead': false,
-                                                        'userName': nameUserProfessional,
-                                                        'pictureUrl': "",
-                                                        'timestamp': FieldValue.serverTimestamp()
-                                                      }, SetOptions(merge: true)).then((value) {});
-                                                    } else {
-                                                      docRef = FirebaseFirestore.instance.collection('Users');
-                                                      docRef.doc(FirebaseAuth.instance.currentUser!.uid.toString()).set({
-                                                        "imageUrl": "",
-                                                        "UserName": nameUserProfessional,
-                                                        "userId": FirebaseAuth.instance.currentUser!.uid.toString(),
-                                                      }).then((value) {
-                                                        docRef = FirebaseFirestore.instance.collection('Users');
+                                                    createCurrentUser(bool exist) {
+                                                      if (exist) {
                                                         docRef
                                                             .doc(FirebaseAuth.instance.currentUser!.uid.toString())
                                                             .collection("Matches")
                                                             .doc(idUserProfessional.toString())
-                                                            .update({
+                                                            .set({
                                                           'Matches': idUserProfessional,
                                                           'isRead': false,
                                                           'userName': nameUserProfessional,
-                                                          'pictureUrl': "",
+                                                          'pictureUrl': userDataProfile!.child("photo").value.toString(),
                                                           'timestamp': FieldValue.serverTimestamp()
-                                                        }).then((value) {});
-                                                      });
-                                                    }
-                                                  }
-
-                                                  createUserProfessional(bool exist) {
-                                                    if (exist) {
-                                                      docRef
-                                                          .doc(idUserProfessional)
-                                                          .collection("Matches")
-                                                          .doc(FirebaseAuth.instance.currentUser!.uid!)
-                                                          .set({
-                                                        'Matches': FirebaseAuth.instance.currentUser!.uid.toString(),
-                                                        'userName': userDataProfile!.child("name").value.toString(),
-                                                        'pictureUrl': "currentUser!.imageUrl![0]",
-                                                        'isRead': false,
-                                                        'timestamp': FieldValue.serverTimestamp()
-                                                      }, SetOptions(merge: true)).then((value) {});
-                                                    } else {
-                                                      docRef = FirebaseFirestore.instance.collection('Users');
-                                                      docRef.doc(idUserProfessional).set({
-                                                        "imageUrl": "",
-                                                        "UserName": nameProfesional.toString(),
-                                                        "userId": idUserProfessional,
-                                                      }).then((value) {
+                                                        }, SetOptions(merge: true)).then((value) {
+                                                          //  _getMatches();
+                                                        });
+                                                      } else {
                                                         docRef = FirebaseFirestore.instance.collection('Users');
+                                                        docRef.doc(FirebaseAuth.instance.currentUser!.uid.toString()).set({
+                                                          "imageUrl": "",
+                                                          "UserName": nameUserProfessional,
+                                                          "userId": FirebaseAuth.instance.currentUser!.uid.toString(),
+                                                        }).then((value) {
+                                                          docRef = FirebaseFirestore.instance.collection('Users');
+                                                          docRef
+                                                              .doc(FirebaseAuth.instance.currentUser!.uid.toString())
+                                                              .collection("Matches")
+                                                              .doc(idUserProfessional.toString())
+                                                              .update({
+                                                            'Matches': idUserProfessional,
+                                                            'isRead': false,
+                                                            'userName': nameUserProfessional,
+                                                            'pictureUrl': userDataProfile!.child("photo").value.toString(),
+                                                            'timestamp': FieldValue.serverTimestamp()
+                                                          }).then((value) {
+                                                            // _getMatches();
+                                                          });
+                                                        });
+                                                      }
+                                                    }
+
+                                                    createUserProfessional(bool exist) {
+                                                      if (exist) {
                                                         docRef
                                                             .doc(idUserProfessional)
                                                             .collection("Matches")
                                                             .doc(FirebaseAuth.instance.currentUser!.uid!)
-                                                            .update({
+                                                            .set({
                                                           'Matches': FirebaseAuth.instance.currentUser!.uid.toString(),
-                                                          'userName': nameProfesional.toString(),
-                                                          'pictureUrl': "currentUser!.imageUrl![0]",
+                                                          'userName': userDataProfile!.child("name").value.toString(),
+                                                          'pictureUrl': userDataProfile!.child("photo").value.toString(),
                                                           'isRead': false,
                                                           'timestamp': FieldValue.serverTimestamp()
-                                                        }).then((value) {});
+                                                        }, SetOptions(merge: true)).then((value) {
+                                                          // _getMatches();
+                                                        });
+                                                      } else {
+                                                        docRef = FirebaseFirestore.instance.collection('Users');
+                                                        docRef.doc(idUserProfessional).set({
+                                                          "imageUrl": "",
+                                                          "UserName": nameProfesional.toString(),
+                                                          "userId": idUserProfessional,
+                                                        }).then((value) {
+                                                          docRef = FirebaseFirestore.instance.collection('Users');
+                                                          docRef
+                                                              .doc(idUserProfessional)
+                                                              .collection("Matches")
+                                                              .doc(FirebaseAuth.instance.currentUser!.uid!)
+                                                              .update({
+                                                            'Matches': FirebaseAuth.instance.currentUser!.uid.toString(),
+                                                            'userName': nameProfesional.toString(),
+                                                            'pictureUrl': userDataProfile!.child("photo").value.toString(),
+                                                            'isRead': false,
+                                                            'timestamp': FieldValue.serverTimestamp()
+                                                          }).then((value) {
+                                                            // _getMatches();
+                                                          });
+                                                        });
+                                                      }
+                                                    }
+
+                                                    funcionChat() {
+                                                      docRef.doc(FirebaseAuth.instance.currentUser!.uid.toString()).get().then((value) {
+                                                        createCurrentUser(value.exists);
+                                                      });
+
+                                                      docRef.doc(idUserProfessional).get().then((value) {
+                                                        createUserProfessional(value.exists);
                                                       });
                                                     }
+
+                                                    funcionChat();
+                                                    //funcionChat();
+
+                                                    _getMatches() async {
+                                                      FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+                                                      userFirebaseAuth.User user = await _firebaseAuth.currentUser!;
+
+                                                      //log("idUser: " + user.uid.toString());
+                                                      FirebaseFirestore.instance
+                                                          .collection('/Users/${user.uid}/Matches')
+                                                          .orderBy('timestamp', descending: true)
+                                                          .snapshots()
+                                                          .listen((ondata) {
+                                                        matches.clear();
+                                                        newmatches.clear();
+                                                        if (ondata.docs.length > 0) {
+                                                          ondata.docs.forEach((f) async {
+                                                            await docRef.doc(f.data()['Matches']).get().then((DocumentSnapshot doc) {
+                                                              if (doc.exists) {
+                                                                userD.User tempuser = userD.User.fromDocument(doc);
+
+                                                                /*  tempuser.distanceBW = calculateDistance(currentUser!.coordinates!['latitude'], currentUser!.coordinates!['longitude'],
+                      tempuser.coordinates!['latitude'], tempuser.coordinates!['longitude'])
+                  .round();*/
+
+                                                                matches.add(tempuser);
+                                                                newmatches.add(tempuser);
+                                                                if (mounted) setState(() {});
+                                                              }
+                                                            });
+                                                          });
+                                                        }
+                                                      });
+                                                    }
+
+                                                    Future.delayed(const Duration(milliseconds: 1000), () {
+                                                      _getMatches();
+                                                    });
                                                   }
 
-                                                  docRef.doc(FirebaseAuth.instance.currentUser!.uid.toString()).get().then((value) {
-                                                    createCurrentUser(value.exists);
+                                                  Future.delayed(const Duration(milliseconds: 500), () {
+                                                    functionChat();
+                                                    Future.delayed(const Duration(milliseconds: 500), () {
+                                                      functionChat();
+                                                    });
                                                   });
 
-                                                  docRef.doc(idUserProfessional).get().then((value) {
-                                                    createUserProfessional(value.exists);
+                                                  Future.delayed(const Duration(milliseconds: 3000), () {
+                                                    userD.User? currentUser = userD.User(
+                                                      id: FirebaseAuth.instance.currentUser!.uid.toString(),
+                                                      name: "duvan",
+                                                    );
+                                                    print("matches :" + matches.toList().toString());
+
+                                                    Navigator.push(
+                                                      context,
+                                                      CupertinoPageRoute(
+                                                        builder: (_) => ChatPage(
+                                                          chatId: chatId(currentUser, matches[0]),
+                                                          sender: currentUser,
+                                                          second: matches[0],
+                                                        ),
+                                                      ),
+                                                    );
                                                   });
                                                 },
                                                 child: Icon(
@@ -878,115 +958,131 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
 
   Widget stateIndicator0() {
     bool emptyResult = false;
-    return dataListObjectOrdens == null
-        ? AppWidget().loading()
-        : dataListObjectOrdens!.length == 0
-            ? AppWidget().noResult(context)
-            : ListView.builder(
-                itemCount: dataListObjectOrdens!.length,
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                itemBuilder: (BuildContext context, int index) {
-                  DataSnapshot dataList = dataListObjectOrdens!.toList().reversed.toList()[index];
+    return FutureBuilder(
+        future: FirebaseDatabase.instance.ref().child('ordens').orderByChild("professional").equalTo(widget.id.toString()).once(),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          if (snapshot.hasData) {
+            DatabaseEvent response = snapshot.data;
 
-                  if (dataList.child("ratingClient").value == 0) {
-                    emptyResult = true;
-                  }
+            dataListObjectOrdens = response.snapshot.children;
+            DataSnapshot? dataListObject = null;
 
-                  return dataList.child("state").value != 3
-                      ? /*(index == dataListObjectOrdens!.length)
+            //return Text(dataListObject!.child("name").value.toString());
+
+            return response.snapshot.children.toList().length == 0
+                ? AppWidget().noResult(context)
+                : ListView.builder(
+                    itemCount: dataListObjectOrdens!.length,
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemBuilder: (BuildContext context, int index) {
+                      DataSnapshot dataList = dataListObjectOrdens!.toList().reversed.toList()[index];
+                      getRating() {
+                        bool visible = false;
+                        if (dataList.child("state").value == 5) {
+                          if (dataList.child("ratingClient").value != null) {
+                            visible = true;
+                          }
+                        }
+                        return visible;
+                      }
+
+                      return getRating() == false
                           ? SizedBox()
-                          : emptyResult == false
-                              ? SizedBox()
-                              : SizedBox()*/
-                      SizedBox()
-                      : Container(
-                          margin: EdgeInsets.only(left: 20, right: 20, top: 10),
-                          decoration: AppWidget().boxShandowGreyRectangule(),
-                          child: Row(
-                            children: [
-                              // Text(dataList.child("state").value.toString()),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Flexible(
-                                  child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                          : Container(
+                              margin: EdgeInsets.only(left: 20, right: 20, top: 10),
+                              decoration: AppWidget().boxShandowGreyRectangule(),
+                              child: Row(
                                 children: [
+                                  // Text(dataList.child("ratingClient").value.toString()),
                                   SizedBox(
-                                    height: 14,
+                                    width: 10,
                                   ),
-                                  dataList!.child("user").value == null
-                                      ? SizedBox()
-                                      : FutureBuilder(
-                                          future: FirebaseDatabase.instance
-                                              .ref()
-                                              .child('users')
-                                              .child(dataList!.child("user").value.toString())
-                                              .once(),
-                                          builder: (BuildContext context, AsyncSnapshot snapshot) {
-                                            late DatabaseEvent response;
-                                            if (snapshot.hasData) {
-                                              response = snapshot.data;
-                                            } else {}
-                                            return snapshot.hasData == false
-                                                ? AppWidget().loading()
-                                                : Row(
-                                                    children: [
-                                                      Flexible(
-                                                          child: AppWidget()
-                                                              .circleProfile(response.snapshot.child("photo").value.toString(), size: 50)),
-                                                      SizedBox(
-                                                        width: 20,
-                                                      ),
-                                                      Flexible(
-                                                        child: Column(
-                                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                                          children: [
-                                                            Text(
-                                                              response.snapshot.child("fullname").value == null
-                                                                  ? Locales.string(context, 'lang_nodisponible')
-                                                                  : response.snapshot.child("fullname").value.toString().capitalize(),
-                                                              style: TextStyle(
-                                                                  color: secondryColor, fontSize: 15, fontWeight: FontWeight.bold),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  //Text(dataList.child("state").value.toString()),
+                                  Flexible(
+                                      child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      SizedBox(
+                                        height: 14,
+                                      ),
+                                      dataList!.child("user").value == null
+                                          ? SizedBox()
+                                          : FutureBuilder(
+                                              future: FirebaseDatabase.instance
+                                                  .ref()
+                                                  .child('users')
+                                                  .child(dataList!.child("user").value.toString())
+                                                  .once(),
+                                              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                                                late DatabaseEvent response;
+                                                if (snapshot.hasData) {
+                                                  response = snapshot.data;
+                                                } else {}
+                                                return snapshot.hasData == false
+                                                    ? AppWidget().loading(context)
+                                                    : Row(
+                                                        children: [
+                                                          Flexible(
+                                                              child: AppWidget().circleProfile(
+                                                                  response.snapshot.child("photo").value.toString(),
+                                                                  size: 50)),
+                                                          SizedBox(
+                                                            width: 20,
+                                                          ),
+                                                          Flexible(
+                                                            child: Column(
+                                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                                              children: [
+                                                                Text(
+                                                                  response.snapshot.child("fullname").value == null
+                                                                      ? Locales.string(context, 'lang_nodisponible')
+                                                                      : response.snapshot.child("fullname").value.toString().capitalize(),
+                                                                  style: TextStyle(
+                                                                      color: secondryColor, fontSize: 15, fontWeight: FontWeight.bold),
+                                                                ),
+                                                                RatingBarIndicator(
+                                                                    rating: dataList.child("ratingClient").value == null
+                                                                        ? 0
+                                                                        : double.parse(dataList.child("ratingClient").value.toString()),
+                                                                    itemCount: 5,
+                                                                    itemSize: 16.0,
+                                                                    itemBuilder: (context, _) => Icon(
+                                                                          Icons.star,
+                                                                          color: secondryColor,
+                                                                        )),
+                                                              ],
                                                             ),
-                                                            RatingBarIndicator(
-                                                                rating: dataList.child("ratingClient").value == null
-                                                                    ? 0
-                                                                    : double.parse(dataList.child("ratingClient").value.toString()),
-                                                                itemCount: 5,
-                                                                itemSize: 16.0,
-                                                                itemBuilder: (context, _) => Icon(
-                                                                      Icons.star,
-                                                                      color: secondryColor,
-                                                                    )),
-                                                          ],
-                                                        ),
-                                                      )
-                                                    ],
-                                                  );
-                                          }),
-                                  SizedBox(
-                                    height: 5,
-                                  ),
-                                  /*Container(
+                                                          )
+                                                        ],
+                                                      );
+                                              }),
+                                      SizedBox(
+                                        height: 5,
+                                      ),
+                                      /*Container(
                             margin: EdgeInsets.only(left: 10, right: 10),
                             child: Text(
                               dataList.child("comment").value == null ? "" : dataList.child("comment").value.toString(),
                               style: TextStyle(fontSize: 10),
                             )),*/
-                                  SizedBox(
-                                    height: 14,
-                                  ),
+                                      SizedBox(
+                                        height: 14,
+                                      ),
+                                    ],
+                                  ))
                                 ],
-                              ))
-                            ],
-                          ),
-                        );
-                });
+                              ),
+                            );
+                      // return AppWidget().loading(context);
+                    });
+          } else {
+            return AppWidget().loading(context);
+          }
+        });
   }
 
 /*
@@ -1267,8 +1363,15 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                   SizedBox(
                     height: 10,
                   ),
+                  AppWidget().texfieldFormat(
+                      controller: zipCodeController,
+                      title: "Zipcode",
+                      enabled: FirebaseAuth.instance.currentUser!.uid == widget.id ? false : true),
                 ],
               ))),
+      SizedBox(
+        height: 10,
+      ),
       FirebaseAuth.instance.currentUser!.uid.toString() != widget.id
           ? SizedBox()
           : Column(
@@ -1747,6 +1850,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
                           'phone': phoneController.text.toString(),
                           'state': state.text.toString(),
                           'city': city.text.toString(),
+                          'zipcode': zipCodeController.text.toString(),
                           'radio': _currentSliderValue.round().toString(),
                           'price': priceController.text.toString(),
                           'country': country.text.toString(),
@@ -1888,6 +1992,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
         }
 
         nameController.text = dataSnapshot.child("fullname").value.toString();
+        zipCodeController.text = dataSnapshot.child("zipcode").value.toString();
 
         emailController.text = dataSnapshot.child("email").value.toString();
         dateController.text = dataSnapshot.child("dateBirthay").value.toString();
@@ -1963,7 +2068,7 @@ class _ProfileProfesionalPageState extends State<ProfileProfesionalPage> {
             response = snapshot.data;
 
             return response == null
-                ? AppWidget().loading()
+                ? AppWidget().loading(context)
                 : response.snapshot.children.toList().length == 0
                     ? AppWidget().noResult(context)
                     : Container(

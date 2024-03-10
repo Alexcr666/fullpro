@@ -35,6 +35,7 @@ import 'package:fullpro/utils/countryStateCity/AddressPickerRow.dart';
 import 'package:fullpro/widgets/widget.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class RegistrationProfessionalPage extends StatefulWidget {
   static const String id = 'RegistrationPage';
@@ -519,16 +520,18 @@ class _RegistrationProfessionalPageState extends State<RegistrationProfessionalP
                     style: TextStyle(color: Colors.black),
                   ),
                   TextSpan(
-                    text: /* Locales.string(context, 'lbl_terms_and_conditions')*/ "Generar documento",
+                    text: /* Locales.string(context, 'lbl_terms_and_conditions')*/ " Generar documento",
                     style: TextStyle(color: secondryColor),
                     recognizer: TapGestureRecognizer()
                       ..onTap = () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => TermsPage(
-                                      state: 2,
-                                    )));
+                        openLink() async {
+                          final Uri url = Uri.parse('https://flutter.dev');
+                          if (!await launchUrl(url)) {
+                            throw Exception('Could not launch');
+                          }
+                        }
+
+                        openLink();
 
                         // Loader.page(context, TermsPage());
                       },

@@ -84,7 +84,7 @@ class _TermsPageState extends State<TermsPage> {
             ),
 
             downloadUrl == null
-                ? AppWidget().loading()
+                ? AppWidget().loading(context)
                 : Expanded(
                     child: PDF().cachedFromUrl(
                     downloadUrl!,

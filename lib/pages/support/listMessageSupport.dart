@@ -52,7 +52,7 @@ class _ListMessageSupportPageState extends State<ListMessageSupportPage> {
               DatabaseEvent response = snapshot.data;
 
               return response == null
-                  ? AppWidget().loading()
+                  ? AppWidget().loading(context)
                   : response.snapshot.children.length == 0
                       ? AppWidget().noResult(context)
                       : ListView.builder(
